@@ -109,7 +109,11 @@ public class INodeMap {
 
       @Override
       public ContentSummaryComputationContext computeContentSummary(
+<<<<<<< HEAD
           ContentSummaryComputationContext summary) {
+=======
+          int snapshotId, ContentSummaryComputationContext summary) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return null;
       }
       

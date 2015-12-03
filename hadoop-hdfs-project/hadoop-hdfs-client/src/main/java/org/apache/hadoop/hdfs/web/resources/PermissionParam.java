@@ -61,4 +61,8 @@ public class PermissionParam extends ShortParam {
     final Short v = getValue();
     return new FsPermission(v != null? v: DEFAULT_PERMISSION);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

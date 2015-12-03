@@ -61,6 +61,10 @@ import org.apache.hadoop.yarn.server.api.protocolrecords.RegisterNodeManagerResp
 import org.apache.hadoop.yarn.server.api.protocolrecords.UnRegisterNodeManagerRequest;
 import org.apache.hadoop.yarn.server.api.records.NodeAction;
 import org.apache.hadoop.yarn.server.api.records.NodeStatus;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.NodeLabelsUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.NullRMNodeLabelsManager;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
@@ -362,7 +366,11 @@ public class TestResourceTrackerService extends NodeLabelTestBase {
     Assert.assertEquals("Action should be normal on valid Node Labels",
         NodeAction.NORMAL, response.getNodeAction());
     assertCollectionEquals(nodeLabelsMgr.getNodeLabels().get(nodeId),
+<<<<<<< HEAD
         ResourceTrackerService.convertToStringSet(registerReq.getNodeLabels()));
+=======
+        NodeLabelsUtils.convertToStringSet(registerReq.getNodeLabels()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Assert.assertTrue("Valid Node Labels were not accepted by RM",
         response.getAreNodeLabelsAcceptedByRM());
     rm.stop();
@@ -590,7 +598,11 @@ public class TestResourceTrackerService extends NodeLabelTestBase {
     Assert.assertEquals("InValid Node Labels were not accepted by RM",
         NodeAction.NORMAL, nodeHeartbeatResponse.getNodeAction());
     assertCollectionEquals(nodeLabelsMgr.getNodeLabels().get(nodeId),
+<<<<<<< HEAD
         ResourceTrackerService.convertToStringSet(heartbeatReq.getNodeLabels()));
+=======
+        NodeLabelsUtils.convertToStringSet(heartbeatReq.getNodeLabels()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Assert.assertTrue("Valid Node Labels were not accepted by RM",
         nodeHeartbeatResponse.getAreNodeLabelsAcceptedByRM());
     

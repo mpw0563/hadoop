@@ -1025,7 +1025,11 @@ public class FSOperations {
      */
     public FSRemoveAclEntries(String path, String aclSpec) {
       this.path = new Path(path);
+<<<<<<< HEAD
       this.aclEntries = AclEntry.parseAclSpec(aclSpec, true);
+=======
+      this.aclEntries = AclEntry.parseAclSpec(aclSpec, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     /**

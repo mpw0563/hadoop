@@ -18,11 +18,26 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.reservation;
 
+<<<<<<< HEAD
 import org.apache.hadoop.security.AccessControlException;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.api.records.Resource;
+=======
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import org.apache.hadoop.security.AccessControlException;
+import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
+import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.apache.hadoop.yarn.api.records.ReservationDefinition;
+import org.apache.hadoop.yarn.api.records.ReservationId;
+import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.exceptions.PlanningException;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.planning.ReservationAgent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptState;
@@ -36,11 +51,14 @@ import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.junit.Assert;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 public abstract class TestSchedulerPlanFollowerBase {
   final static int GB = 1024;
   protected Clock mClock = null;
@@ -51,6 +69,10 @@ public abstract class TestSchedulerPlanFollowerBase {
   protected CapacityOverTimePolicy policy = new CapacityOverTimePolicy();
   protected Plan plan;
   private ResourceCalculator res = new DefaultResourceCalculator();
+<<<<<<< HEAD
+=======
+  private RMContext context = ReservationSystemTestUtil.createMockRMContext();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   protected void testPlanFollower(boolean isMove) throws PlanningException,
       InterruptedException, AccessControlException {
@@ -59,12 +81,17 @@ public abstract class TestSchedulerPlanFollowerBase {
         new InMemoryPlan(scheduler.getRootQueueMetrics(), policy, mAgent,
             scheduler.getClusterResource(), 1L, res,
             scheduler.getMinimumResourceCapability(), maxAlloc, "dedicated",
+<<<<<<< HEAD
             null, isMove);
+=======
+            null, isMove, context);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // add a few reservations to the plan
     long ts = System.currentTimeMillis();
     ReservationId r1 = ReservationId.newInstance(ts, 1);
     int[] f1 = { 10, 10, 10, 10, 10 };
+<<<<<<< HEAD
     assertTrue(plan.toString(),
         plan.addReservation(new InMemoryReservationAllocation(r1, null, "u3",
             "dedicated", 0, 0 + f1.length, ReservationSystemTestUtil
@@ -75,13 +102,34 @@ public abstract class TestSchedulerPlanFollowerBase {
         plan.addReservation(new InMemoryReservationAllocation(r2, null, "u3",
             "dedicated", 3, 3 + f1.length, ReservationSystemTestUtil
                 .generateAllocation(3L, 1L, f1), res, minAlloc)));
+=======
+    ReservationDefinition rDef =
+        ReservationSystemTestUtil.createSimpleReservationDefinition(
+            0, 0 + f1.length + 1, f1.length);
+    assertTrue(plan.toString(),
+        plan.addReservation(new InMemoryReservationAllocation(r1, rDef, "u3",
+            "dedicated", 0, 0 + f1.length, ReservationSystemTestUtil
+                .generateAllocation(0L, 1L, f1), res, minAlloc), false));
+
+    ReservationId r2 = ReservationId.newInstance(ts, 2);
+    assertTrue(plan.toString(),
+        plan.addReservation(new InMemoryReservationAllocation(r2, rDef, "u3",
+            "dedicated", 3, 3 + f1.length, ReservationSystemTestUtil
+                .generateAllocation(3L, 1L, f1), res, minAlloc), false));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ReservationId r3 = ReservationId.newInstance(ts, 3);
     int[] f2 = { 0, 10, 20, 10, 0 };
     assertTrue(plan.toString(),
+<<<<<<< HEAD
         plan.addReservation(new InMemoryReservationAllocation(r3, null, "u4",
             "dedicated", 10, 10 + f2.length, ReservationSystemTestUtil
                 .generateAllocation(10L, 1L, f2), res, minAlloc)));
+=======
+        plan.addReservation(new InMemoryReservationAllocation(r3, rDef, "u4",
+            "dedicated", 10, 10 + f2.length, ReservationSystemTestUtil
+                .generateAllocation(10L, 1L, f2), res, minAlloc), false));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     AbstractSchedulerPlanFollower planFollower = createPlanFollower();
 

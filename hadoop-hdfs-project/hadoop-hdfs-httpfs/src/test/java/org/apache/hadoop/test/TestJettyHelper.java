@@ -104,7 +104,11 @@ public class TestJettyHelper implements MethodRule {
       }
       return server;
     } catch (Exception ex) {
+<<<<<<< HEAD
       throw new RuntimeException("Could not stop embedded servlet container, " + ex.getMessage(), ex);
+=======
+      throw new RuntimeException("Could not start embedded servlet container, " + ex.getMessage(), ex);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 

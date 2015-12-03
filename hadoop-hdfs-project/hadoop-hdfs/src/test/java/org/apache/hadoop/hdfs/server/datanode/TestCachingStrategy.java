@@ -33,6 +33,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.server.namenode.EditLogFileOutputStream;
 import org.apache.hadoop.io.IOUtils;
@@ -49,8 +53,13 @@ import org.junit.Test;
 public class TestCachingStrategy {
   private static final Log LOG = LogFactory.getLog(TestCachingStrategy.class);
   private static final int MAX_TEST_FILE_LEN = 1024 * 1024;
+<<<<<<< HEAD
   private static final int WRITE_PACKET_SIZE = DFSConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_DEFAULT;
   
+=======
+  private static final int WRITE_PACKET_SIZE = HdfsClientConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_DEFAULT;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final static TestRecordingCacheTracker tracker =
       new TestRecordingCacheTracker();
 
@@ -112,7 +121,11 @@ public class TestCachingStrategy {
   }
 
   private static class TestRecordingCacheTracker extends CacheManipulator {
+<<<<<<< HEAD
     private final Map<String, Stats> map = new TreeMap<String, Stats>();
+=======
+    private final Map<String, Stats> map = new TreeMap<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     @Override
     public void posixFadviseIfPossible(String name,
@@ -259,8 +272,13 @@ public class TestCachingStrategy {
     Configuration conf = new HdfsConfiguration();
     conf.setBoolean(DFSConfigKeys.DFS_DATANODE_DROP_CACHE_BEHIND_READS_KEY, false);
     conf.setBoolean(DFSConfigKeys.DFS_DATANODE_DROP_CACHE_BEHIND_WRITES_KEY, false);
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_CACHE_DROP_BEHIND_READS, true);
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_CACHE_DROP_BEHIND_WRITES, true);
+=======
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_CACHE_DROP_BEHIND_READS, true);
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_CACHE_DROP_BEHIND_WRITES, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MiniDFSCluster cluster = null;
     String TEST_PATH = "/test";
     int TEST_PATH_LEN = MAX_TEST_FILE_LEN;
@@ -364,8 +382,11 @@ public class TestCachingStrategy {
       
       // read file
       readHdfsFile(fs, new Path(TEST_PATH), Long.MAX_VALUE, false);
+<<<<<<< HEAD
       // verify that we dropped everything from the cache.
       Assert.assertNull(stats);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       if (cluster != null) {
         cluster.shutdown();
@@ -388,6 +409,7 @@ public class TestCachingStrategy {
       FileSystem fs = cluster.getFileSystem();
       createHdfsFile(fs, new Path(TEST_PATH), TEST_PATH_LEN, false);
       // verify that we can seek after setDropBehind
+<<<<<<< HEAD
       FSDataInputStream fis = fs.open(new Path(TEST_PATH));
       try {
         Assert.assertTrue(fis.read() != -1); // create BlockReader
@@ -395,6 +417,12 @@ public class TestCachingStrategy {
         fis.seek(2); // seek
       } finally {
         fis.close();
+=======
+      try (FSDataInputStream fis = fs.open(new Path(TEST_PATH))) {
+        Assert.assertTrue(fis.read() != -1); // create BlockReader
+        fis.setDropBehind(false); // clear BlockReader
+        fis.seek(2); // seek
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     } finally {
       if (cluster != null) {

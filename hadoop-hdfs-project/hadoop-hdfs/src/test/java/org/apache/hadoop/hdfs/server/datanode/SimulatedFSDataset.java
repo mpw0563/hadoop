@@ -42,8 +42,15 @@ import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.BlockListAsLongs;
 import org.apache.hadoop.hdfs.protocol.BlockLocalPathInfo;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsBlocksMetadata;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.ReplicaState;
+=======
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.ReplicaState;
+import org.apache.hadoop.hdfs.server.common.Storage;
+import org.apache.hadoop.hdfs.server.datanode.dataset.DatasetSpi;
+import org.apache.hadoop.hdfs.server.datanode.fsdataset.*;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeReference;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeSpi;
@@ -80,7 +87,11 @@ import org.apache.hadoop.util.DataChecksum;
  */
 public class SimulatedFSDataset implements FsDatasetSpi<FsVolumeSpi> {
   public final static int BYTE_MASK = 0xff;
+<<<<<<< HEAD
   static class Factory extends FsDatasetSpi.Factory<SimulatedFSDataset> {
+=======
+  static class Factory extends DatasetSpi.Factory {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @Override
     public SimulatedFSDataset newInstance(DataNode datanode,
         DataStorage storage, Configuration conf) throws IOException {
@@ -100,7 +111,11 @@ public class SimulatedFSDataset implements FsDatasetSpi<FsVolumeSpi> {
 
   public static byte simulatedByte(Block b, long offsetInBlk) {
     byte firstByte = (byte) (b.getBlockId() & BYTE_MASK);
+<<<<<<< HEAD
     return (byte) ((firstByte + offsetInBlk) & BYTE_MASK);
+=======
+    return (byte) ((firstByte + offsetInBlk % 29) & BYTE_MASK);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   public static final String CONFIG_PROPERTY_CAPACITY =
@@ -493,7 +508,11 @@ public class SimulatedFSDataset implements FsDatasetSpi<FsVolumeSpi> {
     }
 
     @Override
+<<<<<<< HEAD
     public void reserveSpaceForRbw(long bytesToReserve) {
+=======
+    public void reserveSpaceForReplica(long bytesToReserve) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     @Override
@@ -786,13 +805,26 @@ public class SimulatedFSDataset implements FsDatasetSpi<FsVolumeSpi> {
     }
   }
 
+<<<<<<< HEAD
   @Override // FSDatasetSpi
+=======
+  @Override // DatasetSpi
+  public boolean isCachingSupported() {
+    return false;
+  }
+
+  @Override // DatasetSpi
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void cache(String bpid, long[] cacheBlks) {
     throw new UnsupportedOperationException(
         "SimulatedFSDataset does not support cache operation!");
   }
 
+<<<<<<< HEAD
   @Override // FSDatasetSpi
+=======
+  @Override // DatasetSpi
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void uncache(String bpid, long[] uncacheBlks) {
     throw new UnsupportedOperationException(
         "SimulatedFSDataset does not support uncache operation!");
@@ -1245,12 +1277,15 @@ public class SimulatedFSDataset implements FsDatasetSpi<FsVolumeSpi> {
   }
 
   @Override
+<<<<<<< HEAD
   public HdfsBlocksMetadata getHdfsBlocksMetadata(String bpid, long[] blockIds)
       throws IOException {
     throw new UnsupportedOperationException();
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void enableTrash(String bpid) {
     throw new UnsupportedOperationException();
   }
@@ -1286,11 +1321,23 @@ public class SimulatedFSDataset implements FsDatasetSpi<FsVolumeSpi> {
   @Override
   public void addVolume(
       final StorageLocation location,
+<<<<<<< HEAD
+=======
+      final Storage.StorageDirectory sd,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final List<NamespaceInfo> nsInfos) throws IOException {
     throw new UnsupportedOperationException();
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void recordFailedVolume(StorageLocation location) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public DatanodeStorage getStorage(final String storageUuid) {
     return storageUuid.equals(storage.getStorageUuid()) ?
         storage.dnStorage :

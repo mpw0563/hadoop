@@ -25,6 +25,11 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.logging.Log;
@@ -37,6 +42,10 @@ import org.apache.hadoop.ha.HealthMonitor;
 import org.apache.hadoop.ha.ZKFailoverController;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSUtil;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.HAUtil;
 import org.apache.hadoop.hdfs.HDFSPolicyProvider;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
@@ -164,7 +173,11 @@ public class DFSZKFailoverController extends ZKFailoverController {
 
   @Override
   public void loginAsFCUser() throws IOException {
+<<<<<<< HEAD
     InetSocketAddress socAddr = NameNode.getAddress(conf);
+=======
+    InetSocketAddress socAddr = DFSUtilClient.getNNAddress(conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     SecurityUtil.login(conf, DFS_NAMENODE_KEYTAB_FILE_KEY,
         DFS_NAMENODE_KERBEROS_PRINCIPAL_KEY, socAddr.getHostName());
   }
@@ -261,4 +274,18 @@ public class DFSZKFailoverController extends ZKFailoverController {
     return isThreadDumpCaptured;
   }
 
+<<<<<<< HEAD
+=======
+  @Override
+  public List<HAServiceTarget> getAllOtherNodes() {
+    String nsId = DFSUtil.getNamenodeNameServiceId(conf);
+    List<String> otherNn = HAUtil.getNameNodeIdOfOtherNodes(conf, nsId);
+
+    List<HAServiceTarget> targets = new ArrayList<HAServiceTarget>(otherNn.size());
+    for (String nnId : otherNn) {
+      targets.add(new NNHAServiceTarget(conf, nsId, nnId));
+    }
+    return targets;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

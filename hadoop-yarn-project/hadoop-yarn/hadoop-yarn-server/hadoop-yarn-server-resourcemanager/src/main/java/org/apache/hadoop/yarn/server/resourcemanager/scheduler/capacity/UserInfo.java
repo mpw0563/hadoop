@@ -23,7 +23,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.hadoop.yarn.api.records.Resource;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.ResourceInfo;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceUsage;
+import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.ResourceInfo;
+import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.ResourceUsageInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -34,17 +40,29 @@ public class UserInfo {
   protected int numActiveApplications;
   protected ResourceInfo AMResourceUsed;
   protected ResourceInfo userResourceLimit;
+<<<<<<< HEAD
+=======
+  protected ResourceUsageInfo resources;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   UserInfo() {}
 
   UserInfo(String username, Resource resUsed, int activeApps, int pendingApps,
+<<<<<<< HEAD
       Resource amResUsed, Resource resourceLimit) {
+=======
+      Resource amResUsed, Resource resourceLimit, ResourceUsage resourceUsage) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.username = username;
     this.resourcesUsed = new ResourceInfo(resUsed);
     this.numActiveApplications = activeApps;
     this.numPendingApplications = pendingApps;
     this.AMResourceUsed = new ResourceInfo(amResUsed);
     this.userResourceLimit = new ResourceInfo(resourceLimit);
+<<<<<<< HEAD
+=======
+    this.resources = new ResourceUsageInfo(resourceUsage);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public String getUsername() {
@@ -70,4 +88,11 @@ public class UserInfo {
   public ResourceInfo getUserResourceLimit() {
     return userResourceLimit;
   }
+<<<<<<< HEAD
+=======
+
+  public ResourceUsageInfo getResourceUsageInfo() {
+    return resources;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

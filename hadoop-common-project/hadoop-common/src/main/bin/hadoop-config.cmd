@@ -80,22 +80,39 @@ if "%1" == "--config" (
 )
 
 @rem
+<<<<<<< HEAD
 @rem Set log level. Default to INFO.
 @rem
 
 if "%1" == "--loglevel" (
   set HADOOP_LOGLEVEL=%2
-  shift
-  shift
-)
-
-@rem
+=======
 @rem check to see it is specified whether to use the slaves or the
 @rem masters file
 @rem
 
 if "%1" == "--hosts" (
   set HADOOP_SLAVES=%HADOOP_CONF_DIR%\%2
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  shift
+  shift
+)
+
+@rem
+<<<<<<< HEAD
+@rem check to see it is specified whether to use the slaves or the
+@rem masters file
+@rem
+
+if "%1" == "--hosts" (
+  set HADOOP_SLAVES=%HADOOP_CONF_DIR%\%2
+=======
+@rem Set log level. Default to INFO.
+@rem
+
+if "%1" == "--loglevel" (
+  set HADOOP_LOGLEVEL=%2
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   shift
   shift
 )

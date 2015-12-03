@@ -29,6 +29,10 @@ option java_generate_equals_and_hash = true;
 package hadoop.hdfs.qjournal;
 
 import "hdfs.proto";
+<<<<<<< HEAD
+=======
+import "HdfsServer.proto";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 message JournalIdProto {
   required string identifier = 1;
@@ -135,6 +139,7 @@ message IsFormattedResponseProto {
 }
 
 /**
+<<<<<<< HEAD
  * discardSegments()
  */
 message DiscardSegmentsRequestProto {
@@ -146,6 +151,8 @@ message DiscardSegmentsResponseProto {
 }
 
 /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * getJournalCTime()
  */
 message GetJournalCTimeRequestProto {
@@ -212,6 +219,20 @@ message DoRollbackResponseProto {
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * discardSegments()
+ */
+message DiscardSegmentsRequestProto {
+  required JournalIdProto jid = 1;
+  required uint64 startTxId = 2;
+}
+
+message DiscardSegmentsResponseProto {
+}
+
+/**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * getJournalState()
  */
 message GetJournalStateRequestProto {
@@ -314,8 +335,11 @@ message AcceptRecoveryResponseProto {
 service QJournalProtocolService {
   rpc isFormatted(IsFormattedRequestProto) returns (IsFormattedResponseProto);
 
+<<<<<<< HEAD
   rpc discardSegments(DiscardSegmentsRequestProto) returns (DiscardSegmentsResponseProto);
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   rpc getJournalCTime(GetJournalCTimeRequestProto) returns (GetJournalCTimeResponseProto);
   
   rpc doPreUpgrade(DoPreUpgradeRequestProto) returns (DoPreUpgradeResponseProto);
@@ -328,6 +352,11 @@ service QJournalProtocolService {
 
   rpc doRollback(DoRollbackRequestProto) returns (DoRollbackResponseProto);
 
+<<<<<<< HEAD
+=======
+  rpc discardSegments(DiscardSegmentsRequestProto) returns (DiscardSegmentsResponseProto);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   rpc getJournalState(GetJournalStateRequestProto) returns (GetJournalStateResponseProto);
 
   rpc newEpoch(NewEpochRequestProto) returns (NewEpochResponseProto);

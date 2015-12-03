@@ -167,6 +167,11 @@ public class MetricsOverviewTable extends HtmlBlock {
         th().$class("ui-state-default")._("Scheduling Resource Type")._().
         th().$class("ui-state-default")._("Minimum Allocation")._().
         th().$class("ui-state-default")._("Maximum Allocation")._().
+<<<<<<< HEAD
+=======
+        th().$class("ui-state-default")
+            ._("Maximum Cluster Application Priority")._().
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       _().
     _().
     tbody().$class("ui-widget-content").
@@ -175,6 +180,10 @@ public class MetricsOverviewTable extends HtmlBlock {
         td(String.valueOf(schedulerInfo.getSchedulerResourceTypes())).
         td(schedulerInfo.getMinAllocation().toString()).
         td(schedulerInfo.getMaxAllocation().toString()).
+<<<<<<< HEAD
+=======
+        td(String.valueOf(schedulerInfo.getMaxClusterLevelAppPriority())).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       _().
     _()._();
 

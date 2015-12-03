@@ -100,11 +100,14 @@ class BackupJournalManager implements JournalManager {
   public String toString() {
     return "BackupJournalManager";
   }
+<<<<<<< HEAD
 
   @Override
   public void discardSegments(long startTxId) throws IOException {
     throw new UnsupportedOperationException();
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   @Override
   public void doPreUpgrade() throws IOException {
@@ -133,6 +136,14 @@ class BackupJournalManager implements JournalManager {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void discardSegments(long startTxId) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public long getJournalCTime() throws IOException {
     throw new UnsupportedOperationException();
   }

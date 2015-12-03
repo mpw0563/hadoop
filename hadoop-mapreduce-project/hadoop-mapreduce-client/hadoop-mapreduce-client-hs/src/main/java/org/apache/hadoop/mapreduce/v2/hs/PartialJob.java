@@ -39,6 +39,10 @@ import org.apache.hadoop.mapreduce.v2.app.job.Task;
 import org.apache.hadoop.mapreduce.v2.jobhistory.JobIndexInfo;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authorize.AccessControlList;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
 
 
@@ -195,5 +199,14 @@ public class PartialJob implements org.apache.hadoop.mapreduce.v2.app.job.Job {
   public void setQueueName(String queueName) {
     throw new UnsupportedOperationException("Can't set job's queue name in history");
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public void setJobPriority(Priority priority) {
+    throw new UnsupportedOperationException(
+        "Can't set job's priority in history");
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 }

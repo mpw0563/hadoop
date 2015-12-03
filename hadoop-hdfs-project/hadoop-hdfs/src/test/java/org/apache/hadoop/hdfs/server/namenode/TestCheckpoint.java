@@ -27,6 +27,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.assertSame;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -42,15 +46,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 import com.google.common.io.Files;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
+=======
+import org.apache.hadoop.conf.Configuration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileContext;
@@ -58,8 +65,13 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.DFSTestUtil;
+=======
+import org.apache.hadoop.hdfs.DFSTestUtil;
+import org.apache.hadoop.hdfs.DFSUtil;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
@@ -110,7 +122,7 @@ import com.google.common.primitives.Ints;
 public class TestCheckpoint {
 
   static {
-    ((Log4JLogger)FSImage.LOG).getLogger().setLevel(Level.ALL);
+    GenericTestUtils.setLogLevel(FSImage.LOG, Level.ALL);
   }
 
   static final Log LOG = LogFactory.getLog(TestCheckpoint.class); 
@@ -136,6 +148,7 @@ public class TestCheckpoint {
     FileUtil.fullyDeleteContents(new File(MiniDFSCluster.getBaseDirectory()));
     faultInjector = Mockito.mock(CheckpointFaultInjector.class);
     CheckpointFaultInjector.instance = faultInjector;
+<<<<<<< HEAD
   }
 
   static void writeFile(FileSystem fileSys, Path name, int repl)
@@ -148,13 +161,19 @@ public class TestCheckpoint {
     rand.nextBytes(buffer);
     stm.write(buffer);
     stm.close();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @After
   public void checkForSNNThreads() {
     GenericTestUtils.assertNoThreadsMatching(".*SecondaryNameNode.*");
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   static void checkFile(FileSystem fileSys, Path name, int repl)
     throws IOException {
     assertTrue(fileSys.exists(name));
@@ -381,7 +400,8 @@ public class TestCheckpoint {
       //
       // Create a new file
       //
-      writeFile(fileSys, file1, replication);
+      DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+          replication, seed);
       checkFile(fileSys, file1, replication);
     } finally {
       fileSys.close();
@@ -452,7 +472,8 @@ public class TestCheckpoint {
       //
       // Create a new file
       //
-      writeFile(fileSys, file1, replication);
+      DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+          replication, seed);
       checkFile(fileSys, file1, replication);
     } finally {
       fileSys.close();
@@ -531,7 +552,8 @@ public class TestCheckpoint {
       //
       // Create a new file
       //
-      writeFile(fileSys, file1, replication);
+      DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+          replication, seed);
       checkFile(fileSys, file1, replication);
     } finally {
       fileSys.close();
@@ -736,7 +758,8 @@ public class TestCheckpoint {
       //
       // Create a new file
       //
-      writeFile(fileSys, file1, replication);
+      DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+          replication, seed);
       checkFile(fileSys, file1, replication);
     } finally {
       fileSys.close();
@@ -1063,7 +1086,8 @@ public class TestCheckpoint {
       //
       // Create file1
       //
-      writeFile(fileSys, file1, replication);
+      DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+          replication, seed);
       checkFile(fileSys, file1, replication);
 
       //
@@ -1102,7 +1126,8 @@ public class TestCheckpoint {
       cleanupFile(fileSys, file1);
 
       // create new file file2
-      writeFile(fileSys, file2, replication);
+      DFSTestUtil.createFile(fileSys, file2, fileSize, fileSize, blockSize,
+          replication, seed);
       checkFile(fileSys, file2, replication);
 
       //
@@ -1110,6 +1135,10 @@ public class TestCheckpoint {
       //
       secondary = startSecondaryNameNode(conf);
       secondary.doCheckpoint();
+      
+      FSDirectory secondaryFsDir = secondary.getFSNamesystem().dir;
+      INode rootInMap = secondaryFsDir.getInode(secondaryFsDir.rootDir.getId());
+      assertSame(rootInMap, secondaryFsDir.rootDir);
       
       fileSys.delete(tmpDir, true);
       fileSys.mkdirs(tmpDir);
@@ -1170,7 +1199,8 @@ public class TestCheckpoint {
       }
       // create new file
       Path file = new Path("namespace.dat");
-      writeFile(fs, file, replication);
+      DFSTestUtil.createFile(fs, file, fileSize, fileSize, blockSize,
+          replication, seed);
       checkFile(fs, file, replication);
 
       // create new link
@@ -1430,7 +1460,8 @@ public class TestCheckpoint {
       //
       secondary = startSecondaryNameNode(conf);
 
-      File secondaryDir = new File(MiniDFSCluster.getBaseDirectory(), "namesecondary1");
+      File secondaryDir = MiniDFSCluster.getCheckpointDirectory(MiniDFSCluster.getBaseDirectory(),
+        0, 0)[0];
       File secondaryCurrent = new File(secondaryDir, "current");
 
       long expectedTxIdToDownload = cluster.getNameNode().getFSImage()
@@ -1582,10 +1613,16 @@ public class TestCheckpoint {
       if (fs != null) {
         fs.close();
       }
+<<<<<<< HEAD
       cleanup(secondary);
       secondary = null;
       cleanup(cluster);
       cluster = null;
+=======
+      if (cluster != null) {
+        cluster.shutdown();
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Mockito.reset(faultInjector);
     }
   }
@@ -1610,7 +1647,11 @@ public class TestCheckpoint {
       // Make sure the on-disk fsimage on the NN has txid > 0.
       FSNamesystem fsns = cluster.getNamesystem();
       fsns.enterSafeMode(false);
+<<<<<<< HEAD
       fsns.saveNamespace();
+=======
+      fsns.saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fsns.leaveSafeMode();
       
       secondary = startSecondaryNameNode(conf);
@@ -2005,7 +2046,7 @@ public class TestCheckpoint {
         .when(dstImage).toColonSeparatedString();
 
       try {
-        TransferFsImage.downloadImageToStorage(fsName, 0, dstImage, false);
+        TransferFsImage.downloadImageToStorage(fsName, 0, dstImage, false, false);
         fail("Storage info was not verified");
       } catch (IOException ioe) {
         String msg = StringUtils.stringifyException(ioe);
@@ -2242,7 +2283,7 @@ public class TestCheckpoint {
       NamenodeProtocols nn = cluster.getNameNodeRpc();
       nn.setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
       for (int i = 0; i < 3; i++) {
-        nn.saveNamespace();
+        nn.saveNamespace(0, 0);
       }
       nn.setSafeMode(SafeModeAction.SAFEMODE_LEAVE, false);
       
@@ -2327,7 +2368,11 @@ public class TestCheckpoint {
       // therefore needs to download a new fsimage the next time it performs a
       // checkpoint.
       cluster.getNameNodeRpc().setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
+<<<<<<< HEAD
       cluster.getNameNodeRpc().saveNamespace();
+=======
+      cluster.getNameNodeRpc().saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       cluster.getNameNodeRpc().setSafeMode(SafeModeAction.SAFEMODE_LEAVE, false);
       
       // Ensure that the 2NN can still perform a checkpoint.
@@ -2372,7 +2417,11 @@ public class TestCheckpoint {
       // therefore needs to download a new fsimage the next time it performs a
       // checkpoint.
       cluster.getNameNodeRpc().setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
+<<<<<<< HEAD
       cluster.getNameNodeRpc().saveNamespace();
+=======
+      cluster.getNameNodeRpc().saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       cluster.getNameNodeRpc().setSafeMode(SafeModeAction.SAFEMODE_LEAVE, false);
       
       // Ensure that the 2NN can still perform a checkpoint.

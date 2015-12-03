@@ -966,9 +966,22 @@ public class HistoryFileManager extends AbstractService {
 
   private String getJobSummary(FileContext fc, Path path) throws IOException {
     Path qPath = fc.makeQualified(path);
+<<<<<<< HEAD
     FSDataInputStream in = fc.open(qPath);
     String jobSummaryString = in.readUTF();
     in.close();
+=======
+    FSDataInputStream in = null;
+    String jobSummaryString = null;
+    try {
+      in = fc.open(qPath);
+      jobSummaryString = in.readUTF();
+    } finally {
+      if (in != null) {
+        in.close();
+      }
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return jobSummaryString;
   }
 
@@ -1078,8 +1091,14 @@ public class HistoryFileManager extends AbstractService {
     return doneDirFc.delete(doneDirFc.makeQualified(serialDir.getPath()), true);
   }
 
+<<<<<<< HEAD
   @VisibleForTesting
   protected void setMaxHistoryAge(long newValue){
+=======
+  // for test
+  @VisibleForTesting
+  void setMaxHistoryAge(long newValue){
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     maxHistoryAge=newValue;
   } 
 }

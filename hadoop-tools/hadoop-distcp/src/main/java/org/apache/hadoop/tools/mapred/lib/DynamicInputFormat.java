@@ -57,7 +57,12 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
           = "mapred.num.splits";
   private static final String CONF_LABEL_NUM_ENTRIES_PER_CHUNK
           = "mapred.num.entries.per.chunk";
+<<<<<<< HEAD
   
+=======
+  private DynamicInputChunkContext<K, V> chunkContext = null;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Implementation of InputFormat::getSplits(). This method splits up the
    * copy-listing file into chunks, and assigns the first batch to different
@@ -72,6 +77,10 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
       throws IOException, InterruptedException {
     LOG.info("DynamicInputFormat: Getting splits for job:"
              + jobContext.getJobID());
+<<<<<<< HEAD
+=======
+    chunkContext = getChunkContext(jobContext.getConfiguration());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return createSplits(jobContext,
                         splitCopyListingIntoChunksWithShuffle(jobContext));
   }
@@ -101,6 +110,16 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
 
   private static int N_CHUNKS_OPEN_AT_ONCE_DEFAULT = 16;
 
+<<<<<<< HEAD
+=======
+  public  DynamicInputChunkContext<K, V> getChunkContext(
+      Configuration configuration) throws IOException {
+    if(chunkContext == null) {
+      chunkContext = new DynamicInputChunkContext<K, V>(configuration);
+    }
+    return chunkContext;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private List<DynamicInputChunk> splitCopyListingIntoChunksWithShuffle
                                     (JobContext context) throws IOException {
 
@@ -146,8 +165,13 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
           closeAll(openChunks);
           chunksFinal.addAll(openChunks);
 
+<<<<<<< HEAD
           openChunks = createChunks(
                   configuration, chunkCount, nChunksTotal, nChunksOpenAtOnce);
+=======
+          openChunks = createChunks(chunkCount, nChunksTotal,
+              nChunksOpenAtOnce);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
           chunkCount += openChunks.size();
 
@@ -183,9 +207,15 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
       chunk.close();
   }
 
+<<<<<<< HEAD
   private static List<DynamicInputChunk> createChunks(Configuration config,
                       int chunkCount, int nChunksTotal, int nChunksOpenAtOnce)
                                           throws IOException {
+=======
+  private List<DynamicInputChunk> createChunks(int chunkCount,
+      int nChunksTotal, int nChunksOpenAtOnce)
+      throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     List<DynamicInputChunk> chunks = new ArrayList<DynamicInputChunk>();
     int chunkIdUpperBound
             = Math.min(nChunksTotal, chunkCount + nChunksOpenAtOnce);
@@ -197,6 +227,7 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
       chunkIdUpperBound = nChunksTotal;
 
     for (int i=chunkCount; i < chunkIdUpperBound; ++i)
+<<<<<<< HEAD
       chunks.add(createChunk(i, config));
     return chunks;
   }
@@ -205,6 +236,15 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
                                               throws IOException {
     return DynamicInputChunk.createChunkForWrite(String.format("%05d", chunkId),
                                               config);
+=======
+      chunks.add(createChunk(i));
+    return chunks;
+  }
+
+  private DynamicInputChunk createChunk(int chunkId)
+                                              throws IOException {
+    return chunkContext.createChunkForWrite(String.format("%05d", chunkId));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
 
@@ -351,6 +391,11 @@ public class DynamicInputFormat<K, V> extends InputFormat<K, V> {
           InputSplit inputSplit,
           TaskAttemptContext taskAttemptContext)
           throws IOException, InterruptedException {
+<<<<<<< HEAD
     return new DynamicRecordReader<K, V>();
+=======
+    chunkContext = getChunkContext(taskAttemptContext.getConfiguration());
+    return new DynamicRecordReader<K, V>(chunkContext);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

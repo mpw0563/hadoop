@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.RandomAccessFile;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
 
@@ -39,7 +38,10 @@ import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.NamenodeFsck;
 import org.apache.hadoop.hdfs.tools.DFSck;
 import org.apache.hadoop.security.AccessControlException;
@@ -217,7 +219,7 @@ public class TestClientReportBadBlock {
     for (int i = 0; i < corruptBlockCount; i++) {
       DatanodeInfo dninfo = datanodeinfos[i];
       final DataNode dn = cluster.getDataNode(dninfo.getIpcPort());
-      corruptBlock(block, dn);
+      cluster.corruptReplica(dn, block);
       LOG.debug("Corrupted block " + block.getBlockName() + " on data node "
           + dninfo);
 
@@ -292,6 +294,7 @@ public class TestClientReportBadBlock {
     }
   }
 
+<<<<<<< HEAD
   /**
    * Corrupt a block on a data node. Replace the block file content with content
    * of 1, 2, ...BLOCK_SIZE.
@@ -316,6 +319,8 @@ public class TestClientReportBadBlock {
     raFile.close();
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static void verifyFsckHealth(String expected) throws Exception {
     // Fsck health has error code 0.
     // Make sure filesystem is in healthy state

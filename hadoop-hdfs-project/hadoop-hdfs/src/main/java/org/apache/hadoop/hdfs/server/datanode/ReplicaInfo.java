@@ -18,20 +18,28 @@
 package org.apache.hadoop.hdfs.server.datanode;
 
 import java.io.File;
+<<<<<<< HEAD
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+=======
+import java.util.HashMap;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Map;
 
 import org.apache.hadoop.classification.InterfaceAudience;
-import org.apache.hadoop.fs.FileUtil;
-import org.apache.hadoop.fs.HardLink;
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeSpi;
+<<<<<<< HEAD
 import org.apache.hadoop.io.IOUtils;
+=======
+import org.apache.hadoop.util.LightWeightResizableGSet;
+
+import com.google.common.annotations.VisibleForTesting;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -40,8 +48,17 @@ import com.google.common.annotations.VisibleForTesting;
  * It provides a general interface for meta information of a replica.
  */
 @InterfaceAudience.Private
+<<<<<<< HEAD
 abstract public class ReplicaInfo extends Block implements Replica {
   
+=======
+abstract public class ReplicaInfo extends Block
+    implements Replica, LightWeightResizableGSet.LinkedElement {
+
+  /** For implementing {@link LightWeightResizableGSet.LinkedElement} interface */
+  private LightWeightResizableGSet.LinkedElement next;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** volume where the replica belongs */
   private FsVolumeSpi volume;
   
@@ -52,7 +69,18 @@ abstract public class ReplicaInfo extends Block implements Replica {
    * possibly blocks.
    */
   private File baseDir;
+<<<<<<< HEAD
+=======
   
+  /**
+   * Whether or not this replica's parent directory includes subdirs, in which
+   * case we can generate them based on the replica's block ID
+   */
+  private boolean hasSubdirs;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  
+  private static final Map<String, File> internedBaseDirs = new HashMap<String, File>();
+
   /**
    * Whether or not this replica's parent directory includes subdirs, in which
    * case we can generate them based on the replica's block ID
@@ -150,6 +178,7 @@ abstract public class ReplicaInfo extends Block implements Replica {
    */
   public void setDir(File dir) {
     setDirInternal(dir);
+<<<<<<< HEAD
   }
 
   private void setDirInternal(File dir) {
@@ -263,17 +292,58 @@ abstract public class ReplicaInfo extends Block implements Replica {
                           tmpFile);
       }
       throw e;
+=======
+  }
+
+  private void setDirInternal(File dir) {
+    if (dir == null) {
+      baseDir = null;
+      return;
+    }
+
+    ReplicaDirInfo dirInfo = parseBaseDir(dir);
+    this.hasSubdirs = dirInfo.hasSubidrs;
+    
+    synchronized (internedBaseDirs) {
+      if (!internedBaseDirs.containsKey(dirInfo.baseDirPath)) {
+        // Create a new String path of this file and make a brand new File object
+        // to guarantee we drop the reference to the underlying char[] storage.
+        File baseDir = new File(dirInfo.baseDirPath);
+        internedBaseDirs.put(dirInfo.baseDirPath, baseDir);
+      }
+      this.baseDir = internedBaseDirs.get(dirInfo.baseDirPath);
     }
   }
 
+  @VisibleForTesting
+  public static class ReplicaDirInfo {
+    public String baseDirPath;
+    public boolean hasSubidrs;
+
+    public ReplicaDirInfo (String baseDirPath, boolean hasSubidrs) {
+      this.baseDirPath = baseDirPath;
+      this.hasSubidrs = hasSubidrs;
+    }
+  }
+  
+  @VisibleForTesting
+  public static ReplicaDirInfo parseBaseDir(File dir) {
+    
+    File currentDir = dir;
+    boolean hasSubdirs = false;
+    while (currentDir.getName().startsWith(DataStorage.BLOCK_SUBDIR_PREFIX)) {
+      hasSubdirs = true;
+      currentDir = currentDir.getParentFile();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    }
+    
+    return new ReplicaDirInfo(currentDir.getAbsolutePath(), hasSubdirs);
+  }
+
   /**
-   * Remove a hard link by copying the block to a temporary place and 
-   * then moving it back
-   * @param numLinks number of hard links
-   * @return true if copy is successful; 
-   *         false if it is already detached or no need to be detached
-   * @throws IOException if there is any copy error
+   * Number of bytes reserved for this replica on disk.
    */
+<<<<<<< HEAD
   public boolean unlinkBlock(int numLinks) throws IOException {
     if (isUnlinked()) {
       return false;
@@ -295,6 +365,22 @@ abstract public class ReplicaInfo extends Block implements Replica {
     return true;
   }
 
+=======
+  public long getBytesReserved() {
+    return 0;
+  }
+
+  /**
+   * Number of bytes originally reserved for this replica. The actual
+   * reservation is adjusted as data is written to disk.
+   *
+   * @return the number of bytes originally reserved for this replica.
+   */
+  public long getOriginalBytesReserved() {
+    return 0;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override  //Object
   public String toString() {
     return getClass().getSimpleName()
@@ -311,4 +397,17 @@ abstract public class ReplicaInfo extends Block implements Replica {
   public boolean isOnTransientStorage() {
     return volume.isTransientStorage();
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public LightWeightResizableGSet.LinkedElement getNext() {
+    return next;
+  }
+
+  @Override
+  public void setNext(LightWeightResizableGSet.LinkedElement next) {
+    this.next = next;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

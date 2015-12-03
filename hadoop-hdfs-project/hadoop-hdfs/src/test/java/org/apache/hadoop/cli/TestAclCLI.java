@@ -73,7 +73,11 @@ public class TestAclCLI extends CLITestHelperDFS {
 
   @Override
   protected Result execute(CLICommand cmd) throws Exception {
+<<<<<<< HEAD
     return cmd.getExecutor(namenode).executeCommand(cmd.getCmd());
+=======
+    return cmd.getExecutor(namenode, conf).executeCommand(cmd.getCmd());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test

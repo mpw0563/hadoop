@@ -92,6 +92,12 @@ public class DomainSocket implements Closeable {
    * misconfigurations.  System administrators do not commonly change
    * permissions on these paths while the server is running.
    *
+<<<<<<< HEAD
+=======
+   * For more information on Security exceptions see this wiki page:
+   * https://wiki.apache.org/hadoop/SocketPathSecurity
+   *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param path             the path to validate
    * @param skipComponents   the number of starting path components to skip 
    *                         validation for (used only for testing)

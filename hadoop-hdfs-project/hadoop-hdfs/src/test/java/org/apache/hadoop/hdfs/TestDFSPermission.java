@@ -22,6 +22,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+<<<<<<< HEAD
+=======
+import java.io.DataOutputStream;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.PrivilegedExceptionAction;
@@ -422,6 +426,94 @@ public class TestDFSPermission {
           parentPermissions, permissions, parentPaths, filePaths, dirPaths);
     } finally {
       fs.close();
+<<<<<<< HEAD
+    }
+  }
+
+  @Test
+  public void testAccessOwner() throws IOException, InterruptedException {
+    FileSystem rootFs = FileSystem.get(conf);
+    Path p1 = new Path("/p1");
+    rootFs.mkdirs(p1);
+    rootFs.setOwner(p1, USER1_NAME, GROUP1_NAME);
+    fs = USER1.doAs(new PrivilegedExceptionAction<FileSystem>() {
+      @Override
+      public FileSystem run() throws Exception {
+        return FileSystem.get(conf);
+      }
+    });
+    fs.setPermission(p1, new FsPermission((short) 0444));
+    fs.access(p1, FsAction.READ);
+    try {
+      fs.access(p1, FsAction.WRITE);
+      fail("The access call should have failed.");
+    } catch (AccessControlException e) {
+      assertTrue("Permission denied messages must carry the username",
+              e.getMessage().contains(USER1_NAME));
+      assertTrue("Permission denied messages must carry the path parent",
+              e.getMessage().contains(
+                  p1.getParent().toUri().getPath()));
+    }
+
+    Path badPath = new Path("/bad/bad");
+    try {
+      fs.access(badPath, FsAction.READ);
+      fail("The access call should have failed");
+    } catch (FileNotFoundException e) {
+      // expected
+    }
+  }
+
+  @Test
+  public void testAccessGroupMember() throws IOException, InterruptedException {
+    FileSystem rootFs = FileSystem.get(conf);
+    Path p2 = new Path("/p2");
+    rootFs.mkdirs(p2);
+    rootFs.setOwner(p2, UserGroupInformation.getCurrentUser().getShortUserName(), GROUP1_NAME);
+    rootFs.setPermission(p2, new FsPermission((short) 0740));
+    fs = USER1.doAs(new PrivilegedExceptionAction<FileSystem>() {
+      @Override
+      public FileSystem run() throws Exception {
+        return FileSystem.get(conf);
+      }
+    });
+    fs.access(p2, FsAction.READ);
+    try {
+      fs.access(p2, FsAction.EXECUTE);
+      fail("The access call should have failed.");
+    } catch (AccessControlException e) {
+      assertTrue("Permission denied messages must carry the username",
+              e.getMessage().contains(USER1_NAME));
+      assertTrue("Permission denied messages must carry the path parent",
+              e.getMessage().contains(
+                  p2.getParent().toUri().getPath()));
+    }
+  }
+
+  @Test
+  public void testAccessOthers() throws IOException, InterruptedException {
+    FileSystem rootFs = FileSystem.get(conf);
+    Path p3 = new Path("/p3");
+    rootFs.mkdirs(p3);
+    rootFs.setPermission(p3, new FsPermission((short) 0774));
+    fs = USER1.doAs(new PrivilegedExceptionAction<FileSystem>() {
+      @Override
+      public FileSystem run() throws Exception {
+        return FileSystem.get(conf);
+      }
+    });
+    fs.access(p3, FsAction.READ);
+    try {
+      fs.access(p3, FsAction.READ_WRITE);
+      fail("The access call should have failed.");
+    } catch (AccessControlException e) {
+      assertTrue("Permission denied messages must carry the username",
+              e.getMessage().contains(USER1_NAME));
+      assertTrue("Permission denied messages must carry the path parent",
+              e.getMessage().contains(
+                  p3.getParent().toUri().getPath()));
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -510,8 +602,45 @@ public class TestDFSPermission {
     }
   }
 
-  /* Check if namenode performs permission checking correctly 
-   * for the given user for operations mkdir, open, setReplication, 
+  @Test
+  public void testPermissionMessageOnNonDirAncestor()
+      throws IOException, InterruptedException {
+    FileSystem rootFs = FileSystem.get(conf);
+    Path p4 = new Path("/p4");
+    rootFs.mkdirs(p4);
+    rootFs.setOwner(p4, USER1_NAME, GROUP1_NAME);
+
+    final Path fpath = new Path("/p4/file");
+    DataOutputStream out = rootFs.create(fpath);
+    out.writeBytes("dhruba: " + fpath);
+    out.close();
+    rootFs.setOwner(fpath, USER1_NAME, GROUP1_NAME);
+    assertTrue(rootFs.exists(fpath));
+
+    fs = USER1.doAs(new PrivilegedExceptionAction<FileSystem>() {
+      @Override
+      public FileSystem run() throws Exception {
+        return FileSystem.get(conf);
+      }
+    });
+
+    final Path nfpath = new Path("/p4/file/nonexisting");
+    assertFalse(rootFs.exists(nfpath));
+
+    try {
+      fs.exists(nfpath);
+      fail("The exists call should have failed.");
+    } catch (AccessControlException e) {
+      assertTrue("Permission denied messages must carry file path",
+          e.getMessage().contains(fpath.getName()));
+      assertTrue("Permission denied messages must specify existing_file is not "
+              + "a directory, when checked on /existing_file/non_existing_name",
+          e.getMessage().contains("is not a directory"));
+    }
+  }
+
+  /* Check if namenode performs permission checking correctly
+   * for the given user for operations mkdir, open, setReplication,
    * getFileInfo, isDirectory, exists, getContentLength, list, rename,
    * and delete */
   private void testPermissionCheckingPerUser(UserGroupInformation ugi,

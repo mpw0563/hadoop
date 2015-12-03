@@ -29,7 +29,11 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 /**
+<<<<<<< HEAD
  * Variant of Hadoop Netutils exception wrapping with URI awareness and
+=======
+ * Variant of Hadoop NetUtils exception wrapping with URI awareness and
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * available in branch-1 too.
  */
 public class ExceptionDiags {

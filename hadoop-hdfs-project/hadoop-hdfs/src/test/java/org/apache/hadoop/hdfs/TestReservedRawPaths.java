@@ -33,6 +33,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.client.HdfsAdmin;
 import org.apache.hadoop.hdfs.server.namenode.EncryptionZoneManager;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.namenode.FSDirectory;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.AccessControlException;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.log4j.Level;
@@ -304,6 +308,7 @@ public class TestReservedRawPaths {
     DFSTestUtil.createFile(fs, baseFileRaw, len, (short) 1, 0xFEED);
 
     /*
+<<<<<<< HEAD
      * Ensure that you can't list /.reserved. Ever.
      */
     try {
@@ -312,6 +317,14 @@ public class TestReservedRawPaths {
     } catch (FileNotFoundException e) {
       assertExceptionContains("/.reserved does not exist", e);
     }
+=======
+     * Ensure that you can list /.reserved, with results: raw and .inodes
+     */
+    FileStatus[] stats = fs.listStatus(new Path("/.reserved"));
+    assertEquals(2, stats.length);
+    assertEquals(FSDirectory.DOT_INODES_STRING, stats[0].getPath().getName());
+    assertEquals("raw", stats[1].getPath().getName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     try {
       fs.listStatus(new Path("/.reserved/.inodes"));

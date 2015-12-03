@@ -28,7 +28,10 @@ import org.apache.hadoop.metrics.MetricsServlet;
  * 
  * This is useful if you want to support {@link MetricsServlet}, but
  * not emit metrics in any other way.
+ *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public class NoEmitMetricsContext extends AbstractMetricsContext {
@@ -40,6 +43,7 @@ public class NoEmitMetricsContext extends AbstractMetricsContext {
     public NoEmitMetricsContext() {
     }
     
+    @Override
     @InterfaceAudience.Private
     public void init(String contextName, ContextFactory factory) {
       super.init(contextName, factory);
@@ -49,6 +53,7 @@ public class NoEmitMetricsContext extends AbstractMetricsContext {
     /**
      * Do-nothing version of emitRecord
      */
+    @Override
     @InterfaceAudience.Private
     protected void emitRecord(String contextName, String recordName,
                               OutputRecord outRec) {

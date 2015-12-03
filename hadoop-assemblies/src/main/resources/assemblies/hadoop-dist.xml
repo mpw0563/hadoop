@@ -14,7 +14,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<assembly>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
   <id>hadoop-distro</id>
   <formats>
     <format>dir</format>
@@ -29,6 +31,10 @@
         <exclude>*-config.cmd</exclude>
         <exclude>start-*.cmd</exclude>
         <exclude>stop-*.cmd</exclude>
+<<<<<<< HEAD
+=======
+        <exclude>hadoop-layout.sh.example</exclude>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </excludes>
       <fileMode>0755</fileMode>
     </fileSet>
@@ -42,7 +48,17 @@
       <includes>
         <include>*-config.sh</include>
         <include>*-config.cmd</include>
+<<<<<<< HEAD
+=======
+        <include>*-functions.sh</include>
+        <include>hadoop-layout.sh.example</include>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </includes>
+      <fileMode>0755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/shellprofile.d</directory>
+      <outputDirectory>/libexec/shellprofile.d</outputDirectory>
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
@@ -57,6 +73,13 @@
         <exclude>hadoop.cmd</exclude>
         <exclude>hdfs.cmd</exclude>
         <exclude>hadoop-config.cmd</exclude>
+<<<<<<< HEAD
+=======
+        <exclude>hadoop-functions.sh</exclude>
+        <exclude>hadoop-layout.sh.example</exclude>
+        <exclude>hdfs-config.cmd</exclude>
+        <exclude>hdfs-config.sh</exclude>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </excludes>
       <fileMode>0755</fileMode>
     </fileSet>

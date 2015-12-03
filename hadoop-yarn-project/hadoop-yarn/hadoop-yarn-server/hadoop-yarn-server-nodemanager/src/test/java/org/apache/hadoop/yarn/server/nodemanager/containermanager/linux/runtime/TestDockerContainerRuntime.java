@@ -20,11 +20,20 @@
 
 package org.apache.hadoop.yarn.server.nodemanager.containermanager.linux.runtime;
 
+<<<<<<< HEAD
+=======
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.nodemanager.LocalDirsHandlerService;
+=======
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.container.Container;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.linux.privileged.PrivilegedOperation;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.linux.privileged.PrivilegedOperationException;
@@ -44,15 +53,29 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+=======
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import static org.apache.hadoop.yarn.server.nodemanager.containermanager.linux.runtime.LinuxContainerRuntimeConstants.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class TestDockerContainerRuntime {
+<<<<<<< HEAD
+=======
+  private static final Log LOG = LogFactory
+      .getLog(TestDockerContainerRuntime.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private Configuration conf;
   PrivilegedOperationExecutor mockExecutor;
   String containerId;
@@ -72,6 +95,12 @@ public class TestDockerContainerRuntime {
   List<String> localDirs;
   List<String> logDirs;
   String resourcesOptions;
+<<<<<<< HEAD
+=======
+  ContainerRuntimeContext.Builder builder;
+  String submittingUser = "anakin";
+  String whitelistedUser = "yoda";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @Before
   public void setup() {
@@ -96,6 +125,10 @@ public class TestDockerContainerRuntime {
     when(cId.toString()).thenReturn(containerId);
     when(container.getLaunchContext()).thenReturn(context);
     when(context.getEnvironment()).thenReturn(env);
+<<<<<<< HEAD
+=======
+    when(container.getUser()).thenReturn(submittingUser);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     runAsUser = "run_as_user";
     user = "user";
@@ -111,6 +144,25 @@ public class TestDockerContainerRuntime {
 
     localDirs.add("/test_local_dir");
     logDirs.add("/test_log_dir");
+<<<<<<< HEAD
+=======
+
+    builder = new ContainerRuntimeContext
+        .Builder(container);
+
+    builder.setExecutionAttribute(RUN_AS_USER, runAsUser)
+        .setExecutionAttribute(USER, user)
+        .setExecutionAttribute(APPID, appId)
+        .setExecutionAttribute(CONTAINER_ID_STR, containerIdStr)
+        .setExecutionAttribute(CONTAINER_WORK_DIR, containerWorkDir)
+        .setExecutionAttribute(NM_PRIVATE_CONTAINER_SCRIPT_PATH,
+            nmPrivateContainerScriptPath)
+        .setExecutionAttribute(NM_PRIVATE_TOKENS_PATH, nmPrivateTokensPath)
+        .setExecutionAttribute(PID_FILE_PATH, pidFilePath)
+        .setExecutionAttribute(LOCAL_DIRS, localDirs)
+        .setExecutionAttribute(LOG_DIRS, logDirs)
+        .setExecutionAttribute(RESOURCES_OPTIONS, resourcesOptions);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
@@ -129,6 +181,7 @@ public class TestDockerContainerRuntime {
         .isDockerContainerRequested(envOtherType));
   }
 
+<<<<<<< HEAD
   @Test
   @SuppressWarnings("unchecked")
   public void testDockerContainerLaunch()
@@ -156,6 +209,11 @@ public class TestDockerContainerRuntime {
 
     runtime.launchContainer(builder.build());
 
+=======
+  @SuppressWarnings("unchecked")
+  private PrivilegedOperation capturePrivilegedOperationAndVerifyArgs()
+      throws PrivilegedOperationException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ArgumentCaptor<PrivilegedOperation> opCaptor = ArgumentCaptor.forClass(
         PrivilegedOperation.class);
 
@@ -186,20 +244,64 @@ public class TestDockerContainerRuntime {
     Assert.assertEquals(containerId, args.get(4));
     Assert.assertEquals(containerWorkDir.toString(), args.get(5));
     Assert.assertEquals(nmPrivateContainerScriptPath.toUri()
+<<<<<<< HEAD
             .toString(), args.get(6));
+=======
+        .toString(), args.get(6));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Assert.assertEquals(nmPrivateTokensPath.toUri().getPath(), args.get(7));
     Assert.assertEquals(pidFilePath.toString(), args.get(8));
     Assert.assertEquals(localDirs.get(0), args.get(9));
     Assert.assertEquals(logDirs.get(0), args.get(10));
     Assert.assertEquals(resourcesOptions, args.get(12));
 
+<<<<<<< HEAD
     String dockerCommandFile = args.get(11);
 
+=======
+    return op;
+  }
+
+  @Test
+  public void testDockerContainerLaunch()
+      throws ContainerExecutionException, PrivilegedOperationException,
+      IOException {
+    DockerLinuxContainerRuntime runtime = new DockerLinuxContainerRuntime(
+        mockExecutor);
+    runtime.initialize(conf);
+
+    String[] testCapabilities = {"NET_BIND_SERVICE", "SYS_CHROOT"};
+
+    conf.setStrings(YarnConfiguration.NM_DOCKER_CONTAINER_CAPABILITIES,
+        testCapabilities);
+    runtime.launchContainer(builder.build());
+
+    PrivilegedOperation op = capturePrivilegedOperationAndVerifyArgs();
+    List<String> args = op.getArguments();
+    String dockerCommandFile = args.get(11);
+
+    /* Ordering of capabilities depends on HashSet ordering. */
+    Set<String> capabilitySet = new HashSet<>(Arrays.asList(testCapabilities));
+    StringBuilder expectedCapabilitiesString = new StringBuilder(
+        "--cap-drop=ALL ");
+
+    for(String capability : capabilitySet) {
+      expectedCapabilitiesString.append("--cap-add=").append(capability)
+          .append(" ");
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     //This is the expected docker invocation for this case
     StringBuffer expectedCommandTemplate = new StringBuffer("run --name=%1$s ")
         .append("--user=%2$s -d ")
         .append("--workdir=%3$s ")
+<<<<<<< HEAD
         .append("--net=host -v /etc/passwd:/etc/password:ro ")
+=======
+        .append("--net=host ")
+        .append(expectedCapabilitiesString)
+        .append("-v /etc/passwd:/etc/password:ro ")
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .append("-v %4$s:%4$s ")
         .append("-v %5$s:%5$s ")
         .append("-v %6$s:%6$s ")
@@ -216,4 +318,145 @@ public class TestDockerContainerRuntime {
     Assert.assertEquals(1, dockerCommands.size());
     Assert.assertEquals(expectedCommand, dockerCommands.get(0));
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testLaunchPrivilegedContainersInvalidEnvVar()
+      throws ContainerExecutionException, PrivilegedOperationException,
+      IOException{
+    DockerLinuxContainerRuntime runtime = new DockerLinuxContainerRuntime(
+        mockExecutor);
+    runtime.initialize(conf);
+
+    env.put("YARN_CONTAINER_RUNTIME_DOCKER_RUN_PRIVILEGED_CONTAINER",
+        "invalid-value");
+    runtime.launchContainer(builder.build());
+
+    PrivilegedOperation op = capturePrivilegedOperationAndVerifyArgs();
+    List<String> args = op.getArguments();
+    String dockerCommandFile = args.get(11);
+
+    List<String> dockerCommands = Files.readAllLines(Paths.get
+        (dockerCommandFile), Charset.forName("UTF-8"));
+
+    Assert.assertEquals(1, dockerCommands.size());
+
+    String command = dockerCommands.get(0);
+
+    //ensure --privileged isn't in the invocation
+    Assert.assertTrue("Unexpected --privileged in docker run args : " + command,
+        !command.contains("--privileged"));
+  }
+
+  @Test
+  public void testLaunchPrivilegedContainersWithDisabledSetting()
+      throws ContainerExecutionException, PrivilegedOperationException,
+      IOException{
+    DockerLinuxContainerRuntime runtime = new DockerLinuxContainerRuntime(
+        mockExecutor);
+    runtime.initialize(conf);
+
+    env.put("YARN_CONTAINER_RUNTIME_DOCKER_RUN_PRIVILEGED_CONTAINER",
+        "true");
+
+    try {
+      runtime.launchContainer(builder.build());
+      Assert.fail("Expected a privileged launch container failure.");
+    } catch (ContainerExecutionException e) {
+      LOG.info("Caught expected exception : " + e);
+    }
+  }
+
+  @Test
+  public void testLaunchPrivilegedContainersWithEnabledSettingAndDefaultACL()
+      throws ContainerExecutionException, PrivilegedOperationException,
+      IOException{
+    //Enable privileged containers.
+    conf.setBoolean(YarnConfiguration.NM_DOCKER_ALLOW_PRIVILEGED_CONTAINERS,
+        true);
+
+    DockerLinuxContainerRuntime runtime = new DockerLinuxContainerRuntime(
+        mockExecutor);
+    runtime.initialize(conf);
+
+    env.put("YARN_CONTAINER_RUNTIME_DOCKER_RUN_PRIVILEGED_CONTAINER",
+        "true");
+    //By default
+    // yarn.nodemanager.runtime.linux.docker.privileged-containers.acl
+    // is empty. So we expect this launch to fail.
+
+    try {
+      runtime.launchContainer(builder.build());
+      Assert.fail("Expected a privileged launch container failure.");
+    } catch (ContainerExecutionException e) {
+      LOG.info("Caught expected exception : " + e);
+    }
+  }
+
+
+  @Test
+  public void
+  testLaunchPrivilegedContainersEnabledAndUserNotInWhitelist()
+      throws ContainerExecutionException, PrivilegedOperationException,
+      IOException{
+    //Enable privileged containers.
+    conf.setBoolean(YarnConfiguration.NM_DOCKER_ALLOW_PRIVILEGED_CONTAINERS,
+        true);
+    //set whitelist of users.
+    conf.set(YarnConfiguration.NM_DOCKER_PRIVILEGED_CONTAINERS_ACL,
+        whitelistedUser);
+
+    DockerLinuxContainerRuntime runtime = new DockerLinuxContainerRuntime(
+        mockExecutor);
+    runtime.initialize(conf);
+
+    env.put("YARN_CONTAINER_RUNTIME_DOCKER_RUN_PRIVILEGED_CONTAINER",
+        "true");
+
+    try {
+      runtime.launchContainer(builder.build());
+      Assert.fail("Expected a privileged launch container failure.");
+    } catch (ContainerExecutionException e) {
+      LOG.info("Caught expected exception : " + e);
+    }
+  }
+
+  @Test
+  public void
+  testLaunchPrivilegedContainersEnabledAndUserInWhitelist()
+      throws ContainerExecutionException, PrivilegedOperationException,
+      IOException{
+    //Enable privileged containers.
+    conf.setBoolean(YarnConfiguration.NM_DOCKER_ALLOW_PRIVILEGED_CONTAINERS,
+        true);
+    //Add submittingUser to whitelist.
+    conf.set(YarnConfiguration.NM_DOCKER_PRIVILEGED_CONTAINERS_ACL,
+        submittingUser);
+
+    DockerLinuxContainerRuntime runtime = new DockerLinuxContainerRuntime(
+        mockExecutor);
+    runtime.initialize(conf);
+
+    env.put("YARN_CONTAINER_RUNTIME_DOCKER_RUN_PRIVILEGED_CONTAINER",
+        "true");
+
+    runtime.launchContainer(builder.build());
+    PrivilegedOperation op = capturePrivilegedOperationAndVerifyArgs();
+    List<String> args = op.getArguments();
+    String dockerCommandFile = args.get(11);
+
+    List<String> dockerCommands = Files.readAllLines(Paths.get
+        (dockerCommandFile), Charset.forName("UTF-8"));
+
+    Assert.assertEquals(1, dockerCommands.size());
+
+    String command = dockerCommands.get(0);
+
+    //submitting user is whitelisted. ensure --privileged is in the invocation
+    Assert.assertTrue("Did not find expected '--privileged' in docker run args "
+        + ": " + command, command.contains("--privileged"));
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

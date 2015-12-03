@@ -24,7 +24,11 @@ public enum RMNodeEventType {
   
   // Source: AdminService
   DECOMMISSION,
+<<<<<<< HEAD
   DECOMMISSION_WITH_TIMEOUT,
+=======
+  GRACEFUL_DECOMMISSION,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   RECOMMISSION,
   
   // Source: AdminService, ResourceTrackerService
@@ -42,6 +46,13 @@ public enum RMNodeEventType {
   // Source: Container
   CONTAINER_ALLOCATED,
   CLEANUP_CONTAINER,
+<<<<<<< HEAD
+=======
+  DECREASE_CONTAINER,
+
+  // Source: ClientRMService
+  SIGNAL_CONTAINER,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // Source: RMAppAttempt
   FINISHED_CONTAINERS_PULLED_BY_AM,

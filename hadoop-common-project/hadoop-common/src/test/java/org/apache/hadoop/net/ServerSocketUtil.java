@@ -28,16 +28,25 @@ import org.apache.commons.logging.LogFactory;
 public class ServerSocketUtil {
 
   private static final Log LOG = LogFactory.getLog(ServerSocketUtil.class);
+<<<<<<< HEAD
+=======
+  private static Random rand = new Random();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Port scan & allocate is how most other apps find ports
    * 
    * @param port given port
+<<<<<<< HEAD
    * @param retries number of retires
+=======
+   * @param retries number of retries
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @return
    * @throws IOException
    */
   public static int getPort(int port, int retries) throws IOException {
+<<<<<<< HEAD
     Random rand = new Random();
     int tryPort = port;
     int tries = 0;
@@ -47,6 +56,19 @@ public class ServerSocketUtil {
       }
       LOG.info("Using port " + tryPort);
       try (ServerSocket s = new ServerSocket(tryPort)) {
+=======
+    int tryPort = port;
+    int tries = 0;
+    while (true) {
+      if (tries > 0 || tryPort == 0) {
+        tryPort = port + rand.nextInt(65535 - port);
+      }
+      if (tryPort == 0) {
+        continue;
+      }
+      try (ServerSocket s = new ServerSocket(tryPort)) {
+        LOG.info("Using port " + tryPort);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return tryPort;
       } catch (IOException e) {
         tries++;

@@ -26,7 +26,10 @@ import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
 import org.apache.hadoop.yarn.api.ApplicationHistoryProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationReportRequest;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationReportResponse;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.client.AHSProxy;
@@ -42,6 +45,10 @@ import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
  * This class abstracts away how ApplicationReports are fetched.
  */
 public class AppReportFetcher {
+<<<<<<< HEAD
+=======
+  enum AppReportSource { RM, AHS }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static final Log LOG = LogFactory.getLog(AppReportFetcher.class);
   private final Configuration conf;
   private final ApplicationClientProtocol applicationsManager;
@@ -115,20 +122,35 @@ public class AppReportFetcher {
    * @throws YarnException on any error.
    * @throws IOException
    */
+<<<<<<< HEAD
   public ApplicationReport getApplicationReport(ApplicationId appId)
+=======
+  public FetchedAppReport getApplicationReport(ApplicationId appId)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   throws YarnException, IOException {
     GetApplicationReportRequest request = recordFactory
         .newRecordInstance(GetApplicationReportRequest.class);
     request.setApplicationId(appId);
 
+<<<<<<< HEAD
     GetApplicationReportResponse response;
     try {
       response = applicationsManager.getApplicationReport(request);
     } catch (YarnException e) {
+=======
+    ApplicationReport appReport;
+    FetchedAppReport fetchedAppReport;
+    try {
+      appReport = applicationsManager.
+          getApplicationReport(request).getApplicationReport();
+      fetchedAppReport = new FetchedAppReport(appReport, AppReportSource.RM);
+    } catch (ApplicationNotFoundException e) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (!isAHSEnabled) {
         // Just throw it as usual if historyService is not enabled.
         throw e;
       }
+<<<<<<< HEAD
       // Even if history-service is enabled, treat all exceptions still the same
       // except the following
       if (!(e.getClass() == ApplicationNotFoundException.class)) {
@@ -137,6 +159,14 @@ public class AppReportFetcher {
       response = historyManager.getApplicationReport(request);
     }
     return response.getApplicationReport();
+=======
+      //Fetch the application report from AHS
+      appReport = historyManager.
+          getApplicationReport(request).getApplicationReport();
+      fetchedAppReport = new FetchedAppReport(appReport, AppReportSource.AHS);
+    }
+    return fetchedAppReport;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public void stop() {
@@ -147,4 +177,31 @@ public class AppReportFetcher {
       RPC.stopProxy(this.historyManager);
     }
   }
+<<<<<<< HEAD
+=======
+
+  /*
+   * This class creates a bundle of the application report and the source from
+   * where the the report was fetched. This allows the WebAppProxyServlet
+   * to make decisions for the application report based on the source.
+   */
+  static class FetchedAppReport {
+    private ApplicationReport appReport;
+    private AppReportSource appReportSource;
+
+    public FetchedAppReport(ApplicationReport appReport,
+        AppReportSource appReportSource) {
+      this.appReport = appReport;
+      this.appReportSource = appReportSource;
+    }
+
+    public AppReportSource getAppReportSource() {
+      return this.appReportSource;
+    }
+
+    public ApplicationReport getApplicationReport() {
+      return this.appReport;
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

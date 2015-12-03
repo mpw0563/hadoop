@@ -44,6 +44,11 @@ import org.apache.hadoop.security.proto.SecurityProtos.RenewDelegationTokenReque
 import org.apache.hadoop.security.proto.SecurityProtos.RenewDelegationTokenResponseProto;
 import org.apache.hadoop.security.proto.SecurityProtos.TokenProto;
 import org.apache.hadoop.yarn.api.protocolrecords.StartContainerRequest;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.IncreaseContainersResourceRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.IncreaseContainersResourceResponse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.AllocateRequestPBImpl;
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.AllocateResponsePBImpl;
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.CancelDelegationTokenRequestPBImpl;
@@ -101,6 +106,11 @@ import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.StartContainersRequest
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.StartContainersResponsePBImpl;
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.StopContainersRequestPBImpl;
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.StopContainersResponsePBImpl;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.IncreaseContainersResourceRequestPBImpl;
+import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.IncreaseContainersResourceResponsePBImpl;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.SubmitApplicationRequestPBImpl;
 import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.SubmitApplicationResponsePBImpl;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
@@ -113,9 +123,13 @@ import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
 import org.apache.hadoop.yarn.api.records.ContainerReport;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ContainerResourceDecrease;
 import org.apache.hadoop.yarn.api.records.ContainerResourceIncrease;
 import org.apache.hadoop.yarn.api.records.ContainerResourceIncreaseRequest;
+=======
+import org.apache.hadoop.yarn.api.records.ContainerResourceChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.LocalResource;
 import org.apache.hadoop.yarn.api.records.LogAggregationContext;
@@ -155,9 +169,13 @@ import org.apache.hadoop.yarn.api.records.impl.pb.ContainerIdPBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerLaunchContextPBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerPBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerReportPBImpl;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerResourceDecreasePBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerResourceIncreasePBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerResourceIncreaseRequestPBImpl;
+=======
+import org.apache.hadoop.yarn.api.records.impl.pb.ContainerResourceChangeRequestPBImpl;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerStatusPBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.LocalResourcePBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.NMTokenPBImpl;
@@ -190,9 +208,13 @@ import org.apache.hadoop.yarn.proto.YarnProtos.ContainerIdProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerLaunchContextProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerReportProto;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerResourceDecreaseProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerResourceIncreaseProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerResourceIncreaseRequestProto;
+=======
+import org.apache.hadoop.yarn.proto.YarnProtos.ContainerResourceChangeRequestProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerStatusProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.LocalResourceProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.NodeIdProto;
@@ -220,6 +242,11 @@ import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.Check
 import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshAdminAclsRequestProto;
 import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshAdminAclsResponseProto;
 import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshNodesRequestProto;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshNodesResourcesRequestProto;
+import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshNodesResourcesResponseProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshNodesResponseProto;
 import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshQueuesRequestProto;
 import org.apache.hadoop.yarn.proto.YarnServerResourceManagerServiceProtos.RefreshQueuesResponseProto;
@@ -282,6 +309,11 @@ import org.apache.hadoop.yarn.proto.YarnServiceProtos.ReservationSubmissionReque
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.ReservationSubmissionResponseProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.ReservationUpdateRequestProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.ReservationUpdateResponseProto;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.proto.YarnServiceProtos.IncreaseContainersResourceRequestProto;
+import org.apache.hadoop.yarn.proto.YarnServiceProtos.IncreaseContainersResourceResponseProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.StartContainerRequestProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.StartContainersRequestProto;
 import org.apache.hadoop.yarn.proto.YarnServiceProtos.StartContainersResponseProto;
@@ -296,6 +328,11 @@ import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.CheckForDecommi
 import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshAdminAclsRequestPBImpl;
 import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshAdminAclsResponsePBImpl;
 import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshNodesRequestPBImpl;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshNodesResourcesRequestPBImpl;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshNodesResourcesResponsePBImpl;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshNodesResponsePBImpl;
 import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshQueuesRequestPBImpl;
 import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RefreshQueuesResponsePBImpl;
@@ -467,9 +504,15 @@ public class TestPBImplRecords {
     generateByNewInstance(ContainerLaunchContext.class);
     generateByNewInstance(ApplicationSubmissionContext.class);
     generateByNewInstance(ContainerReport.class);
+<<<<<<< HEAD
     generateByNewInstance(ContainerResourceDecrease.class);
     generateByNewInstance(ContainerResourceIncrease.class);
     generateByNewInstance(ContainerResourceIncreaseRequest.class);
+=======
+    generateByNewInstance(ContainerResourceChangeRequest.class);
+    generateByNewInstance(IncreaseContainersResourceRequest.class);
+    generateByNewInstance(IncreaseContainersResourceResponse.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     generateByNewInstance(ContainerStatus.class);
     generateByNewInstance(PreemptionContainer.class);
     generateByNewInstance(PreemptionResourceRequest.class);
@@ -875,6 +918,21 @@ public class TestPBImplRecords {
   }
 
   @Test
+<<<<<<< HEAD
+=======
+  public void testIncreaseContainersResourceRequestPBImpl() throws Exception {
+    validatePBImplRecord(IncreaseContainersResourceRequestPBImpl.class,
+        IncreaseContainersResourceRequestProto.class);
+  }
+
+  @Test
+  public void testIncreaseContainersResourceResponsePBImpl() throws Exception {
+    validatePBImplRecord(IncreaseContainersResourceResponsePBImpl.class,
+        IncreaseContainersResourceResponseProto.class);
+  }
+
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testSubmitApplicationRequestPBImpl() throws Exception {
     validatePBImplRecord(SubmitApplicationRequestPBImpl.class,
         SubmitApplicationRequestProto.class);
@@ -955,6 +1013,7 @@ public class TestPBImplRecords {
   }
 
   @Test
+<<<<<<< HEAD
   public void testContainerResourceDecreasePBImpl() throws Exception {
     validatePBImplRecord(ContainerResourceDecreasePBImpl.class,
         ContainerResourceDecreaseProto.class);
@@ -970,6 +1029,11 @@ public class TestPBImplRecords {
   public void testContainerResourceIncreaseRequestPBImpl() throws Exception {
     validatePBImplRecord(ContainerResourceIncreaseRequestPBImpl.class,
         ContainerResourceIncreaseRequestProto.class);
+=======
+  public void testContainerResourceChangeRequestPBImpl() throws Exception {
+    validatePBImplRecord(ContainerResourceChangeRequestPBImpl.class,
+        ContainerResourceChangeRequestProto.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
@@ -1127,6 +1191,21 @@ public class TestPBImplRecords {
   }
 
   @Test
+<<<<<<< HEAD
+=======
+  public void testRefreshNodesResourcesRequestPBImpl() throws Exception {
+    validatePBImplRecord(RefreshNodesResourcesRequestPBImpl.class,
+        RefreshNodesResourcesRequestProto.class);
+  }
+
+  @Test
+  public void testRefreshNodesResourcesResponsePBImpl() throws Exception {
+    validatePBImplRecord(RefreshNodesResourcesResponsePBImpl.class,
+        RefreshNodesResourcesResponseProto.class);
+  }
+
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testRefreshServiceAclsRequestPBImpl() throws Exception {
     validatePBImplRecord(RefreshServiceAclsRequestPBImpl.class,
         RefreshServiceAclsRequestProto.class);

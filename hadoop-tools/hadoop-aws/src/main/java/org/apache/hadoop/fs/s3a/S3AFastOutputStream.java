@@ -51,7 +51,11 @@ import java.util.List;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+<<<<<<< HEAD
 import java.util.concurrent.ThreadPoolExecutor;
+=======
+import java.util.concurrent.ExecutorService;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 
 /**
@@ -108,7 +112,11 @@ public class S3AFastOutputStream extends OutputStream {
       String bucket, String key, Progressable progress,
       FileSystem.Statistics statistics, CannedAccessControlList cannedACL,
       String serverSideEncryptionAlgorithm, long partSize,
+<<<<<<< HEAD
       long multiPartThreshold, ThreadPoolExecutor threadPoolExecutor)
+=======
+      long multiPartThreshold, ExecutorService threadPoolExecutor)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throws IOException {
     this.bucket = bucket;
     this.key = key;

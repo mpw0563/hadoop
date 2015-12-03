@@ -50,6 +50,7 @@ public class TestModTime {
   Random myrand = new Random();
   Path hostsFile;
   Path excludeFile;
+<<<<<<< HEAD
 
   private void writeFile(FileSystem fileSys, Path name, int repl)
     throws IOException {
@@ -63,6 +64,8 @@ public class TestModTime {
     stm.write(buffer);
     stm.close();
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   private void cleanupFile(FileSystem fileSys, Path name) throws IOException {
     assertTrue(fileSys.exists(name));
@@ -105,7 +108,8 @@ public class TestModTime {
      System.out.println("Creating testdir1 and testdir1/test1.dat.");
      Path dir1 = new Path("testdir1");
      Path file1 = new Path(dir1, "test1.dat");
-     writeFile(fileSys, file1, replicas);
+     DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+         (short) replicas, seed);
      FileStatus stat = fileSys.getFileStatus(file1);
      long mtime1 = stat.getModificationTime();
      assertTrue(mtime1 != 0);
@@ -120,7 +124,8 @@ public class TestModTime {
      //
      System.out.println("Creating testdir1/test2.dat.");
      Path file2 = new Path(dir1, "test2.dat");
-     writeFile(fileSys, file2, replicas);
+     DFSTestUtil.createFile(fileSys, file2, fileSize, fileSize, blockSize,
+         (short) replicas, seed);
      stat = fileSys.getFileStatus(file2);
 
      //

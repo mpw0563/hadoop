@@ -111,4 +111,17 @@ case sensitivity and permission options are determined at run time from OS type
     <value>false</value>
   </property>
 
+<<<<<<< HEAD
+=======
+  <property>
+    <name>fs.contract.supports-settimes</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>fs.contract.supports-getfilestatus</name>
+    <value>true</value>
+  </property>
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 </configuration>

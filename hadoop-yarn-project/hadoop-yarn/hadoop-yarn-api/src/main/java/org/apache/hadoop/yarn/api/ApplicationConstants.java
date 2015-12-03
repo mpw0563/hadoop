@@ -28,13 +28,21 @@ import org.apache.hadoop.util.Shell;
 /**
  * This is the API for the applications comprising of constants that YARN sets
  * up for the applications and the containers.
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * TODO: Investigate the semantics and security of each cross-boundary refs.
  */
 @Public
 @Evolving
 public interface ApplicationConstants {
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * The environment variable for APP_SUBMIT_TIME. Set in AppMaster environment
    * only
@@ -48,11 +56,19 @@ public interface ApplicationConstants {
       UserGroupInformation.HADOOP_TOKEN_FILE_LOCATION;
 
   /**
+<<<<<<< HEAD
    * The environmental variable for APPLICATION_WEB_PROXY_BASE. Set in 
    * ApplicationMaster's environment only. This states that for all non-relative
    * web URLs in the app masters web UI what base should they have.
    */
   public static final String APPLICATION_WEB_PROXY_BASE_ENV = 
+=======
+   * The environmental variable for APPLICATION_WEB_PROXY_BASE. Set in
+   * ApplicationMaster's environment only. This states that for all non-relative
+   * web URLs in the app masters web UI what base should they have.
+   */
+  public static final String APPLICATION_WEB_PROXY_BASE_ENV =
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "APPLICATION_WEB_PROXY_BASE";
 
   /**
@@ -99,6 +115,7 @@ public interface ApplicationConstants {
   public static final String STDOUT = "stdout";
 
   /**
+<<<<<<< HEAD
    * The environment variable for MAX_APP_ATTEMPTS. Set in AppMaster environment
    * only
    */
@@ -108,6 +125,11 @@ public interface ApplicationConstants {
    * Environment for Applications.
    * 
    * Some of the environment variables for applications are <em>final</em> 
+=======
+   * Environment for Applications.
+   *
+   * Some of the environment variables for applications are <em>final</em>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * i.e. they cannot be modified by the applications.
    */
   public enum Environment {
@@ -116,76 +138,132 @@ public interface ApplicationConstants {
      * Final, non-modifiable.
      */
     USER("USER"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $LOGNAME
      * Final, non-modifiable.
      */
     LOGNAME("LOGNAME"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $HOME
      * Final, non-modifiable.
      */
     HOME("HOME"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $PWD
      * Final, non-modifiable.
      */
     PWD("PWD"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $PATH
      */
     PATH("PATH"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $SHELL
      */
     SHELL("SHELL"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $JAVA_HOME
      */
     JAVA_HOME("JAVA_HOME"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $CLASSPATH
      */
     CLASSPATH("CLASSPATH"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $APP_CLASSPATH
      */
     APP_CLASSPATH("APP_CLASSPATH"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $LD_LIBRARY_PATH
      */
     LD_LIBRARY_PATH("LD_LIBRARY_PATH"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $HADOOP_CONF_DIR
      * Final, non-modifiable.
      */
     HADOOP_CONF_DIR("HADOOP_CONF_DIR"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $HADOOP_COMMON_HOME
      */
     HADOOP_COMMON_HOME("HADOOP_COMMON_HOME"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $HADOOP_HDFS_HOME
      */
     HADOOP_HDFS_HOME("HADOOP_HDFS_HOME"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $MALLOC_ARENA_MAX
      */
     MALLOC_ARENA_MAX("MALLOC_ARENA_MAX"),
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * $HADOOP_YARN_HOME
      */
@@ -240,11 +318,19 @@ public interface ApplicationConstants {
     private Environment(String variable) {
       this.variable = variable;
     }
+<<<<<<< HEAD
     
     public String key() {
       return variable;
     }
     
+=======
+
+    public String key() {
+      return variable;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public String toString() {
       return variable;
     }

@@ -29,10 +29,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.Replica;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.log4j.Level;
@@ -101,10 +105,14 @@ public class TestPipelines {
     List<LocatedBlock> lb = cluster.getNameNodeRpc().getBlockLocations(
       filePath.toString(), FILE_SIZE - 1, FILE_SIZE).getLocatedBlocks();
 
-    String bpid = cluster.getNamesystem().getBlockPoolId();
     for (DataNode dn : cluster.getDataNodes()) {
+<<<<<<< HEAD
       Replica r = DataNodeTestUtils.fetchReplicaInfo(dn, bpid, lb.get(0)
           .getBlock().getBlockId());
+=======
+      Replica r =
+          cluster.getFsDatasetTestUtils(dn).fetchReplica(lb.get(0).getBlock());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       assertTrue("Replica on DN " + dn + " shouldn't be null", r != null);
       assertEquals("Should be RBW replica on " + dn
@@ -148,11 +156,16 @@ public class TestPipelines {
     conf = new Configuration();
     int customPerChecksumSize = 700;
     int customBlockSize = customPerChecksumSize * 3;
-    conf.setInt(DFSConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_KEY, 100);
-    conf.setInt(DFSConfigKeys.DFS_BYTES_PER_CHECKSUM_KEY, customPerChecksumSize);
+    conf.setInt(HdfsClientConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_KEY, 100);
+    conf.setInt(HdfsClientConfigKeys.DFS_BYTES_PER_CHECKSUM_KEY, customPerChecksumSize);
     conf.setInt(DFSConfigKeys.DFS_BLOCK_SIZE_KEY, customBlockSize);
+<<<<<<< HEAD
     conf.setInt(DFSConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_KEY, customBlockSize / 2);
     conf.setInt(DFSConfigKeys.DFS_CLIENT_SOCKET_TIMEOUT_KEY, 0);
+=======
+    conf.setInt(HdfsClientConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_KEY, customBlockSize / 2);
+    conf.setInt(HdfsClientConfigKeys.DFS_CLIENT_SOCKET_TIMEOUT_KEY, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static void initLoggers() {

@@ -30,7 +30,10 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
 import org.apache.hadoop.fs.CreateFlag;
@@ -43,6 +46,10 @@ import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockPlacementPolicy;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -52,7 +59,12 @@ import org.junit.Test;
 
 public class TestFavoredNodesEndToEnd {
   {
+<<<<<<< HEAD
     ((Log4JLogger)LogFactory.getLog(BlockPlacementPolicy.class)).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(LogFactory.getLog(BlockPlacementPolicy.class),
+        Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static MiniDFSCluster cluster;

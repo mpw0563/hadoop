@@ -18,6 +18,7 @@
 package org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
@@ -34,6 +35,18 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicat
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.SimpleGroupsMapping;
 import org.junit.After;
 import org.junit.Assert;
+=======
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+import org.apache.hadoop.yarn.server.resourcemanager.placement.UserGroupMappingPlacementRule;
+import org.apache.hadoop.yarn.server.resourcemanager.placement.UserGroupMappingPlacementRule.QueueMapping;
+import org.apache.hadoop.yarn.server.resourcemanager.placement.UserGroupMappingPlacementRule.QueueMapping.MappingType;
+import org.junit.Assert;
+import org.junit.Before;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Test;
 
 public class TestQueueMappings {
@@ -47,6 +60,7 @@ public class TestQueueMappings {
       CapacitySchedulerConfiguration.ROOT + "." + Q1;
   private final static String Q2_PATH =
       CapacitySchedulerConfiguration.ROOT + "." + Q2;
+<<<<<<< HEAD
 
   private MockRM resourceManager;
 
@@ -56,6 +70,25 @@ public class TestQueueMappings {
       LOG.info("Stopping the resource manager");
       resourceManager.stop();
     }
+=======
+  
+  private CapacityScheduler cs;
+  private YarnConfiguration conf;
+  
+  @Before
+  public void setup() {
+    CapacitySchedulerConfiguration csConf =
+        new CapacitySchedulerConfiguration();
+    setupQueueConfiguration(csConf);
+    conf = new YarnConfiguration(csConf);
+    cs = new CapacityScheduler();
+
+    RMContext rmContext = TestUtils.getMockRMContext();
+    cs.setConf(conf);
+    cs.setRMContext(rmContext);
+    cs.init(conf);
+    cs.start();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void setupQueueConfiguration(CapacitySchedulerConfiguration conf) {
@@ -67,6 +100,7 @@ public class TestQueueMappings {
 
     LOG.info("Setup top-level queues q1 and q2");
   }
+<<<<<<< HEAD
 
   @Test (timeout = 60000)
   public void testQueueMapping() throws Exception {
@@ -87,6 +121,34 @@ public class TestQueueMappings {
     conf.set(CapacitySchedulerConfiguration.ENABLE_QUEUE_MAPPING_OVERRIDE,
         "true");
 
+=======
+  
+  @Test
+  public void testQueueMappingSpecifyingNotExistedQueue() {
+    // if the mapping specifies a queue that does not exist, reinitialize will
+    // be failed
+    conf.set(CapacitySchedulerConfiguration.QUEUE_MAPPING,
+        "u:user:non_existent_queue");
+    boolean fail = false;
+    try {
+      cs.reinitialize(conf, null);
+    } catch (IOException ioex) {
+      fail = true;
+    }
+    Assert.assertTrue("queue initialization failed for non-existent q", fail);
+  }
+  
+  @Test
+  public void testQueueMappingTrimSpaces() throws IOException {
+    // space trimming
+    conf.set(CapacitySchedulerConfiguration.QUEUE_MAPPING, "    u : a : " + Q1);
+    cs.reinitialize(conf, null);
+    checkQMapping(new QueueMapping(MappingType.USER, "a", Q1));
+  }
+
+  @Test (timeout = 60000)
+  public void testQueueMappingParsingInvalidCases() throws Exception {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // configuration parsing tests - negative test cases
     checkInvalidQMapping(conf, cs, "x:a:b", "invalid specifier");
     checkInvalidQMapping(conf, cs, "u:a", "no queue specified");
@@ -97,6 +159,7 @@ public class TestQueueMappings {
     checkInvalidQMapping(conf, cs, "u::", "empty source and queue");
     checkInvalidQMapping(conf, cs, "u:", "missing source missing queue");
     checkInvalidQMapping(conf, cs, "u:a:", "empty source missing q");
+<<<<<<< HEAD
 
     // simple base case for mapping user to queue
     conf.set(CapacitySchedulerConfiguration.QUEUE_MAPPING, "u:a:" + Q1);
@@ -210,6 +273,8 @@ public class TestQueueMappings {
     Assert.assertTrue("expected " + expected + " actual " + queue,
         expected.equals(queue));
     Assert.assertEquals(expected, app.getQueue());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void checkInvalidQMapping(YarnConfiguration conf,
@@ -227,10 +292,20 @@ public class TestQueueMappings {
         fail);
   }
 
+<<<<<<< HEAD
   private void checkQMapping(String user, String expected, CapacityScheduler cs)
           throws IOException {
     String actual = cs.getMappedQueueForTest(user);
     Assert.assertTrue("expected " + expected + " actual " + actual,
         expected.equals(actual));
+=======
+  private void checkQMapping(QueueMapping expected)
+          throws IOException {
+    UserGroupMappingPlacementRule rule =
+        (UserGroupMappingPlacementRule) cs.getRMContext()
+            .getQueuePlacementManager().getPlacementRules().get(0);
+    QueueMapping queueMapping = rule.getQueueMappings().get(0);
+    Assert.assertEquals(queueMapping, expected);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

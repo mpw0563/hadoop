@@ -42,6 +42,10 @@ import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.FailApplicationAttemptRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptsRequest;
@@ -76,7 +80,13 @@ import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateResponse;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationRequest;
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.SignalContainerRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.UpdateApplicationPriorityRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptReport;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
@@ -89,8 +99,15 @@ import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeLabel;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.QueueInfo;
 import org.apache.hadoop.yarn.api.records.QueueUserACLInfo;
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+import org.apache.hadoop.yarn.api.records.QueueInfo;
+import org.apache.hadoop.yarn.api.records.QueueUserACLInfo;
+import org.apache.hadoop.yarn.api.records.SignalContainerCommand;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.Token;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.api.records.YarnClusterMetrics;
@@ -379,6 +396,19 @@ public class YarnClientImpl extends YarnClient {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void failApplicationAttempt(ApplicationAttemptId attemptId)
+      throws YarnException, IOException {
+    LOG.info("Failing application attempt " + attemptId);
+    FailApplicationAttemptRequest request =
+        Records.newRecord(FailApplicationAttemptRequest.class);
+    request.setApplicationAttemptId(attemptId);
+    rmClient.failApplicationAttempt(request);
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void killApplication(ApplicationId applicationId)
       throws YarnException, IOException {
     KillApplicationRequest request =
@@ -429,16 +459,23 @@ public class YarnClientImpl extends YarnClient {
           .newRecord(GetApplicationReportRequest.class);
       request.setApplicationId(appId);
       response = rmClient.getApplicationReport(request);
+<<<<<<< HEAD
     } catch (YarnException e) {
+=======
+    } catch (ApplicationNotFoundException e) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (!historyServiceEnabled) {
         // Just throw it as usual if historyService is not enabled.
         throw e;
       }
+<<<<<<< HEAD
       // Even if history-service is enabled, treat all exceptions still the same
       // except the following
       if (!(e.getClass() == ApplicationNotFoundException.class)) {
         throw e;
       }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return historyClient.getApplicationReport(appId);
     }
     return response.getApplicationReport();
@@ -820,4 +857,25 @@ public class YarnClientImpl extends YarnClient {
     return rmClient.getClusterNodeLabels(
         GetClusterNodeLabelsRequest.newInstance()).getNodeLabels();
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public void updateApplicationPriority(ApplicationId applicationId,
+      Priority priority) throws YarnException, IOException {
+    UpdateApplicationPriorityRequest request =
+        UpdateApplicationPriorityRequest.newInstance(applicationId, priority);
+    rmClient.updateApplicationPriority(request);
+  }
+
+  @Override
+  public void signalContainer(ContainerId containerId,
+      SignalContainerCommand command)
+          throws YarnException, IOException {
+    LOG.info("Signalling container " + containerId + " with command " + command);
+    SignalContainerRequest request =
+        SignalContainerRequest.newInstance(containerId, command);
+    rmClient.signalContainer(request);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

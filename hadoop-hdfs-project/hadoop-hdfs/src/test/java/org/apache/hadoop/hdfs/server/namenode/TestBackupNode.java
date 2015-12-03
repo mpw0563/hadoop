@@ -21,6 +21,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.fail;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +34,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.directory.api.ldap.aci.UserClass;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
@@ -47,6 +52,11 @@ import org.apache.hadoop.hdfs.server.common.Storage.StorageDirectory;
 import org.apache.hadoop.hdfs.server.namenode.FileJournalManager.EditLogFile;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
 import org.apache.hadoop.net.NetUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.security.SecurityUtil;
+import org.apache.hadoop.security.UserGroupInformation;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.log4j.Level;
 import org.junit.Before;
@@ -62,11 +72,15 @@ public class TestBackupNode {
 
   
   static {
-    ((Log4JLogger)Checkpointer.LOG).getLogger().setLevel(Level.ALL);
-    ((Log4JLogger)BackupImage.LOG).getLogger().setLevel(Level.ALL);
+    GenericTestUtils.setLogLevel(Checkpointer.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(BackupImage.LOG, Level.ALL);
   }
   
   static final String BASE_DIR = MiniDFSCluster.getBaseDirectory();
+  
+  static final long seed = 0xDEADBEEFL;
+  static final int blockSize = 4096;
+  static final int fileSize = 8192;
 
   @Before
   public void setUp() throws Exception {
@@ -125,6 +139,75 @@ public class TestBackupNode {
         Collections.singletonList((int)thisCheckpointTxId));
   }
 
+<<<<<<< HEAD
+=======
+
+  /**
+   *  Regression test for HDFS-9249.
+   *  This test configures the primary name node with SIMPLE authentication,
+   *  and configures the backup node with Kerberose authentication with
+   *  invalid keytab settings.
+   *
+   *  This configuration causes the backup node to throw a NPE trying to abort
+   *  the edit log.
+   *  */
+  @Test
+    public void startBackupNodeWithIncorrectAuthentication() throws IOException {
+    Configuration c = new HdfsConfiguration();
+    StartupOption startupOpt = StartupOption.CHECKPOINT;
+    String dirs = getBackupNodeDir(startupOpt, 1);
+    c.set(DFSConfigKeys.FS_DEFAULT_NAME_KEY, "hdfs://127.0.0.1:1234");
+    c.set(DFSConfigKeys.DFS_NAMENODE_BACKUP_HTTP_ADDRESS_KEY, "localhost:0");
+    c.set(DFSConfigKeys.DFS_BLOCKREPORT_INITIAL_DELAY_KEY, "0");
+    c.setInt(DFSConfigKeys.DFS_DATANODE_SCAN_PERIOD_HOURS_KEY,
+        -1); // disable block scanner
+    c.setInt(DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_TXNS_KEY, 1);
+    c.set(DFSConfigKeys.DFS_NAMENODE_NAME_DIR_KEY, dirs);
+    c.set(DFSConfigKeys.DFS_NAMENODE_EDITS_DIR_KEY,
+        "${" + DFSConfigKeys.DFS_NAMENODE_NAME_DIR_KEY + "}");
+    c.set(DFSConfigKeys.DFS_NAMENODE_BACKUP_ADDRESS_KEY,
+        "127.0.0.1:0");
+    c.set(DFSConfigKeys.DFS_NAMENODE_BACKUP_HTTP_ADDRESS_KEY,
+        "127.0.0.1:0");
+
+    NameNode nn;
+    try {
+      Configuration nnconf = new HdfsConfiguration(c);
+      DFSTestUtil.formatNameNode(nnconf);
+      nn = NameNode.createNameNode(new String[] {}, nnconf);
+    } catch (IOException e) {
+      LOG.info("IOException is thrown creating name node");
+      throw e;
+    }
+
+    c.set(CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHENTICATION,
+        "kerberos");
+    c.set(DFSConfigKeys.DFS_NAMENODE_KEYTAB_FILE_KEY, "");
+
+    BackupNode bn = null;
+    try {
+      bn = (BackupNode)NameNode.createNameNode(
+          new String[] {startupOpt.getName()}, c);
+      assertTrue("Namesystem in BackupNode should be null",
+          bn.getNamesystem() == null);
+      fail("Incorrect authentication setting should throw IOException");
+    } catch (IOException e) {
+      LOG.info("IOException thrown as expected", e);
+    } finally {
+      if (nn != null) {
+        nn.stop();
+      }
+      if (bn != null) {
+        bn.stop();
+      }
+      SecurityUtil.setAuthenticationMethod(
+          UserGroupInformation.AuthenticationMethod.SIMPLE, c);
+      // reset security authentication
+      UserGroupInformation.setConfiguration(c);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testCheckpointNode() throws Exception {
     testCheckpoint(StartupOption.CHECKPOINT);
@@ -193,12 +276,22 @@ public class TestBackupNode {
       
       // do some edits
       assertTrue(fileSys.mkdirs(new Path("/edit-while-bn-down")));
-      
+  
       // start a new backup node
       backup = startBackupNode(conf, StartupOption.BACKUP, 1);
 
       testBNInSync(cluster, backup, 4);
       assertNotNull(backup.getNamesystem().getFileInfo("/edit-while-bn-down", false));
+      
+      // Trigger an unclean shutdown of the backup node. Backup node will not
+      // unregister from the active when this is done simulating a node crash.
+      backup.stop(false);
+           
+      // do some edits on the active. This should go through without failing.
+      // This will verify that active is still up and can add entries to
+      // master editlog.
+      assertTrue(fileSys.mkdirs(new Path("/edit-while-bn-down-2")));
+      
     } finally {
       LOG.info("Shutting down...");
       if (backup != null) backup.stop();
@@ -305,7 +398,7 @@ public class TestBackupNode {
       if(fileSys != null) fileSys.close();
       if(cluster != null) cluster.shutdown();
     }
-    File nnCurDir = new File(BASE_DIR, "name1/current/");
+    File nnCurDir = new File(MiniDFSCluster.getNameNodeDirectory(BASE_DIR, 0, 0)[0], "current/");
     File bnCurDir = new File(getBackupNodeDir(op, 1), "/current/");
 
     FSImageTestUtil.assertParallelFilesAreIdentical(
@@ -352,7 +445,12 @@ public class TestBackupNode {
           + NetUtils.getHostPortString(add)).toUri(), conf);
       boolean canWrite = true;
       try {
+<<<<<<< HEAD
         TestCheckpoint.writeFile(bnFS, file3, replication);
+=======
+        DFSTestUtil.createFile(bnFS, file3, fileSize, fileSize, blockSize,
+            replication, seed);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } catch (IOException eio) {
         LOG.info("Write to " + backup.getRole() + " failed as expected: ", eio);
         canWrite = false;
@@ -370,7 +468,13 @@ public class TestBackupNode {
       assertEquals("Reads to BackupNode are allowed, but not CheckpointNode.",
           canRead, backup.isRole(NamenodeRole.BACKUP));
 
+<<<<<<< HEAD
       TestCheckpoint.writeFile(fileSys, file3, replication);
+=======
+      DFSTestUtil.createFile(fileSys, file3, fileSize, fileSize, blockSize,
+          replication, seed);
+      
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       TestCheckpoint.checkFile(fileSys, file3, replication);
       // should also be on BN right away
       assertTrue("file3 does not exist on BackupNode",
@@ -445,7 +549,11 @@ public class TestBackupNode {
       cluster.startDataNodes(conf, 3, true, StartupOption.REGULAR, null);
 
       DFSTestUtil.createFile(
+<<<<<<< HEAD
           fileSys, file1, 8192, (short)3, 0);
+=======
+          fileSys, file1, fileSize, fileSize, blockSize, (short)3, seed);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Read the same file from file systems pointing to NN and BN
       FileSystem bnFS = FileSystem.get(

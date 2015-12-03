@@ -233,10 +233,22 @@ public class JWTRedirectAuthenticationHandler extends
     }
     String loginURL = authenticationProviderUrl + delimiter
         + ORIGINAL_URL_QUERY_PARAM
+<<<<<<< HEAD
         + request.getRequestURL().toString();
     return loginURL;
   }
 
+=======
+        + request.getRequestURL().toString() + getOriginalQueryString(request);
+    return loginURL;
+  }
+
+  private String getOriginalQueryString(HttpServletRequest request) {
+    String originalQueryString = request.getQueryString();
+    return (originalQueryString == null) ? "" : "?" + originalQueryString;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * This method provides a single method for validating the JWT for use in
    * request processing. It provides for the override of specific aspects of

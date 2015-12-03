@@ -34,4 +34,10 @@ public class SchedulerTypeInfo {
     this.schedulerInfo = scheduler;
   }
 
+<<<<<<< HEAD
+=======
+  public SchedulerInfo getSchedulerInfo() {
+    return schedulerInfo;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

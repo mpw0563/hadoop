@@ -18,9 +18,12 @@
 package org.apache.hadoop.hdfs;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.HashMap;
@@ -32,16 +35,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
 import org.apache.hadoop.hdfs.client.impl.DfsClientConf;
 import org.apache.hadoop.hdfs.protocol.ClientProtocol;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolPB;
 import org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB;
+=======
+import org.apache.hadoop.hdfs.NameNodeProxiesClient.ProxyAndInfo;
+import org.apache.hadoop.hdfs.protocol.ClientProtocol;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocolPB.JournalProtocolPB;
 import org.apache.hadoop.hdfs.protocolPB.JournalProtocolTranslatorPB;
 import org.apache.hadoop.hdfs.protocolPB.NamenodeProtocolPB;
 import org.apache.hadoop.hdfs.protocolPB.NamenodeProtocolTranslatorPB;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.hdfs.server.namenode.SafeModeException;
 import org.apache.hadoop.hdfs.server.namenode.ha.AbstractNNFailoverProxyProvider;
@@ -57,6 +66,15 @@ import org.apache.hadoop.io.retry.RetryPolicies;
 import org.apache.hadoop.io.retry.RetryPolicy;
 import org.apache.hadoop.io.retry.RetryProxy;
 import org.apache.hadoop.io.retry.RetryUtils;
+=======
+import org.apache.hadoop.hdfs.server.namenode.ha.AbstractNNFailoverProxyProvider;
+import org.apache.hadoop.hdfs.server.protocol.JournalProtocol;
+import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocol;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.retry.RetryPolicies;
+import org.apache.hadoop.io.retry.RetryPolicy;
+import org.apache.hadoop.io.retry.RetryProxy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.ipc.ProtobufRpcEngine;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.ipc.RefreshCallQueueProtocol;
@@ -75,9 +93,12 @@ import org.apache.hadoop.tools.GetUserMappingsProtocol;
 import org.apache.hadoop.tools.protocolPB.GetUserMappingsProtocolClientSideTranslatorPB;
 import org.apache.hadoop.tools.protocolPB.GetUserMappingsProtocolPB;
 
+<<<<<<< HEAD
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * Create proxy objects to communicate with a remote NN. All remote access to an
  * NN should be funneled through this class. Most of the time you'll want to use
@@ -90,6 +111,7 @@ public class NameNodeProxies {
   private static final Log LOG = LogFactory.getLog(NameNodeProxies.class);
 
   /**
+<<<<<<< HEAD
    * Wrapper for a client proxy as well as its associated service ID.
    * This is simply used as a tuple-like return type for
    * {@link NameNodeProxies#createProxy} and
@@ -121,6 +143,8 @@ public class NameNodeProxies {
   }
 
   /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Creates the namenode proxy with the passed protocol. This will handle
    * creation of either HA- or non-HA-enabled proxy objects, depending upon
    * if the provided URI is a configured logical URI.
@@ -160,6 +184,7 @@ public class NameNodeProxies {
       URI nameNodeUri, Class<T> xface, AtomicBoolean fallbackToSimpleAuth)
       throws IOException {
     AbstractNNFailoverProxyProvider<T> failoverProxyProvider =
+<<<<<<< HEAD
         createFailoverProxyProvider(conf, nameNodeUri, xface, true,
           fallbackToSimpleAuth);
   
@@ -257,6 +282,18 @@ public class NameNodeProxies {
       LOG.warn("Currently creating proxy using " +
       		"LossyRetryInvocationHandler requires NN HA setup");
       return null;
+=======
+        NameNodeProxiesClient.createFailoverProxyProvider(conf, nameNodeUri,
+            xface, true, fallbackToSimpleAuth);
+
+    if (failoverProxyProvider == null) {
+      return createNonHAProxy(conf, DFSUtilClient.getNNAddress(nameNodeUri),
+          xface, UserGroupInformation.getCurrentUser(), true,
+          fallbackToSimpleAuth);
+    } else {
+      return NameNodeProxiesClient.createHAProxy(conf, nameNodeUri, xface,
+          failoverProxyProvider);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -303,8 +340,13 @@ public class NameNodeProxies {
   
     T proxy;
     if (xface == ClientProtocol.class) {
+<<<<<<< HEAD
       proxy = (T) createNNProxyWithClientProtocol(nnAddr, conf, ugi,
           withRetries, fallbackToSimpleAuth);
+=======
+      proxy = (T) NameNodeProxiesClient.createNonHAProxyWithClientProtocol(
+          nnAddr, conf, ugi, withRetries, fallbackToSimpleAuth);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else if (xface == JournalProtocol.class) {
       proxy = (T) createNNProxyWithJournalProtocol(nnAddr, conf, ugi);
     } else if (xface == NamenodeProtocol.class) {
@@ -334,7 +376,11 @@ public class NameNodeProxies {
       InetSocketAddress address, Configuration conf, UserGroupInformation ugi)
       throws IOException {
     JournalProtocolPB proxy = (JournalProtocolPB) createNameNodeProxy(address,
+<<<<<<< HEAD
         conf, ugi, JournalProtocolPB.class);
+=======
+        conf, ugi, JournalProtocolPB.class, 30000);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new JournalProtocolTranslatorPB(proxy);
   }
 
@@ -342,7 +388,11 @@ public class NameNodeProxies {
       createNNProxyWithRefreshAuthorizationPolicyProtocol(InetSocketAddress address,
           Configuration conf, UserGroupInformation ugi) throws IOException {
     RefreshAuthorizationPolicyProtocolPB proxy = (RefreshAuthorizationPolicyProtocolPB)
+<<<<<<< HEAD
         createNameNodeProxy(address, conf, ugi, RefreshAuthorizationPolicyProtocolPB.class);
+=======
+        createNameNodeProxy(address, conf, ugi, RefreshAuthorizationPolicyProtocolPB.class, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new RefreshAuthorizationPolicyProtocolClientSideTranslatorPB(proxy);
   }
   
@@ -350,7 +400,11 @@ public class NameNodeProxies {
       createNNProxyWithRefreshUserMappingsProtocol(InetSocketAddress address,
           Configuration conf, UserGroupInformation ugi) throws IOException {
     RefreshUserMappingsProtocolPB proxy = (RefreshUserMappingsProtocolPB)
+<<<<<<< HEAD
         createNameNodeProxy(address, conf, ugi, RefreshUserMappingsProtocolPB.class);
+=======
+        createNameNodeProxy(address, conf, ugi, RefreshUserMappingsProtocolPB.class, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new RefreshUserMappingsProtocolClientSideTranslatorPB(proxy);
   }
 
@@ -358,7 +412,11 @@ public class NameNodeProxies {
       createNNProxyWithRefreshCallQueueProtocol(InetSocketAddress address,
           Configuration conf, UserGroupInformation ugi) throws IOException {
     RefreshCallQueueProtocolPB proxy = (RefreshCallQueueProtocolPB)
+<<<<<<< HEAD
         createNameNodeProxy(address, conf, ugi, RefreshCallQueueProtocolPB.class);
+=======
+        createNameNodeProxy(address, conf, ugi, RefreshCallQueueProtocolPB.class, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new RefreshCallQueueProtocolClientSideTranslatorPB(proxy);
   }
 
@@ -366,7 +424,11 @@ public class NameNodeProxies {
       InetSocketAddress address, Configuration conf, UserGroupInformation ugi)
       throws IOException {
     GetUserMappingsProtocolPB proxy = (GetUserMappingsProtocolPB)
+<<<<<<< HEAD
         createNameNodeProxy(address, conf, ugi, GetUserMappingsProtocolPB.class);
+=======
+        createNameNodeProxy(address, conf, ugi, GetUserMappingsProtocolPB.class, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new GetUserMappingsProtocolClientSideTranslatorPB(proxy);
   }
   
@@ -374,7 +436,11 @@ public class NameNodeProxies {
       InetSocketAddress address, Configuration conf, UserGroupInformation ugi,
       boolean withRetries) throws IOException {
     NamenodeProtocolPB proxy = (NamenodeProtocolPB) createNameNodeProxy(
+<<<<<<< HEAD
         address, conf, ugi, NamenodeProtocolPB.class);
+=======
+        address, conf, ugi, NamenodeProtocolPB.class, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (withRetries) { // create the proxy with retries
       RetryPolicy timeoutPolicy = RetryPolicies.exponentialBackoffRetry(5, 200,
               TimeUnit.MILLISECONDS);
@@ -390,6 +456,7 @@ public class NameNodeProxies {
       return new NamenodeProtocolTranslatorPB(proxy);
     }
   }
+<<<<<<< HEAD
   
   private static ClientProtocol createNNProxyWithClientProtocol(
       InetSocketAddress address, Configuration conf, UserGroupInformation ugi,
@@ -522,4 +589,16 @@ public class NameNodeProxies {
     return providerNN;
   }
 
+=======
+
+  private static Object createNameNodeProxy(InetSocketAddress address,
+      Configuration conf, UserGroupInformation ugi, Class<?> xface,
+      int rpcTimeout) throws IOException {
+    RPC.setProtocolEngine(conf, xface, ProtobufRpcEngine.class);
+    Object proxy = RPC.getProxy(xface, RPC.getProtocolVersion(xface), address,
+        ugi, conf, NetUtils.getDefaultSocketFactory(conf), rpcTimeout);
+    return proxy;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.hdfs.server.blockmanagement;
 
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.hdfs.server.namenode.INodeId.INVALID_INODE_ID;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,9 +55,15 @@ public class TestBlockInfo {
   public void testIsDeleted() {
     BlockInfo blockInfo = new BlockInfoContiguous((short) 3);
     BlockCollection bc = Mockito.mock(BlockCollection.class);
+<<<<<<< HEAD
     blockInfo.setBlockCollection(bc);
     Assert.assertFalse(blockInfo.isDeleted());
     blockInfo.setBlockCollection(null);
+=======
+    blockInfo.setBlockCollectionId(1000);
+    Assert.assertFalse(blockInfo.isDeleted());
+    blockInfo.setBlockCollectionId(INVALID_INODE_ID);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Assert.assertTrue(blockInfo.isDeleted());
   }
 
@@ -63,13 +73,18 @@ public class TestBlockInfo {
 
     final DatanodeStorageInfo storage = DFSTestUtil.createDatanodeStorageInfo("storageID", "127.0.0.1");
 
+<<<<<<< HEAD
     boolean added = blockInfo.addStorage(storage);
+=======
+    boolean added = blockInfo.addStorage(storage, blockInfo);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     Assert.assertTrue(added);
     Assert.assertEquals(storage, blockInfo.getStorageInfo(0));
   }
 
   @Test
+<<<<<<< HEAD
   public void testCopyConstructor() {
     BlockInfo old = new BlockInfoContiguous((short) 3);
     try {
@@ -82,6 +97,8 @@ public class TestBlockInfo {
   }
 
   @Test
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testReplaceStorage() throws Exception {
 
     // Create two dummy storages.

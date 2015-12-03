@@ -86,9 +86,15 @@ public class QuorumJournalManager implements JournalManager {
   private static final int FINALIZE_TIMEOUT_MS          = 60000;
   private static final int PRE_UPGRADE_TIMEOUT_MS       = 60000;
   private static final int ROLL_BACK_TIMEOUT_MS         = 60000;
+<<<<<<< HEAD
   private static final int UPGRADE_TIMEOUT_MS           = 60000;
   private static final int GET_JOURNAL_CTIME_TIMEOUT_MS = 60000;
   private static final int DISCARD_SEGMENTS_TIMEOUT_MS  = 60000;
+=======
+  private static final int DISCARD_SEGMENTS_TIMEOUT_MS  = 60000;
+  private static final int UPGRADE_TIMEOUT_MS           = 60000;
+  private static final int GET_JOURNAL_CTIME_TIMEOUT_MS = 60000;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   private final Configuration conf;
   private final URI uri;
@@ -537,7 +543,11 @@ public class QuorumJournalManager implements JournalManager {
       throw new IOException("Timed out waiting for doUpgrade() response");
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public void doFinalize() throws IOException {
     QuorumCall<AsyncLogger, Void> call = loggers.doFinalize();
@@ -554,7 +564,11 @@ public class QuorumJournalManager implements JournalManager {
       throw new IOException("Timed out waiting for doFinalize() response");
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public boolean canRollBack(StorageInfo storage, StorageInfo prevStorage,
       int targetLayoutVersion) throws IOException {
@@ -606,7 +620,30 @@ public class QuorumJournalManager implements JournalManager {
       throw new IOException("Timed out waiting for doFinalize() response");
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+  @Override
+  public void discardSegments(long startTxId) throws IOException {
+    QuorumCall<AsyncLogger, Void> call = loggers.discardSegments(startTxId);
+    try {
+      call.waitFor(loggers.size(), loggers.size(), 0,
+          DISCARD_SEGMENTS_TIMEOUT_MS, "discardSegments");
+      if (call.countExceptions() > 0) {
+        call.rethrowException(
+            "Could not perform discardSegments of one or more JournalNodes");
+      }
+    } catch (InterruptedException e) {
+      throw new IOException(
+          "Interrupted waiting for discardSegments() response");
+    } catch (TimeoutException e) {
+      throw new IOException(
+          "Timed out waiting for discardSegments() response");
+    }
+  }
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public long getJournalCTime() throws IOException {
     QuorumCall<AsyncLogger, Long> call = loggers.getJournalCTime();
@@ -639,6 +676,7 @@ public class QuorumJournalManager implements JournalManager {
     
     throw new AssertionError("Unreachable code.");
   }
+<<<<<<< HEAD
 
   @Override
   public void discardSegments(long startTxId) throws IOException {
@@ -658,4 +696,6 @@ public class QuorumJournalManager implements JournalManager {
           "Timed out waiting for discardSegments() response");
     }
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

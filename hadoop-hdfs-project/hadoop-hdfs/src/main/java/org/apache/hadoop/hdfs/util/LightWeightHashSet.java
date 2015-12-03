@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+<<<<<<< HEAD
 import java.util.LinkedList;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -528,12 +531,21 @@ public class LightWeightHashSet<T> implements Collection<T> {
   }
 
   private class LinkedSetIterator implements Iterator<T> {
+<<<<<<< HEAD
     /** The starting modification for fail-fast. */
     private final int startModification = modification;
+=======
+    /** The current modification epoch. */
+    private int expectedModification = modification;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /** The current index of the entry array. */
     private int index = -1;
     /** The next element to return. */
     private LinkedElement<T> next = nextNonemptyEntry();
+<<<<<<< HEAD
+=======
+    private LinkedElement<T> current;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     private LinkedElement<T> nextNonemptyEntry() {
       for (index++; index < entries.length && entries[index] == null; index++);
@@ -547,13 +559,23 @@ public class LightWeightHashSet<T> implements Collection<T> {
 
     @Override
     public T next() {
+<<<<<<< HEAD
       if (modification != startModification) {
         throw new ConcurrentModificationException("modification="
             + modification + " != startModification = " + startModification);
+=======
+      if (modification != expectedModification) {
+        throw new ConcurrentModificationException("modification="
+            + modification + " != expectedModification = " + expectedModification);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       if (next == null) {
         throw new NoSuchElementException();
       }
+<<<<<<< HEAD
+=======
+      current = next;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final T e = next.element;
       // find the next element
       final LinkedElement<T> n = next.next;
@@ -563,7 +585,20 @@ public class LightWeightHashSet<T> implements Collection<T> {
 
     @Override
     public void remove() {
+<<<<<<< HEAD
       throw new UnsupportedOperationException("Remove is not supported.");
+=======
+      if (current == null) {
+        throw new NoSuchElementException();
+      }
+      if (modification != expectedModification) {
+        throw new ConcurrentModificationException("modification="
+            + modification + " != expectedModification = " + expectedModification);
+      }
+      LightWeightHashSet.this.removeElem(current.element);
+      current = null;
+      expectedModification = modification;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 

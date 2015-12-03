@@ -94,11 +94,23 @@ public abstract class AbstractComparatorOrderingPolicy<S extends SchedulableEnti
   
   @Override
   public void addSchedulableEntity(S s) {
+<<<<<<< HEAD
+=======
+    if (null == s) {
+      return;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     schedulableEntities.add(s); 
   }
   
   @Override
   public boolean removeSchedulableEntity(S s) {
+<<<<<<< HEAD
+=======
+    if (null == s) {
+      return false;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     synchronized (entitiesToReorder) {
       entitiesToReorder.remove(s.getId());
     }

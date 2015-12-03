@@ -72,6 +72,10 @@ public class TestLazyWriter extends LazyPersistTestCase {
     // for the previous one.
     Path path2 = new Path("/" + METHOD_NAME + ".02.dat");
     makeTestFile(path2, BLOCK_SIZE, true);
+<<<<<<< HEAD
+=======
+    waitForMetric("RamDiskBlocksEvicted", 1);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     verifyRamDiskJMXMetric("RamDiskBlocksEvicted", 1);
     verifyRamDiskJMXMetric("RamDiskBlocksEvictedWithoutRead", 1);
   }

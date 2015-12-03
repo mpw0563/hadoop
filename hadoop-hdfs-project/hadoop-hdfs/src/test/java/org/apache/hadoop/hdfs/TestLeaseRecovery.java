@@ -22,7 +22,10 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.io.RandomAccessFile;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.EnumSet;
 
 import org.apache.hadoop.conf.Configuration;
@@ -107,6 +110,7 @@ public class TestLeaseRecovery {
     DFSTestUtil.createFile(dfs, filepath, ORG_FILE_SIZE, REPLICATION_NUM, 0L);
     assertTrue(dfs.exists(filepath));
     DFSTestUtil.waitReplication(dfs, filepath, REPLICATION_NUM);
+<<<<<<< HEAD
 
     //get block info for the last block
     LocatedBlock locatedblock = TestInterDatanodeProtocol.getLastLocatedBlock(
@@ -135,6 +139,36 @@ public class TestLeaseRecovery {
     // expire lease to trigger block recovery.
     waitLeaseRecovery(cluster);
 
+=======
+
+    //get block info for the last block
+    LocatedBlock locatedblock = TestInterDatanodeProtocol.getLastLocatedBlock(
+        dfs.dfs.getNamenode(), filestr);
+    DatanodeInfo[] datanodeinfos = locatedblock.getLocations();
+    assertEquals(REPLICATION_NUM, datanodeinfos.length);
+
+    //connect to data nodes
+    DataNode[] datanodes = new DataNode[REPLICATION_NUM];
+    for(int i = 0; i < REPLICATION_NUM; i++) {
+      datanodes[i] = cluster.getDataNode(datanodeinfos[i].getIpcPort());
+      assertTrue(datanodes[i] != null);
+    }
+
+    //verify Block Info
+    ExtendedBlock lastblock = locatedblock.getBlock();
+    DataNode.LOG.info("newblocks=" + lastblock);
+    for(int i = 0; i < REPLICATION_NUM; i++) {
+      checkMetaInfo(lastblock, datanodes[i]);
+    }
+
+    DataNode.LOG.info("dfs.dfs.clientName=" + dfs.dfs.clientName);
+    cluster.getNameNodeRpc().append(filestr, dfs.dfs.clientName,
+        new EnumSetWritable<>(EnumSet.of(CreateFlag.APPEND)));
+
+    // expire lease to trigger block recovery.
+    waitLeaseRecovery(cluster);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Block[] updatedmetainfo = new Block[REPLICATION_NUM];
     long oldSize = lastblock.getNumBytes();
     lastblock = TestInterDatanodeProtocol.getLastLocatedBlock(
@@ -147,6 +181,7 @@ public class TestLeaseRecovery {
       assertEquals(oldSize, updatedmetainfo[i].getNumBytes());
       assertEquals(currentGS, updatedmetainfo[i].getGenerationStamp());
     }
+<<<<<<< HEAD
 
     // verify that lease recovery does not occur when namenode is in safemode
     System.out.println("Testing that lease recovery cannot happen during safemode.");
@@ -213,6 +248,88 @@ public class TestLeaseRecovery {
     }
     assertTrue("File should be closed", newdfs.recoverLease(file));
 
+=======
+
+    // verify that lease recovery does not occur when namenode is in safemode
+    System.out.println("Testing that lease recovery cannot happen during safemode.");
+    filestr = "/foo.safemode";
+    filepath = new Path(filestr);
+    dfs.create(filepath, (short)1);
+    cluster.getNameNodeRpc().setSafeMode(
+        HdfsConstants.SafeModeAction.SAFEMODE_ENTER, false);
+    assertTrue(dfs.dfs.exists(filestr));
+    DFSTestUtil.waitReplication(dfs, filepath, (short)1);
+    waitLeaseRecovery(cluster);
+    // verify that we still cannot recover the lease
+    LeaseManager lm = NameNodeAdapter.getLeaseManager(cluster.getNamesystem());
+    assertTrue("Found " + lm.countLease() + " lease, expected 1", lm.countLease() == 1);
+    cluster.getNameNodeRpc().setSafeMode(
+        HdfsConstants.SafeModeAction.SAFEMODE_LEAVE, false);
+  }
+
+  /**
+   * Block Recovery when the meta file not having crcs for all chunks in block
+   * file
+   */
+  @Test
+  public void testBlockRecoveryWithLessMetafile() throws Exception {
+    Configuration conf = new Configuration();
+    conf.set(DFSConfigKeys.DFS_BLOCK_LOCAL_PATH_ACCESS_USER_KEY,
+        UserGroupInformation.getCurrentUser().getShortUserName());
+    cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
+    Path file = new Path("/testRecoveryFile");
+    DistributedFileSystem dfs = cluster.getFileSystem();
+    FSDataOutputStream out = dfs.create(file);
+    final int FILE_SIZE = 2 * 1024 * 1024;
+    int count = 0;
+    while (count < FILE_SIZE) {
+      out.writeBytes("Data");
+      count += 4;
+    }
+    out.hsync();
+    // abort the original stream
+    ((DFSOutputStream) out.getWrappedStream()).abort();
+
+    LocatedBlocks locations = cluster.getNameNodeRpc().getBlockLocations(
+        file.toString(), 0, count);
+    ExtendedBlock block = locations.get(0).getBlock();
+
+    // Calculate meta file size
+    // From DataNode.java, checksum size is given by:
+    // (length of data + BYTE_PER_CHECKSUM - 1)/BYTES_PER_CHECKSUM *
+    // CHECKSUM_SIZE
+    final int CHECKSUM_SIZE = 4; // CRC32 & CRC32C
+    final int bytesPerChecksum = conf.getInt(
+        DFSConfigKeys.DFS_BYTES_PER_CHECKSUM_KEY,
+        DFSConfigKeys.DFS_BYTES_PER_CHECKSUM_DEFAULT);
+    final int metaFileSize =
+        (FILE_SIZE + bytesPerChecksum - 1) / bytesPerChecksum * CHECKSUM_SIZE +
+        8; // meta file header is 8 bytes
+    final int newMetaFileSize = metaFileSize - CHECKSUM_SIZE;
+
+    // Corrupt the block meta file by dropping checksum for bytesPerChecksum
+    // bytes. Lease recovery is expected to recover the uncorrupted file length.
+    cluster.truncateMeta(0, block, newMetaFileSize);
+
+    // restart DN to make replica to RWR
+    DataNodeProperties dnProp = cluster.stopDataNode(0);
+    cluster.restartDataNode(dnProp, true);
+
+    // try to recover the lease
+    DistributedFileSystem newdfs = (DistributedFileSystem) FileSystem
+        .newInstance(cluster.getConfiguration(0));
+    count = 0;
+    while (++count < 10 && !newdfs.recoverLease(file)) {
+      Thread.sleep(1000);
+    }
+    assertTrue("File should be closed", newdfs.recoverLease(file));
+
+    // Verify file length after lease recovery. The new file length should not
+    // include the bytes with corrupted checksum.
+    final long expectedNewFileLen = FILE_SIZE - bytesPerChecksum;
+    final long newFileLen = newdfs.getFileStatus(file).getLen();
+    assertEquals(newFileLen, expectedNewFileLen);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

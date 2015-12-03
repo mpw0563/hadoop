@@ -40,9 +40,13 @@ import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authorize.PolicyProvider;
 import org.apache.hadoop.security.token.Token;
+<<<<<<< HEAD
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.service.AbstractService;
 import org.apache.hadoop.util.StringUtils;
+=======
+import org.apache.hadoop.service.AbstractService;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.ApplicationMasterProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateResponse;
@@ -76,7 +80,10 @@ import org.apache.hadoop.yarn.exceptions.InvalidResourceRequestException;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.ipc.RPCUtil;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.ipc.YarnRPC;
 import org.apache.hadoop.yarn.security.AMRMTokenIdentifier;
 import org.apache.hadoop.yarn.server.resourcemanager.RMAuditLogger.AuditConstants;
@@ -89,13 +96,20 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAt
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptStatusupdateEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptUnregistrationEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNode;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.AbstractYarnScheduler;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Allocation;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerNodeReport;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.YarnScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.security.authorize.RMPolicyProvider;
 import org.apache.hadoop.yarn.server.security.MasterKeyData;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.utils.YarnServerSecurityUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.util.resource.Resources;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -176,6 +190,7 @@ public class ApplicationMasterService extends AbstractService implements
     return this.masterServiceAddress;
   }
 
+<<<<<<< HEAD
   // Obtain the needed AMRMTokenIdentifier from the remote-UGI. RPC layer
   // currently sets only the required id, but iterate through anyways just to be
   // sure.
@@ -233,12 +248,19 @@ public class ApplicationMasterService extends AbstractService implements
     return appTokenIdentifier;
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public RegisterApplicationMasterResponse registerApplicationMaster(
       RegisterApplicationMasterRequest request) throws YarnException,
       IOException {
 
+<<<<<<< HEAD
     AMRMTokenIdentifier amrmTokenIdentifier = authorizeRequest();
+=======
+    AMRMTokenIdentifier amrmTokenIdentifier =
+        YarnServerSecurityUtils.authorizeRequest();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ApplicationAttemptId applicationAttemptId =
         amrmTokenIdentifier.getApplicationAttemptId();
 
@@ -305,7 +327,11 @@ public class ApplicationMasterService extends AbstractService implements
       // and corresponding NM tokens.
       if (app.getApplicationSubmissionContext()
           .getKeepContainersAcrossApplicationAttempts()) {
+<<<<<<< HEAD
         List<Container> transferredContainers = ((AbstractYarnScheduler) rScheduler)
+=======
+        List<Container> transferredContainers = rScheduler
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             .getTransferredContainers(applicationAttemptId);
         if (!transferredContainers.isEmpty()) {
           response.setContainersFromPreviousAttempts(transferredContainers);
@@ -347,7 +373,11 @@ public class ApplicationMasterService extends AbstractService implements
       IOException {
 
     ApplicationAttemptId applicationAttemptId =
+<<<<<<< HEAD
         authorizeRequest().getApplicationAttemptId();
+=======
+        YarnServerSecurityUtils.authorizeRequest().getApplicationAttemptId();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ApplicationId appId = applicationAttemptId.getApplicationId();
 
     RMApp rmApp =
@@ -431,7 +461,12 @@ public class ApplicationMasterService extends AbstractService implements
   public AllocateResponse allocate(AllocateRequest request)
       throws YarnException, IOException {
 
+<<<<<<< HEAD
     AMRMTokenIdentifier amrmTokenIdentifier = authorizeRequest();
+=======
+    AMRMTokenIdentifier amrmTokenIdentifier =
+        YarnServerSecurityUtils.authorizeRequest();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ApplicationAttemptId appAttemptId =
         amrmTokenIdentifier.getApplicationAttemptId();
@@ -509,11 +544,20 @@ public class ApplicationMasterService extends AbstractService implements
           req.setNodeLabelExpression(asc.getNodeLabelExpression());
         }
       }
+<<<<<<< HEAD
+=======
+      
+      Resource maximumCapacity = rScheduler.getMaximumResourceCapability();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               
       // sanity check
       try {
         RMServerUtils.normalizeAndValidateRequests(ask,
+<<<<<<< HEAD
             rScheduler.getMaximumResourceCapability(), app.getQueue(),
+=======
+            maximumCapacity, app.getQueue(),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             rScheduler, rmContext);
       } catch (InvalidResourceRequestException e) {
         LOG.warn("Invalid resource ask by application " + appAttemptId, e);
@@ -527,6 +571,18 @@ public class ApplicationMasterService extends AbstractService implements
         throw e;
       }
 
+<<<<<<< HEAD
+=======
+      try {
+        RMServerUtils.increaseDecreaseRequestSanityCheck(rmContext,
+            request.getIncreaseRequests(), request.getDecreaseRequests(),
+            maximumCapacity);
+      } catch (InvalidResourceRequestException e) {
+        LOG.warn(e);
+        throw e;
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // In the case of work-preserving AM restart, it's possible for the
       // AM to release containers from the earlier attempt.
       if (!app.getApplicationSubmissionContext()
@@ -551,8 +607,14 @@ public class ApplicationMasterService extends AbstractService implements
         allocation = EMPTY_ALLOCATION;
       } else {
         allocation =
+<<<<<<< HEAD
           this.rScheduler.allocate(appAttemptId, ask, release,
               blacklistAdditions, blacklistRemovals);
+=======
+            this.rScheduler.allocate(appAttemptId, ask, release,
+                blacklistAdditions, blacklistRemovals,
+                request.getIncreaseRequests(), request.getDecreaseRequests());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       if (!blacklistAdditions.isEmpty() || !blacklistRemovals.isEmpty()) {
@@ -598,6 +660,13 @@ public class ApplicationMasterService extends AbstractService implements
           .pullJustFinishedContainers());
       allocateResponse.setResponseId(lastResponse.getResponseId() + 1);
       allocateResponse.setAvailableResources(allocation.getResourceLimit());
+<<<<<<< HEAD
+=======
+      
+      // Handling increased/decreased containers
+      allocateResponse.setIncreasedContainers(allocation.getIncreasedContainers());
+      allocateResponse.setDecreasedContainers(allocation.getDecreasedContainers());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       allocateResponse.setNumClusterNodes(this.rScheduler.getNumClusterNodes());
 
@@ -605,6 +674,13 @@ public class ApplicationMasterService extends AbstractService implements
       allocateResponse
           .setPreemptionMessage(generatePreemptionMessage(allocation));
 
+<<<<<<< HEAD
+=======
+      // Set application priority
+      allocateResponse.setApplicationPriority(app
+          .getApplicationSubmissionContext().getPriority());
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // update AMRMToken if the token is rolled-up
       MasterKeyData nextMasterKey =
           this.rmContext.getAMRMTokenSecretManager().getNextMasterKeyData();

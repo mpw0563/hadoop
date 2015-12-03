@@ -28,10 +28,14 @@ import org.apache.hadoop.ha.HAServiceProtocol.HAServiceState;
 import org.apache.hadoop.http.lib.StaticUserWebFilter;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.metrics2.source.JvmMetrics;
+<<<<<<< HEAD
 import org.apache.hadoop.security.AuthenticationFilterInitializer;
 import org.apache.hadoop.security.Groups;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
+=======
+import org.apache.hadoop.security.*;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.authentication.server.KerberosAuthenticationHandler;
 import org.apache.hadoop.security.authorize.ProxyUsers;
 import org.apache.hadoop.service.AbstractService;
@@ -62,6 +66,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.metrics.SystemMetricsPublis
 import org.apache.hadoop.yarn.server.resourcemanager.monitor.SchedulingEditPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.monitor.SchedulingMonitor;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMDelegatedNodeLabelsUpdater;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.NullRMStateStore;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore.RMState;
@@ -250,7 +258,11 @@ public class ResourceManager extends CompositeService implements Recoverable {
     adminService = createAdminService();
     addService(adminService);
     rmContext.setRMAdminService(adminService);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     rmContext.setYarnConfiguration(conf);
     
     createAndInitActiveServices();
@@ -259,6 +271,18 @@ public class ResourceManager extends CompositeService implements Recoverable {
                       YarnConfiguration.RM_BIND_HOST,
                       WebAppUtils.getRMWebAppURLWithoutScheme(this.conf));
 
+<<<<<<< HEAD
+=======
+    RMApplicationHistoryWriter rmApplicationHistoryWriter =
+        createRMApplicationHistoryWriter();
+    addService(rmApplicationHistoryWriter);
+    rmContext.setRMApplicationHistoryWriter(rmApplicationHistoryWriter);
+
+    SystemMetricsPublisher systemMetricsPublisher = createSystemMetricsPublisher();
+    addService(systemMetricsPublisher);
+    rmContext.setSystemMetricsPublisher(systemMetricsPublisher);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     super.serviceInit(this.conf);
   }
   
@@ -411,7 +435,10 @@ public class ResourceManager extends CompositeService implements Recoverable {
       rmContext.setActiveServiceContext(activeServiceContext);
 
       conf.setBoolean(Dispatcher.DISPATCHER_EXIT_ON_ERROR_KEY, true);
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       rmSecretManagerService = createRMSecretManagerService();
       addService(rmSecretManagerService);
 
@@ -432,6 +459,16 @@ public class ResourceManager extends CompositeService implements Recoverable {
       addService(nlm);
       rmContext.setNodeLabelManager(nlm);
 
+<<<<<<< HEAD
+=======
+      RMDelegatedNodeLabelsUpdater delegatedNodeLabelsUpdater =
+          createRMDelegatedNodeLabelsUpdater();
+      if (delegatedNodeLabelsUpdater != null) {
+        addService(delegatedNodeLabelsUpdater);
+        rmContext.setRMDelegatedNodeLabelsUpdater(delegatedNodeLabelsUpdater);
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       boolean isRecoveryEnabled = conf.getBoolean(
           YarnConfiguration.RECOVERY_ENABLED,
           YarnConfiguration.DEFAULT_RM_RECOVERY_ENABLED);
@@ -468,6 +505,7 @@ public class ResourceManager extends CompositeService implements Recoverable {
         rmContext.setDelegationTokenRenewer(delegationTokenRenewer);
       }
 
+<<<<<<< HEAD
       RMApplicationHistoryWriter rmApplicationHistoryWriter =
           createRMApplicationHistoryWriter();
       addService(rmApplicationHistoryWriter);
@@ -477,6 +515,8 @@ public class ResourceManager extends CompositeService implements Recoverable {
       addService(systemMetricsPublisher);
       rmContext.setSystemMetricsPublisher(systemMetricsPublisher);
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // Register event handler for NodesListManager
       nodesListManager = new NodesListManager(rmContext);
       rmDispatcher.register(NodesListManagerEventType.class, nodesListManager);
@@ -596,21 +636,39 @@ public class ResourceManager extends CompositeService implements Recoverable {
     @Override
     protected void serviceStop() throws Exception {
 
+<<<<<<< HEAD
       DefaultMetricsSystem.shutdown();
+=======
+      super.serviceStop();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (pauseMonitor != null) {
         pauseMonitor.stop();
       }
 
+<<<<<<< HEAD
       if (rmContext != null) {
         RMStateStore store = rmContext.getStateStore();
         try {
           store.close();
+=======
+      DefaultMetricsSystem.shutdown();
+      if (rmContext != null) {
+        RMStateStore store = rmContext.getStateStore();
+        try {
+          if (null != store) {
+            store.close();
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         } catch (Exception e) {
           LOG.error("Error closing store.", e);
         }
       }
 
+<<<<<<< HEAD
       super.serviceStop();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     protected void createPolicyMonitors() {
@@ -856,6 +914,12 @@ public class ResourceManager extends CompositeService implements Recoverable {
     // 4. hadoop.http.filter.initializers container AuthenticationFilterInitializer
 
     Configuration conf = getConfig();
+<<<<<<< HEAD
+=======
+    boolean enableCorsFilter =
+        conf.getBoolean(YarnConfiguration.RM_WEBAPP_ENABLE_CORS_FILTER,
+            YarnConfiguration.DEFAULT_RM_WEBAPP_ENABLE_CORS_FILTER);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     boolean useYarnAuthenticationFilter =
         conf.getBoolean(
           YarnConfiguration.RM_WEBAPP_DELEGATION_TOKEN_AUTH_FILTER,
@@ -867,6 +931,15 @@ public class ResourceManager extends CompositeService implements Recoverable {
     Class<?>[] initializersClasses =
         conf.getClasses(filterInitializerConfKey);
 
+<<<<<<< HEAD
+=======
+    // setup CORS
+    if (enableCorsFilter) {
+      conf.setBoolean(HttpCrossOriginFilterInitializer.PREFIX
+          + HttpCrossOriginFilterInitializer.ENABLED_SUFFIX, true);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     boolean hasHadoopAuthFilterInitializer = false;
     boolean hasRMAuthFilterInitializer = false;
     if (initializersClasses != null) {
@@ -1033,12 +1106,21 @@ public class ResourceManager extends CompositeService implements Recoverable {
     }
 
     LOG.info("Transitioning to standby state");
+<<<<<<< HEAD
     if (rmContext.getHAServiceState() ==
         HAServiceProtocol.HAServiceState.ACTIVE) {
       stopActiveServices();
       reinitialize(initialize);
     }
     rmContext.setHAServiceState(HAServiceProtocol.HAServiceState.STANDBY);
+=======
+    HAServiceState state = rmContext.getHAServiceState();
+    rmContext.setHAServiceState(HAServiceProtocol.HAServiceState.STANDBY);
+    if (state == HAServiceProtocol.HAServiceState.ACTIVE) {
+      stopActiveServices();
+      reinitialize(initialize);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     LOG.info("Transitioned to standby state");
   }
 
@@ -1111,6 +1193,23 @@ public class ResourceManager extends CompositeService implements Recoverable {
     return new RMSecretManagerService(conf, rmContext);
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * Create RMDelegatedNodeLabelsUpdater based on configuration.
+   */
+  protected RMDelegatedNodeLabelsUpdater createRMDelegatedNodeLabelsUpdater() {
+    if (conf.getBoolean(YarnConfiguration.NODE_LABELS_ENABLED,
+            YarnConfiguration.DEFAULT_NODE_LABELS_ENABLED)
+        && YarnConfiguration.isDelegatedCentralizedNodeLabelConfiguration(
+            conf)) {
+      return new RMDelegatedNodeLabelsUpdater(rmContext);
+    } else {
+      return null;
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Private
   public ClientRMService getClientRMService() {
     return this.clientRM;
@@ -1162,6 +1261,13 @@ public class ResourceManager extends CompositeService implements Recoverable {
     // recover AMRMTokenSecretManager
     rmContext.getAMRMTokenSecretManager().recover(state);
 
+<<<<<<< HEAD
+=======
+    // recover reservations
+    if (reservationSystem != null) {
+      reservationSystem.recover(state);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // recover applications
     rmAppManager.recover(state);
 

@@ -27,7 +27,9 @@ import org.apache.hadoop.metrics.MetricsRecord;
  * Each time its value is set, it is published only *once* at the next update
  * call.
  *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.LimitedPrivate({"HDFS", "MapReduce"})
 public class MetricsLongValue extends MetricsBase{  
   private long value;
@@ -82,6 +84,7 @@ public class MetricsLongValue extends MetricsBase{
    *
    * @param mr
    */
+  @Override
   public synchronized void pushMetric(final MetricsRecord mr) {
     if (changed) 
       mr.setMetric(getName(), value);

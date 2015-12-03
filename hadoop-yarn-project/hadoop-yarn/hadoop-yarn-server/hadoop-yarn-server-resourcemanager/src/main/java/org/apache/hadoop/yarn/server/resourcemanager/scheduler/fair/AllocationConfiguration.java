@@ -29,6 +29,11 @@ import org.apache.hadoop.yarn.api.records.QueueACL;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.ReservationSchedulerConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
+import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.util.resource.Resources;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -36,7 +41,12 @@ import com.google.common.annotations.VisibleForTesting;
 public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   private static final AccessControlList EVERYBODY_ACL = new AccessControlList("*");
   private static final AccessControlList NOBODY_ACL = new AccessControlList(" ");
+<<<<<<< HEAD
   
+=======
+  private static final ResourceCalculator RESOURCE_CALCULATOR =
+      new DefaultResourceCalculator();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   // Minimum resource allocation for each queue
   private final Map<String, Resource> minQueueResources;
   // Maximum amount of resources per queue
@@ -53,6 +63,10 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   final Map<String, Integer> userMaxApps;
   private final int userMaxAppsDefault;
   private final int queueMaxAppsDefault;
+<<<<<<< HEAD
+=======
+  private final Resource queueMaxResourcesDefault;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // Maximum resource share for each leaf queue that can be used to run AMs
   final Map<String, Float> queueMaxAMShares;
@@ -99,7 +113,12 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
       Map<String, Integer> queueMaxApps, Map<String, Integer> userMaxApps,
       Map<String, ResourceWeights> queueWeights,
       Map<String, Float> queueMaxAMShares, int userMaxAppsDefault,
+<<<<<<< HEAD
       int queueMaxAppsDefault, float queueMaxAMShareDefault,
+=======
+      int queueMaxAppsDefault, Resource queueMaxResourcesDefault,
+      float queueMaxAMShareDefault,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Map<String, SchedulingPolicy> schedulingPolicies,
       SchedulingPolicy defaultSchedulingPolicy,
       Map<String, Long> minSharePreemptionTimeouts,
@@ -117,6 +136,10 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     this.queueMaxAMShares = queueMaxAMShares;
     this.queueWeights = queueWeights;
     this.userMaxAppsDefault = userMaxAppsDefault;
+<<<<<<< HEAD
+=======
+    this.queueMaxResourcesDefault = queueMaxResourcesDefault;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.queueMaxAppsDefault = queueMaxAppsDefault;
     this.queueMaxAMShareDefault = queueMaxAMShareDefault;
     this.defaultSchedulingPolicy = defaultSchedulingPolicy;
@@ -140,6 +163,10 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     queueMaxAMShares = new HashMap<String, Float>();
     userMaxAppsDefault = Integer.MAX_VALUE;
     queueMaxAppsDefault = Integer.MAX_VALUE;
+<<<<<<< HEAD
+=======
+    queueMaxResourcesDefault = Resources.unbounded();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     queueMaxAMShareDefault = 0.5f;
     queueAcls = new HashMap<String, Map<QueueACL, AccessControlList>>();
     minSharePreemptionTimeouts = new HashMap<String, Long>();
@@ -243,7 +270,22 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
 
   public Resource getMaxResources(String queueName) {
     Resource maxQueueResource = maxQueueResources.get(queueName);
+<<<<<<< HEAD
     return (maxQueueResource == null) ? Resources.unbounded() : maxQueueResource;
+=======
+    if (maxQueueResource == null) {
+      Resource minQueueResource = minQueueResources.get(queueName);
+      if (minQueueResource != null &&
+          Resources.greaterThan(RESOURCE_CALCULATOR, Resources.unbounded(),
+          minQueueResource, queueMaxResourcesDefault)) {
+        return minQueueResource;
+      } else {
+        return queueMaxResourcesDefault;
+      }
+    } else {
+      return maxQueueResource;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   public boolean hasAccess(String queueName, QueueACL acl,
@@ -337,4 +379,8 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   public void setAverageCapacity(int avgCapacity) {
     globalReservationQueueConfig.setAverageCapacity(avgCapacity);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

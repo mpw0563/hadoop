@@ -21,6 +21,10 @@ package org.apache.hadoop.yarn.server.resourcemanager.metrics;
 import java.util.Set;
 
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class ApplicationCreatedEvent extends
     SystemMetricsEvent {
@@ -33,6 +37,12 @@ public class ApplicationCreatedEvent extends
   private long submittedTime;
   private Set<String> appTags;
   private boolean unmanagedApplication;
+<<<<<<< HEAD
+=======
+  private Priority applicationPriority;
+  private String appNodeLabelsExpression;
+  private String amNodeLabelsExpression;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public ApplicationCreatedEvent(ApplicationId appId,
       String name,
@@ -42,7 +52,14 @@ public class ApplicationCreatedEvent extends
       long submittedTime,
       long createdTime,
       Set<String> appTags,
+<<<<<<< HEAD
       boolean unmanagedApplication) {
+=======
+      boolean unmanagedApplication,
+      Priority applicationPriority,
+      String appNodeLabelsExpression,
+      String amNodeLabelsExpression) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     super(SystemMetricsEventType.APP_CREATED, createdTime);
     this.appId = appId;
     this.name = name;
@@ -52,6 +69,12 @@ public class ApplicationCreatedEvent extends
     this.submittedTime = submittedTime;
     this.appTags = appTags;
     this.unmanagedApplication = unmanagedApplication;
+<<<<<<< HEAD
+=======
+    this.applicationPriority = applicationPriority;
+    this.appNodeLabelsExpression = appNodeLabelsExpression;
+    this.amNodeLabelsExpression = amNodeLabelsExpression;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -90,4 +113,19 @@ public class ApplicationCreatedEvent extends
   public boolean isUnmanagedApp() {
     return unmanagedApplication;
   }
+<<<<<<< HEAD
+=======
+
+  public Priority getApplicationPriority() {
+    return applicationPriority;
+  }
+
+  public String getAppNodeLabelsExpression() {
+    return appNodeLabelsExpression;
+  }
+
+  public String getAmNodeLabelsExpression() {
+    return amNodeLabelsExpression;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

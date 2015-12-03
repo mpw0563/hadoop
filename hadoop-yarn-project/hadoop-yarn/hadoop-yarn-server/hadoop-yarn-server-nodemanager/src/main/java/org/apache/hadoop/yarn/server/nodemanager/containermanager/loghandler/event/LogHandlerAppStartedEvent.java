@@ -24,18 +24,25 @@ import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
 import org.apache.hadoop.yarn.api.records.LogAggregationContext;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.logaggregation.ContainerLogsRetentionPolicy;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class LogHandlerAppStartedEvent extends LogHandlerEvent {
 
   private final ApplicationId applicationId;
+<<<<<<< HEAD
   private final ContainerLogsRetentionPolicy retentionPolicy;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final String user;
   private final Credentials credentials;
   private final Map<ApplicationAccessType, String> appAcls;
   private final LogAggregationContext logAggregationContext;
 
   public LogHandlerAppStartedEvent(ApplicationId appId, String user,
+<<<<<<< HEAD
       Credentials credentials, ContainerLogsRetentionPolicy retentionPolicy,
       Map<ApplicationAccessType, String> appAcls) {
     this(appId, user, credentials, retentionPolicy, appAcls, null);
@@ -44,12 +51,23 @@ public class LogHandlerAppStartedEvent extends LogHandlerEvent {
   public LogHandlerAppStartedEvent(ApplicationId appId, String user,
       Credentials credentials, ContainerLogsRetentionPolicy retentionPolicy,
       Map<ApplicationAccessType, String> appAcls,
+=======
+      Credentials credentials, Map<ApplicationAccessType, String> appAcls) {
+    this(appId, user, credentials, appAcls, null);
+  }
+
+  public LogHandlerAppStartedEvent(ApplicationId appId, String user,
+      Credentials credentials, Map<ApplicationAccessType, String> appAcls,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LogAggregationContext logAggregationContext) {
     super(LogHandlerEventType.APPLICATION_STARTED);
     this.applicationId = appId;
     this.user = user;
     this.credentials = credentials;
+<<<<<<< HEAD
     this.retentionPolicy = retentionPolicy;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.appAcls = appAcls;
     this.logAggregationContext = logAggregationContext;
   }
@@ -62,10 +80,13 @@ public class LogHandlerAppStartedEvent extends LogHandlerEvent {
     return this.credentials;
   }
 
+<<<<<<< HEAD
   public ContainerLogsRetentionPolicy getLogRetentionPolicy() {
     return this.retentionPolicy;
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public String getUser() {
     return this.user;
   }

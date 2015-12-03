@@ -14,7 +14,11 @@
 package org.apache.hadoop.security.authentication.client;
 
 /**
+<<<<<<< HEAD
  * Exception thrown when an authentication error occurrs.
+=======
+ * Exception thrown when an authentication error occurs.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  */
 public class AuthenticationException extends Exception {
   

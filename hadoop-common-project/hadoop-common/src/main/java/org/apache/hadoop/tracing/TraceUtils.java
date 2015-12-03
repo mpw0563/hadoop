@@ -24,7 +24,11 @@ import java.util.List;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.tracing.SpanReceiverInfo.ConfigurationPair;
+<<<<<<< HEAD
 import org.apache.htrace.HTraceConfiguration;
+=======
+import org.apache.htrace.core.HTraceConfiguration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * This class provides utility functions for tracing.
@@ -32,6 +36,10 @@ import org.apache.htrace.HTraceConfiguration;
 @InterfaceAudience.Private
 public class TraceUtils {
   private static List<ConfigurationPair> EMPTY = Collections.emptyList();
+<<<<<<< HEAD
+=======
+  static final String DEFAULT_HADOOP_PREFIX = "hadoop.htrace.";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public static HTraceConfiguration wrapHadoopConf(final String prefix,
         final Configuration conf) {
@@ -47,16 +55,39 @@ public class TraceUtils {
     return new HTraceConfiguration() {
       @Override
       public String get(String key) {
+<<<<<<< HEAD
         return get(key, "");
+=======
+        String ret = getInternal(prefix + key);
+        if (ret != null) {
+          return ret;
+        }
+        return getInternal(DEFAULT_HADOOP_PREFIX  + key);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       @Override
       public String get(String key, String defaultValue) {
+<<<<<<< HEAD
         String prefixedKey = prefix + key;
         if (extraMap.containsKey(prefixedKey)) {
           return extraMap.get(prefixedKey);
         }
         return conf.get(prefixedKey, defaultValue);
+=======
+        String ret = get(key);
+        if (ret != null) {
+          return ret;
+        }
+        return defaultValue;
+      }
+
+      private String getInternal(String key) {
+        if (extraMap.containsKey(key)) {
+          return extraMap.get(key);
+        }
+        return conf.get(key);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     };
   }

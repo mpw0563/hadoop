@@ -22,6 +22,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceUsage;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.LeafQueue;
 
 @XmlRootElement
@@ -40,15 +44,26 @@ public class CapacitySchedulerLeafQueueInfo extends CapacitySchedulerQueueInfo {
   protected ResourceInfo usedAMResource;
   protected ResourceInfo userAMResourceLimit;
   protected boolean preemptionDisabled;
+<<<<<<< HEAD
   
+=======
+  protected String defaultNodeLabelExpression;
+  protected int defaultPriority;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @XmlTransient
   protected String orderingPolicyInfo;
 
   CapacitySchedulerLeafQueueInfo() {
   };
 
+<<<<<<< HEAD
   CapacitySchedulerLeafQueueInfo(LeafQueue q, String nodeLabel) {
     super(q, nodeLabel);
+=======
+  CapacitySchedulerLeafQueueInfo(LeafQueue q) {
+    super(q);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     numActiveApplications = q.getNumActiveApplications();
     numPendingApplications = q.getNumPendingApplications();
     numContainers = q.getNumContainers();
@@ -62,6 +77,16 @@ public class CapacitySchedulerLeafQueueInfo extends CapacitySchedulerQueueInfo {
     userAMResourceLimit = new ResourceInfo(q.getUserAMResourceLimit());
     preemptionDisabled = q.getPreemptionDisabled();
     orderingPolicyInfo = q.getOrderingPolicy().getInfo();
+<<<<<<< HEAD
+=======
+    defaultNodeLabelExpression = q.getDefaultNodeLabelExpression();
+    defaultPriority = q.getDefaultApplicationPriority().getPriority();
+  }
+
+  @Override
+  protected void populateQueueResourceUsage(ResourceUsage queueResourceUsage) {
+    resources = new ResourceUsageInfo(queueResourceUsage);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public int getNumActiveApplications() {
@@ -116,4 +141,15 @@ public class CapacitySchedulerLeafQueueInfo extends CapacitySchedulerQueueInfo {
   public String getOrderingPolicyInfo() {
     return orderingPolicyInfo;
   }
+<<<<<<< HEAD
+=======
+
+  public String getDefaultNodeLabelExpression() {
+    return defaultNodeLabelExpression;
+  }
+
+  public int getDefaultApplicationPriority() {
+    return defaultPriority;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

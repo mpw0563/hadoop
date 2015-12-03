@@ -27,7 +27,11 @@ import org.apache.hadoop.security.token.TokenRenewer;
 public class FakeRenewer extends TokenRenewer {
   static Token<?> lastRenewed = null;
   static Token<?> lastCanceled = null;
+<<<<<<< HEAD
   static final Text KIND = new Text("TESTING-TOKEN-KIND");
+=======
+  public static final Text KIND = new Text("TESTING-TOKEN-KIND");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @Override
   public boolean handleKind(Text kind) {
@@ -54,4 +58,15 @@ public class FakeRenewer extends TokenRenewer {
     lastRenewed = null;
     lastCanceled = null;
   }
+<<<<<<< HEAD
+=======
+
+  public static Token<?> getLastRenewed() {
+    return lastRenewed;
+  }
+
+  public static Token<?> getLastCanceled() {
+    return lastCanceled;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

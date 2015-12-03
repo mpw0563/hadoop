@@ -42,8 +42,13 @@ import org.apache.hadoop.util.Time;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.*;
+<<<<<<< HEAD
 import org.apache.htrace.Trace;
 import org.apache.htrace.TraceScope;
+=======
+import org.apache.htrace.core.TraceScope;
+import org.apache.htrace.core.Tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /** An RpcEngine implementation for Writable data. */
 @InterfaceStability.Evolving
@@ -232,6 +237,7 @@ public class WritableRpcEngine implements RpcEngine {
       long startTime = 0;
       if (LOG.isDebugEnabled()) {
         startTime = Time.now();
+<<<<<<< HEAD
       }
       TraceScope traceScope = null;
       if (Trace.isTracing()) {
@@ -245,6 +251,26 @@ public class WritableRpcEngine implements RpcEngine {
       } finally {
         if (traceScope != null) traceScope.close();
       }
+=======
+      }
+
+      // if Tracing is on then start a new span for this rpc.
+      // guard it in the if statement to make sure there isn't
+      // any extra string manipulation.
+      Tracer tracer = Tracer.curThreadTracer();
+      TraceScope traceScope = null;
+      if (tracer != null) {
+        traceScope = tracer.newScope(RpcClientUtil.methodToTraceString(method));
+      }
+      ObjectWritable value;
+      try {
+        value = (ObjectWritable)
+          client.call(RPC.RpcKind.RPC_WRITABLE, new Invocation(method, args),
+            remoteId, fallbackToSimpleAuth);
+      } finally {
+        if (traceScope != null) traceScope.close();
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (LOG.isDebugEnabled()) {
         long callTime = Time.now() - startTime;
         LOG.debug("Call: " + method.getName() + " " + callTime);
@@ -328,7 +354,11 @@ public class WritableRpcEngine implements RpcEngine {
 
   /** An RPC Server. */
   public static class Server extends RPC.Server {
+<<<<<<< HEAD
     /**
+=======
+    /** 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * Construct an RPC server.
      * @param instance the instance whose methods will be called
      * @param conf the configuration to use
@@ -441,6 +471,7 @@ public class WritableRpcEngine implements RpcEngine {
     }
     
     static class WritableRpcInvoker implements RpcInvoker {
+<<<<<<< HEAD
 
      @Override
       public Writable call(org.apache.hadoop.ipc.RPC.Server server,
@@ -450,6 +481,17 @@ public class WritableRpcEngine implements RpcEngine {
         Invocation call = (Invocation)rpcRequest;
         if (server.verbose) log("Call: " + call);
 
+=======
+
+     @Override
+      public Writable call(org.apache.hadoop.ipc.RPC.Server server,
+          String protocolName, Writable rpcRequest, long receivedTime)
+          throws IOException, RPC.VersionMismatch {
+
+        Invocation call = (Invocation)rpcRequest;
+        if (server.verbose) log("Call: " + call);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         // Verify writable rpc version
         if (call.getRpcVersion() != writableRpcVersion) {
           // Client is using a different version of WritableRpc
@@ -551,6 +593,12 @@ public class WritableRpcEngine implements RpcEngine {
          server.rpcMetrics.addRpcProcessingTime(processingTime);
          server.rpcDetailedMetrics.addProcessingTime(detailedMetricsName,
              processingTime);
+<<<<<<< HEAD
+=======
+          if (server.isLogSlowRPC()) {
+            server.logSlowRpcCalls(call.getMethodName(), processingTime);
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
        }
       }
     }

@@ -19,7 +19,11 @@
 package org.apache.hadoop.tools.util;
 
 /**
+<<<<<<< HEAD
  *  WorkRequest<T> is a simple container for items of class T and its
+=======
+ *  WorkRequest{@literal <T>} is a simple container for items of class T and its
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  *  corresponding retry counter that indicates how many times this item
  *  was previously attempted to be processed.
  */

@@ -20,6 +20,7 @@ package org.apache.hadoop.tools.mapred.lib;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.SequenceFile;
@@ -28,6 +29,12 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.tools.CopyListingFileStatus;
 import org.apache.hadoop.tools.DistCpConstants;
+=======
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.tools.CopyListingFileStatus;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.tools.util.DistCpUtils;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileRecordReader;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
@@ -47,6 +54,7 @@ import java.io.IOException;
  */
 class DynamicInputChunk<K, V> {
   private static Log LOG = LogFactory.getLog(DynamicInputChunk.class);
+<<<<<<< HEAD
 
   private static Configuration configuration;
   private static Path chunkRootPath;
@@ -91,12 +99,31 @@ class DynamicInputChunk<K, V> {
   private void openForWrite() throws IOException {
     writer = SequenceFile.createWriter(
             chunkFilePath.getFileSystem(configuration), configuration,
+=======
+  private Path chunkFilePath;
+  private SequenceFileRecordReader<K, V> reader;
+  private SequenceFile.Writer writer;
+  private DynamicInputChunkContext chunkContext;
+
+  DynamicInputChunk(String chunkId, DynamicInputChunkContext chunkContext)
+                                                      throws IOException {
+    this.chunkContext = chunkContext;
+    chunkFilePath = new Path(chunkContext.getChunkRootPath(),
+        chunkContext.getChunkFilePrefix() + chunkId);
+    openForWrite();
+  }
+
+  private void openForWrite() throws IOException {
+    writer = SequenceFile.createWriter(
+            chunkContext.getFs(), chunkContext.getConfiguration(),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             chunkFilePath, Text.class, CopyListingFileStatus.class,
             SequenceFile.CompressionType.NONE);
 
   }
 
   /**
+<<<<<<< HEAD
    * Factory method to create chunk-files for writing to.
    * (For instance, when the DynamicInputFormat splits the input-file into
    * chunks.)
@@ -113,6 +140,8 @@ class DynamicInputChunk<K, V> {
   }
 
   /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Method to write records into a chunk.
    * @param key Key from the listing file.
    * @param value Corresponding value from the listing file.
@@ -135,12 +164,18 @@ class DynamicInputChunk<K, V> {
    * @throws IOException Exception on failure to reassign.
    */
   public void assignTo(TaskID taskId) throws IOException {
+<<<<<<< HEAD
     Path newPath = new Path(chunkRootPath, taskId.toString());
     if (!fs.rename(chunkFilePath, newPath)) {
+=======
+    Path newPath = new Path(chunkContext.getChunkRootPath(), taskId.toString());
+    if (!chunkContext.getFs().rename(chunkFilePath, newPath)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LOG.warn(chunkFilePath + " could not be assigned to " + taskId);
     }
   }
 
+<<<<<<< HEAD
   private DynamicInputChunk(Path chunkFilePath,
                             TaskAttemptContext taskAttemptContext)
                                    throws IOException, InterruptedException {
@@ -148,6 +183,15 @@ class DynamicInputChunk<K, V> {
       initializeChunkInvariants(taskAttemptContext.getConfiguration());
 
     this.chunkFilePath = chunkFilePath;
+=======
+  public DynamicInputChunk(Path chunkFilePath,
+      TaskAttemptContext taskAttemptContext,
+      DynamicInputChunkContext chunkContext) throws IOException,
+      InterruptedException {
+
+    this.chunkFilePath = chunkFilePath;
+    this.chunkContext = chunkContext;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     openForRead(taskAttemptContext);
   }
 
@@ -155,6 +199,7 @@ class DynamicInputChunk<K, V> {
           throws IOException, InterruptedException {
     reader = new SequenceFileRecordReader<K, V>();
     reader.initialize(new FileSplit(chunkFilePath, 0,
+<<<<<<< HEAD
             DistCpUtils.getFileSize(chunkFilePath, configuration), null),
             taskAttemptContext);
   }
@@ -194,6 +239,10 @@ class DynamicInputChunk<K, V> {
     }
 
     return null;
+=======
+            DistCpUtils.getFileSize(chunkFilePath,
+                chunkContext.getConfiguration()), null), taskAttemptContext);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -204,6 +253,7 @@ class DynamicInputChunk<K, V> {
    */
   public void release() throws IOException {
     close();
+<<<<<<< HEAD
     if (!fs.delete(chunkFilePath, false)) {
       LOG.error("Unable to release chunk at path: " + chunkFilePath);
       throw new IOException("Unable to release chunk at path: " + chunkFilePath);
@@ -217,6 +267,15 @@ class DynamicInputChunk<K, V> {
     return chunkFiles;
   }
 
+=======
+    if (!chunkContext.getFs().delete(chunkFilePath, false)) {
+      LOG.error("Unable to release chunk at path: " + chunkFilePath);
+      throw new IOException("Unable to release chunk at path: " +
+          chunkFilePath);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Getter for the chunk-file's path, on HDFS.
    * @return The qualified path to the chunk-file.
@@ -234,6 +293,7 @@ class DynamicInputChunk<K, V> {
     return reader;
   }
 
+<<<<<<< HEAD
   /**
    * Getter for the number of chunk-files left in the chunk-file directory.
    * Useful to determine how many chunks (and hence, records) are left to be
@@ -244,4 +304,6 @@ class DynamicInputChunk<K, V> {
   public static int getNumChunksLeft() {
     return numChunksLeft;
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -106,7 +106,11 @@ public class PathData implements Comparable<PathData> {
 
   /**
    * Validates the given Windows path.
+<<<<<<< HEAD
    * @param pathString a String of the path suppliued by the user.
+=======
+   * @param pathString a String of the path supplied by the user.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @return true if the URI scheme was not present in the pathString but
    * inferred; false, otherwise.
    * @throws IOException if anything goes wrong

@@ -54,6 +54,10 @@ import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.SecretManager.InvalidToken;
 import org.apache.hadoop.security.token.Token;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.junit.After;
 import org.junit.Assert;
@@ -199,6 +203,34 @@ public class TestDelegationToken {
   }
 
   @Test
+  public void testDelegationTokenWebHdfsApi() throws Exception {
+    GenericTestUtils.setLogLevel(NamenodeWebHdfsMethods.LOG, Level.ALL);
+    final String uri = WebHdfsConstants.WEBHDFS_SCHEME + "://"
+        + config.get(DFSConfigKeys.DFS_NAMENODE_HTTP_ADDRESS_KEY);
+    //get file system as JobTracker
+    final UserGroupInformation ugi = UserGroupInformation.createUserForTesting(
+        "JobTracker", new String[]{"user"});
+    final WebHdfsFileSystem webhdfs = ugi.doAs(
+        new PrivilegedExceptionAction<WebHdfsFileSystem>() {
+      @Override
+      public WebHdfsFileSystem run() throws Exception {
+        return (WebHdfsFileSystem)FileSystem.get(new URI(uri), config);
+      }
+    });
+
+    { //test addDelegationTokens(..)
+      Credentials creds = new Credentials();
+      final Token<?> tokens[] = webhdfs.addDelegationTokens("JobTracker", creds);
+      Assert.assertEquals(1, tokens.length);
+      Assert.assertEquals(1, creds.numberOfTokens());
+      Assert.assertSame(tokens[0], creds.getAllTokens().iterator().next());
+      checkTokenIdentifier(ugi, tokens[0]);
+      final Token<?> tokens2[] = webhdfs.addDelegationTokens("JobTracker", creds);
+      Assert.assertEquals(0, tokens2.length);
+    }
+  }
+
+  @Test
   public void testDelegationTokenWithDoAs() throws Exception {
     final DistributedFileSystem dfs = cluster.getFileSystem();
     final Credentials creds = new Credentials();
@@ -317,4 +349,16 @@ public class TestDelegationToken {
           }
         });
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testDelegationTokenIdentifierToString() throws Exception {
+    DelegationTokenIdentifier dtId = new DelegationTokenIdentifier(new Text(
+        "SomeUser"), new Text("JobTracker"), null);
+    Assert.assertEquals("HDFS_DELEGATION_TOKEN token 0" +
+        " for SomeUser with renewer JobTracker",
+        dtId.toString());
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

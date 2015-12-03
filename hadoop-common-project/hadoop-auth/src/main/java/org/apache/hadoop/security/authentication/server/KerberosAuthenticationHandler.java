@@ -37,6 +37,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.net.InetAddress;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -342,7 +346,12 @@ public class KerberosAuthenticationHandler implements AuthenticationHandler {
       authorization = authorization.substring(KerberosAuthenticator.NEGOTIATE.length()).trim();
       final Base64 base64 = new Base64(0);
       final byte[] clientToken = base64.decode(authorization);
+<<<<<<< HEAD
       final String serverName = request.getServerName();
+=======
+      final String serverName = InetAddress.getByName(request.getServerName())
+                                           .getCanonicalHostName();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       try {
         token = Subject.doAs(serverSubject, new PrivilegedExceptionAction<AuthenticationToken>() {
 

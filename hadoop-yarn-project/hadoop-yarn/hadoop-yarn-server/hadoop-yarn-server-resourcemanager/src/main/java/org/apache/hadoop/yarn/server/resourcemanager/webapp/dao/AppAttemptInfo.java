@@ -27,7 +27,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.AbstractYarnScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.webapp.RMAppAttemptBlock;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.webapp.util.WebAppUtils;
 
@@ -46,7 +49,12 @@ public class AppAttemptInfo {
   public AppAttemptInfo() {
   }
 
+<<<<<<< HEAD
   public AppAttemptInfo(ResourceManager rm, RMAppAttempt attempt, String user) {
+=======
+  public AppAttemptInfo(ResourceManager rm, RMAppAttempt attempt, String user,
+      String schemePrefix) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.startTime = 0;
     this.containerId = "";
     this.nodeHttpAddress = "";
@@ -61,9 +69,15 @@ public class AppAttemptInfo {
         this.containerId = masterContainer.getId().toString();
         this.nodeHttpAddress = masterContainer.getNodeHttpAddress();
         this.nodeId = masterContainer.getNodeId().toString();
+<<<<<<< HEAD
         this.logsLink =
             WebAppUtils.getRunningLogURL("//" + masterContainer.getNodeHttpAddress(),
                 ConverterUtils.toString(masterContainer.getId()), user);
+=======
+        this.logsLink = WebAppUtils.getRunningLogURL(schemePrefix
+            + masterContainer.getNodeHttpAddress(),
+            ConverterUtils.toString(masterContainer.getId()), user);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         if (rm.getResourceScheduler() instanceof AbstractYarnScheduler) {
           AbstractYarnScheduler ayScheduler =
               (AbstractYarnScheduler) rm.getResourceScheduler();

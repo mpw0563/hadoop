@@ -713,7 +713,10 @@ public class HarFileSystem extends FileSystem {
     throw new IOException("Har: create not allowed.");
   }
 
+<<<<<<< HEAD
   @SuppressWarnings("deprecation")
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public FSDataOutputStream createNonRecursive(Path f, boolean overwrite,
       int bufferSize, short replication, long blockSize, Progressable progress)
@@ -952,7 +955,11 @@ public class HarFileSystem extends FileSystem {
         return (ret <= 0) ? -1: (oneBytebuff[0] & 0xff);
       }
       
+<<<<<<< HEAD
       // NB: currently this method actually never executed becusae
+=======
+      // NB: currently this method actually never executed because
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // java.io.DataInputStream.read(byte[]) directly delegates to 
       // method java.io.InputStream.read(byte[], int, int).
       // However, potentially it can be invoked, so leave it intact for now.
@@ -1238,6 +1245,15 @@ public class HarFileSystem extends FileSystem {
     return fs.getUsed();
   }
 
+<<<<<<< HEAD
+=======
+  /** Return the total size of all files from a specified path.*/
+  @Override
+  public long getUsed(Path path) throws IOException {
+    return fs.getUsed(path);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @SuppressWarnings("deprecation")
   @Override
   public long getDefaultBlockSize() {

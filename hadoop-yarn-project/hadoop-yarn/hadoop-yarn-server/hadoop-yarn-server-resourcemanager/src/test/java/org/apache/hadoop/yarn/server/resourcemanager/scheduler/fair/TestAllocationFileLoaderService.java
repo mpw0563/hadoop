@@ -153,15 +153,27 @@ public class TestAllocationFileLoaderService {
     // Give queue A a minimum of 1024 M
     out.println("<queue name=\"queueA\">");
     out.println("<minResources>1024mb,0vcores</minResources>");
+<<<<<<< HEAD
+=======
+    out.println("<maxResources>2048mb,10vcores</maxResources>");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     out.println("</queue>");
     // Give queue B a minimum of 2048 M
     out.println("<queue name=\"queueB\">");
     out.println("<minResources>2048mb,0vcores</minResources>");
+<<<<<<< HEAD
+=======
+    out.println("<maxResources>5120mb,110vcores</maxResources>");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     out.println("<aclAdministerApps>alice,bob admins</aclAdministerApps>");
     out.println("<schedulingPolicy>fair</schedulingPolicy>");
     out.println("</queue>");
     // Give queue C no minimum
     out.println("<queue name=\"queueC\">");
+<<<<<<< HEAD
+=======
+    out.println("<minResources>5120mb,0vcores</minResources>");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     out.println("<aclSubmitApps>alice,bob admins</aclSubmitApps>");
     out.println("</queue>");
     // Give queue D a limit of 3 running apps and 0.4f maxAMShare
@@ -190,6 +202,11 @@ public class TestAllocationFileLoaderService {
     out.println("</queue>");
     // Set default limit of apps per queue to 15
     out.println("<queueMaxAppsDefault>15</queueMaxAppsDefault>");
+<<<<<<< HEAD
+=======
+    // Set default limit of max resource per queue to 4G and 100 cores
+    out.println("<queueMaxResourcesDefault>4096mb,100vcores</queueMaxResourcesDefault>");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Set default limit of apps per user to 5
     out.println("<userMaxAppsDefault>5</userMaxAppsDefault>");
     // Set default limit of AMResourceShare to 0.5f
@@ -222,11 +239,29 @@ public class TestAllocationFileLoaderService {
     assertEquals(Resources.createResource(0),
         queueConf.getMinResources("root." + YarnConfiguration.DEFAULT_QUEUE_NAME));
 
+<<<<<<< HEAD
+=======
+    assertEquals(Resources.createResource(2048, 10),
+        queueConf.getMaxResources("root.queueA"));
+    assertEquals(Resources.createResource(5120, 110),
+        queueConf.getMaxResources("root.queueB"));
+    assertEquals(Resources.createResource(5120, 0),
+        queueConf.getMaxResources("root.queueC"));
+    assertEquals(Resources.createResource(4096, 100),
+        queueConf.getMaxResources("root.queueD"));
+    assertEquals(Resources.createResource(4096, 100),
+        queueConf.getMaxResources("root.queueE"));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(Resources.createResource(1024, 0),
         queueConf.getMinResources("root.queueA"));
     assertEquals(Resources.createResource(2048, 0),
         queueConf.getMinResources("root.queueB"));
+<<<<<<< HEAD
     assertEquals(Resources.createResource(0),
+=======
+    assertEquals(Resources.createResource(5120, 0),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         queueConf.getMinResources("root.queueC"));
     assertEquals(Resources.createResource(0),
         queueConf.getMinResources("root.queueD"));

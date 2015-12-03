@@ -17,6 +17,7 @@
 
 package org.apache.hadoop.hdfs.server.datanode;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -35,6 +36,16 @@ import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.UserGroupInformation.AuthenticationMethod;
+=======
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeys;
+import org.apache.hadoop.hdfs.DFSConfigKeys;
+import org.apache.hadoop.hdfs.HdfsConfiguration;
+import org.apache.hadoop.hdfs.MiniDFSCluster;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.apache.hadoop.security.SecurityUtilTestHelper.isExternalKdcRunning;
 import org.junit.Assume;
 import org.junit.Before;
@@ -67,7 +78,11 @@ public class TestStartSecureDataNode {
   }
 
   @Test
+<<<<<<< HEAD
   public void testSecureNameNode() throws IOException, InterruptedException {
+=======
+  public void testSecureNameNode() throws Exception {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MiniDFSCluster cluster = null;
     try {
       String nnPrincipal =
@@ -105,9 +120,15 @@ public class TestStartSecureDataNode {
         .build();
       cluster.waitActive();
       assertTrue(cluster.isDataNodeUp());
+<<<<<<< HEAD
 
     } catch (Exception ex) {
       ex.printStackTrace();
+=======
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      throw ex;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       if (cluster != null) {
         cluster.shutdown();

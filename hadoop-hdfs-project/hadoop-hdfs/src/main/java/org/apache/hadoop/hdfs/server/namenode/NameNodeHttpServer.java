@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.ha.HAServiceProtocol;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
@@ -68,6 +69,7 @@ public class NameNodeHttpServer {
   }
 
   private void initWebHdfs(Configuration conf) throws IOException {
+<<<<<<< HEAD
     if (WebHdfsFileSystem.isEnabled(conf)) {
       // set user pattern based on configuration file
       UserParam.setUserPattern(conf.get(
@@ -92,6 +94,30 @@ public class NameNodeHttpServer {
           .getPackage().getName() + ";" + Param.class.getPackage().getName(),
           pathSpec);
     }
+=======
+    // set user pattern based on configuration file
+    UserParam.setUserPattern(conf.get(
+        HdfsClientConfigKeys.DFS_WEBHDFS_USER_PATTERN_KEY,
+        HdfsClientConfigKeys.DFS_WEBHDFS_USER_PATTERN_DEFAULT));
+
+    // add authentication filter for webhdfs
+    final String className = conf.get(
+        DFSConfigKeys.DFS_WEBHDFS_AUTHENTICATION_FILTER_KEY,
+        DFSConfigKeys.DFS_WEBHDFS_AUTHENTICATION_FILTER_DEFAULT);
+    final String name = className;
+
+    final String pathSpec = WebHdfsFileSystem.PATH_PREFIX + "/*";
+    Map<String, String> params = getAuthFilterParams(conf);
+    HttpServer2.defineFilter(httpServer.getWebAppContext(), name, className,
+        params, new String[] { pathSpec });
+    HttpServer2.LOG.info("Added filter '" + name + "' (class=" + className
+        + ")");
+
+    // add webhdfs packages
+    httpServer.addJerseyResourcePackage(NamenodeWebHdfsMethods.class
+        .getPackage().getName() + ";" + Param.class.getPackage().getName(),
+        pathSpec);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -240,6 +266,7 @@ public class NameNodeHttpServer {
   private static void setupServlets(HttpServer2 httpServer, Configuration conf) {
     httpServer.addInternalServlet("startupProgress",
         StartupProgressServlet.PATH_SPEC, StartupProgressServlet.class);
+<<<<<<< HEAD
     httpServer.addInternalServlet("getDelegationToken",
         GetDelegationTokenServlet.PATH_SPEC, 
         GetDelegationTokenServlet.class, true);
@@ -249,10 +276,13 @@ public class NameNodeHttpServer {
     httpServer.addInternalServlet("cancelDelegationToken", 
         CancelDelegationTokenServlet.PATH_SPEC, 
         CancelDelegationTokenServlet.class, true);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     httpServer.addInternalServlet("fsck", "/fsck", FsckServlet.class,
         true);
     httpServer.addInternalServlet("imagetransfer", ImageServlet.PATH_SPEC,
         ImageServlet.class, true);
+<<<<<<< HEAD
     httpServer.addInternalServlet("listPaths", "/listPaths/*",
         ListPathsServlet.class, false);
     httpServer.addInternalServlet("data", "/data/*",
@@ -261,6 +291,8 @@ public class NameNodeHttpServer {
         FileChecksumServlets.RedirectServlet.class, false);
     httpServer.addInternalServlet("contentSummary", "/contentSummary/*",
         ContentSummaryServlet.class, false);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   static FSImage getFsImageFromContext(ServletContext context) {
@@ -291,4 +323,12 @@ public class NameNodeHttpServer {
       ServletContext context) {
     return (StartupProgress)context.getAttribute(STARTUP_PROGRESS_ATTRIBUTE_KEY);
   }
+<<<<<<< HEAD
 }
+=======
+
+  public static HAServiceProtocol.HAServiceState getNameNodeStateFromContext(ServletContext context) {
+    return getNameNodeFromContext(context).getServiceState();
+  }
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

@@ -89,7 +89,11 @@ If access control list is not defined for a service, the value of `security.serv
 
 * Blocked Access Control ListsIn some cases, it is required to specify blocked access control list for a service. This specifies the list of users and groups who are not authorized to access the service. The format of the blocked access control list is same as that of access control list. The blocked access control list can be specified via `$HADOOP_CONF_DIR/hadoop-policy.xml`. The property name is derived by suffixing with ".blocked".
 
+<<<<<<< HEAD
     Example: The property name of blocked access control list for `security.client.protocol.acl>> will be <<<security.client.protocol.acl.blocked`
+=======
+    Example: The property name of blocked access control list for `security.client.protocol.acl` will be `security.client.protocol.acl.blocked`
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     For a service, it is possible to specify both an access control list and a blocked control list. A user is authorized to access the service if the user is in the access control and not in the blocked access control list.
 

@@ -75,14 +75,23 @@ public class FsDatasetUtil {
    * Find the meta-file for the specified block file
    * and then return the generation stamp from the name of the meta-file.
    */
+<<<<<<< HEAD
   static long getGenerationStampFromFile(File[] listdir, File blockFile) {
+=======
+  static long getGenerationStampFromFile(File[] listdir, File blockFile)
+      throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String blockName = blockFile.getName();
     for (int j = 0; j < listdir.length; j++) {
       String path = listdir[j].getName();
       if (!path.startsWith(blockName)) {
         continue;
       }
+<<<<<<< HEAD
       if (blockFile == listdir[j]) {
+=======
+      if (blockFile.getCanonicalPath().equals(listdir[j].getCanonicalPath())) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         continue;
       }
       return Block.getGenerationStamp(listdir[j].getName());

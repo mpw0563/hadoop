@@ -40,6 +40,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FilterFileSystem;
 import org.apache.hadoop.fs.Path;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapred.InvalidJobConfException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.JobID;
 import org.apache.hadoop.mapreduce.MRConfig;
@@ -53,8 +57,11 @@ import org.apache.hadoop.mapreduce.v2.api.records.TaskType;
 import org.apache.hadoop.util.ApplicationClassLoader;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
+<<<<<<< HEAD
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.LocalResource;
 import org.apache.hadoop.yarn.api.records.LocalResourceType;
@@ -360,6 +367,10 @@ public class TestMRApps {
   }
   
   @SuppressWarnings("deprecation")
+<<<<<<< HEAD
+=======
+  @Test(timeout = 120000, expected = InvalidJobConfException.class)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testSetupDistributedCacheConflicts() throws Exception {
     Configuration conf = new Configuration();
     conf.setClass("fs.mockfs.impl", MockFileSystem.class, FileSystem.class);
@@ -387,6 +398,7 @@ public class TestMRApps {
     Map<String, LocalResource> localResources = 
       new HashMap<String, LocalResource>();
     MRApps.setupDistributedCache(conf, localResources);
+<<<<<<< HEAD
     
     assertEquals(1, localResources.size());
     LocalResource lr = localResources.get("something");
@@ -398,6 +410,12 @@ public class TestMRApps {
   }
   
   @SuppressWarnings("deprecation")
+=======
+  }
+  
+  @SuppressWarnings("deprecation")
+  @Test(timeout = 120000, expected = InvalidJobConfException.class)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testSetupDistributedCacheConflictsFiles() throws Exception {
     Configuration conf = new Configuration();
     conf.setClass("fs.mockfs.impl", MockFileSystem.class, FileSystem.class);
@@ -422,6 +440,7 @@ public class TestMRApps {
     Map<String, LocalResource> localResources = 
       new HashMap<String, LocalResource>();
     MRApps.setupDistributedCache(conf, localResources);
+<<<<<<< HEAD
     
     assertEquals(1, localResources.size());
     LocalResource lr = localResources.get("something");
@@ -430,6 +449,8 @@ public class TestMRApps {
     assertEquals(10l, lr.getSize());
     assertEquals(10l, lr.getTimestamp());
     assertEquals(LocalResourceType.FILE, lr.getType());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @SuppressWarnings("deprecation")

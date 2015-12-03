@@ -38,7 +38,16 @@ public class TestNodeManagerMetrics {
     Resource resource = Records.newRecord(Resource.class);
     resource.setMemory(512); //512MiB
     resource.setVirtualCores(2);
+<<<<<<< HEAD
 
+=======
+    Resource largerResource = Records.newRecord(Resource.class);
+    largerResource.setMemory(1024);
+    largerResource.setVirtualCores(2);
+    Resource smallerResource = Records.newRecord(Resource.class);
+    smallerResource.setMemory(256);
+    smallerResource.setVirtualCores(1);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     metrics.addResource(total);
 
@@ -65,15 +74,29 @@ public class TestNodeManagerMetrics {
     metrics.initingContainer();
     metrics.runningContainer();
 
+<<<<<<< HEAD
+=======
+    // Increase resource for a container
+    metrics.changeContainer(resource, largerResource);
+    // Decrease resource for a container
+    metrics.changeContainer(resource, smallerResource);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Assert.assertTrue(!metrics.containerLaunchDuration.changed());
     metrics.addContainerLaunchDuration(1);
     Assert.assertTrue(metrics.containerLaunchDuration.changed());
 
     // availableGB is expected to be floored,
     // while allocatedGB is expected to be ceiled.
+<<<<<<< HEAD
     // allocatedGB: 3.5GB allocated memory is shown as 4GB
     // availableGB: 4.5GB available memory is shown as 4GB
     checkMetrics(10, 1, 1, 1, 1, 1, 4, 7, 4, 14, 2);
+=======
+    // allocatedGB: 3.75GB allocated memory is shown as 4GB
+    // availableGB: 4.25GB available memory is shown as 4GB
+    checkMetrics(10, 1, 1, 1, 1, 1, 4, 7, 4, 13, 3);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void checkMetrics(int launched, int completed, int failed, int killed,

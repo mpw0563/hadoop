@@ -32,6 +32,10 @@ import org.apache.hadoop.classification.InterfaceStability.Evolving;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.service.AbstractService;
 import org.apache.hadoop.util.ShutdownHookManager;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -138,9 +142,20 @@ public class AsyncDispatcher extends AbstractService implements Dispatcher {
     if (drainEventsOnStop) {
       blockNewEvents = true;
       LOG.info("AsyncDispatcher is draining to stop, igonring any new events.");
+<<<<<<< HEAD
       synchronized (waitForDrained) {
         while (!drained && eventHandlingThread != null
             && eventHandlingThread.isAlive()) {
+=======
+      long endTime = System.currentTimeMillis() + getConfig()
+          .getLong(YarnConfiguration.DISPATCHER_DRAIN_EVENTS_TIMEOUT,
+              YarnConfiguration.DEFAULT_DISPATCHER_DRAIN_EVENTS_TIMEOUT);
+
+      synchronized (waitForDrained) {
+        while (!drained && eventHandlingThread != null
+            && eventHandlingThread.isAlive()
+            && System.currentTimeMillis() < endTime) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           waitForDrained.wait(1000);
           LOG.info("Waiting for AsyncDispatcher to drain. Thread state is :" +
               eventHandlingThread.getState());

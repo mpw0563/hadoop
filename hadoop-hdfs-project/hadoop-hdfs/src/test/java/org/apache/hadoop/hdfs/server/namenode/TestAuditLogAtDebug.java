@@ -22,11 +22,18 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem.DefaultAuditLogger;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,7 +67,11 @@ public class TestAuditLogAtDebug {
                Joiner.on(",").join(debugCommands.get()));
     }
     logger.initialize(conf);
+<<<<<<< HEAD
     ((Log4JLogger) FSNamesystem.auditLog).getLogger().setLevel(level);
+=======
+    GenericTestUtils.setLogLevel(FSNamesystem.auditLog, level);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return spy(logger);
   }
   
@@ -68,7 +79,11 @@ public class TestAuditLogAtDebug {
     logger.logAuditEvent(true, "",
                          Inet4Address.getLoopbackAddress(),
                          command, "", "",
+<<<<<<< HEAD
                          null, null, null);
+=======
+                         null, null, null, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test

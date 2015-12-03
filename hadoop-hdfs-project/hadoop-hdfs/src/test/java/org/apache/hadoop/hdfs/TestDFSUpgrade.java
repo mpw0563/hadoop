@@ -38,8 +38,11 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.inotify.Event;
 import org.apache.hadoop.hdfs.inotify.EventBatch;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.RollingUpgradeAction;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
@@ -48,6 +51,7 @@ import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.StartupOption;
 import org.apache.hadoop.hdfs.server.common.InconsistentFSStateException;
 import org.apache.hadoop.hdfs.server.common.Storage;
 import org.apache.hadoop.hdfs.server.common.StorageInfo;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.namenode.EditLogFileInputStream;
 import org.apache.hadoop.hdfs.server.namenode.EditLogFileOutputStream;
 import org.apache.hadoop.hdfs.server.namenode.FSEditLogOp;
@@ -55,17 +59,26 @@ import org.apache.hadoop.hdfs.server.namenode.NNStorage;
 import org.apache.hadoop.hdfs.server.namenode.NameNodeLayoutVersion;
 import org.apache.hadoop.hdfs.server.namenode.TestParallelImageWrite;
 import org.apache.hadoop.io.IOUtils;
+=======
+import org.apache.hadoop.hdfs.server.namenode.TestParallelImageWrite;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.ipc.RemoteException;
 import org.apache.hadoop.util.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+<<<<<<< HEAD
 import static org.apache.hadoop.hdfs.inotify.Event.CreateEvent;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 
+=======
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
 * This test ensures the appropriate response (successful or failure) from
 * the system when the system is upgraded under various storage state and
@@ -80,7 +93,7 @@ public class TestDFSUpgrade {
   private Configuration conf;
   private int testCounter = 0;
   private MiniDFSCluster cluster = null;
-    
+
   /**
    * Writes an INFO log message containing the parameters.
    */
@@ -465,6 +478,7 @@ public class TestDFSUpgrade {
     }
   }
 
+<<<<<<< HEAD
   @Test
   public void testPreserveEditLogs() throws Exception {
     conf = new HdfsConfiguration();
@@ -527,6 +541,8 @@ public class TestDFSUpgrade {
     }
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static void main(String[] args) throws Exception {
     TestDFSUpgrade t = new TestDFSUpgrade();
     TestDFSUpgrade.initialize();

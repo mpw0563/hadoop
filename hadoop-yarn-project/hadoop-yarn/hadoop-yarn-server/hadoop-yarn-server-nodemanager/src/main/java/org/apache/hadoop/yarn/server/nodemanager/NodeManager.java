@@ -43,6 +43,10 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.JvmPauseMonitor;
 import org.apache.hadoop.util.NodeHealthScriptRunner;
 import org.apache.hadoop.util.ReflectionUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.util.Shell;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.ShutdownHookManager;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.YarnUncaughtExceptionHandler;
@@ -62,7 +66,13 @@ import org.apache.hadoop.yarn.server.nodemanager.containermanager.ContainerManag
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.application.Application;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.container.Container;
 import org.apache.hadoop.yarn.server.nodemanager.metrics.NodeManagerMetrics;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.nodemanager.nodelabels.NodeLabelsProvider;
+=======
+import org.apache.hadoop.yarn.server.nodemanager.nodelabels.ConfigurationNodeLabelsProvider;
+import org.apache.hadoop.yarn.server.nodemanager.nodelabels.NodeLabelsProvider;
+import org.apache.hadoop.yarn.server.nodemanager.nodelabels.ScriptBasedNodeLabelsProvider;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.nodemanager.recovery.NMLeveldbStateStoreService;
 import org.apache.hadoop.yarn.server.nodemanager.recovery.NMNullStateStoreService;
 import org.apache.hadoop.yarn.server.nodemanager.recovery.NMStateStoreService;
@@ -93,7 +103,12 @@ public class NodeManager extends CompositeService
   private AsyncDispatcher dispatcher;
   private ContainerManagerImpl containerManager;
   private NodeStatusUpdater nodeStatusUpdater;
+<<<<<<< HEAD
   private static CompositeServiceShutdownHook nodeManagerShutdownHook; 
+=======
+  private NodeResourceMonitor nodeResourceMonitor;
+  private static CompositeServiceShutdownHook nodeManagerShutdownHook;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private NMStateStoreService nmStore = null;
   
   private AtomicBoolean isStopping = new AtomicBoolean(false);
@@ -121,12 +136,50 @@ public class NodeManager extends CompositeService
         metrics, nodeLabelsProvider);
   }
 
+<<<<<<< HEAD
   @VisibleForTesting
   protected NodeLabelsProvider createNodeLabelsProvider(
       Configuration conf) throws IOException {
     // TODO as part of YARN-2729
     // Need to get the implementation of provider service and return
     return null;
+=======
+  protected NodeLabelsProvider createNodeLabelsProvider(Configuration conf)
+      throws IOException {
+    NodeLabelsProvider provider = null;
+    String providerString =
+        conf.get(YarnConfiguration.NM_NODE_LABELS_PROVIDER_CONFIG, null);
+    if (providerString == null || providerString.trim().length() == 0) {
+      // Seems like Distributed Node Labels configuration is not enabled
+      return provider;
+    }
+    switch (providerString.trim().toLowerCase()) {
+    case YarnConfiguration.CONFIG_NODE_LABELS_PROVIDER:
+      provider = new ConfigurationNodeLabelsProvider();
+      break;
+    case YarnConfiguration.SCRIPT_NODE_LABELS_PROVIDER:
+      provider = new ScriptBasedNodeLabelsProvider();
+      break;
+    default:
+      try {
+        Class<? extends NodeLabelsProvider> labelsProviderClass =
+            conf.getClass(YarnConfiguration.NM_NODE_LABELS_PROVIDER_CONFIG,
+                null, NodeLabelsProvider.class);
+        provider = labelsProviderClass.newInstance();
+      } catch (InstantiationException | IllegalAccessException
+          | RuntimeException e) {
+        LOG.error("Failed to create NodeLabelsProvider based on Configuration",
+            e);
+        throw new IOException(
+            "Failed to create NodeLabelsProvider : " + e.getMessage(), e);
+      }
+    }
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Distributed Node Labels is enabled"
+          + " with provider class as : " + provider.getClass().toString());
+    }
+    return provider;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   protected NodeResourceMonitor createNodeResourceMonitor() {
@@ -138,7 +191,11 @@ public class NodeManager extends CompositeService
       NodeStatusUpdater nodeStatusUpdater, ApplicationACLsManager aclsManager,
       LocalDirsHandlerService dirsHandler) {
     return new ContainerManagerImpl(context, exec, del, nodeStatusUpdater,
+<<<<<<< HEAD
       metrics, aclsManager, dirsHandler);
+=======
+      metrics, dirsHandler);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   protected WebServer createWebServer(Context nmContext,
@@ -286,14 +343,24 @@ public class NodeManager extends CompositeService
       nodeStatusUpdater =
           createNodeStatusUpdater(context, dispatcher, nodeHealthChecker);
     } else {
+<<<<<<< HEAD
       addService(nodeLabelsProvider);
+=======
+      addIfService(nodeLabelsProvider);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       nodeStatusUpdater =
           createNodeStatusUpdater(context, dispatcher, nodeHealthChecker,
               nodeLabelsProvider);
     }
 
+<<<<<<< HEAD
     NodeResourceMonitor nodeResourceMonitor = createNodeResourceMonitor();
     addService(nodeResourceMonitor);
+=======
+    nodeResourceMonitor = createNodeResourceMonitor();
+    addService(nodeResourceMonitor);
+    ((NMContext) context).setNodeResourceMonitor(nodeResourceMonitor);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     containerManager =
         createContainerManager(context, exec, del, nodeStatusUpdater,
@@ -410,9 +477,20 @@ public class NodeManager extends CompositeService
     protected final ConcurrentMap<ContainerId, Container> containers =
         new ConcurrentSkipListMap<ContainerId, Container>();
 
+<<<<<<< HEAD
     private final NMContainerTokenSecretManager containerTokenSecretManager;
     private final NMTokenSecretManagerInNM nmTokenSecretManager;
     private ContainerManagementProtocol containerManager;
+=======
+    protected final ConcurrentMap<ContainerId,
+        org.apache.hadoop.yarn.api.records.Container> increasedContainers =
+            new ConcurrentHashMap<>();
+
+    private final NMContainerTokenSecretManager containerTokenSecretManager;
+    private final NMTokenSecretManagerInNM nmTokenSecretManager;
+    private ContainerManagementProtocol containerManager;
+    private NodeResourceMonitor nodeResourceMonitor;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     private final LocalDirsHandlerService dirsHandler;
     private final ApplicationACLsManager aclsManager;
     private WebServer webServer;
@@ -463,6 +541,15 @@ public class NodeManager extends CompositeService
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public ConcurrentMap<ContainerId, org.apache.hadoop.yarn.api.records.Container>
+        getIncreasedContainers() {
+      return this.increasedContainers;
+    }
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public NMContainerTokenSecretManager getContainerTokenSecretManager() {
       return this.containerTokenSecretManager;
     }
@@ -478,6 +565,18 @@ public class NodeManager extends CompositeService
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public NodeResourceMonitor getNodeResourceMonitor() {
+      return this.nodeResourceMonitor;
+    }
+
+    public void setNodeResourceMonitor(NodeResourceMonitor nodeResourceMonitor) {
+      this.nodeResourceMonitor = nodeResourceMonitor;
+    }
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public ContainerManagementProtocol getContainerManager() {
       return this.containerManager;
     }
@@ -546,6 +645,20 @@ public class NodeManager extends CompositeService
 
   private void initAndStartNodeManager(Configuration conf, boolean hasToReboot) {
     try {
+<<<<<<< HEAD
+=======
+      // Failed to start if we're a Unix based system but we don't have bash.
+      // Bash is necessary to launch containers under Unix-based systems.
+      if (!Shell.WINDOWS) {
+        if (!Shell.isBashSupported) {
+          String message =
+              "Failing NodeManager start since we're on a "
+                  + "Unix-based system but bash doesn't seem to be available.";
+          LOG.fatal(message);
+          throw new YarnRuntimeException(message);
+        }
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Remove the old hook if we are rebooting.
       if (hasToReboot && null != nodeManagerShutdownHook) {

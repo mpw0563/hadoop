@@ -94,7 +94,11 @@ public class INodeSymlink extends INodeWithAdditionalFields {
   }
 
   @Override
+<<<<<<< HEAD
   public ContentSummaryComputationContext computeContentSummary(
+=======
+  public ContentSummaryComputationContext computeContentSummary(int snapshotId,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final ContentSummaryComputationContext summary) {
     summary.getCounts().addContent(Content.SYMLINK, 1);
     return summary;

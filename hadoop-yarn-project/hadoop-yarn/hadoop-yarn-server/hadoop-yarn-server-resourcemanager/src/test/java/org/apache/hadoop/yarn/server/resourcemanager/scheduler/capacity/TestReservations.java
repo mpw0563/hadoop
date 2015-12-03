@@ -60,6 +60,12 @@ import org.apache.hadoop.yarn.server.utils.BuilderUtils;
 import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
+<<<<<<< HEAD
+=======
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Before;
 import org.junit.Test;
 
@@ -112,8 +118,11 @@ public class TestReservations {
         Resources.createResource(16 * GB, 12));
     when(csContext.getClusterResource()).thenReturn(
         Resources.createResource(100 * 16 * GB, 100 * 12));
+<<<<<<< HEAD
     when(csContext.getApplicationComparator()).thenReturn(
         CapacityScheduler.applicationComparator);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(csContext.getNonPartitionedQueueComparator()).thenReturn(
         CapacityScheduler.nonPartitionedQueueComparator);
     when(csContext.getResourceCalculator()).thenReturn(resourceCalculator);
@@ -484,6 +493,11 @@ public class TestReservations {
   @Test
   public void testAssignContainersNeedToUnreserve() throws Exception {
     // Test that we now unreserve and use a node that has space
+<<<<<<< HEAD
+=======
+    Logger rootLogger = LogManager.getRootLogger();
+    rootLogger.setLevel(Level.DEBUG);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     CapacitySchedulerConfiguration csConf = new CapacitySchedulerConfiguration();
     setup(csConf);
@@ -595,7 +609,11 @@ public class TestReservations {
     assertEquals(2, app_0.getTotalRequiredResources(priorityReduce));
 
     // could allocate but told need to unreserve first
+<<<<<<< HEAD
     CSAssignment csAssignment = a.assignContainers(clusterResource, node_1,
+=======
+    a.assignContainers(clusterResource, node_1,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         new ResourceLimits(clusterResource), SchedulingMode.RESPECT_PARTITION_EXCLUSIVITY);
     assertEquals(13 * GB, a.getUsedResources().getMemory());
     assertEquals(13 * GB, app_0.getCurrentConsumption().getMemory());
@@ -666,7 +684,11 @@ public class TestReservations {
 
     // no reserved containers - reserve then unreserve
     app_0.reserve(node_0, priorityMap, rmContainer_1, container_1);
+<<<<<<< HEAD
     app_0.unreserve(node_0, priorityMap);
+=======
+    app_0.unreserve(priorityMap, node_0, rmContainer_1);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     unreserveId = app_0.getNodeIdToUnreserve(priorityMap, capability,
         cs.getResourceCalculator(), clusterResource);
     assertEquals(null, unreserveId);

@@ -27,6 +27,10 @@ import org.apache.hadoop.mapreduce.v2.MiniMRYarnCluster;
 import org.apache.hadoop.yarn.api.records.timeline.TimelineEntities;
 import org.apache.hadoop.yarn.api.records.timeline.TimelineEntity;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.MiniYARNCluster;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.timeline.TimelineStore;
 
 import org.junit.Assert;
@@ -91,6 +95,12 @@ public class TestMRTimelineEventHandling {
           TestJobHistoryEventHandler.class.getSimpleName(), 1);
       cluster.init(conf);
       cluster.start();
+<<<<<<< HEAD
+=======
+      conf.set(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+          MiniYARNCluster.getHostname() + ":"
+          + cluster.getApplicationHistoryServer().getPort());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       TimelineStore ts = cluster.getApplicationHistoryServer()
               .getTimelineStore();
 
@@ -145,6 +155,12 @@ public class TestMRTimelineEventHandling {
           TestJobHistoryEventHandler.class.getSimpleName(), 1);
       cluster.init(conf);
       cluster.start();
+<<<<<<< HEAD
+=======
+      conf.set(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+          MiniYARNCluster.getHostname() + ":"
+          + cluster.getApplicationHistoryServer().getPort());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       TimelineStore ts = cluster.getApplicationHistoryServer()
           .getTimelineStore();
 
@@ -182,6 +198,12 @@ public class TestMRTimelineEventHandling {
           TestJobHistoryEventHandler.class.getSimpleName(), 1);
       cluster.init(conf);
       cluster.start();
+<<<<<<< HEAD
+=======
+      conf.set(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+          MiniYARNCluster.getHostname() + ":"
+          + cluster.getApplicationHistoryServer().getPort());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       TimelineStore ts = cluster.getApplicationHistoryServer()
           .getTimelineStore();
 

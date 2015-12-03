@@ -58,7 +58,11 @@ public class TestSleepJob extends CommonJobTest {
   }
 
 
+<<<<<<< HEAD
   @Test  (timeout=600000)
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testMapTasksOnlySleepJobs() throws Exception {
     Configuration configuration = GridmixTestUtils.mrvl.getConfig();
 
@@ -82,7 +86,11 @@ public class TestSleepJob extends CommonJobTest {
   /*
   * test RandomLocation
   */
+<<<<<<< HEAD
   @Test (timeout=600000)
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testRandomLocation() throws Exception {
     UserGroupInformation ugi = UserGroupInformation.getLoginUser();
 
@@ -91,7 +99,11 @@ public class TestSleepJob extends CommonJobTest {
   }
 
   // test Serial submit
+<<<<<<< HEAD
   @Test  (timeout=600000)
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testSerialSubmit() throws Exception {
     // set policy
     policy = GridmixJobSubmissionPolicy.SERIAL;
@@ -100,7 +112,11 @@ public class TestSleepJob extends CommonJobTest {
     LOG.info("Serial ended at " + System.currentTimeMillis());
   }
 
+<<<<<<< HEAD
   @Test  (timeout=600000)
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testReplaySubmit() throws Exception {
     policy = GridmixJobSubmissionPolicy.REPLAY;
     LOG.info(" Replay started at " + System.currentTimeMillis());
@@ -108,7 +124,11 @@ public class TestSleepJob extends CommonJobTest {
     LOG.info(" Replay ended at " + System.currentTimeMillis());
   }
 
+<<<<<<< HEAD
   @Test   (timeout=600000)
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testStressSubmit() throws Exception {
     policy = GridmixJobSubmissionPolicy.STRESS;
     LOG.info(" Replay started at " + System.currentTimeMillis());

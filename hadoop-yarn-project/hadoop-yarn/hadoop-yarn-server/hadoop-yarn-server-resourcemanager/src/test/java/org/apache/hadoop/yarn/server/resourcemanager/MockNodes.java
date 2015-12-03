@@ -19,11 +19,19 @@
 package org.apache.hadoop.yarn.server.resourcemanager;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Collections;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.List;
 import java.util.Set;
 
 import org.apache.hadoop.net.Node;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Container;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeState;
@@ -201,6 +209,13 @@ public class MockNodes {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void resetLastNodeHeartBeatResponse() {
+    }
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public String getNodeManagerVersion() {
       return null;
     }
@@ -227,6 +242,20 @@ public class MockNodes {
       }
       return CommonNodeLabelsManager.EMPTY_STRING_SET;
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public void updateNodeHeartbeatResponseForContainersDecreasing(
+        NodeHeartbeatResponse response) {
+      
+    }
+
+    @Override
+    public List<Container> pullNewlyIncreasedContainers() {
+      return Collections.emptyList();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   };
 
   private static RMNode buildRMNode(int rack, final Resource perNode,

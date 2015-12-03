@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿<!---
+=======
+<!---
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -36,6 +40,10 @@ HDFS Commands Guide
     * [crypto](#crypto)
     * [datanode](#datanode)
     * [dfsadmin](#dfsadmin)
+<<<<<<< HEAD
+=======
+    * [erasurecode](#erasurecode)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     * [haadmin](#haadmin)
     * [journalnode](#journalnode)
     * [mover](#mover)
@@ -60,7 +68,11 @@ Hadoop has an option parsing framework that employs parsing generic options as w
 
 | COMMAND\_OPTIONS | Description |
 |:---- |:---- |
+<<<<<<< HEAD
 | `--config`<br/>`--loglevel` | The common set of shell options. These are documented on the [Commands Manual](../../hadoop-project-dist/hadoop-common/CommandsManual.html#Overview) page. |
+=======
+| SHELL\_OPTIONS | The common set of shell options. These are documented on the [Commands Manual](../../hadoop-project-dist/hadoop-common/CommandsManual.html#Shell_Options) page. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | GENERIC\_OPTIONS | The common set of options supported by multiple commands. See the Hadoop [Commands Manual](../../hadoop-project-dist/hadoop-common/CommandsManual.html#Generic_Options) for more information. |
 | COMMAND COMMAND\_OPTIONS | Various commands with their options are described in the following sections. The commands have been grouped into [User Commands](#User_Commands) and [Administration Commands](#Administration_Commands). |
 
@@ -110,7 +122,11 @@ Usage:
               [-list-corruptfileblocks |
               [-move | -delete | -openforwrite]
               [-files [-blocks [-locations | -racks | -replicaDetails]]]
+<<<<<<< HEAD
               [-includeSnapshots]
+=======
+              [-includeSnapshots] [-showprogress]
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               [-storagepolicies] [-blockId <blk_Id>]
 
 | COMMAND\_OPTION | Description |
@@ -126,6 +142,10 @@ Usage:
 | `-list-corruptfileblocks` | Print out list of missing blocks and files they belong to. |
 | `-move` | Move corrupted files to /lost+found. |
 | `-openforwrite` | Print out files opened for write. |
+<<<<<<< HEAD
+=======
+| `-showprogress` | Print out dots for progress in output. Default is OFF (no progress). |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | `-storagepolicies` | Print out storage policy summary for the blocks. |
 | `-blockId` | Print out information about the block. |
 
@@ -265,6 +285,10 @@ Usage:
               [-policy <policy>]
               [-exclude [-f <hosts-file> | <comma-separated list of hosts>]]
               [-include [-f <hosts-file> | <comma-separated list of hosts>]]
+<<<<<<< HEAD
+=======
+              [-blockpools <comma-separated list of blockpool ids>]
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               [-idleiterations <idleiterations>]
 
 | COMMAND\_OPTION | Description |
@@ -273,6 +297,10 @@ Usage:
 | `-threshold` \<threshold\> | Percentage of disk capacity. This overwrites the default threshold. |
 | `-exclude -f` \<hosts-file\> \| \<comma-separated list of hosts\> | Excludes the specified datanodes from being balanced by the balancer. |
 | `-include -f` \<hosts-file\> \| \<comma-separated list of hosts\> | Includes only the specified datanodes to be balanced by the balancer. |
+<<<<<<< HEAD
+=======
+| `-blockpools` \<comma-separated list of blockpool ids\> | The balancer will only run on blockpools included in this list. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | `-idleiterations` \<iterations\> | Maximum number of idle iterations before exit. This overwrites the default idleiterations(5). |
 
 Runs a cluster balancing utility. An administrator can simply press Ctrl-C to stop the rebalancing process. See [Balancer](./HdfsUserGuide.html#Balancer) for more details.
@@ -313,7 +341,11 @@ Usage:
 
         hdfs dfsadmin [GENERIC_OPTIONS]
               [-report [-live] [-dead] [-decommissioning]]
+<<<<<<< HEAD
               [-safemode enter | leave | get | wait]
+=======
+              [-safemode enter | leave | get | wait | forceExit]
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               [-saveNamespace]
               [-rollEdits]
               [-restoreFailedStorage true |false |check]
@@ -335,6 +367,10 @@ Usage:
               [-refreshNamenodes datanodehost:port]
               [-deleteBlockPool datanode-host:port blockpoolId [force]]
               [-setBalancerBandwidth <bandwidth in bytes per second>]
+<<<<<<< HEAD
+=======
+              [-getBalancerBandwidth <datanode_host:ipc_port>]
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               [-allowSnapshot <snapshotDir>]
               [-disallowSnapshot <snapshotDir>]
               [-fetchImage <local directory>]
@@ -346,7 +382,11 @@ Usage:
 | COMMAND\_OPTION | Description |
 |:---- |:---- |
 | `-report` `[-live]` `[-dead]` `[-decommissioning]` | Reports basic filesystem information and statistics, The dfs usage can be different from "du" usage, because it measures raw space used by replication, checksums, snapshots and etc. on all the DNs. Optional flags may be used to filter the list of displayed DataNodes. |
+<<<<<<< HEAD
 | `-safemode` enter\|leave\|get\|wait | Safe mode maintenance command. Safe mode is a Namenode state in which it <br/>1. does not accept changes to the name space (read-only) <br/>2. does not replicate or delete blocks. <br/>Safe mode is entered automatically at Namenode startup, and leaves safe mode automatically when the configured minimum percentage of blocks satisfies the minimum replication condition. Safe mode can also be entered manually, but then it can only be turned off manually as well. |
+=======
+| `-safemode` enter\|leave\|get\|wait\|forceExit | Safe mode maintenance command. Safe mode is a Namenode state in which it <br/>1. does not accept changes to the name space (read-only) <br/>2. does not replicate or delete blocks. <br/>Safe mode is entered automatically at Namenode startup, and leaves safe mode automatically when the configured minimum percentage of blocks satisfies the minimum replication condition. If Namenode detects any anomaly then it will linger in safe mode till that issue is resolved. If that anomaly is the consequence of a deliberate action, then administrator can use -safemode forceExit to exit safe mode. The cases where forceExit may be required are<br/> 1. Namenode metadata is not consistent. If Namenode detects that metadata has been modified out of band and can cause data loss, then Namenode will enter forceExit state. At that point user can either restart Namenode with correct metadata files or forceExit (if data loss is acceptable).<br/>2. Rollback causes metadata to be replaced and rarely it can trigger safe mode forceExit state in Namenode. In that case you may proceed by issuing -safemode forceExit.<br/> Safe mode can also be entered manually, but then it can only be turned off manually as well. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | `-saveNamespace` | Save current namespace into storage directories and reset edits log. Requires safe mode. |
 | `-rollEdits` | Rolls the edit log on the active NameNode. |
 | `-restoreFailedStorage` true\|false\|check | This option will turn on/off automatic attempt to restore failed storage replicas. If a failed storage becomes available again the system will attempt to restore edits and/or fsimage during checkpoint. 'check' option will return current setting. |
@@ -367,7 +407,12 @@ Usage:
 | `-printTopology` | Print a tree of the racks and their nodes as reported by the Namenode |
 | `-refreshNamenodes` datanodehost:port | For the given datanode, reloads the configuration files, stops serving the removed block-pools and starts serving new block-pools. |
 | `-deleteBlockPool` datanode-host:port blockpoolId [force] | If force is passed, block pool directory for the given blockpool id on the given datanode is deleted along with its contents, otherwise the directory is deleted only if it is empty. The command will fail if datanode is still serving the block pool. Refer to refreshNamenodes to shutdown a block pool service on a datanode. |
+<<<<<<< HEAD
 | `-setBalancerBandwidth` \<bandwidth in bytes per second\> | Changes the network bandwidth used by each datanode during HDFS block balancing. \<bandwidth\> is the maximum number of bytes per second that will be used by each datanode. This value overrides the dfs.balance.bandwidthPerSec parameter. NOTE: The new value is not persistent on the DataNode. |
+=======
+| `-setBalancerBandwidth` \<bandwidth in bytes per second\> | Changes the network bandwidth used by each datanode during HDFS block balancing. \<bandwidth\> is the maximum number of bytes per second that will be used by each datanode. This value overrides the dfs.balance.bandwidthPerSec parameter. NOTE: The new value is not persistent on the DataNode. |
+| `-getBalancerBandwidth` \<datanode\_host:ipc\_port\> | Get the network bandwidth(in bytes per second) for the given datanode. This is the maximum network bandwidth used by the datanode during HDFS block balancing.|
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | `-allowSnapshot` \<snapshotDir\> | Allowing snapshots of a directory to be created. If the operation completes successfully, the directory becomes snapshottable. See the [HDFS Snapshot Documentation](./HdfsSnapshots.html) for more information. |
 | `-disallowSnapshot` \<snapshotDir\> | Disallowing snapshots of a directory to be created. All snapshots of the directory must be deleted before disallowing snapshots. See the [HDFS Snapshot Documentation](./HdfsSnapshots.html) for more information. |
 | `-fetchImage` \<local directory\> | Downloads the most recent fsimage from the NameNode and saves it in the specified local directory. |
@@ -378,6 +423,28 @@ Usage:
 
 Runs a HDFS dfsadmin client.
 
+<<<<<<< HEAD
+=======
+### `erasurecode`
+
+Usage:
+
+       hdfs erasurecode [generic options]
+         [-setPolicy [-s <policyName>] <path>]
+         [-getPolicy <path>]
+         [-listPolicies]
+         [-usage [cmd ...]]
+         [-help [cmd ...]]
+
+| COMMAND\_OPTION | Description |
+|:---- |:---- |
+|-setPolicy| Set a specified ErasureCoding policy to a directory|
+|-getPolicy| Get ErasureCoding policy information about a specified path|
+|-listPolicies| Lists all supported ErasureCoding policies|
+
+Runs the ErasureCoding CLI. See [HDFS ErasureCoding](./HDFSErasureCoding.html#Administrative_commands) for more information on this command.
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 ### `haadmin`
 
 Usage:
@@ -429,7 +496,10 @@ Usage:
               [-upgradeOnly [-clusterid cid] [-renameReserved<k-v pairs>] ] |
               [-rollback] |
               [-rollingUpgrade <rollback |started> ] |
+<<<<<<< HEAD
               [-finalize] |
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               [-importCheckpoint] |
               [-initializeSharedEdits] |
               [-bootstrapStandby] |
@@ -444,15 +514,23 @@ Usage:
 | `-upgrade` `[-clusterid cid]` [`-renameReserved` \<k-v pairs\>] | Namenode should be started with upgrade option after the distribution of new Hadoop version. |
 | `-upgradeOnly` `[-clusterid cid]` [`-renameReserved` \<k-v pairs\>] | Upgrade the specified NameNode and then shutdown it. |
 | `-rollback` | Rollback the NameNode to the previous version. This should be used after stopping the cluster and distributing the old Hadoop version. |
+<<<<<<< HEAD
 | `-rollingUpgrade` \<downgrade\|rollback\|started\> | See [Rolling Upgrade document](./HdfsRollingUpgrade.html#NameNode_Startup_Options) for the detail. |
 | `-finalize` | No longer supported. Use `dfsadmin -finalizeUpgrade` instead. |
+=======
+| `-rollingUpgrade` \<rollback\|started\> | See [Rolling Upgrade document](./HdfsRollingUpgrade.html#NameNode_Startup_Options) for the detail. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | `-importCheckpoint` | Loads image from a checkpoint directory and save it into the current one. Checkpoint dir is read from property fs.checkpoint.dir |
 | `-initializeSharedEdits` | Format a new shared edits dir and copy in enough edit log segments so that the standby NameNode can start up. |
 | `-bootstrapStandby` | Allows the standby NameNode's storage directories to be bootstrapped by copying the latest namespace snapshot from the active NameNode. This is used when first configuring an HA cluster. |
 | `-recover` `[-force]` | Recover lost metadata on a corrupt filesystem. See [HDFS User Guide](./HdfsUserGuide.html#Recovery_Mode) for the detail. |
 | `-metadataVersion` | Verify that configured directories exist, then print the metadata versions of the software and the image. |
 
+<<<<<<< HEAD
 Runs the namenode. More info about the upgrade, rollback and finalize is at [Upgrade Rollback](./HdfsUserGuide.html#Upgrade_and_Rollback).
+=======
+Runs the namenode. More info about the upgrade and rollback is at [Upgrade Rollback](./HdfsUserGuide.html#Upgrade_and_Rollback).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 ### `nfs3`
 

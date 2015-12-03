@@ -175,7 +175,11 @@ class InvalidateBlocks {
       if (BlockManager.LOG.isDebugEnabled()) {
         BlockManager.LOG
             .debug("Block deletion is delayed during NameNode startup. "
+<<<<<<< HEAD
                        + "The deletion will start after " + delay + " ms.");
+=======
+                + "The deletion will start after " + delay + " ms.");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       return null;
     }

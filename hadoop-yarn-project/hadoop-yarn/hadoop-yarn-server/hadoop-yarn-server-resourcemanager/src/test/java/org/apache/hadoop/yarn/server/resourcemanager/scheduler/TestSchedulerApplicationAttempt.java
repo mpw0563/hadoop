@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.yarn.server.resourcemanager.scheduler;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.*;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -27,6 +31,7 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Container;
@@ -36,6 +41,11 @@ import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fifo.FifoScheduler;
+import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.After;
 import org.junit.Test;
 
@@ -149,11 +159,24 @@ public class TestSchedulerApplicationAttempt {
   }
   
   private Queue createQueue(String name, Queue parent) {
+<<<<<<< HEAD
     QueueMetrics metrics = QueueMetrics.forQueue(name, parent, false, conf);
+=======
+    return createQueue(name, parent, 1.0f);
+  }
+
+  private Queue createQueue(String name, Queue parent, float capacity) {
+    QueueMetrics metrics = QueueMetrics.forQueue(name, parent, false, conf);
+    QueueInfo queueInfo = QueueInfo.newInstance(name, capacity, 1.0f, 0, null, null, QueueState.RUNNING, null, "", null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ActiveUsersManager activeUsersManager = new ActiveUsersManager(metrics);
     Queue queue = mock(Queue.class);
     when(queue.getMetrics()).thenReturn(metrics);
     when(queue.getActiveUsersManager()).thenReturn(activeUsersManager);
+<<<<<<< HEAD
+=======
+    when(queue.getQueueInfo(false, false)).thenReturn(queueInfo);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return queue;
   }
   
@@ -163,4 +186,54 @@ public class TestSchedulerApplicationAttempt {
         ApplicationAttemptId.newInstance(appIdImpl, attemptId);
     return attId;
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testAppPercentages() throws Exception {
+    FifoScheduler scheduler = mock(FifoScheduler.class);
+    when(scheduler.getClusterResource())
+        .thenReturn(Resource.newInstance(10 * 1024, 10));
+    when(scheduler.getResourceCalculator())
+        .thenReturn(new DefaultResourceCalculator());
+
+    ApplicationAttemptId appAttId = createAppAttemptId(0, 0);
+    RMContext rmContext = mock(RMContext.class);
+    when(rmContext.getEpoch()).thenReturn(3L);
+    when(rmContext.getScheduler()).thenReturn(scheduler);
+
+    final String user = "user1";
+    Queue queue = createQueue("test", null);
+    SchedulerApplicationAttempt app =
+        new SchedulerApplicationAttempt(appAttId, user, queue,
+            queue.getActiveUsersManager(), rmContext);
+
+    // Resource request
+    Resource requestedResource = Resource.newInstance(1536, 2);
+    app.attemptResourceUsage.incUsed(requestedResource);
+
+    assertEquals(15.0f, app.getResourceUsageReport().getQueueUsagePercentage(),
+        0.01f);
+    assertEquals(15.0f,
+        app.getResourceUsageReport().getClusterUsagePercentage(), 0.01f);
+
+    queue = createQueue("test2", null, 0.5f);
+    app = new SchedulerApplicationAttempt(appAttId, user, queue,
+        queue.getActiveUsersManager(), rmContext);
+    app.attemptResourceUsage.incUsed(requestedResource);
+    assertEquals(30.0f, app.getResourceUsageReport().getQueueUsagePercentage(),
+        0.01f);
+    assertEquals(15.0f,
+        app.getResourceUsageReport().getClusterUsagePercentage(), 0.01f);
+
+    app.attemptResourceUsage.incUsed(requestedResource);
+    app.attemptResourceUsage.incUsed(requestedResource);
+    app.attemptResourceUsage.incUsed(requestedResource);
+
+    assertEquals(120.0f, app.getResourceUsageReport().getQueueUsagePercentage(),
+        0.01f);
+    assertEquals(60.0f,
+        app.getResourceUsageReport().getClusterUsagePercentage(), 0.01f);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

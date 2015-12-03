@@ -27,6 +27,10 @@ import java.util.Set;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.ApplicationBaseProtocol;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
@@ -63,8 +67,16 @@ public class RMAppsBlock extends AppsBlock {
           .th(".runningcontainer", "Running Containers")
           .th(".allocatedCpu", "Allocated CPU VCores")
           .th(".allocatedMemory", "Allocated Memory MB")
+<<<<<<< HEAD
           .th(".progress", "Progress")
           .th(".ui", "Tracking UI").th(".blacklisted", "Blacklisted Nodes")._()
+=======
+          .th(".queuePercentage", "% of Queue")
+          .th(".clusterPercentage", "% of Cluster")
+          .th(".progress", "Progress")
+          .th(".ui", "Tracking UI")
+          .th(".blacklisted", "Blacklisted Nodes")._()
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           ._().tbody();
 
     StringBuilder appsTableData = new StringBuilder("[\n");
@@ -78,11 +90,29 @@ public class RMAppsBlock extends AppsBlock {
       }
 
       AppInfo app = new AppInfo(appReport);
+<<<<<<< HEAD
       String blacklistedNodesCount = "N/A";
       Set<String> nodes =
           RMAppAttemptBlock
             .getBlacklistedNodes(rm, ConverterUtils.toApplicationAttemptId(app
               .getCurrentAppAttemptId()));
+=======
+      ApplicationAttemptId appAttemptId =
+          ConverterUtils.toApplicationAttemptId(app.getCurrentAppAttemptId());
+      String queuePercent = "N/A";
+      String clusterPercent = "N/A";
+      if(appReport.getApplicationResourceUsageReport() != null) {
+        queuePercent = String.format("%.1f",
+            appReport.getApplicationResourceUsageReport()
+                .getQueueUsagePercentage());
+        clusterPercent = String.format("%.1f",
+            appReport.getApplicationResourceUsageReport().getClusterUsagePercentage());
+      }
+
+      String blacklistedNodesCount = "N/A";
+      Set<String> nodes =
+          RMAppAttemptBlock.getBlacklistedNodes(rm, appAttemptId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (nodes != null) {
         blacklistedNodesCount = String.valueOf(nodes.size());
       }
@@ -94,12 +124,21 @@ public class RMAppsBlock extends AppsBlock {
         .append(app.getAppId())
         .append("</a>\",\"")
         .append(
+<<<<<<< HEAD
           StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(app
             .getUser())))
         .append("\",\"")
         .append(
           StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(app
             .getName())))
+=======
+          StringEscapeUtils.escapeJavaScript(
+              StringEscapeUtils.escapeHtml(app.getUser())))
+        .append("\",\"")
+        .append(
+          StringEscapeUtils.escapeJavaScript(
+              StringEscapeUtils.escapeHtml(app.getName())))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .append("\",\"")
         .append(
           StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(app
@@ -122,11 +161,23 @@ public class RMAppsBlock extends AppsBlock {
         .append(app.getAllocatedCpuVcores() == -1 ? "N/A" : String
             .valueOf(app.getAllocatedCpuVcores()))
         .append("\",\"")
+<<<<<<< HEAD
         .append(app.getAllocatedMemoryMB() == -1 ? "N/A" : String
             .valueOf(app.getAllocatedMemoryMB()))
         .append("\",\"")
         // Progress bar
         .append("<br title='").append(percent).append("'> <div class='")
+=======
+        .append(app.getAllocatedMemoryMB() == -1 ? "N/A" :
+            String.valueOf(app.getAllocatedMemoryMB()))
+        .append("\",\"")
+        .append(queuePercent)
+        .append("\",\"")
+        .append(clusterPercent)
+        .append("\",\"")
+        // Progress bar
+          .append("<br title='").append(percent).append("'> <div class='")
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .append(C_PROGRESSBAR).append("' title='").append(join(percent, '%'))
         .append("'> ").append("<div class='").append(C_PROGRESSBAR_VALUE)
         .append("' style='").append(join("width:", percent, '%'))

@@ -18,10 +18,18 @@
 
 package org.apache.hadoop.yarn.server.nodemanager;
 
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.assertNotNull;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.lang.Thread.State;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.nio.ByteBuffer;
 import java.util.Set;
 
@@ -104,6 +112,7 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
       return response;
     }
 
+<<<<<<< HEAD
     public void waitTillHeartbeat() {
       if (receivedNMHeartbeat) {
         return;
@@ -127,6 +136,21 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
               Assert.fail("Exception caught while waiting for Heartbeat");
               e.printStackTrace();
             }
+=======
+    public void waitTillHeartbeat() throws InterruptedException {
+      if (receivedNMHeartbeat) {
+        return;
+      }
+      int i = 15;
+      while (!receivedNMHeartbeat && i > 0) {
+        synchronized (ResourceTrackerForLabels.class) {
+          if (!receivedNMHeartbeat) {
+            System.out
+                .println("In ResourceTrackerForLabels waiting for heartbeat : "
+                    + System.currentTimeMillis());
+            ResourceTrackerForLabels.class.wait(200);
+            i--;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
         }
       }
@@ -135,18 +159,26 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
       }
     }
 
+<<<<<<< HEAD
     public void waitTillRegister() {
+=======
+    public void waitTillRegister() throws InterruptedException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (receivedNMRegister) {
         return;
       }
       while (!receivedNMRegister) {
         synchronized (ResourceTrackerForLabels.class) {
+<<<<<<< HEAD
           try {
             ResourceTrackerForLabels.class.wait();
           } catch (InterruptedException e) {
             Assert.fail("Exception caught while waiting for register");
             e.printStackTrace();
           }
+=======
+            ResourceTrackerForLabels.class.wait();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
     }
@@ -191,6 +223,7 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
     }
   }
 
+<<<<<<< HEAD
   public static class DummyNodeLabelsProvider extends NodeLabelsProvider {
 
     @SuppressWarnings("unchecked")
@@ -200,6 +233,12 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
       super(DummyNodeLabelsProvider.class.getName());
     }
 
+=======
+  public static class DummyNodeLabelsProvider implements NodeLabelsProvider {
+
+    private Set<NodeLabel> nodeLabels = CommonNodeLabelsManager.EMPTY_NODELABEL_SET;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @Override
     public synchronized Set<NodeLabel> getNodeLabels() {
       return nodeLabels;
@@ -217,15 +256,24 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
     return conf;
   }
 
+<<<<<<< HEAD
   @Test
+=======
+  @Test(timeout=20000)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testNodeStatusUpdaterForNodeLabels() throws InterruptedException,
       IOException {
     final ResourceTrackerForLabels resourceTracker =
         new ResourceTrackerForLabels();
     nm = new NodeManager() {
       @Override
+<<<<<<< HEAD
       protected NodeLabelsProvider createNodeLabelsProvider(
           Configuration conf) throws IOException {
+=======
+      protected NodeLabelsProvider createNodeLabelsProvider(Configuration conf)
+          throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return dummyLabelsProviderRef;
       }
 
@@ -250,13 +298,22 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
     };
 
     YarnConfiguration conf = createNMConfigForDistributeNodeLabels();
+<<<<<<< HEAD
+=======
+    conf.setLong(YarnConfiguration.NM_NODE_LABELS_RESYNC_INTERVAL, 2000);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     nm.init(conf);
     resourceTracker.resetNMHeartbeatReceiveFlag();
     nm.start();
     resourceTracker.waitTillRegister();
+<<<<<<< HEAD
     assertNLCollectionEquals(resourceTracker.labels,
         dummyLabelsProviderRef
             .getNodeLabels());
+=======
+    assertNLCollectionEquals(dummyLabelsProviderRef.getNodeLabels(),
+        resourceTracker.labels);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     resourceTracker.waitTillHeartbeat();// wait till the first heartbeat
     resourceTracker.resetNMHeartbeatReceiveFlag();
@@ -264,6 +321,7 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
     // heartbeat with updated labels
     dummyLabelsProviderRef.setNodeLabels(toNodeLabelSet("P"));
 
+<<<<<<< HEAD
     nm.getNodeStatusUpdater().sendOutofBandHeartBeat();
     resourceTracker.waitTillHeartbeat();
     assertNLCollectionEquals(resourceTracker.labels,
@@ -273,11 +331,22 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
 
     // heartbeat without updating labels
     nm.getNodeStatusUpdater().sendOutofBandHeartBeat();
+=======
+    sendOutofBandHeartBeat();
+    resourceTracker.waitTillHeartbeat();
+    assertNLCollectionEquals(dummyLabelsProviderRef.getNodeLabels(),
+        resourceTracker.labels);
+    resourceTracker.resetNMHeartbeatReceiveFlag();
+
+    // heartbeat without updating labels
+    sendOutofBandHeartBeat();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     resourceTracker.waitTillHeartbeat();
     resourceTracker.resetNMHeartbeatReceiveFlag();
     assertNull(
         "If no change in labels then null should be sent as part of request",
         resourceTracker.labels);
+<<<<<<< HEAD
     
     // provider return with null labels
     dummyLabelsProviderRef.setNodeLabels(null);    
@@ -289,4 +358,130 @@ public class TestNodeStatusUpdaterForLabels extends NodeLabelTestBase {
 
     nm.stop();
   }
+=======
+
+    // provider return with null labels
+    dummyLabelsProviderRef.setNodeLabels(null);
+    sendOutofBandHeartBeat();
+    resourceTracker.waitTillHeartbeat();
+    assertNotNull(
+        "If provider sends null then empty label set should be sent and not null",
+        resourceTracker.labels);
+    assertTrue("If provider sends null then empty labels should be sent",
+        resourceTracker.labels.isEmpty());
+    resourceTracker.resetNMHeartbeatReceiveFlag();
+    // Since the resync interval is set to 2 sec in every alternate heartbeat
+    // the labels will be send along with heartbeat.In loop we sleep for 1 sec
+    // so that every sec 1 heartbeat is send.
+    int nullLabels = 0;
+    int nonNullLabels = 0;
+    dummyLabelsProviderRef.setNodeLabels(toNodeLabelSet("P1"));
+    for (int i = 0; i < 5; i++) {
+      sendOutofBandHeartBeat();
+      resourceTracker.waitTillHeartbeat();
+      if (null == resourceTracker.labels) {
+        nullLabels++;
+      } else {
+        Assert.assertEquals("In heartbeat PI labels should be send",
+            toNodeLabelSet("P1"), resourceTracker.labels);
+        nonNullLabels++;
+      }
+      resourceTracker.resetNMHeartbeatReceiveFlag();
+      Thread.sleep(1000);
+    }
+    Assert.assertTrue("More than one heartbeat with empty labels expected",
+        nullLabels > 1);
+    Assert.assertTrue("More than one heartbeat with labels expected",
+        nonNullLabels > 1);
+    nm.stop();
+  }
+
+  @Test(timeout=20000)
+  public void testInvalidNodeLabelsFromProvider() throws InterruptedException,
+      IOException {
+    final ResourceTrackerForLabels resourceTracker =
+        new ResourceTrackerForLabels();
+    nm = new NodeManager() {
+      @Override
+      protected NodeLabelsProvider createNodeLabelsProvider(Configuration conf)
+          throws IOException {
+        return dummyLabelsProviderRef;
+      }
+
+      @Override
+      protected NodeStatusUpdater createNodeStatusUpdater(Context context,
+          Dispatcher dispatcher, NodeHealthCheckerService healthChecker,
+          NodeLabelsProvider labelsProvider) {
+
+        return new NodeStatusUpdaterImpl(context, dispatcher, healthChecker,
+            metrics, labelsProvider) {
+          @Override
+          protected ResourceTracker getRMClient() {
+            return resourceTracker;
+          }
+
+          @Override
+          protected void stopRMProxy() {
+            return;
+          }
+        };
+      }
+    };
+    dummyLabelsProviderRef.setNodeLabels(toNodeLabelSet("P"));
+    YarnConfiguration conf = createNMConfigForDistributeNodeLabels();
+    nm.init(conf);
+    resourceTracker.resetNMHeartbeatReceiveFlag();
+    nm.start();
+    resourceTracker.waitTillHeartbeat();// wait till the first heartbeat
+    resourceTracker.resetNMHeartbeatReceiveFlag();
+
+    // heartbeat with invalid labels
+    dummyLabelsProviderRef.setNodeLabels(toNodeLabelSet("_.P"));
+
+    sendOutofBandHeartBeat();
+    resourceTracker.waitTillHeartbeat();
+    assertNull("On Invalid Labels we need to retain earlier labels, HB "
+        + "needs to send null", resourceTracker.labels);
+    resourceTracker.resetNMHeartbeatReceiveFlag();
+
+    // on next heartbeat same invalid labels will be given by the provider, but
+    // again label validation check and reset RM with empty labels set should
+    // not happen
+    sendOutofBandHeartBeat();
+    resourceTracker.waitTillHeartbeat();
+    assertNull("NodeStatusUpdater need not send repeatedly empty labels on "
+        + "invalid labels from provider ", resourceTracker.labels);
+    resourceTracker.resetNMHeartbeatReceiveFlag();
+  }
+
+  /**
+   * This is to avoid race condition in the test case. NodeStatusUpdater
+   * heartbeat thread after sending the heartbeat needs some time to process the
+   * response and then go wait state. But in the test case once the main test
+   * thread returns back after resourceTracker.waitTillHeartbeat() we proceed
+   * with next sendOutofBandHeartBeat before heartbeat thread is blocked on
+   * wait.
+   * @throws InterruptedException
+   * @throws IOException
+   */
+  private void sendOutofBandHeartBeat()
+      throws InterruptedException, IOException {
+    int i = 0;
+    do {
+      State statusUpdaterThreadState = ((NodeStatusUpdaterImpl) nm.getNodeStatusUpdater())
+          .getStatusUpdaterThreadState();
+      if (statusUpdaterThreadState.equals(Thread.State.TIMED_WAITING)
+          || statusUpdaterThreadState.equals(Thread.State.WAITING)) {
+        nm.getNodeStatusUpdater().sendOutofBandHeartBeat();
+        break;
+      }
+      if (++i <= 10) {
+        Thread.sleep(50);
+      } else {
+        throw new IOException(
+            "Waited for 500 ms but NodeStatusUpdaterThread not in waiting state");
+      }
+    } while (true);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

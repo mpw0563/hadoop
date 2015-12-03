@@ -120,7 +120,15 @@ import java.util.*;
  * 
  * <p>
  * Use <code>MultipleOutputs.write(KEYOUT key, VALUEOUT value, String baseOutputPath)</code> to write key and 
+<<<<<<< HEAD
  * value to a path specified by <code>baseOutputPath</code>, with no need to specify a named output:
+=======
+ * value to a path specified by <code>baseOutputPath</code>, with no need to specify a named output.
+ * <b>Warning</b>: when the baseOutputPath passed to MultipleOutputs.write
+ * is a path that resolves outside of the final job output directory, the
+ * directory is created immediately and then persists through subsequent
+ * task retries, breaking the concept of output committing:
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * </p>
  * 
  * <pre>
@@ -418,6 +426,10 @@ public class MultipleOutputs<KEYOUT, VALUEOUT> {
    * @param value          the value
    * @param baseOutputPath base-output path to write the record to.
    * Note: Framework will generate unique filename for the baseOutputPath
+   * <b>Warning</b>: when the baseOutputPath is a path that resolves
+   * outside of the final job output directory, the directory is created
+   * immediately and then persists through subsequent task retries, breaking
+   * the concept of output committing.
    */
   @SuppressWarnings("unchecked")
   public <K, V> void write(String namedOutput, K key, V value,
@@ -442,6 +454,10 @@ public class MultipleOutputs<KEYOUT, VALUEOUT> {
    * @param value     the value
    * @param baseOutputPath base-output path to write the record to.
    * Note: Framework will generate unique filename for the baseOutputPath
+   * <b>Warning</b>: when the baseOutputPath is a path that resolves
+   * outside of the final job output directory, the directory is created
+   * immediately and then persists through subsequent task retries, breaking
+   * the concept of output committing.
    */
   @SuppressWarnings("unchecked")
   public void write(KEYOUT key, VALUEOUT value, String baseOutputPath) 

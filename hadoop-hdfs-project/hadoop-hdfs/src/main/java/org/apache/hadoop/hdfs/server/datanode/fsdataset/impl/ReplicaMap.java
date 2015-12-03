@@ -24,6 +24,10 @@ import java.util.Map;
 import org.apache.hadoop.HadoopIllegalArgumentException;
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.server.datanode.ReplicaInfo;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.util.LightWeightResizableGSet;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * Maintains the replica map. 
@@ -33,9 +37,15 @@ class ReplicaMap {
   private final Object mutex;
   
   // Map of block pool Id to another map of block Id to ReplicaInfo.
+<<<<<<< HEAD
   private final Map<String, Map<Long, ReplicaInfo>> map =
     new HashMap<String, Map<Long, ReplicaInfo>>();
   
+=======
+  private final Map<String, LightWeightResizableGSet<Block, ReplicaInfo>> map =
+    new HashMap<String, LightWeightResizableGSet<Block, ReplicaInfo>>();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   ReplicaMap(Object mutex) {
     if (mutex == null) {
       throw new HadoopIllegalArgumentException(
@@ -91,8 +101,13 @@ class ReplicaMap {
   ReplicaInfo get(String bpid, long blockId) {
     checkBlockPool(bpid);
     synchronized(mutex) {
+<<<<<<< HEAD
       Map<Long, ReplicaInfo> m = map.get(bpid);
       return m != null ? m.get(blockId) : null;
+=======
+      LightWeightResizableGSet<Block, ReplicaInfo> m = map.get(bpid);
+      return m != null ? m.get(new Block(blockId)) : null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
   
@@ -108,6 +123,7 @@ class ReplicaMap {
     checkBlockPool(bpid);
     checkBlock(replicaInfo);
     synchronized(mutex) {
+<<<<<<< HEAD
       Map<Long, ReplicaInfo> m = map.get(bpid);
       if (m == null) {
         // Add an entry for block pool if it does not exist already
@@ -115,6 +131,15 @@ class ReplicaMap {
         map.put(bpid, m);
       }
       return  m.put(replicaInfo.getBlockId(), replicaInfo);
+=======
+      LightWeightResizableGSet<Block, ReplicaInfo> m = map.get(bpid);
+      if (m == null) {
+        // Add an entry for block pool if it does not exist already
+        m = new LightWeightResizableGSet<Block, ReplicaInfo>();
+        map.put(bpid, m);
+      }
+      return  m.put(replicaInfo);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -137,6 +162,7 @@ class ReplicaMap {
     checkBlockPool(bpid);
     checkBlock(block);
     synchronized(mutex) {
+<<<<<<< HEAD
       Map<Long, ReplicaInfo> m = map.get(bpid);
       if (m != null) {
         Long key = Long.valueOf(block.getBlockId());
@@ -145,6 +171,15 @@ class ReplicaMap {
             block.getGenerationStamp() == replicaInfo.getGenerationStamp()) {
           return m.remove(key);
         } 
+=======
+      LightWeightResizableGSet<Block, ReplicaInfo> m = map.get(bpid);
+      if (m != null) {
+        ReplicaInfo replicaInfo = m.get(block);
+        if (replicaInfo != null &&
+            block.getGenerationStamp() == replicaInfo.getGenerationStamp()) {
+          return m.remove(block);
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
     
@@ -160,9 +195,15 @@ class ReplicaMap {
   ReplicaInfo remove(String bpid, long blockId) {
     checkBlockPool(bpid);
     synchronized(mutex) {
+<<<<<<< HEAD
       Map<Long, ReplicaInfo> m = map.get(bpid);
       if (m != null) {
         return m.remove(blockId);
+=======
+      LightWeightResizableGSet<Block, ReplicaInfo> m = map.get(bpid);
+      if (m != null) {
+        return m.remove(new Block(blockId));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
     return null;
@@ -174,7 +215,11 @@ class ReplicaMap {
    * @return the number of replicas in the map
    */
   int size(String bpid) {
+<<<<<<< HEAD
     Map<Long, ReplicaInfo> m = null;
+=======
+    LightWeightResizableGSet<Block, ReplicaInfo> m = null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     synchronized(mutex) {
       m = map.get(bpid);
       return m != null ? m.size() : 0;
@@ -192,7 +237,11 @@ class ReplicaMap {
    * @return a collection of the replicas belonging to the block pool
    */
   Collection<ReplicaInfo> replicas(String bpid) {
+<<<<<<< HEAD
     Map<Long, ReplicaInfo> m = null;
+=======
+    LightWeightResizableGSet<Block, ReplicaInfo> m = null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     m = map.get(bpid);
     return m != null ? m.values() : null;
   }
@@ -200,10 +249,17 @@ class ReplicaMap {
   void initBlockPool(String bpid) {
     checkBlockPool(bpid);
     synchronized(mutex) {
+<<<<<<< HEAD
       Map<Long, ReplicaInfo> m = map.get(bpid);
       if (m == null) {
         // Add an entry for block pool if it does not exist already
         m = new HashMap<Long, ReplicaInfo>();
+=======
+      LightWeightResizableGSet<Block, ReplicaInfo> m = map.get(bpid);
+      if (m == null) {
+        // Add an entry for block pool if it does not exist already
+        m = new LightWeightResizableGSet<Block, ReplicaInfo>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         map.put(bpid, m);
       }
     }

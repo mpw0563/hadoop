@@ -22,11 +22,21 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
+<<<<<<< HEAD
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.net.URI;
+=======
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -38,12 +48,22 @@ import org.junit.Test;
  * by the Text command.
  */
 public class TestTextCommand {
+<<<<<<< HEAD
   private static final String TEST_ROOT_DIR =
     System.getProperty("test.build.data", "build/test/data/") + "/testText";
   private static final String AVRO_FILENAME =
     new Path(TEST_ROOT_DIR, "weather.avro").toUri().getPath();
   private static final String TEXT_FILENAME =
     new Path(TEST_ROOT_DIR, "testtextfile.txt").toUri().getPath();
+=======
+  private static final File TEST_ROOT_DIR =
+    Paths.get(System.getProperty("test.build.data", "build/test/data"),
+        "testText").toFile();
+  private static final String AVRO_FILENAME =
+    new File(TEST_ROOT_DIR, "weather.avro").toURI().getPath();
+  private static final String TEXT_FILENAME =
+    new File(TEST_ROOT_DIR, "testtextfile.txt").toURI().getPath();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Tests whether binary Avro data files are displayed correctly.
@@ -126,7 +146,11 @@ public class TestTextCommand {
   }
 
   private void createFile(String fileName, byte[] contents) throws IOException {
+<<<<<<< HEAD
     (new File(TEST_ROOT_DIR)).mkdir();
+=======
+    Files.createDirectories(TEST_ROOT_DIR.toPath());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     File file = new File(fileName);
     file.createNewFile();
     FileOutputStream stream = new FileOutputStream(file);

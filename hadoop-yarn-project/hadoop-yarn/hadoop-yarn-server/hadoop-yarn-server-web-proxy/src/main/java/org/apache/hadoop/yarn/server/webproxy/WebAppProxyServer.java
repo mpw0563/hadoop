@@ -22,10 +22,19 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
+import org.apache.hadoop.metrics2.source.JvmMetrics;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.service.CompositeService;
 import org.apache.hadoop.util.ExitUtil;
 import org.apache.hadoop.util.GenericOptionsParser;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.util.JvmPauseMonitor;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.ShutdownHookManager;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.YarnUncaughtExceptionHandler;
@@ -48,7 +57,13 @@ public class WebAppProxyServer extends CompositeService {
       WebAppProxyServer.class);
 
   private WebAppProxy proxy = null;
+<<<<<<< HEAD
   
+=======
+
+  private JvmPauseMonitor pauseMonitor;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public WebAppProxyServer() {
     super(WebAppProxyServer.class.getName());
   }
@@ -56,12 +71,44 @@ public class WebAppProxyServer extends CompositeService {
   @Override
   protected void serviceInit(Configuration conf) throws Exception {
     Configuration config = new YarnConfiguration(conf);
+<<<<<<< HEAD
     doSecureLogin(conf);      
     proxy = new WebAppProxy();
     addService(proxy);
     super.serviceInit(config);
   }
 
+=======
+    doSecureLogin(conf);
+    proxy = new WebAppProxy();
+    addService(proxy);
+
+    DefaultMetricsSystem.initialize("WebAppProxyServer");
+    JvmMetrics jm = JvmMetrics.initSingleton("WebAppProxyServer", null);
+    pauseMonitor = new JvmPauseMonitor(conf);
+    jm.setPauseMonitor(pauseMonitor);
+
+    super.serviceInit(config);
+  }
+
+  @Override
+  protected void serviceStart() throws Exception {
+    if (pauseMonitor != null) {
+      pauseMonitor.start();
+    }
+    super.serviceStart();
+  }
+
+  @Override
+  protected void serviceStop() throws Exception {
+    super.serviceStop();
+    DefaultMetricsSystem.shutdown();
+    if (pauseMonitor != null) {
+      pauseMonitor.stop();
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Log in as the Kerberose principal designated for the proxy
    * @param conf the configuration holding this information in it.

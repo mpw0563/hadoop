@@ -43,7 +43,10 @@ import org.apache.hadoop.hdfs.util.ReadOnlyList;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+<<<<<<< HEAD
 import com.google.common.collect.ImmutableList;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import static org.apache.hadoop.hdfs.protocol.HdfsConstants.BLOCK_STORAGE_POLICY_ID_UNSPECIFIED;
 
@@ -118,12 +121,19 @@ public class INodeDirectory extends INodeWithAdditionalFields
   @Override
   public byte getLocalStoragePolicyID() {
     XAttrFeature f = getXAttrFeature();
+<<<<<<< HEAD
     ImmutableList<XAttr> xattrs = f == null ? ImmutableList.<XAttr> of() : f
         .getXAttrs();
     for (XAttr xattr : xattrs) {
       if (BlockStoragePolicySuite.isStoragePolicyXAttr(xattr)) {
         return (xattr.getValue())[0];
       }
+=======
+    XAttr xattr = f == null ? null : f.getXAttr(
+        BlockStoragePolicySuite.getStoragePolicyXAttrPrefixedName());
+    if (xattr != null) {
+      return (xattr.getValue())[0];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     return BLOCK_STORAGE_POLICY_ID_UNSPECIFIED;
   }
@@ -191,6 +201,7 @@ public class INodeDirectory extends INodeWithAdditionalFields
   /** Is this directory with quota? */
   final boolean isWithQuota() {
     return getDirectoryWithQuotaFeature() != null;
+<<<<<<< HEAD
   }
 
   DirectoryWithQuotaFeature addDirectoryWithQuotaFeature(
@@ -200,6 +211,17 @@ public class INodeDirectory extends INodeWithAdditionalFields
     return q;
   }
 
+=======
+  }
+
+  DirectoryWithQuotaFeature addDirectoryWithQuotaFeature(
+      DirectoryWithQuotaFeature q) {
+    Preconditions.checkState(!isWithQuota(), "Directory is already with quota");
+    addFeature(q);
+    return q;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   int searchChildren(byte[] name) {
     return children == null? -1: Collections.binarySearch(children, name);
   }
@@ -629,18 +651,34 @@ public class INodeDirectory extends INodeWithAdditionalFields
   }
 
   @Override
+<<<<<<< HEAD
   public ContentSummaryComputationContext computeContentSummary(
       ContentSummaryComputationContext summary) {
     final DirectoryWithSnapshotFeature sf = getDirectoryWithSnapshotFeature();
     if (sf != null) {
+=======
+  public ContentSummaryComputationContext computeContentSummary(int snapshotId,
+      ContentSummaryComputationContext summary) {
+    final DirectoryWithSnapshotFeature sf = getDirectoryWithSnapshotFeature();
+    if (sf != null && snapshotId == Snapshot.CURRENT_STATE_ID) {
+      // if the getContentSummary call is against a non-snapshot path, the
+      // computation should include all the deleted files/directories
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       sf.computeContentSummary4Snapshot(summary.getBlockStoragePolicySuite(),
           summary.getCounts());
     }
     final DirectoryWithQuotaFeature q = getDirectoryWithQuotaFeature();
+<<<<<<< HEAD
     if (q != null) {
       return q.computeContentSummary(this, summary);
     } else {
       return computeDirectoryContentSummary(summary, Snapshot.CURRENT_STATE_ID);
+=======
+    if (q != null && snapshotId == Snapshot.CURRENT_STATE_ID) {
+      return q.computeContentSummary(this, summary);
+    } else {
+      return computeDirectoryContentSummary(summary, snapshotId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -654,7 +692,11 @@ public class INodeDirectory extends INodeWithAdditionalFields
       byte[] childName = child.getLocalNameBytes();
 
       long lastYieldCount = summary.getYieldCount();
+<<<<<<< HEAD
       child.computeContentSummary(summary);
+=======
+      child.computeContentSummary(snapshotId, summary);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Check whether the computation was paused in the subtree.
       // The counts may be off, but traversing the rest of children
@@ -663,7 +705,11 @@ public class INodeDirectory extends INodeWithAdditionalFields
         continue;
       }
       // The locks were released and reacquired. Check parent first.
+<<<<<<< HEAD
       if (getParent() == null) {
+=======
+      if (!isRoot() && getParent() == null) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         // Stop further counting and return whatever we have so far.
         break;
       }

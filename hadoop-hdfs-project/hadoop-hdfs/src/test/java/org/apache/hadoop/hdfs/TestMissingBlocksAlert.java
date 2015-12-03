@@ -81,7 +81,11 @@ public class TestMissingBlocksAlert {
 
       // Corrupt the block
       ExtendedBlock block = DFSTestUtil.getFirstBlock(dfs, corruptFile);
+<<<<<<< HEAD
       assertTrue(cluster.corruptReplica(0, block));
+=======
+      cluster.corruptReplica(0, block);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // read the file so that the corrupt block is reported to NN
       FSDataInputStream in = dfs.open(corruptFile); 
@@ -126,7 +130,11 @@ public class TestMissingBlocksAlert {
       DFSTestUtil.createFile(dfs, replOneFile, fileLen, (short)1, 0);
       ExtendedBlock replOneBlock = DFSTestUtil.getFirstBlock(
           dfs, replOneFile);
+<<<<<<< HEAD
       assertTrue(cluster.corruptReplica(0, replOneBlock));
+=======
+      cluster.corruptReplica(0, replOneBlock);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // read the file so that the corrupt block is reported to NN
       in = dfs.open(replOneFile);

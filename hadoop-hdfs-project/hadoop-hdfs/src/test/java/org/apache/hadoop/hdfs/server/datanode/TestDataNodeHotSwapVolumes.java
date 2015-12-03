@@ -287,6 +287,11 @@ public class TestDataNodeHotSwapVolumes {
     // Verify the configuration value is appropriately set.
     String[] effectiveDataDirs = conf.get(DFS_DATANODE_DATA_DIR_KEY).split(",");
     String[] expectDataDirs = newDataDir.split(",");
+<<<<<<< HEAD
+=======
+    Arrays.sort(effectiveDataDirs);
+    Arrays.sort(expectDataDirs);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(expectDataDirs.length, effectiveDataDirs.length);
     for (int i = 0; i < expectDataDirs.length; i++) {
       StorageLocation expectLocation = StorageLocation.parse(expectDataDirs[i]);

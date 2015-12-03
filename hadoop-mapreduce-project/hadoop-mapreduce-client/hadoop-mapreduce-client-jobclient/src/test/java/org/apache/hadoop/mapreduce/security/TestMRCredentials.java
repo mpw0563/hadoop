@@ -29,6 +29,10 @@ import java.net.URI;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.mapred.JobConf;
@@ -111,9 +115,14 @@ public class TestMRCredentials {
     Configuration jobConf =  new JobConf(mrCluster.getConfig());
 
     // provide namenodes names for the job to get the delegation tokens for
+<<<<<<< HEAD
     //String nnUri = dfsCluster.getNameNode().getUri(namenode).toString();
     NameNode nn = dfsCluster.getNameNode();
     URI nnUri = NameNode.getUri(nn.getNameNodeAddress());
+=======
+    NameNode nn = dfsCluster.getNameNode();
+    URI nnUri = DFSUtilClient.getNNUri(nn.getNameNodeAddress());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     jobConf.set(JobContext.JOB_NAMENODES, nnUri + "," + nnUri.toString());
 
 

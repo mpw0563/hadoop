@@ -264,11 +264,20 @@ public abstract class LazyPersistTestCase {
     if (useSCR) {
       conf.setBoolean(HdfsClientConfigKeys.Read.ShortCircuit.KEY, true);
       // Do not share a client context across tests.
+<<<<<<< HEAD
       conf.set(DFS_CLIENT_CONTEXT, UUID.randomUUID().toString());
       conf.set(DFS_BLOCK_LOCAL_PATH_ACCESS_USER_KEY,
           UserGroupInformation.getCurrentUser().getShortUserName());
       if (useLegacyBlockReaderLocal) {
         conf.setBoolean(DFS_CLIENT_USE_LEGACY_BLOCKREADERLOCAL, true);
+=======
+      conf.set(HdfsClientConfigKeys.DFS_CLIENT_CONTEXT, UUID.randomUUID().toString());
+      conf.set(DFS_BLOCK_LOCAL_PATH_ACCESS_USER_KEY,
+          UserGroupInformation.getCurrentUser().getShortUserName());
+      if (useLegacyBlockReaderLocal) {
+        conf.setBoolean(
+            HdfsClientConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADERLOCAL, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else {
         sockDir = new TemporarySocketDirectory();
         conf.set(DFS_DOMAIN_SOCKET_PATH_KEY, new File(sockDir.getDir(),
@@ -479,6 +488,10 @@ public abstract class LazyPersistTestCase {
 
   protected final void verifyRamDiskJMXMetric(String metricName,
       long expectedValue) throws Exception {
+<<<<<<< HEAD
+=======
+    waitForMetric(metricName, (int)expectedValue);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(expectedValue, Integer.parseInt(jmx.getValue(metricName)));
   }
 
@@ -509,6 +522,7 @@ public abstract class LazyPersistTestCase {
 
   protected void waitForMetric(final String metricName, final int expectedValue)
       throws TimeoutException, InterruptedException {
+<<<<<<< HEAD
     GenericTestUtils.waitFor(new Supplier<Boolean>() {
       @Override
       public Boolean get() {
@@ -523,6 +537,9 @@ public abstract class LazyPersistTestCase {
         }
       }
     }, 1000, Integer.MAX_VALUE);
+=======
+    DFSTestUtil.waitForMetric(jmx, metricName, expectedValue);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   protected void triggerEviction(DataNode dn) {

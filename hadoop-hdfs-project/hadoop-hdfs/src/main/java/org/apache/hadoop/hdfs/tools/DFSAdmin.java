@@ -18,7 +18,10 @@
 package org.apache.hadoop.hdfs.tools;
 
 import java.io.File;
+<<<<<<< HEAD
 import java.io.FileNotFoundException;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
@@ -52,6 +55,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.shell.Command;
 import org.apache.hadoop.fs.shell.CommandFormat;
 import org.apache.hadoop.fs.StorageType;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.HAUtilClient;
 import org.apache.hadoop.hdfs.client.BlockReportOptions;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
@@ -60,7 +67,11 @@ import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.HAUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.NameNodeProxies;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.NameNodeProxies.ProxyAndInfo;
+=======
+import org.apache.hadoop.hdfs.NameNodeProxiesClient.ProxyAndInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.ClientDatanodeProtocol;
 import org.apache.hadoop.hdfs.protocol.ClientProtocol;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
@@ -399,7 +410,11 @@ public class DFSAdmin extends FsShell {
   private static final String commonUsageSummary =
     "\t[-report [-live] [-dead] [-decommissioning]]\n" +
     "\t[-safemode <enter | leave | get | wait>]\n" +
+<<<<<<< HEAD
     "\t[-saveNamespace]\n" +
+=======
+    "\t[-saveNamespace [-beforeShutdown]]\n" +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "\t[-rollEdits]\n" +
     "\t[-restoreFailedStorage true|false|check]\n" +
     "\t[-refreshNodes]\n" +
@@ -419,6 +434,10 @@ public class DFSAdmin extends FsShell {
     "\t[-refreshNamenodes datanode_host:ipc_port]\n"+
     "\t[-deleteBlockPool datanode_host:ipc_port blockpoolId [force]]\n"+
     "\t[-setBalancerBandwidth <bandwidth in bytes per second>]\n" +
+<<<<<<< HEAD
+=======
+    "\t[-getBalancerBandwidth <datanode_host:ipc_port>]\n" +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "\t[-fetchImage <local directory>]\n" +
     "\t[-allowSnapshot <snapshotDir>]\n" +
     "\t[-disallowSnapshot <snapshotDir>]\n" +
@@ -461,10 +480,27 @@ public class DFSAdmin extends FsShell {
     long capacity = ds.getCapacity();
     long used = ds.getUsed();
     long remaining = ds.getRemaining();
+<<<<<<< HEAD
+=======
+    long bytesInFuture = dfs.getBytesWithFutureGenerationStamps();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     long presentCapacity = used + remaining;
     boolean mode = dfs.setSafeMode(HdfsConstants.SafeModeAction.SAFEMODE_GET);
     if (mode) {
       System.out.println("Safe mode is ON");
+<<<<<<< HEAD
+=======
+      if (bytesInFuture > 0) {
+        System.out.println("\nWARNING: ");
+        System.out.println("Name node has detected blocks with generation " +
+            "stamps in future.");
+        System.out.println("Forcing exit from safemode will cause " +
+            bytesInFuture + " byte(s) to be deleted.");
+        System.out.println("If you are sure that the NameNode was started with"
+            + " the correct metadata files then you may proceed with " +
+            "'-safemode forceExit'\n");
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     System.out.println("Configured Capacity: " + capacity
                        + " (" + StringUtils.byteDesc(capacity) + ")");
@@ -514,12 +550,43 @@ public class DFSAdmin extends FsShell {
       }
       if (live.length > 0) {
         for (DatanodeInfo dn : live) {
+<<<<<<< HEAD
           System.out.println(dn.getDatanodeReport());
           System.out.println();
         }
       }
     }
 
+    if (listAll || listDead) {
+      DatanodeInfo[] dead = dfs.getDataNodeStats(DatanodeReportType.DEAD);
+      if (dead.length > 0 || listDead) {
+        System.out.println("Dead datanodes (" + dead.length + "):\n");
+      }
+      if (dead.length > 0) {
+        for (DatanodeInfo dn : dead) {
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+          System.out.println(dn.getDatanodeReport());
+          System.out.println();
+        }
+      }
+    }
+
+<<<<<<< HEAD
+    if (listAll || listDecommissioning) {
+      DatanodeInfo[] decom =
+          dfs.getDataNodeStats(DatanodeReportType.DECOMMISSIONING);
+      if (decom.length > 0 || listDecommissioning) {
+        System.out.println("Decommissioning datanodes (" + decom.length
+            + "):\n");
+      }
+      if (decom.length > 0) {
+        for (DatanodeInfo dn : decom) {
+          System.out.println(dn.getDatanodeReport());
+          System.out.println();
+        }
+      }
+=======
     if (listAll || listDead) {
       DatanodeInfo[] dead = dfs.getDataNodeStats(DatanodeReportType.DEAD);
       if (dead.length > 0 || listDead) {
@@ -546,6 +613,7 @@ public class DFSAdmin extends FsShell {
           System.out.println();
         }
       }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -573,6 +641,8 @@ public class DFSAdmin extends FsShell {
     } else if ("wait".equalsIgnoreCase(argv[idx])) {
       action = HdfsConstants.SafeModeAction.SAFEMODE_GET;
       waitExitSafe = true;
+    } else if ("forceExit".equalsIgnoreCase(argv[idx])){
+      action = HdfsConstants.SafeModeAction.SAFEMODE_FORCE_EXIT;
     } else {
       printUsage("-safemode");
       return;
@@ -596,6 +666,15 @@ public class DFSAdmin extends FsShell {
         }
         System.out.println("Safe mode is " + (inSafeMode ? "ON" : "OFF")
             + " in " + proxy.getAddress());
+<<<<<<< HEAD
+      }
+    } else {
+      boolean inSafeMode = dfs.setSafeMode(action);
+      if (waitExitSafe) {
+        inSafeMode = waitExitSafeMode(dfs, inSafeMode);
+      }
+      System.out.println("Safe mode is " + (inSafeMode ? "ON" : "OFF"));
+=======
       }
     } else {
       boolean inSafeMode = dfs.setSafeMode(action);
@@ -605,6 +684,23 @@ public class DFSAdmin extends FsShell {
       System.out.println("Safe mode is " + (inSafeMode ? "ON" : "OFF"));
     }
 
+  }
+
+  private boolean waitExitSafeMode(DistributedFileSystem dfs, boolean inSafeMode)
+      throws IOException {
+    while (inSafeMode) {
+      try {
+        Thread.sleep(5000);
+      } catch (java.lang.InterruptedException e) {
+        throw new IOException("Wait Interrupted");
+      }
+      inSafeMode = dfs.setSafeMode(SafeModeAction.SAFEMODE_GET, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    }
+    return inSafeMode;
+  }
+
+<<<<<<< HEAD
   }
 
   private boolean waitExitSafeMode(DistributedFileSystem dfs, boolean inSafeMode)
@@ -633,6 +729,21 @@ public class DFSAdmin extends FsShell {
     return inSafeMode;
   }
 
+=======
+  private boolean waitExitSafeMode(ClientProtocol nn, boolean inSafeMode)
+      throws IOException {
+    while (inSafeMode) {
+      try {
+        Thread.sleep(5000);
+      } catch (java.lang.InterruptedException e) {
+        throw new IOException("Wait Interrupted");
+      }
+      inSafeMode = nn.setSafeMode(SafeModeAction.SAFEMODE_GET, false);
+    }
+    return inSafeMode;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public int triggerBlockReport(String[] argv) throws IOException {
     List<String> args = new LinkedList<String>();
     for (int j = 1; j < argv.length; j++) {
@@ -700,14 +811,41 @@ public class DFSAdmin extends FsShell {
   /**
    * Command to ask the namenode to save the namespace.
    * Usage: hdfs dfsadmin -saveNamespace
+<<<<<<< HEAD
    * @exception IOException 
    * @see org.apache.hadoop.hdfs.protocol.ClientProtocol#saveNamespace()
+=======
+   * @see ClientProtocol#saveNamespace(long, long)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
-  public int saveNamespace() throws IOException {
-    int exitCode = -1;
+  public int saveNamespace(String[] argv) throws IOException {
+    final DistributedFileSystem dfs = getDFS();
+    final Configuration dfsConf = dfs.getConf();
 
+    long timeWindow = 0;
+    long txGap = 0;
+    if (argv.length > 1 && "-beforeShutdown".equals(argv[1])) {
+      final long checkpointPeriod = dfsConf.getLong(
+          DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_PERIOD_KEY,
+          DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_PERIOD_DEFAULT);
+      final long checkpointTxnCount = dfsConf.getLong(
+          DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_TXNS_KEY,
+          DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_TXNS_DEFAULT);
+      final int toleratePeriodNum = dfsConf.getInt(
+          DFSConfigKeys.DFS_NAMENODE_MISSING_CHECKPOINT_PERIODS_BEFORE_SHUTDOWN_KEY,
+          DFSConfigKeys.DFS_NAMENODE_MISSING_CHECKPOINT_PERIODS_BEFORE_SHUTDONW_DEFAULT);
+      timeWindow = checkpointPeriod * toleratePeriodNum;
+      txGap = checkpointTxnCount * toleratePeriodNum;
+      System.out.println("Do checkpoint if necessary before stopping " +
+          "namenode. The time window is " + timeWindow + " seconds, and the " +
+          "transaction gap is " + txGap);
+    }
+
+<<<<<<< HEAD
     DistributedFileSystem dfs = getDFS();
     Configuration dfsConf = dfs.getConf();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     URI dfsUri = dfs.getUri();
     boolean isHaEnabled = HAUtilClient.isLogicalUri(dfsConf, dfsUri);
     if (isHaEnabled) {
@@ -716,6 +854,7 @@ public class DFSAdmin extends FsShell {
           HAUtil.getProxiesForAllNameNodesInNameservice(dfsConf,
           nsId, ClientProtocol.class);
       for (ProxyAndInfo<ClientProtocol> proxy : proxies) {
+<<<<<<< HEAD
         proxy.getProxy().saveNamespace();
         System.out.println("Save namespace successful for " +
             proxy.getAddress());
@@ -727,6 +866,26 @@ public class DFSAdmin extends FsShell {
     exitCode = 0;
    
     return exitCode;
+=======
+        boolean saved = proxy.getProxy().saveNamespace(timeWindow, txGap);
+        if (saved) {
+          System.out.println("Save namespace successful for " +
+              proxy.getAddress());
+        } else {
+          System.out.println("No extra checkpoint has been made for "
+              + proxy.getAddress());
+        }
+      }
+    } else {
+      boolean saved = dfs.saveNamespace(timeWindow, txGap);
+      if (saved) {
+        System.out.println("Save namespace successful");
+      } else {
+        System.out.println("No extra checkpoint has been made");
+      }
+    }
+    return 0;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public int rollEdits() throws IOException {
@@ -828,6 +987,11 @@ public class DFSAdmin extends FsShell {
       return exitCode;
     }
 
+    if (bandwidth < 0) {
+      System.err.println("Bandwidth should be a non-negative integer");
+      return exitCode;
+    }
+
     FileSystem fs = getFS();
     if (!(fs instanceof DistributedFileSystem)) {
       System.err.println("FileSystem is " + fs.getUri());
@@ -859,6 +1023,29 @@ public class DFSAdmin extends FsShell {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Command to get balancer bandwidth for the given datanode. Usage: hdfs
+   * dfsadmin -getBalancerBandwidth {@literal <datanode_host:ipc_port>}
+   * @param argv List of of command line parameters.
+   * @param idx The index of the command that is being processed.
+   * @exception IOException
+   */
+  public int getBalancerBandwidth(String[] argv, int idx) throws IOException {
+    ClientDatanodeProtocol dnProxy = getDataNodeProxy(argv[idx]);
+    try {
+      long bandwidth = dnProxy.getBalancerBandwidth();
+      System.out.println("Balancer bandwidth is " + bandwidth
+          + " bytes per second.");
+    } catch (IOException ioe) {
+      System.err.println("Datanode unreachable.");
+      return -1;
+    }
+    return 0;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Download the most recent fsimage from the name node, and save it to a local
    * file in the given directory.
    * 
@@ -899,7 +1086,12 @@ public class DFSAdmin extends FsShell {
       "\tand etc. on all the DNs.\n" +
       "\tOptional flags may be used to filter the list of displayed DNs.\n";
 
+<<<<<<< HEAD
     String safemode = "-safemode <enter|leave|get|wait>:  Safe mode maintenance command.\n" + 
+=======
+    String safemode = "-safemode <enter|leave|get|wait|forceExit>:  Safe mode " +
+        "maintenance command.\n" +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       "\t\tSafe mode is a Namenode state in which it\n" +
       "\t\t\t1.  does not accept changes to the name space (read-only)\n" +
       "\t\t\t2.  does not replicate or delete blocks.\n" +
@@ -909,9 +1101,20 @@ public class DFSAdmin extends FsShell {
       "\t\tcondition.  Safe mode can also be entered manually, but then\n" +
       "\t\tit can only be turned off manually as well.\n";
 
+<<<<<<< HEAD
     String saveNamespace = "-saveNamespace:\t" +
     "Save current namespace into storage directories and reset edits log.\n" +
     "\t\tRequires safe mode.\n";
+=======
+    String saveNamespace = "-saveNamespace [-beforeShutdown]:\t" +
+        "Save current namespace into storage directories and reset edits \n" +
+        "\t\t log. Requires safe mode.\n" +
+        "\t\tIf the \"beforeShutdown\" option is given, the NameNode does a \n" +
+        "\t\tcheckpoint if and only if there is no checkpoint done during \n" +
+        "\t\ta time window (a configurable number of checkpoint periods).\n" +
+        "\t\tThis is usually used before shutting down the NameNode to \n" +
+        "\t\tprevent potential fsimage/editlog corruption.\n";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     String rollEdits = "-rollEdits:\t" +
     "Rolls the edit log.\n";
@@ -991,7 +1194,13 @@ public class DFSAdmin extends FsShell {
       "\t\tthat will be used by each datanode. This value overrides\n" +
       "\t\tthe dfs.balance.bandwidthPerSec parameter.\n\n" +
       "\t\t--- NOTE: The new value is not persistent on the DataNode.---\n";
-    
+
+    String getBalancerBandwidth = "-getBalancerBandwidth <datanode_host:ipc_port>:\n" +
+        "\tGet the network bandwidth for the given datanode.\n" +
+        "\tThis is the maximum network bandwidth used by the datanode\n" +
+        "\tduring HDFS block balancing.\n\n" +
+        "\t--- NOTE: This value is not persistent on the DataNode.---\n";
+
     String fetchImage = "-fetchImage <local directory>:\n" +
       "\tDownloads the most recent fsimage from the Name Node and saves it in" +
       "\tthe specified local directory.\n";
@@ -999,6 +1208,16 @@ public class DFSAdmin extends FsShell {
     String allowSnapshot = "-allowSnapshot <snapshotDir>:\n" +
         "\tAllow snapshots to be taken on a directory.\n";
     
+<<<<<<< HEAD
+    String fetchImage = "-fetchImage <local directory>:\n" +
+      "\tDownloads the most recent fsimage from the Name Node and saves it in" +
+      "\tthe specified local directory.\n";
+    
+    String allowSnapshot = "-allowSnapshot <snapshotDir>:\n" +
+        "\tAllow snapshots to be taken on a directory.\n";
+    
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String disallowSnapshot = "-disallowSnapshot <snapshotDir>:\n" +
         "\tDo not allow snapshots to be taken on a directory any more.\n";
 
@@ -1069,6 +1288,11 @@ public class DFSAdmin extends FsShell {
       System.out.println(deleteBlockPool);
     } else if ("setBalancerBandwidth".equals(cmd)) {
       System.out.println(setBalancerBandwidth);
+<<<<<<< HEAD
+=======
+    } else if ("getBalancerBandwidth".equals(cmd)) {
+      System.out.println(getBalancerBandwidth);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else if ("fetchImage".equals(cmd)) {
       System.out.println(fetchImage);
     } else if ("allowSnapshot".equalsIgnoreCase(cmd)) {
@@ -1106,6 +1330,10 @@ public class DFSAdmin extends FsShell {
       System.out.println(refreshNamenodes);
       System.out.println(deleteBlockPool);
       System.out.println(setBalancerBandwidth);
+<<<<<<< HEAD
+=======
+      System.out.println(getBalancerBandwidth);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       System.out.println(fetchImage);
       System.out.println(allowSnapshot);
       System.out.println(disallowSnapshot);
@@ -1380,6 +1608,7 @@ public class DFSAdmin extends FsShell {
     // should be NN's one.
     conf.set(CommonConfigurationKeys.HADOOP_SECURITY_SERVICE_USER_NAME_KEY, 
         conf.get(DFSConfigKeys.DFS_NAMENODE_KERBEROS_PRINCIPAL_KEY, ""));
+<<<<<<< HEAD
 
     DistributedFileSystem dfs = getDFS();
     URI dfsUri = dfs.getUri();
@@ -1489,6 +1718,34 @@ public class DFSAdmin extends FsShell {
     }
     return 0;
   }
+=======
+
+    DistributedFileSystem dfs = getDFS();
+    URI dfsUri = dfs.getUri();
+    boolean isHaEnabled = HAUtilClient.isLogicalUri(conf, dfsUri);
+
+    if (isHaEnabled) {
+      // Run refreshCallQueue for all NNs if HA is enabled
+      String nsId = dfsUri.getHost();
+      List<ProxyAndInfo<RefreshCallQueueProtocol>> proxies =
+          HAUtil.getProxiesForAllNameNodesInNameservice(conf, nsId,
+              RefreshCallQueueProtocol.class);
+      for (ProxyAndInfo<RefreshCallQueueProtocol> proxy : proxies) {
+        proxy.getProxy().refreshCallQueue();
+        System.out.println("Refresh call queue successful for "
+            + proxy.getAddress());
+      }
+    } else {
+      // Create the client
+      RefreshCallQueueProtocol refreshProtocol =
+          NameNodeProxies.createProxy(conf, FileSystem.getDefaultUri(conf),
+              RefreshCallQueueProtocol.class).getProxy();
+
+      // Refresh the call queue
+      refreshProtocol.refreshCallQueue();
+      System.out.println("Refresh call queue successful");
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   int getReconfigurableProperties(String nodeType, String address,
       PrintStream out, PrintStream err) throws IOException {
@@ -1514,6 +1771,113 @@ public class DFSAdmin extends FsShell {
     return 0;
   }
 
+<<<<<<< HEAD
+=======
+  public int reconfig(String[] argv, int i) throws IOException {
+    String nodeType = argv[i];
+    String address = argv[i + 1];
+    String op = argv[i + 2];
+    if ("start".equals(op)) {
+      return startReconfiguration(nodeType, address);
+    } else if ("status".equals(op)) {
+      return getReconfigurationStatus(nodeType, address, System.out, System.err);
+    } else if ("properties".equals(op)) {
+      return getReconfigurableProperties(
+          nodeType, address, System.out, System.err);
+    }
+    System.err.println("Unknown operation: " + op);
+    return -1;
+  }
+
+  int startReconfiguration(String nodeType, String address) throws IOException {
+    if ("datanode".equals(nodeType)) {
+      ClientDatanodeProtocol dnProxy = getDataNodeProxy(address);
+      dnProxy.startReconfiguration();
+      System.out.println("Started reconfiguration task on DataNode " + address);
+      return 0;
+    } else {
+      System.err.println("Node type " + nodeType +
+          " does not support reconfiguration.");
+      return 1;
+    }
+  }
+
+  int getReconfigurationStatus(String nodeType, String address,
+      PrintStream out, PrintStream err) throws IOException {
+    if ("datanode".equals(nodeType)) {
+      ClientDatanodeProtocol dnProxy = getDataNodeProxy(address);
+      try {
+        ReconfigurationTaskStatus status = dnProxy.getReconfigurationStatus();
+        out.print("Reconfiguring status for DataNode[" + address + "]: ");
+        if (!status.hasTask()) {
+          out.println("no task was found.");
+          return 0;
+        }
+        out.print("started at " + new Date(status.getStartTime()));
+        if (!status.stopped()) {
+          out.println(" and is still running.");
+          return 0;
+        }
+
+        out.println(" and finished at " +
+            new Date(status.getEndTime()).toString() + ".");
+        if (status.getStatus() == null) {
+          // Nothing to report.
+          return 0;
+        }
+        for (Map.Entry<PropertyChange, Optional<String>> result :
+            status.getStatus().entrySet()) {
+          if (!result.getValue().isPresent()) {
+            out.printf(
+                "SUCCESS: Changed property %s%n\tFrom: \"%s\"%n\tTo: \"%s\"%n",
+                result.getKey().prop, result.getKey().oldVal,
+                result.getKey().newVal);
+          } else {
+            final String errorMsg = result.getValue().get();
+            out.printf(
+                  "FAILED: Change property %s%n\tFrom: \"%s\"%n\tTo: \"%s\"%n",
+                  result.getKey().prop, result.getKey().oldVal,
+                  result.getKey().newVal);
+            out.println("\tError: " + errorMsg + ".");
+          }
+        }
+      } catch (IOException e) {
+        err.println("DataNode reloading configuration: " + e + ".");
+        return 1;
+      }
+    } else {
+      err.println("Node type " + nodeType +
+          " does not support reconfiguration.");
+      return 1;
+    }
+    return 0;
+  }
+
+  int getReconfigurableProperties(String nodeType, String address,
+      PrintStream out, PrintStream err) throws IOException {
+    if ("datanode".equals(nodeType)) {
+      ClientDatanodeProtocol dnProxy = getDataNodeProxy(address);
+      try {
+        List<String> properties =
+            dnProxy.listReconfigurableProperties();
+        out.println(
+            "Configuration properties that are allowed to be reconfigured:");
+        for (String name : properties) {
+          out.println(name);
+        }
+      } catch (IOException e) {
+        err.println("DataNode reconfiguration: " + e + ".");
+        return 1;
+      }
+    } else {
+      err.println("Node type " + nodeType +
+          " does not support reconfiguration.");
+      return 1;
+    }
+    return 0;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public int genericRefresh(String[] argv, int i) throws IOException {
     String hostport = argv[i++];
     String identifier = argv[i++];
@@ -1579,7 +1943,11 @@ public class DFSAdmin extends FsShell {
           + " [-report] [-live] [-dead] [-decommissioning]");
     } else if ("-safemode".equals(cmd)) {
       System.err.println("Usage: hdfs dfsadmin"
+<<<<<<< HEAD
           + " [-safemode enter | leave | get | wait]");
+=======
+          + " [-safemode enter | leave | get | wait | forceExit]");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else if ("-allowSnapshot".equalsIgnoreCase(cmd)) {
       System.err.println("Usage: hdfs dfsadmin"
           + " [-allowSnapshot <snapshotDir>]");
@@ -1588,10 +1956,16 @@ public class DFSAdmin extends FsShell {
           + " [-disallowSnapshot <snapshotDir>]");
     } else if ("-saveNamespace".equals(cmd)) {
       System.err.println("Usage: hdfs dfsadmin"
+<<<<<<< HEAD
                          + " [-saveNamespace]");
     } else if ("-rollEdits".equals(cmd)) {
       System.err.println("Usage: hdfs dfsadmin"
                          + " [-rollEdits]");
+=======
+          + " [-saveNamespace [-beforeShutdown]]");
+    } else if ("-rollEdits".equals(cmd)) {
+      System.err.println("Usage: hdfs dfsadmin [-rollEdits]");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else if ("-restoreFailedStorage".equals(cmd)) {
       System.err.println("Usage: hdfs dfsadmin"
           + " [-restoreFailedStorage true|false|check ]");
@@ -1649,6 +2023,12 @@ public class DFSAdmin extends FsShell {
     } else if ("-setBalancerBandwidth".equals(cmd)) {
       System.err.println("Usage: hdfs dfsadmin"
                   + " [-setBalancerBandwidth <bandwidth in bytes per second>]");
+<<<<<<< HEAD
+=======
+    } else if ("-getBalancerBandwidth".equalsIgnoreCase(cmd)) {
+      System.err.println("Usage: hdfs dfsadmin"
+          + " [-getBalancerBandwidth <datanode_host:ipc_port>]");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else if ("-fetchImage".equals(cmd)) {
       System.err.println("Usage: hdfs dfsadmin"
           + " [-fetchImage <local directory>]");
@@ -1710,7 +2090,7 @@ public class DFSAdmin extends FsShell {
         return exitCode;
       }
     } else if ("-saveNamespace".equals(cmd)) {
-      if (argv.length != 1) {
+      if (argv.length != 1 && argv.length != 2) {
         printUsage(cmd);
         return exitCode;
       }
@@ -1784,6 +2164,14 @@ public class DFSAdmin extends FsShell {
         printUsage(cmd);
         return exitCode;
       }
+<<<<<<< HEAD
+=======
+    } else if ("-getBalancerBandwidth".equalsIgnoreCase(cmd)) {
+      if (argv.length != 2) {
+        printUsage(cmd);
+        return exitCode;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else if ("-fetchImage".equals(cmd)) {
       if (argv.length != 2) {
         printUsage(cmd);
@@ -1830,7 +2218,11 @@ public class DFSAdmin extends FsShell {
       } else if ("-disallowSnapshot".equalsIgnoreCase(cmd)) {
         disallowSnapshot(argv);
       } else if ("-saveNamespace".equals(cmd)) {
+<<<<<<< HEAD
         exitCode = saveNamespace();
+=======
+        exitCode = saveNamespace(argv);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else if ("-rollEdits".equals(cmd)) {
         exitCode = rollEdits();
       } else if ("-restoreFailedStorage".equals(cmd)) {
@@ -1869,6 +2261,11 @@ public class DFSAdmin extends FsShell {
         exitCode = deleteBlockPool(argv, i);
       } else if ("-setBalancerBandwidth".equals(cmd)) {
         exitCode = setBalancerBandwidth(argv, i);
+<<<<<<< HEAD
+=======
+      } else if ("-getBalancerBandwidth".equals(cmd)) {
+        exitCode = getBalancerBandwidth(argv, i);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else if ("-fetchImage".equals(cmd)) {
         exitCode = fetchImage(argv, i);
       } else if ("-shutdownDatanode".equals(cmd)) {
@@ -1935,7 +2332,11 @@ public class DFSAdmin extends FsShell {
 
     // Create the client
     ClientDatanodeProtocol dnProtocol =     
+<<<<<<< HEAD
         DFSUtil.createClientDatanodeProtocolProxy(datanodeAddr, getUGI(), conf,
+=======
+        DFSUtilClient.createClientDatanodeProtocolProxy(datanodeAddr, getUGI(), conf,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             NetUtils.getSocketFactory(conf, ClientDatanodeProtocol.class));
     return dnProtocol;
   }

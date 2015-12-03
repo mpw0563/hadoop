@@ -160,6 +160,16 @@ public class QuotaCounts {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public String toString() {
+    return "name space=" + getNameSpace() +
+        "\nstorage space=" + getStorageSpace() +
+        "\nstorage types=" + getTypeSpaces();
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public boolean equals(Object obj) {
     if (obj == this) {
       return true;
@@ -176,4 +186,9 @@ public class QuotaCounts {
     assert false : "hashCode not designed";
     return 42; // any arbitrary constant will do
   }
+<<<<<<< HEAD
 }
+=======
+
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

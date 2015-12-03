@@ -74,12 +74,24 @@ public class TestAMRMClientAsync {
     List<ContainerStatus> completed1 = Arrays.asList(
         ContainerStatus.newInstance(newContainerId(0, 0, 0, 0),
             ContainerState.COMPLETE, "", 0));
+<<<<<<< HEAD
     List<Container> allocated1 = Arrays.asList(
         Container.newInstance(null, null, null, null, null, null));
     final AllocateResponse response1 = createAllocateResponse(
         new ArrayList<ContainerStatus>(), allocated1, null);
     final AllocateResponse response2 = createAllocateResponse(completed1,
         new ArrayList<Container>(), null);
+=======
+    List<Container> containers = Arrays.asList(
+        Container.newInstance(null, null, null, null, null, null));
+    final AllocateResponse response1 = createAllocateResponse(
+        new ArrayList<ContainerStatus>(), containers, null);
+    final AllocateResponse response2 = createAllocateResponse(completed1,
+        new ArrayList<Container>(), null);
+    final AllocateResponse response3 = createAllocateResponse(
+        new ArrayList<ContainerStatus>(), new ArrayList<Container>(),
+        containers, containers, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final AllocateResponse emptyResponse = createAllocateResponse(
         new ArrayList<ContainerStatus>(), new ArrayList<Container>(), null);
 
@@ -91,15 +103,24 @@ public class TestAMRMClientAsync {
       public AllocateResponse answer(InvocationOnMock invocation)
           throws Throwable {
         secondHeartbeatSync.incrementAndGet();
+<<<<<<< HEAD
         while(heartbeatBlock.get()) {
           synchronized(heartbeatBlock) {
+=======
+        while (heartbeatBlock.get()) {
+          synchronized (heartbeatBlock) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             heartbeatBlock.wait();
           }
         }
         secondHeartbeatSync.incrementAndGet();
         return response2;
       }
+<<<<<<< HEAD
     }).thenReturn(emptyResponse);
+=======
+    }).thenReturn(response3).thenReturn(emptyResponse);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(client.registerApplicationMaster(anyString(), anyInt(), anyString()))
       .thenReturn(null);
     when(client.getAvailableResources()).thenAnswer(new Answer<Resource>() {
@@ -146,16 +167,33 @@ public class TestAMRMClientAsync {
       Assert.assertEquals(null, callbackHandler.takeCompletedContainers());
       Thread.sleep(10);
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // wait for the completed containers from the second heartbeat's response
     while (callbackHandler.takeCompletedContainers() == null) {
       Thread.sleep(10);
     }
+<<<<<<< HEAD
     
+=======
+
+    // wait for the changed containers from the thrid heartbeat's response
+    while (callbackHandler.takeChangedContainers() == null) {
+      Thread.sleep(10);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     asyncClient.stop();
     
     Assert.assertEquals(null, callbackHandler.takeAllocatedContainers());
     Assert.assertEquals(null, callbackHandler.takeCompletedContainers());
+<<<<<<< HEAD
+=======
+    Assert.assertEquals(null, callbackHandler.takeChangedContainers());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test(timeout=10000)
@@ -397,6 +435,20 @@ public class TestAMRMClientAsync {
     return response;
   }
 
+<<<<<<< HEAD
+=======
+  private AllocateResponse createAllocateResponse(
+      List<ContainerStatus> completed, List<Container> allocated,
+      List<Container> increased, List<Container> decreased,
+      List<NMToken> nmTokens) {
+    AllocateResponse response =
+        AllocateResponse.newInstance(0, completed, allocated,
+            new ArrayList<NodeReport>(), null, null, 1, null, nmTokens,
+            increased, decreased);
+    return response;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static ContainerId newContainerId(int appId, int appAttemptId,
       long timestamp, int containerId) {
     ApplicationId applicationId = ApplicationId.newInstance(timestamp, appId);
@@ -405,9 +457,17 @@ public class TestAMRMClientAsync {
     return ContainerId.newContainerId(applicationAttemptId, containerId);
   }
 
+<<<<<<< HEAD
   private class TestCallbackHandler implements AMRMClientAsync.CallbackHandler {
     private volatile List<ContainerStatus> completedContainers;
     private volatile List<Container> allocatedContainers;
+=======
+  private class TestCallbackHandler
+      extends AMRMClientAsync.AbstractCallbackHandler {
+    private volatile List<ContainerStatus> completedContainers;
+    private volatile List<Container> allocatedContainers;
+    private final List<Container> changedContainers = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Exception savedException = null;
     volatile boolean reboot = false;
     Object notifier = new Object();
@@ -425,7 +485,23 @@ public class TestAMRMClientAsync {
       }
       return ret;
     }
+<<<<<<< HEAD
     
+=======
+
+    public List<Container> takeChangedContainers() {
+      List<Container> ret = null;
+      synchronized (changedContainers) {
+        if (!changedContainers.isEmpty()) {
+          ret = new ArrayList<>(changedContainers);
+          changedContainers.clear();
+          changedContainers.notify();
+        }
+      }
+      return ret;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public List<Container> takeAllocatedContainers() {
       List<Container> ret = allocatedContainers;
       if (ret == null) {
@@ -454,6 +530,25 @@ public class TestAMRMClientAsync {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void onContainersResourceChanged(
+        List<Container> changed) {
+      synchronized (changedContainers) {
+        changedContainers.clear();
+        changedContainers.addAll(changed);
+        while (!changedContainers.isEmpty()) {
+          try {
+            changedContainers.wait();
+          } catch (InterruptedException ex) {
+            LOG.error("Interrupted during wait", ex);
+          }
+        }
+      }
+    }
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void onContainersAllocated(List<Container> containers) {
       allocatedContainers = containers;
       // wait for containers to be taken before returning
@@ -494,7 +589,12 @@ public class TestAMRMClientAsync {
     }
   }
 
+<<<<<<< HEAD
   private class TestCallbackHandler2 implements AMRMClientAsync.CallbackHandler {
+=======
+  private class TestCallbackHandler2
+      extends AMRMClientAsync.AbstractCallbackHandler {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Object notifier = new Object();
     @SuppressWarnings("rawtypes")
     AMRMClientAsync asynClient;
@@ -513,6 +613,12 @@ public class TestAMRMClientAsync {
     public void onContainersAllocated(List<Container> containers) {}
 
     @Override
+<<<<<<< HEAD
+=======
+    public void onContainersResourceChanged(List<Container> containers) {}
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void onShutdownRequest() {}
 
     @Override

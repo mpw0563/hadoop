@@ -22,6 +22,10 @@ import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.net.Node;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Container;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeState;
@@ -135,6 +139,14 @@ public class RMNodeWrapper implements RMNode {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void resetLastNodeHeartBeatResponse() {
+    node.getLastNodeHeartBeatResponse().setResponseId(0);
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @SuppressWarnings("unchecked")
   public List<UpdatedContainerInfo> pullContainerUpdates() {
     List<UpdatedContainerInfo> list = Collections.EMPTY_LIST;
@@ -158,4 +170,19 @@ public class RMNodeWrapper implements RMNode {
   public Set<String> getNodeLabels() {
     return RMNodeLabelsManager.EMPTY_STRING_SET;
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public void updateNodeHeartbeatResponseForContainersDecreasing(
+      NodeHeartbeatResponse response) {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public List<Container> pullNewlyIncreasedContainers() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -33,7 +33,9 @@ import org.apache.hadoop.metrics.ContextFactory;
  * The default impl of start and stop monitoring:
  *  is the AbstractMetricsContext is good enough.
  * 
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public class NullContextWithUpdateThread extends AbstractMetricsContext {
@@ -45,6 +47,7 @@ public class NullContextWithUpdateThread extends AbstractMetricsContext {
   public NullContextWithUpdateThread() {
   }
   
+  @Override
   @InterfaceAudience.Private
   public void init(String contextName, ContextFactory factory) {
     super.init(contextName, factory);
@@ -55,6 +58,7 @@ public class NullContextWithUpdateThread extends AbstractMetricsContext {
   /**
    * Do-nothing version of emitRecord
    */
+  @Override
   @InterfaceAudience.Private
   protected void emitRecord(String contextName, String recordName,
                             OutputRecord outRec) 
@@ -63,6 +67,7 @@ public class NullContextWithUpdateThread extends AbstractMetricsContext {
   /**
    * Do-nothing version of update
    */
+  @Override
   @InterfaceAudience.Private
   protected void update(MetricsRecordImpl record) {
   }
@@ -70,6 +75,7 @@ public class NullContextWithUpdateThread extends AbstractMetricsContext {
   /**
    * Do-nothing version of remove
    */
+  @Override
   @InterfaceAudience.Private
   protected void remove(MetricsRecordImpl record) {
   }

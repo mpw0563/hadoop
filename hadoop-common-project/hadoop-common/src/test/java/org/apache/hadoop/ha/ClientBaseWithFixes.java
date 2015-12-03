@@ -23,10 +23,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+<<<<<<< HEAD
 import java.io.RandomAccessFile;
 import java.net.Socket;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
+=======
+import java.net.Socket;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,8 +38,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+<<<<<<< HEAD
 import org.apache.hadoop.util.Time;
 import org.apache.zookeeper.PortAssignment;
+=======
+import org.apache.hadoop.net.ServerSocketUtil;
+import org.apache.hadoop.util.Time;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.zookeeper.TestableZooKeeper;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -167,10 +176,13 @@ public abstract class ClientBaseWithFixes extends ZKTestCase {
     private LinkedList<ZooKeeper> allClients;
     private boolean allClientsSetup = false;
 
+<<<<<<< HEAD
     private RandomAccessFile portNumLockFile;
 
     private File portNumFile;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     protected TestableZooKeeper createClient(CountdownWatcher watcher, String hp)
         throws IOException, InterruptedException
     {
@@ -413,6 +425,7 @@ public abstract class ClientBaseWithFixes extends ZKTestCase {
 
     private String initHostPort() {
         BASETEST.mkdirs();
+<<<<<<< HEAD
         int port;
         for (;;) {
             port = PortAssignment.unique();
@@ -436,6 +449,13 @@ public abstract class ClientBaseWithFixes extends ZKTestCase {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+=======
+        int port = 0;
+        try {
+           port = ServerSocketUtil.getPort(port, 100);
+        } catch (IOException e) {
+           throw new RuntimeException(e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         return "127.0.0.1:" + port;
     }
@@ -480,9 +500,12 @@ public abstract class ClientBaseWithFixes extends ZKTestCase {
 
         stopServer();
 
+<<<<<<< HEAD
         portNumLockFile.close();
         portNumFile.delete();
         
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         if (tmpDir != null) {
             Assert.assertTrue("delete " + tmpDir.toString(), recursiveDelete(tmpDir));
         }

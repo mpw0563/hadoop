@@ -176,7 +176,19 @@ public class TestMachineList {
 
     //test for exclusion with an unknown IP
     assertFalse(ml.includes("10.119.103.111"));
+<<<<<<< HEAD
 
+=======
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testNullIpAddress() {
+    //create MachineList with a list of of ip ranges specified in CIDR format
+    MachineList ml = new MachineList(CIDR_LIST);
+
+    //test for exclusion with a null IP
+    assertFalse(ml.includes(null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test

@@ -20,7 +20,10 @@ package org.apache.hadoop.mapred;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.Arrays;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -29,6 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+<<<<<<< HEAD
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.ipc.ProtocolSignature;
 import org.apache.hadoop.mapreduce.InputFormat;
@@ -43,6 +47,19 @@ import org.apache.hadoop.mapreduce.split.SplitMetaInfoReader;
 import org.apache.hadoop.mapreduce.split.JobSplit.SplitMetaInfo;
 import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitIndex;
 import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitMetaInfo;
+=======
+import org.apache.hadoop.ipc.ProtocolSignature;
+import org.apache.hadoop.mapreduce.InputFormat;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.OutputFormat;
+import org.apache.hadoop.mapreduce.checkpoint.TaskCheckpointID;
+import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
+import org.apache.hadoop.mapreduce.server.jobtracker.JTConfig;
+import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitIndex;
+import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitMetaInfo;
+import org.apache.hadoop.mapreduce.split.JobSplitWriter;
+import org.apache.hadoop.mapreduce.split.SplitMetaInfoReader;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.ReflectionUtils;
 
 /**
@@ -110,11 +127,23 @@ public class TestMapProgress extends TestCase {
       statusUpdate(taskId, taskStatus);
     }
     
+<<<<<<< HEAD
+=======
+    public void preempted(TaskAttemptID taskId, TaskStatus taskStatus)
+        throws IOException, InterruptedException {
+      statusUpdate(taskId, taskStatus);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public boolean canCommit(TaskAttemptID taskid) throws IOException {
       return true;
     }
     
+<<<<<<< HEAD
     public boolean statusUpdate(TaskAttemptID taskId, TaskStatus taskStatus) 
+=======
+    public AMFeedback statusUpdate(TaskAttemptID taskId, TaskStatus taskStatus) 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     throws IOException, InterruptedException {
       StringBuffer buf = new StringBuffer("Task ");
       buf.append(taskId);
@@ -130,7 +159,13 @@ public class TestMapProgress extends TestCase {
       LOG.info(buf.toString());
       // ignore phase
       // ignore counters
+<<<<<<< HEAD
       return true;
+=======
+      AMFeedback a = new AMFeedback();
+      a.setTaskFound(true);
+      return a;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     public void reportDiagnosticInfo(TaskAttemptID taskid, String trace) throws IOException {
@@ -147,6 +182,20 @@ public class TestMapProgress extends TestCase {
         SortedRanges.Range range) throws IOException {
       LOG.info("Task " + taskid + " reportedNextRecordRange " + range);
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public TaskCheckpointID getCheckpointID(TaskID taskId) {
+      // do nothing
+      return null;
+    }
+
+    @Override
+    public void setCheckpointID(TaskID downgrade, TaskCheckpointID cid) {
+      // do nothing
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   private FileSystem fs = null;

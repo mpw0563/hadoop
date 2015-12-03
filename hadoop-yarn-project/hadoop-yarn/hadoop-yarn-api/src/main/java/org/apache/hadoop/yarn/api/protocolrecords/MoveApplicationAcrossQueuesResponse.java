@@ -15,6 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 package org.apache.hadoop.yarn.api.protocolrecords;
 
 import org.apache.hadoop.classification.InterfaceAudience.Private;
@@ -36,10 +40,17 @@ import org.apache.hadoop.yarn.util.Records;
  */
 @Public
 @Unstable
+<<<<<<< HEAD
 public class MoveApplicationAcrossQueuesResponse {
   @Private
   @Unstable
   public MoveApplicationAcrossQueuesResponse newInstance() {
+=======
+public abstract class MoveApplicationAcrossQueuesResponse {
+  @Private
+  @Unstable
+  public static MoveApplicationAcrossQueuesResponse newInstance() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MoveApplicationAcrossQueuesResponse response =
         Records.newRecord(MoveApplicationAcrossQueuesResponse.class);
     return response;

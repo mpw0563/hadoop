@@ -18,6 +18,10 @@
 package org.apache.hadoop.hdfs.tools;
 
 import java.net.InetSocketAddress;
+<<<<<<< HEAD
+=======
+import java.util.Arrays;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Map;
 
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -28,11 +32,20 @@ import org.apache.hadoop.ha.NodeFencer;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.net.NetUtils;
 
 import com.google.common.base.Preconditions;
 
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMESERVICES;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * One of the NN NameNodes acting as the target of an administrative command
  * (e.g. failover).
@@ -45,6 +58,10 @@ public class NNHAServiceTarget extends HAServiceTarget {
   private static final String NAMENODE_ID_KEY = "namenodeid";
   
   private final InetSocketAddress addr;
+<<<<<<< HEAD
+=======
+  private final InetSocketAddress lifelineAddr;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private InetSocketAddress zkfcAddr;
   private NodeFencer fencer;
   private BadFencingConfigurationException fenceConfigError;
@@ -55,12 +72,28 @@ public class NNHAServiceTarget extends HAServiceTarget {
   public NNHAServiceTarget(Configuration conf,
       String nsId, String nnId) {
     Preconditions.checkNotNull(nnId);
+<<<<<<< HEAD
     
     if (nsId == null) {
       nsId = DFSUtil.getOnlyNameServiceIdOrNull(conf);
       if (nsId == null) {
         throw new IllegalArgumentException(
             "Unable to determine the nameservice id.");
+=======
+
+    if (nsId == null) {
+      nsId = DFSUtil.getOnlyNameServiceIdOrNull(conf);
+      if (nsId == null) {
+        String errorString = "Unable to determine the name service ID.";
+        String[] dfsNames = conf.getStrings(DFS_NAMESERVICES);
+        if ((dfsNames != null) && (dfsNames.length > 1)) {
+          errorString = "Unable to determine the name service ID. " +
+              "This is an HA configuration with multiple name services " +
+              "configured. " + DFS_NAMESERVICES + " is set to " +
+              Arrays.toString(dfsNames) + ". Please re-run with the -ns option.";
+        }
+        throw new IllegalArgumentException(errorString);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
     assert nsId != null;
@@ -77,7 +110,16 @@ public class NNHAServiceTarget extends HAServiceTarget {
           "Unable to determine service address for namenode '" + nnId + "'");
     }
     this.addr = NetUtils.createSocketAddr(serviceAddr,
+<<<<<<< HEAD
         NameNode.DEFAULT_PORT);
+=======
+        HdfsClientConfigKeys.DFS_NAMENODE_RPC_PORT_DEFAULT);
+
+    String lifelineAddrStr =
+        DFSUtil.getNamenodeLifelineAddr(targetConf, nsId, nnId);
+    this.lifelineAddr = (lifelineAddrStr != null) ?
+        NetUtils.createSocketAddr(lifelineAddrStr) : null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     this.autoFailoverEnabled = targetConf.getBoolean(
         DFSConfigKeys.DFS_HA_AUTO_FAILOVER_ENABLED_KEY,
@@ -109,6 +151,14 @@ public class NNHAServiceTarget extends HAServiceTarget {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public InetSocketAddress getHealthMonitorAddress() {
+    return lifelineAddr;
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public InetSocketAddress getZKFCAddress() {
     Preconditions.checkState(autoFailoverEnabled,
         "ZKFC address not relevant when auto failover is off");

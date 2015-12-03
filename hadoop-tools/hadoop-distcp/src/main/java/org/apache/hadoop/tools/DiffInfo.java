@@ -17,12 +17,18 @@
  */
 package org.apache.hadoop.tools;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSUtil;
+=======
+import java.util.Comparator;
+
+import org.apache.hadoop.fs.Path;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.SnapshotDiffReport;
 
 /**
@@ -54,12 +60,28 @@ class DiffInfo {
    */
   private Path tmp;
   /** The target file/dir of the rename op. Null means the op is deletion. */
+<<<<<<< HEAD
   final Path target;
 
   DiffInfo(Path source, Path target) {
     assert source != null;
     this.source = source;
     this.target= target;
+=======
+  Path target;
+
+  private final SnapshotDiffReport.DiffType type;
+
+  public SnapshotDiffReport.DiffType getType(){
+    return this.type;
+  }
+
+  DiffInfo(Path source, Path target, SnapshotDiffReport.DiffType type) {
+    assert source != null;
+    this.source = source;
+    this.target= target;
+    this.type = type;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   void setTmp(Path tmp) {
@@ -69,6 +91,7 @@ class DiffInfo {
   Path getTmp() {
     return tmp;
   }
+<<<<<<< HEAD
 
   static DiffInfo[] getDiffs(SnapshotDiffReport report, Path targetDir) {
     List<DiffInfo> diffs = new ArrayList<>();
@@ -87,4 +110,6 @@ class DiffInfo {
     }
     return diffs.toArray(new DiffInfo[diffs.size()]);
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

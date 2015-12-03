@@ -18,6 +18,12 @@
 
 package org.apache.hadoop.yarn.webapp;
 
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+
+import org.apache.hadoop.net.ServerSocketUtil;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Before;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
@@ -28,6 +34,7 @@ public abstract class JerseyTestBase extends JerseyTest {
   }
 
   @Before
+<<<<<<< HEAD
   public void initializeJerseyPort() {
     int jerseyPort = 9998;
     String port = System.getProperty("jersey.test.port");
@@ -37,6 +44,10 @@ public abstract class JerseyTestBase extends JerseyTest {
         jerseyPort = 9998;
       }
     }
+=======
+  public void initializeJerseyPort() throws IOException {
+    int jerseyPort = ServerSocketUtil.getPort(9998, 10);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     System.setProperty("jersey.test.port", Integer.toString(jerseyPort));
   }
 }

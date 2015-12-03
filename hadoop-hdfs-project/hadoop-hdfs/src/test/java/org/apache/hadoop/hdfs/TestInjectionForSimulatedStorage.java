@@ -29,9 +29,12 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.BlockListAsLongs;
@@ -56,6 +59,7 @@ public class TestInjectionForSimulatedStorage {
   private static final Log LOG = LogFactory.getLog(
       "org.apache.hadoop.hdfs.TestInjectionForSimulatedStorage");
 
+<<<<<<< HEAD
   
   private void writeFile(FileSystem fileSys, Path name, int repl)
                                                 throws IOException {
@@ -72,6 +76,8 @@ public class TestInjectionForSimulatedStorage {
   }
   
   // Waits for all of the blocks to have expected replication
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // Waits for all of the blocks to have expected replication
   private void waitForBlockReplication(String filename, 
@@ -153,7 +159,8 @@ public class TestInjectionForSimulatedStorage {
                                             cluster.getNameNodePort()),
                                             conf);
       
-      writeFile(cluster.getFileSystem(), testPath, numDataNodes);
+      DFSTestUtil.createFile(cluster.getFileSystem(), testPath, filesize,
+          filesize, blockSize, (short) numDataNodes, 0L);
       waitForBlockReplication(testFile, dfsClient.getNamenode(), numDataNodes, 20);
       List<Map<DatanodeStorage, BlockListAsLongs>> blocksList = cluster.getAllBlockReports(bpid);
       

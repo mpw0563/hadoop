@@ -102,7 +102,10 @@ public class TestFSDirectory {
 
     DFSTestUtil.createFile(hdfs, file5, 1024, REPLICATION, seed);
     hdfs.mkdirs(sub2);
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @After

@@ -19,28 +19,44 @@
 package org.apache.hadoop.io;
 
 import java.io.*;
+<<<<<<< HEAD
 
 import junit.framework.TestCase;
 
+=======
+
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.*;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.SequenceFile.CompressionType;
 import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.conf.*;
+import org.junit.Test;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 /** Support for flat files of binary key/value pairs. */
-public class TestArrayFile extends TestCase {
+public class TestArrayFile {
   private static final Log LOG = LogFactory.getLog(TestArrayFile.class);
   
   private static final Path TEST_DIR = new Path(
       System.getProperty("test.build.data", "/tmp"),
       TestMapFile.class.getSimpleName());
   private static String TEST_FILE = new Path(TEST_DIR, "test.array").toString();
+<<<<<<< HEAD
 
   public TestArrayFile(String name) { 
     super(name); 
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
+  @Test
   public void testArrayFile() throws Exception {
     Configuration conf = new Configuration();
     FileSystem fs = FileSystem.getLocal(conf);
@@ -49,6 +65,7 @@ public class TestArrayFile extends TestCase {
     readTest(fs, data, TEST_FILE, conf);
   }
 
+  @Test
   public void testEmptyFile() throws Exception {
     Configuration conf = new Configuration();
     FileSystem fs = FileSystem.getLocal(conf);
@@ -119,6 +136,10 @@ public class TestArrayFile extends TestCase {
    * {@code next(), seek()} in and out of range.
    * </pre>
    */
+<<<<<<< HEAD
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testArrayFileIteration() {
     int SIZE = 10;
     Configuration conf = new Configuration();    

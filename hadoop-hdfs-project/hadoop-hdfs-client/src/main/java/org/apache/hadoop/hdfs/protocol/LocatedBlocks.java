@@ -32,11 +32,20 @@ import org.apache.hadoop.fs.FileEncryptionInfo;
 @InterfaceStability.Evolving
 public class LocatedBlocks {
   private final long fileLength;
+<<<<<<< HEAD
   private final List<LocatedBlock> blocks; // array of blocks with prioritized locations
+=======
+  // array of blocks with prioritized locations
+  private final List<LocatedBlock> blocks;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final boolean underConstruction;
   private final LocatedBlock lastLocatedBlock;
   private final boolean isLastBlockComplete;
   private final FileEncryptionInfo fileEncryptionInfo;
+<<<<<<< HEAD
+=======
+  private final ErasureCodingPolicy ecPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public LocatedBlocks() {
     fileLength = 0;
@@ -45,17 +54,31 @@ public class LocatedBlocks {
     lastLocatedBlock = null;
     isLastBlockComplete = false;
     fileEncryptionInfo = null;
+<<<<<<< HEAD
   }
 
   public LocatedBlocks(long flength, boolean isUnderConstuction,
     List<LocatedBlock> blks, LocatedBlock lastBlock,
     boolean isLastBlockCompleted, FileEncryptionInfo feInfo) {
+=======
+    ecPolicy = null;
+  }
+
+  public LocatedBlocks(long flength, boolean isUnderConstuction,
+      List<LocatedBlock> blks, LocatedBlock lastBlock,
+      boolean isLastBlockCompleted, FileEncryptionInfo feInfo,
+      ErasureCodingPolicy ecPolicy) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     fileLength = flength;
     blocks = blks;
     underConstruction = isUnderConstuction;
     this.lastLocatedBlock = lastBlock;
     this.isLastBlockComplete = isLastBlockCompleted;
     this.fileEncryptionInfo = feInfo;
+<<<<<<< HEAD
+=======
+    this.ecPolicy = ecPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -112,6 +135,16 @@ public class LocatedBlocks {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * @return The ECPolicy for ErasureCoded file, null otherwise.
+   */
+  public ErasureCodingPolicy getErasureCodingPolicy() {
+    return ecPolicy;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Find block containing specified offset.
    *
    * @return block if found, or null otherwise.
@@ -123,6 +156,7 @@ public class LocatedBlocks {
     key.setStartOffset(offset);
     key.getBlock().setNumBytes(1);
     Comparator<LocatedBlock> comp =
+<<<<<<< HEAD
       new Comparator<LocatedBlock>() {
         // Returns 0 iff a is inside b or b is inside a
         @Override
@@ -139,6 +173,24 @@ public class LocatedBlocks {
           return 1;
         }
       };
+=======
+        new Comparator<LocatedBlock>() {
+          // Returns 0 iff a is inside b or b is inside a
+          @Override
+          public int compare(LocatedBlock a, LocatedBlock b) {
+            long aBeg = a.getStartOffset();
+            long bBeg = b.getStartOffset();
+            long aEnd = aBeg + a.getBlockSize();
+            long bEnd = bBeg + b.getBlockSize();
+            if(aBeg <= bBeg && bEnd <= aEnd
+                || bBeg <= aBeg && aEnd <= bEnd)
+              return 0; // one of the blocks is inside the other
+            if(aBeg < bBeg)
+              return -1; // a's left bound is to the left of the b's
+            return 1;
+          }
+        };
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return Collections.binarySearch(blocks, key, comp);
   }
 
@@ -176,6 +228,7 @@ public class LocatedBlocks {
 
   @Override
   public String toString() {
+<<<<<<< HEAD
     final StringBuilder b = new StringBuilder(getClass().getSimpleName());
     b.append("{")
      .append("\n  fileLength=").append(fileLength)
@@ -185,5 +238,12 @@ public class LocatedBlocks {
      .append("\n  isLastBlockComplete=").append(isLastBlockComplete)
      .append("}");
     return b.toString();
+=======
+    return getClass().getSimpleName() + "{" + "\n  fileLength=" + fileLength
+        + "\n  underConstruction=" + underConstruction
+        + "\n  blocks=" + blocks
+        + "\n  lastLocatedBlock=" + lastLocatedBlock
+        + "\n  isLastBlockComplete=" + isLastBlockComplete + "}";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

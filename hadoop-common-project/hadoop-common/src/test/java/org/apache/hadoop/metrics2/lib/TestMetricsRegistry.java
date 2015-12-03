@@ -122,6 +122,25 @@ public class TestMetricsRegistry {
     });
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * Test adding illegal parameters
+   */
+  @Test
+  public void testAddIllegalParameters() {
+    final MetricsRegistry r = new MetricsRegistry("IllegalParamTest");
+
+    expectMetricsException("Interval should be positive.  Value passed is: -20",
+        new Runnable() {
+      @Override
+      public void run() {
+          r.newQuantiles("q1", "New Quantile 1", "qq1", "qv1", (int)-20);
+      }
+    });
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Ignore
   private void expectMetricsException(String prefix, Runnable fun) {
     try {

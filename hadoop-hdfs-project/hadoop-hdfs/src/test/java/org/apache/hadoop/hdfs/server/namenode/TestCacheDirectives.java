@@ -50,6 +50,10 @@ import org.apache.hadoop.fs.CacheFlag;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileSystemTestHelper;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.FsTracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.InvalidRequestException;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
@@ -59,7 +63,10 @@ import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.LogVerificationAppender;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.CacheDirectiveEntry;
 import org.apache.hadoop.hdfs.protocol.CacheDirectiveInfo;
@@ -89,7 +96,10 @@ import org.apache.hadoop.util.GSet;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+<<<<<<< HEAD
 import org.apache.htrace.Sampler;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -297,6 +307,38 @@ public class TestCacheDirectives {
 
     info = new CachePoolInfo("pool2");
     dfs.addCachePool(info);
+<<<<<<< HEAD
+=======
+
+    // Perform cache pool operations using a closed file system.
+    DistributedFileSystem dfs1 = (DistributedFileSystem) cluster
+        .getNewFileSystemInstance(0);
+    dfs1.close();
+    try {
+      dfs1.listCachePools();
+      fail("listCachePools using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+    try {
+      dfs1.addCachePool(info);
+      fail("addCachePool using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+    try {
+      dfs1.modifyCachePool(info);
+      fail("modifyCachePool using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+    try {
+      dfs1.removeCachePool(poolName);
+      fail("removeCachePool using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test(timeout=60000)
@@ -539,6 +581,38 @@ public class TestCacheDirectives {
     dfs.modifyCacheDirective(new CacheDirectiveInfo.Builder(
         directive).setId(id).setReplication((short)2).build());
     dfs.removeCacheDirective(id);
+<<<<<<< HEAD
+=======
+
+    // Perform cache directive operations using a closed file system.
+    DistributedFileSystem dfs1 = (DistributedFileSystem) cluster
+        .getNewFileSystemInstance(0);
+    dfs1.close();
+    try {
+      dfs1.listCacheDirectives(null);
+      fail("listCacheDirectives using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+    try {
+      dfs1.addCacheDirective(alpha);
+      fail("addCacheDirective using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+    try {
+      dfs1.modifyCacheDirective(alpha);
+      fail("modifyCacheDirective using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+    try {
+      dfs1.removeCacheDirective(alphaId);
+      fail("removeCacheDirective using a closed filesystem!");
+    } catch (IOException ioe) {
+      GenericTestUtils.assertExceptionContains("Filesystem closed", ioe);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test(timeout=60000)
@@ -910,7 +984,11 @@ public class TestCacheDirectives {
 
     // Uncache and check each path in sequence
     RemoteIterator<CacheDirectiveEntry> entries =
+<<<<<<< HEAD
       new CacheDirectiveIterator(nnRpc, null, Sampler.NEVER);
+=======
+      new CacheDirectiveIterator(nnRpc, null, FsTracer.get(conf));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (int i=0; i<numFiles; i++) {
       CacheDirectiveEntry entry = entries.next();
       nnRpc.removeCacheDirective(entry.getInfo().getId());

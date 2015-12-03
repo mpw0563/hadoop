@@ -49,9 +49,20 @@ public class DynamicRecordReader<K, V> extends RecordReader<K, V> {
   private int numRecordsProcessedByThisMap = 0;
   private long timeOfLastChunkDirScan = 0;
   private boolean isChunkDirAlreadyScanned = false;
+<<<<<<< HEAD
 
   private static long TIME_THRESHOLD_FOR_DIR_SCANS = TimeUnit.MINUTES.toMillis(5);
 
+=======
+  private DynamicInputChunkContext<K, V> chunkContext;
+
+  private static long TIME_THRESHOLD_FOR_DIR_SCANS = TimeUnit.MINUTES.toMillis(5);
+
+  DynamicRecordReader(DynamicInputChunkContext<K, V> chunkContext) {
+    this.chunkContext = chunkContext;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Implementation for RecordReader::initialize(). Initializes the internal
    * RecordReader to read from chunks.
@@ -69,7 +80,11 @@ public class DynamicRecordReader<K, V> extends RecordReader<K, V> {
     this.taskAttemptContext = taskAttemptContext;
     configuration = taskAttemptContext.getConfiguration();
     taskId = taskAttemptContext.getTaskAttemptID().getTaskID();
+<<<<<<< HEAD
     chunk = DynamicInputChunk.acquire(this.taskAttemptContext);
+=======
+    chunk = chunkContext.acquire(this.taskAttemptContext);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     timeOfLastChunkDirScan = System.currentTimeMillis();
     isChunkDirAlreadyScanned = false;
 
@@ -114,7 +129,11 @@ public class DynamicRecordReader<K, V> extends RecordReader<K, V> {
     timeOfLastChunkDirScan = System.currentTimeMillis();
     isChunkDirAlreadyScanned = false;
     
+<<<<<<< HEAD
     chunk = DynamicInputChunk.acquire(taskAttemptContext);
+=======
+    chunk = chunkContext.acquire(taskAttemptContext);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     if (chunk == null) return false;
 
@@ -182,12 +201,20 @@ public class DynamicRecordReader<K, V> extends RecordReader<K, V> {
             || (!isChunkDirAlreadyScanned &&
                     numRecordsProcessedByThisMap%numRecordsPerChunk
                               > numRecordsPerChunk/2)) {
+<<<<<<< HEAD
       DynamicInputChunk.getListOfChunkFiles();
+=======
+      chunkContext.getListOfChunkFiles();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       isChunkDirAlreadyScanned = true;
       timeOfLastChunkDirScan = now;
     }
 
+<<<<<<< HEAD
     return DynamicInputChunk.getNumChunksLeft();
+=======
+    return chunkContext.getNumChunksLeft();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   /**
    * Implementation of RecordReader::close().

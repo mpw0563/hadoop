@@ -85,6 +85,10 @@ class JournalNodeRpcServer implements QJournalProtocol {
       CommonConfigurationKeys.HADOOP_SECURITY_AUTHORIZATION, false)) {
           server.refreshServiceAcl(confCopy, new HDFSPolicyProvider());
     }
+<<<<<<< HEAD
+=======
+    this.server.setTracer(jn.tracer);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   void start() {
@@ -234,13 +238,24 @@ class JournalNodeRpcServer implements QJournalProtocol {
   }
 
   @Override
+<<<<<<< HEAD
   public Long getJournalCTime(String journalId) throws IOException {
     return jn.getJournalCTime(journalId);
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void discardSegments(String journalId, long startTxId)
       throws IOException {
     jn.discardSegments(journalId, startTxId);
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public Long getJournalCTime(String journalId) throws IOException {
+    return jn.getJournalCTime(journalId);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

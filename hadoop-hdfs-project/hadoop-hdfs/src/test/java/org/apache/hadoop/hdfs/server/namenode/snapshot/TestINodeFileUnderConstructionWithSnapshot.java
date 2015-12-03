@@ -26,7 +26,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -38,9 +41,15 @@ import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.client.HdfsDataOutputStream;
 import org.apache.hadoop.hdfs.client.HdfsDataOutputStream.SyncFlag;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+=======
+import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+import org.apache.hadoop.hdfs.protocol.LocatedBlock;
+import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.FSDirectory;
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem;
 import org.apache.hadoop.hdfs.server.namenode.INode;
@@ -48,6 +57,10 @@ import org.apache.hadoop.hdfs.server.namenode.INodeDirectory;
 import org.apache.hadoop.hdfs.server.namenode.INodeFile;
 import org.apache.hadoop.hdfs.server.namenode.NameNodeAdapter;
 import org.apache.hadoop.hdfs.server.namenode.snapshot.DirectoryWithSnapshotFeature.DirectoryDiff;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.junit.After;
 import org.junit.Before;
@@ -58,7 +71,11 @@ import org.junit.Test;
  */
 public class TestINodeFileUnderConstructionWithSnapshot {
   {
+<<<<<<< HEAD
     ((Log4JLogger)INode.LOG).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(INode.LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     SnapshotTestHelper.disableLogs();
   }
 
@@ -302,10 +319,15 @@ public class TestINodeFileUnderConstructionWithSnapshot {
         fsn.writeUnlock();
       }
     } finally {
+<<<<<<< HEAD
       NameNodeAdapter.setLeasePeriod(
           fsn,
           HdfsServerConstants.LEASE_SOFTLIMIT_PERIOD,
           HdfsServerConstants.LEASE_HARDLIMIT_PERIOD);
+=======
+      NameNodeAdapter.setLeasePeriod(fsn, HdfsConstants.LEASE_SOFTLIMIT_PERIOD,
+          HdfsConstants.LEASE_HARDLIMIT_PERIOD);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 }

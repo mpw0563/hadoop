@@ -26,6 +26,10 @@ import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.net.Node;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Container;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerState;
@@ -149,6 +153,12 @@ public class NodeInfo {
       return null;
     }
 
+<<<<<<< HEAD
+=======
+    public void resetLastNodeHeartBeatResponse() {
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public List<UpdatedContainerInfo> pullContainerUpdates() {
       ArrayList<UpdatedContainerInfo> list = new ArrayList<UpdatedContainerInfo>();
       
@@ -171,6 +181,22 @@ public class NodeInfo {
     public Set<String> getNodeLabels() {
       return RMNodeLabelsManager.EMPTY_STRING_SET;
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public void updateNodeHeartbeatResponseForContainersDecreasing(
+        NodeHeartbeatResponse response) {
+      // TODO Auto-generated method stub
+      
+    }
+
+    @Override
+    public List<Container> pullNewlyIncreasedContainers() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public static RMNode newNodeInfo(String rackName, String hostName,

@@ -38,8 +38,13 @@ import org.apache.hadoop.util.ServletUtil;
 @InterfaceStability.Evolving
 public class LogLevel {
   public static final String USAGES = "\nUsage: General options are:\n"
+<<<<<<< HEAD
       + "\t[-getlevel <host:httpPort> <name>]\n"
       + "\t[-setlevel <host:httpPort> <name> <level>]\n";
+=======
+      + "\t[-getlevel <host:httpPort> <classname>]\n"
+      + "\t[-setlevel <host:httpPort> <classname> <level>]\n";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * A command line implementation
@@ -106,7 +111,7 @@ public class LogLevel {
       if (logName != null) {
         out.println("<br /><hr /><h3>Results</h3>");
         out.println(MARKER
-            + "Submitted Log Name: <b>" + logName + "</b><br />");
+            + "Submitted Class Name: <b>" + logName + "</b><br />");
 
         Log log = LogFactory.getLog(logName);
         out.println(MARKER
@@ -131,10 +136,10 @@ public class LogLevel {
     }
 
     static final String FORMS = "\n<br /><hr /><h3>Get / Set</h3>"
-        + "\n<form>Log: <input type='text' size='50' name='log' /> "
+        + "\n<form>Class Name: <input type='text' size='50' name='log' /> "
         + "<input type='submit' value='Get Log Level' />"
         + "</form>"
-        + "\n<form>Log: <input type='text' size='50' name='log' /> "
+        + "\n<form>Class Name: <input type='text' size='50' name='log' /> "
         + "Level: <input type='text' name='level' /> "
         + "<input type='submit' value='Set Log Level' />"
         + "</form>";

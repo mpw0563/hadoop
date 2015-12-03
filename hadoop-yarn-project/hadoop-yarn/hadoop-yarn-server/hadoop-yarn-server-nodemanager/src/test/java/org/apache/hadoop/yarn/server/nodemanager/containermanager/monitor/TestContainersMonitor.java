@@ -86,7 +86,11 @@ public class TestContainersMonitor extends BaseContainerManagerTest {
   @Before
   public void setup() throws IOException {
     conf.setClass(
+<<<<<<< HEAD
         YarnConfiguration.NM_CONTAINER_MON_RESOURCE_CALCULATOR,
+=======
+        YarnConfiguration.NM_MON_RESOURCE_CALCULATOR,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         LinuxResourceCalculatorPlugin.class, ResourceCalculatorPlugin.class);
     conf.setBoolean(YarnConfiguration.NM_VMEM_CHECK_ENABLED, true);
     super.setup();
@@ -208,7 +212,10 @@ public class TestContainersMonitor extends BaseContainerManagerTest {
     ApplicationId appId = ApplicationId.newInstance(0, 0);
     ApplicationAttemptId appAttemptId = ApplicationAttemptId.newInstance(appId, 1);
     ContainerId cId = ContainerId.newContainerId(appAttemptId, 0);
+<<<<<<< HEAD
     int port = 12345;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     URL resource_alpha =
         ConverterUtils.getYarnUrlFromPath(localFS

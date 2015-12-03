@@ -48,13 +48,23 @@ import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.event.Dispatcher;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.logaggregation.ContainerLogsRetentionPolicy;
 import org.apache.hadoop.yarn.logaggregation.LogAggregationUtils;
+=======
+import org.apache.hadoop.yarn.logaggregation.LogAggregationUtils;
+import org.apache.hadoop.yarn.server.api.ContainerLogContext;
+import org.apache.hadoop.yarn.server.api.ContainerType;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.nodemanager.Context;
 import org.apache.hadoop.yarn.server.nodemanager.DeletionService;
 import org.apache.hadoop.yarn.server.nodemanager.LocalDirsHandlerService;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.application.ApplicationEvent;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.application.ApplicationEventType;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.nodemanager.containermanager.container.Container;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.loghandler.LogHandler;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.loghandler.event.LogHandlerAppFinishedEvent;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.loghandler.event.LogHandlerAppStartedEvent;
@@ -314,13 +324,21 @@ public class LogAggregationService extends AbstractService implements
 
   @SuppressWarnings("unchecked")
   private void initApp(final ApplicationId appId, String user,
+<<<<<<< HEAD
       Credentials credentials, ContainerLogsRetentionPolicy logRetentionPolicy,
       Map<ApplicationAccessType, String> appAcls,
+=======
+      Credentials credentials, Map<ApplicationAccessType, String> appAcls,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LogAggregationContext logAggregationContext) {
     ApplicationEvent eventResponse;
     try {
       verifyAndCreateRemoteLogDir(getConfig());
+<<<<<<< HEAD
       initAppAggregator(appId, user, credentials, logRetentionPolicy, appAcls,
+=======
+      initAppAggregator(appId, user, credentials, appAcls,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           logAggregationContext);
       eventResponse = new ApplicationEvent(appId,
           ApplicationEventType.APPLICATION_LOG_HANDLING_INITED);
@@ -342,8 +360,12 @@ public class LogAggregationService extends AbstractService implements
 
 
   protected void initAppAggregator(final ApplicationId appId, String user,
+<<<<<<< HEAD
       Credentials credentials, ContainerLogsRetentionPolicy logRetentionPolicy,
       Map<ApplicationAccessType, String> appAcls,
+=======
+      Credentials credentials, Map<ApplicationAccessType, String> appAcls,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LogAggregationContext logAggregationContext) {
 
     // Get user's FileSystem credentials
@@ -357,17 +379,26 @@ public class LogAggregationService extends AbstractService implements
     final AppLogAggregator appLogAggregator =
         new AppLogAggregatorImpl(this.dispatcher, this.deletionService,
             getConfig(), appId, userUgi, this.nodeId, dirsHandler,
+<<<<<<< HEAD
             getRemoteNodeLogFileForApp(appId, user), logRetentionPolicy,
+=======
+            getRemoteNodeLogFileForApp(appId, user),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             appAcls, logAggregationContext, this.context,
             getLocalFileContext(getConfig()));
     if (this.appLogAggregators.putIfAbsent(appId, appLogAggregator) != null) {
       throw new YarnRuntimeException("Duplicate initApp for " + appId);
     }
     // wait until check for existing aggregator to create dirs
+<<<<<<< HEAD
+=======
+    YarnRuntimeException appDirException = null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       // Create the app dir
       createAppDir(user, appId, userUgi);
     } catch (Exception e) {
+<<<<<<< HEAD
       appLogAggregators.remove(appId);
       closeFileSystems(userUgi);
       if (!(e instanceof YarnRuntimeException)) {
@@ -377,6 +408,16 @@ public class LogAggregationService extends AbstractService implements
     }
 
 
+=======
+      appLogAggregator.disableLogAggregation();
+      if (!(e instanceof YarnRuntimeException)) {
+        appDirException = new YarnRuntimeException(e);
+      } else {
+        appDirException = (YarnRuntimeException)e;
+      }
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // TODO Get the user configuration for the list of containers that need log
     // aggregation.
 
@@ -392,6 +433,13 @@ public class LogAggregationService extends AbstractService implements
       }
     };
     this.threadPool.execute(aggregatorWrapper);
+<<<<<<< HEAD
+=======
+
+    if (appDirException != null) {
+      throw appDirException;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   protected void closeFileSystems(final UserGroupInformation userUgi) {
@@ -420,7 +468,20 @@ public class LogAggregationService extends AbstractService implements
           + ", did it fail to start?");
       return;
     }
+<<<<<<< HEAD
     aggregator.startContainerLogAggregation(containerId, exitCode == 0);
+=======
+    Container container = context.getContainers().get(containerId);
+    if (null == container) {
+      LOG.warn("Log aggregation cannot be started for " + containerId
+          + ", as its an absent container");
+      return;
+    }
+    ContainerType containerType =
+        container.getContainerTokenIdentifier().getContainerType();
+    aggregator.startContainerLogAggregation(
+        new ContainerLogContext(containerId, containerType, exitCode));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void stopApp(ApplicationId appId) {
@@ -445,7 +506,10 @@ public class LogAggregationService extends AbstractService implements
             (LogHandlerAppStartedEvent) event;
         initApp(appStartEvent.getApplicationId(), appStartEvent.getUser(),
             appStartEvent.getCredentials(),
+<<<<<<< HEAD
             appStartEvent.getLogRetentionPolicy(),
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             appStartEvent.getApplicationAcls(),
             appStartEvent.getLogAggregationContext());
         break;

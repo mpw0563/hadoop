@@ -578,7 +578,12 @@ public class WindowsSecureContainerExecutor extends DefaultContainerExecutor {
       LOG.debug(String.format("getRunCommand: %s exists:%b", 
           command, f.exists()));
     }
+<<<<<<< HEAD
     return new String[] { Shell.WINUTILS, "task", "createAsUser", groupId, 
+=======
+    return new String[] { Shell.getWinUtilsPath(), "task",
+        "createAsUser", groupId,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         userName, pidFile.toString(), "cmd /c " + command };
   }
   

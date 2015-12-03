@@ -42,6 +42,11 @@ import org.apache.hadoop.yarn.server.resourcemanager.NodesListManagerEventType;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptState;
 import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNode;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.util.ControlledClock;
+import org.apache.hadoop.yarn.util.SystemClock;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -130,6 +135,109 @@ public class TestNodesListManager {
 
   }
 
+<<<<<<< HEAD
+=======
+  @Test
+  public void testCachedResolver() throws Exception {
+    Logger rootLogger = LogManager.getRootLogger();
+    rootLogger.setLevel(Level.DEBUG);
+    ControlledClock clock = new ControlledClock(new SystemClock());
+    clock.setTime(0);
+    final int CACHE_EXPIRY_INTERVAL_SECS = 30;
+    NodesListManager.CachedResolver resolver =
+        new NodesListManager.CachedResolver(clock, CACHE_EXPIRY_INTERVAL_SECS);
+    resolver.init(new YarnConfiguration());
+    resolver.start();
+    resolver.addToCache("testCachedResolverHost1", "1.1.1.1");
+    Assert.assertEquals("1.1.1.1",
+        resolver.resolve("testCachedResolverHost1"));
+
+    resolver.addToCache("testCachedResolverHost2", "1.1.1.2");
+    Assert.assertEquals("1.1.1.1",
+        resolver.resolve("testCachedResolverHost1"));
+    Assert.assertEquals("1.1.1.2",
+        resolver.resolve("testCachedResolverHost2"));
+
+    // test removeFromCache
+    resolver.removeFromCache("testCachedResolverHost1");
+    Assert.assertNotEquals("1.1.1.1",
+        resolver.resolve("testCachedResolverHost1"));
+    Assert.assertEquals("1.1.1.2",
+        resolver.resolve("testCachedResolverHost2"));
+
+    // test expiry
+    clock.tickMsec(CACHE_EXPIRY_INTERVAL_SECS * 1000 + 1);
+    resolver.getExpireChecker().run();
+    Assert.assertNotEquals("1.1.1.1",
+        resolver.resolve("testCachedResolverHost1"));
+    Assert.assertNotEquals("1.1.1.2",
+        resolver.resolve("testCachedResolverHost2"));
+  }
+
+  @Test
+  public void testDefaultResolver() throws Exception {
+    Logger rootLogger = LogManager.getRootLogger();
+    rootLogger.setLevel(Level.DEBUG);
+
+    YarnConfiguration conf = new YarnConfiguration();
+
+    MockRM rm = new MockRM(conf);
+    rm.init(conf);
+    NodesListManager nodesListManager = rm.getNodesListManager();
+
+    NodesListManager.Resolver resolver = nodesListManager.getResolver();
+    Assert.assertTrue("default resolver should be DirectResolver",
+        resolver instanceof NodesListManager.DirectResolver);
+  }
+
+  @Test
+  public void testCachedResolverWithEvent() throws Exception {
+    Logger rootLogger = LogManager.getRootLogger();
+    rootLogger.setLevel(Level.DEBUG);
+
+    YarnConfiguration conf = new YarnConfiguration();
+    conf.setInt(YarnConfiguration.RM_NODE_IP_CACHE_EXPIRY_INTERVAL_SECS, 30);
+
+    MockRM rm = new MockRM(conf);
+    rm.init(conf);
+    NodesListManager nodesListManager = rm.getNodesListManager();
+    nodesListManager.init(conf);
+    nodesListManager.start();
+
+    NodesListManager.CachedResolver resolver =
+        (NodesListManager.CachedResolver)nodesListManager.getResolver();
+
+    resolver.addToCache("testCachedResolverHost1", "1.1.1.1");
+    resolver.addToCache("testCachedResolverHost2", "1.1.1.2");
+    Assert.assertEquals("1.1.1.1",
+        resolver.resolve("testCachedResolverHost1"));
+    Assert.assertEquals("1.1.1.2",
+        resolver.resolve("testCachedResolverHost2"));
+
+    RMNode rmnode1 = MockNodes.newNodeInfo(1, Resource.newInstance(28000, 8),
+        1, "testCachedResolverHost1", 1234);
+    RMNode rmnode2 = MockNodes.newNodeInfo(1, Resource.newInstance(28000, 8),
+        1, "testCachedResolverHost2", 1234);
+
+    nodesListManager.handle(
+        new NodesListManagerEvent(NodesListManagerEventType.NODE_USABLE,
+            rmnode1));
+    Assert.assertNotEquals("1.1.1.1",
+        resolver.resolve("testCachedResolverHost1"));
+    Assert.assertEquals("1.1.1.2",
+        resolver.resolve("testCachedResolverHost2"));
+
+    nodesListManager.handle(
+        new NodesListManagerEvent(NodesListManagerEventType.NODE_USABLE,
+            rmnode2));
+    Assert.assertNotEquals("1.1.1.1",
+        resolver.resolve("testCachedResolverHost1"));
+    Assert.assertNotEquals("1.1.1.2",
+        resolver.resolve("testCachedResolverHost2"));
+
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /*
    * Create dispatcher object
    */

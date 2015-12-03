@@ -44,6 +44,10 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.nodelabels.CommonNodeLabelsManager;
 import org.apache.hadoop.yarn.security.AccessType;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.placement.UserGroupMappingPlacementRule.QueueMapping;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.ReservationSchedulerConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerUtils;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.policy.FairOrderingPolicy;
@@ -84,7 +88,11 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
   @Private
   public static final String MAXIMUM_APPLICATION_MASTERS_RESOURCE_PERCENT =
     PREFIX + MAXIMUM_AM_RESOURCE_SUFFIX;
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Private
   public static final String QUEUES = "queues";
   
@@ -137,7 +145,11 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
   @Private
   public static final float 
   DEFAULT_MAXIMUM_APPLICATIONMASTERS_RESOURCE_PERCENT = 0.1f;
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Private
   public static final float UNDEFINED = -1;
   
@@ -184,6 +196,16 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
   public static final int DEFAULT_NODE_LOCALITY_DELAY = 40;
 
   @Private
+<<<<<<< HEAD
+=======
+  public static final String RACK_LOCALITY_FULL_RESET =
+      PREFIX + "rack-locality-full-reset";
+
+  @Private
+  public static final boolean DEFAULT_RACK_LOCALITY_FULL_RESET = true;
+
+  @Private
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static final String SCHEDULE_ASYNCHRONOUSLY_PREFIX =
       PREFIX + "schedule-asynchronously";
 
@@ -211,6 +233,7 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
 
   @Private
   public static final Integer DEFAULT_CONFIGURATION_APPLICATION_PRIORITY = 0;
+<<<<<<< HEAD
 
   @Private
   public static class QueueMapping {
@@ -240,6 +263,8 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
       this.queue = queue;
     }
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   @Private
   public static final String AVERAGE_CAPACITY = "average-capacity";
@@ -542,6 +567,24 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
     set(getQueuePrefix(queue) + DEFAULT_NODE_LABEL_EXPRESSION, exp);
   }
 
+<<<<<<< HEAD
+=======
+  public float getMaximumAMResourcePercentPerPartition(String queue,
+      String label) {
+    // If per-partition max-am-resource-percent is not configured,
+    // use default value as max-am-resource-percent for this queue.
+    return getFloat(getNodeLabelPrefix(queue, label)
+        + MAXIMUM_AM_RESOURCE_SUFFIX,
+        getMaximumApplicationMasterResourcePerQueuePercent(queue));
+  }
+
+  public void setMaximumAMResourcePercentPerPartition(String queue,
+      String label, float percent) {
+    setFloat(getNodeLabelPrefix(queue, label)
+        + MAXIMUM_AM_RESOURCE_SUFFIX, percent);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /*
    * Returns whether we should continue to look at all heart beating nodes even
    * after the reservation limit was hit. The node heart beating in could
@@ -677,7 +720,16 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
   public int getNodeLocalityDelay() {
     return getInt(NODE_LOCALITY_DELAY, DEFAULT_NODE_LOCALITY_DELAY);
   }
+<<<<<<< HEAD
   
+=======
+
+  public boolean getRackLocalityFullReset() {
+    return getBoolean(RACK_LOCALITY_FULL_RESET,
+        DEFAULT_RACK_LOCALITY_FULL_RESET);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public ResourceCalculator getResourceCalculator() {
     return ReflectionUtils.newInstance(
         getClass(
@@ -747,7 +799,11 @@ public class CapacitySchedulerConfiguration extends ReservationSchedulerConfigur
    */
   public List<QueueMapping> getQueueMappings() {
     List<QueueMapping> mappings =
+<<<<<<< HEAD
         new ArrayList<CapacitySchedulerConfiguration.QueueMapping>();
+=======
+        new ArrayList<QueueMapping>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Collection<String> mappingsString =
         getTrimmedStringCollection(QUEUE_MAPPING);
     for (String mappingValue : mappingsString) {

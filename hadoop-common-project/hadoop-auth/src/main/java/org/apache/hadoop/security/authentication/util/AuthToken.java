@@ -34,15 +34,28 @@ public class AuthToken implements Principal {
   private static final String ATTR_SEPARATOR = "&";
   private static final String USER_NAME = "u";
   private static final String PRINCIPAL = "p";
+<<<<<<< HEAD
+=======
+  private static final String MAX_INACTIVES = "i";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static final String EXPIRES = "e";
   private static final String TYPE = "t";
 
   private final static Set<String> ATTRIBUTES =
+<<<<<<< HEAD
     new HashSet<String>(Arrays.asList(USER_NAME, PRINCIPAL, EXPIRES, TYPE));
+=======
+    new HashSet<String>(Arrays.asList(USER_NAME, PRINCIPAL,
+        MAX_INACTIVES, EXPIRES, TYPE));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private String userName;
   private String principal;
   private String type;
+<<<<<<< HEAD
+=======
+  private long maxInactives;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private long expires;
   private String tokenStr;
 
@@ -50,6 +63,10 @@ public class AuthToken implements Principal {
     userName = null;
     principal = null;
     type = null;
+<<<<<<< HEAD
+=======
+    maxInactives = -1;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     expires = -1;
     tokenStr = "ANONYMOUS";
     generateToken();
@@ -73,6 +90,10 @@ public class AuthToken implements Principal {
     this.userName = userName;
     this.principal = principal;
     this.type = type;
+<<<<<<< HEAD
+=======
+    this.maxInactives = -1;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.expires = -1;
   }
   
@@ -89,6 +110,19 @@ public class AuthToken implements Principal {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Sets the max inactive interval of the token.
+   *
+   * @param interval max inactive interval of the token in milliseconds since
+   *                 the epoch.
+   */
+  public void setMaxInactives(long interval) {
+    this.maxInactives = interval;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Sets the expiration of the token.
    *
    * @param expires expiration time of the token in milliseconds since the epoch.
@@ -104,7 +138,14 @@ public class AuthToken implements Principal {
    * @return true if the token has expired.
    */
   public boolean isExpired() {
+<<<<<<< HEAD
     return getExpires() != -1 && System.currentTimeMillis() > getExpires();
+=======
+    return (getMaxInactives() != -1 &&
+        System.currentTimeMillis() > getMaxInactives())
+        || (getExpires() != -1 &&
+        System.currentTimeMillis() > getExpires());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -115,6 +156,11 @@ public class AuthToken implements Principal {
     sb.append(USER_NAME).append("=").append(getUserName()).append(ATTR_SEPARATOR);
     sb.append(PRINCIPAL).append("=").append(getName()).append(ATTR_SEPARATOR);
     sb.append(TYPE).append("=").append(getType()).append(ATTR_SEPARATOR);
+<<<<<<< HEAD
+=======
+    sb.append(MAX_INACTIVES).append("=")
+      .append(getMaxInactives()).append(ATTR_SEPARATOR);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     sb.append(EXPIRES).append("=").append(getExpires());
     tokenStr = sb.toString();
   }
@@ -148,6 +194,18 @@ public class AuthToken implements Principal {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Returns the max inactive time of the token.
+   *
+   * @return the max inactive time of the token, in milliseconds since Epoc.
+   */
+  public long getMaxInactives() {
+    return maxInactives;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Returns the expiration time of the token.
    *
    * @return the expiration time of the token, in milliseconds since Epoc.
@@ -183,8 +241,15 @@ public class AuthToken implements Principal {
     if (!map.keySet().equals(ATTRIBUTES)) {
       throw new AuthenticationException("Invalid token string, missing attributes");
     }
+<<<<<<< HEAD
     long expires = Long.parseLong(map.get(EXPIRES));
     AuthToken token = new AuthToken(map.get(USER_NAME), map.get(PRINCIPAL), map.get(TYPE));
+=======
+    long maxInactives = Long.parseLong(map.get(MAX_INACTIVES));
+    long expires = Long.parseLong(map.get(EXPIRES));
+    AuthToken token = new AuthToken(map.get(USER_NAME), map.get(PRINCIPAL), map.get(TYPE));
+    token.setMaxInactives(maxInactives);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     token.setExpires(expires);
     return token;
   }

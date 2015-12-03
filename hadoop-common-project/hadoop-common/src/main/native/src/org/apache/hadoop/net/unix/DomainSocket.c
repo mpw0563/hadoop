@@ -268,7 +268,11 @@ Java_org_apache_hadoop_net_unix_DomainSocket_validateSocketPathSecurity0(
 JNIEnv *env, jclass clazz, jobject jstr, jint skipComponents)
 {
   jint utfLength;
+<<<<<<< HEAD
   char path[PATH_MAX], check[PATH_MAX], *token, *rest;
+=======
+  char path[PATH_MAX], check[PATH_MAX], *token, *rest, *rest_free;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   struct stat st;
   int ret, mode, strlenPath;
   uid_t uid;
@@ -280,6 +284,10 @@ JNIEnv *env, jclass clazz, jobject jstr, jint skipComponents)
         "no longer than %zd UTF-8 bytes.", (sizeof(path)-1));
     goto done;
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   (*env)->GetStringUTFRegion(env, jstr, 0, utfLength, path);
   path [ utfLength ] = 0;
   jthr = (*env)->ExceptionOccurred(env);
@@ -304,7 +312,20 @@ JNIEnv *env, jclass clazz, jobject jstr, jint skipComponents)
   // last one.  We don't validate the last component, since it's not supposed to
   // be a directory.  (If it is a directory, we will fail to create the socket
   // later with EISDIR or similar.)
+<<<<<<< HEAD
   for (check[0] = '/', check[1] = '\0', rest = path, token = "";
+=======
+  rest=strdup(path);
+  if ( rest == NULL ){
+    ret = errno;
+    jthr = newIOException(env,"memory allocation failure trying to copy a path"
+        " with %d length. error code %d (%s). ", strlenPath, ret, terror(ret));
+    goto done;
+  };
+  rest_free=rest;
+
+  for (check[0] = '/', check[1] = '\0', token = "";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
        token && rest && rest[0];
        token = strtok_r(rest, "/", &rest)) {
     if (strcmp(check, "/") != 0) {
@@ -322,12 +343,20 @@ JNIEnv *env, jclass clazz, jobject jstr, jint skipComponents)
     }
     if (stat(check, &st) < 0) {
       ret = errno;
+<<<<<<< HEAD
       jthr = newIOException(env, "failed to stat a path component: '%s'.  "
           "error code %d (%s)", check, ret, terror(ret));
+=======
+      jthr = newIOException(env, "failed to stat a path component: "
+          "'%s' in '%s'. error code %d (%s). "
+          "Ensure that the path is configured correctly.",
+          check, path, ret, terror(ret));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       goto done;
     }
     mode = st.st_mode & 0777;
     if (mode & 0002) {
+<<<<<<< HEAD
       jthr = newIOException(env, "the path component: '%s' is "
         "world-writable.  Its permissions are 0%03o.  Please fix "
         "this or select a different socket path.", check, mode);
@@ -348,10 +377,48 @@ JNIEnv *env, jclass clazz, jobject jstr, jint skipComponents)
         "0%03o.  Please fix this or select a different socket path.",
         check, uid, st.st_uid, mode);
         goto done;
+=======
+      jthr = newIOException(env, "The path component: '%s' in '%s' has "
+         "permissions 0%03o uid %"PRId64" and gid %"PRId64". "
+         "It is not protected because it "
+         "is world-writable. This might help: 'chmod o-w %s'. "
+         "For more information: "
+         "https://wiki.apache.org/hadoop/SocketPathSecurity",
+         check, path, mode, (int64_t)st.st_uid, (int64_t)st.st_gid, check);
+      goto done;
+    }
+    if ((mode & 0020) && (st.st_gid != 0)) {
+      jthr = newIOException(env, "The path component: '%s' in '%s' has "
+         "permissions 0%03o uid %"PRId64" and gid %"PRId64". "
+         "It is not protected because it "
+         "is group-writable and not owned by root. "
+         "This might help: 'chmod g-w %s' or 'chown root %s'. "
+         "For more information: "
+         "https://wiki.apache.org/hadoop/SocketPathSecurity",
+         check, path, mode, (int64_t)st.st_uid, (int64_t)st.st_gid,
+         check, check);
+      goto done;
+    }
+    if ((mode & 0200) && (st.st_uid != 0) && (st.st_uid != uid)) {
+      jthr = newIOException(env, "The path component: '%s' in '%s' has "
+         "permissions 0%03o uid %"PRId64" and gid %"PRId64". "
+         "It is not protected because it "
+         "is owned by a user who is not root "
+         "and not the effective user: '%"PRId64"'. "
+         "This might help: 'chown root %s' or 'chown %"PRId64" %s'. "
+         "For more information: "
+         "https://wiki.apache.org/hadoop/SocketPathSecurity",
+         check, path, mode, (int64_t)st.st_uid, (int64_t)st.st_gid,
+         (int64_t)uid, check, (int64_t)uid, check);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       goto done;
     }
   }
 done:
+<<<<<<< HEAD
+=======
+  if ( rest_free ) free(rest_free);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   if (jthr) {
     (*env)->Throw(env, jthr);
   }

@@ -41,7 +41,10 @@ import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.hdfs.qjournal.MiniJournalCluster;
@@ -84,7 +87,11 @@ public class TestQuorumJournalManager {
   private final List<QuorumJournalManager> toClose = Lists.newLinkedList();
   
   static {
+<<<<<<< HEAD
     ((Log4JLogger)ProtobufRpcEngine.LOG).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(ProtobufRpcEngine.LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Before

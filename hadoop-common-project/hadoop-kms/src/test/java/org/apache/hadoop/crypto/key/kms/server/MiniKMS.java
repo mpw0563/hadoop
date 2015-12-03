@@ -47,6 +47,7 @@ public class MiniKMS {
   private static Server createJettyServer(String keyStore, String password, int inPort) {
     try {
       boolean ssl = keyStore != null;
+<<<<<<< HEAD
       InetAddress localhost = InetAddress.getByName("localhost");
       String host = "localhost";
       ServerSocket ss = new ServerSocket((inPort < 0) ? 0 : inPort, 50, localhost);
@@ -60,6 +61,15 @@ public class MiniKMS {
         SslSocketConnector c = new SslSocketConnectorSecure();
         c.setHost(host);
         c.setPort(port);
+=======
+      String host = "localhost";
+      Server server = new Server(inPort);
+      if (!ssl) {
+        server.getConnectors()[0].setHost(host);
+      } else {
+        SslSocketConnector c = new SslSocketConnectorSecure();
+        c.setHost(host);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         c.setNeedClientAuth(false);
         c.setKeystore(keyStore);
         c.setKeystoreType("jks");
@@ -80,7 +90,11 @@ public class MiniKMS {
       String scheme = (ssl) ? "https" : "http";
       return new URL(scheme + "://" +
           server.getConnectors()[0].getHost() + ":" +
+<<<<<<< HEAD
           server.getConnectors()[0].getPort());
+=======
+          server.getConnectors()[0].getLocalPort());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (MalformedURLException ex) {
       throw new RuntimeException("It should never happen, " + ex.getMessage(),
           ex);
@@ -92,7 +106,11 @@ public class MiniKMS {
     private String log4jConfFile;
     private File keyStoreFile;
     private String keyStorePassword;
+<<<<<<< HEAD
     private int inPort = -1;
+=======
+    private int inPort;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     public Builder() {
       kmsConfDir = new File("target/test-classes").getAbsoluteFile();

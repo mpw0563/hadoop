@@ -29,7 +29,13 @@ import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+<<<<<<< HEAD
 import org.junit.Test;
+=======
+import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
+import org.junit.Test;
+import org.mockito.internal.util.reflection.Whitebox;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import java.util.Iterator;
 
@@ -55,7 +61,16 @@ public class TestUnderReplicatedBlocks {
       DatanodeDescriptor dn = bm.blocksMap.getStorages(b.getLocalBlock())
           .iterator().next().getDatanodeDescriptor();
       bm.addToInvalidates(b.getLocalBlock(), dn);
+<<<<<<< HEAD
       Thread.sleep(5000);
+=======
+      // Compute the invalidate work in NN, and trigger the heartbeat from DN
+      BlockManagerTestUtil.computeAllPendingWork(bm);
+      DataNodeTestUtils.triggerHeartbeat(cluster.getDataNode(dn.getIpcPort()));
+      // Wait to make sure the DataNode receives the deletion request 
+      Thread.sleep(5000);
+      // Remove the record from blocksMap
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       bm.blocksMap.removeNode(b.getLocalBlock(), dn);
       
       // increment this file's replication factor
@@ -129,6 +144,13 @@ public class TestUnderReplicatedBlocks {
       assertEquals(NUM_OF_BLOCKS, bm.getUnderReplicatedNotMissingBlocks());
       bm.computeDatanodeWork();
 
+<<<<<<< HEAD
+=======
+      assertTrue("The number of replication work pending before targets are " +
+              "determined should be non-negative.",
+          (Integer)Whitebox.getInternalState(secondDn,
+              "pendingReplicationWithoutTargets") >= 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       assertTrue("The number of blocks to be replicated should be less than "
           + "or equal to " + bm.replicationStreamsHardLimit,

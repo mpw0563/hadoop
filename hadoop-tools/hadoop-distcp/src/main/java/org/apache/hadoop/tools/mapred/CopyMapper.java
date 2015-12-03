@@ -62,6 +62,11 @@ public class CopyMapper extends Mapper<Text, CopyListingFileStatus, Text, Text> 
     BYTESEXPECTED,// Number of bytes expected to be copied.
     BYTESFAILED,  // Number of bytes that failed to be copied.
     BYTESSKIPPED, // Number of bytes that were skipped from copy.
+<<<<<<< HEAD
+=======
+    SLEEP_TIME_MS, // Time map slept while trying to honor bandwidth cap.
+    BANDWIDTH_IN_BYTES, // Effective transfer rate in B/s.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -85,7 +90,13 @@ public class CopyMapper extends Mapper<Text, CopyListingFileStatus, Text, Text> 
   private EnumSet<FileAttribute> preserve = EnumSet.noneOf(FileAttribute.class);
 
   private FileSystem targetFS = null;
+<<<<<<< HEAD
   private Path    targetWorkPath = null;
+=======
+  private Path targetWorkPath = null;
+  private long startEpoch;
+  private long totalBytesCopied = 0;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Implementation of the Mapper::setup() method. This extracts the DistCp-
@@ -118,6 +129,10 @@ public class CopyMapper extends Mapper<Text, CopyListingFileStatus, Text, Text> 
     if (conf.get(DistCpConstants.CONF_LABEL_SSL_CONF) != null) {
       initializeSSLConf(context);
     }
+<<<<<<< HEAD
+=======
+    startEpoch = System.currentTimeMillis();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -288,6 +303,10 @@ public class CopyMapper extends Mapper<Text, CopyListingFileStatus, Text, Text> 
     incrementCounter(context, Counter.BYTESEXPECTED, sourceFileStatus.getLen());
     incrementCounter(context, Counter.BYTESCOPIED, bytesCopied);
     incrementCounter(context, Counter.COPY, 1);
+<<<<<<< HEAD
+=======
+    totalBytesCopied += bytesCopied;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void createTargetDirsWithRetry(String description,
@@ -373,4 +392,16 @@ public class CopyMapper extends Mapper<Text, CopyListingFileStatus, Text, Text> 
       return false;
     }
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  protected void cleanup(Context context)
+      throws IOException, InterruptedException {
+    super.cleanup(context);
+    long secs = (System.currentTimeMillis() - startEpoch) / 1000;
+    incrementCounter(context, Counter.BANDWIDTH_IN_BYTES,
+        totalBytesCopied / ((secs == 0 ? 1 : secs)));
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

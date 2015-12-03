@@ -62,7 +62,11 @@ public class TestKeyProviderCryptoExtension {
   @Test
   public void testGenerateEncryptedKey() throws Exception {
     // Generate a new EEK and check it
+<<<<<<< HEAD
     KeyProviderCryptoExtension.EncryptedKeyVersion ek1 =
+=======
+    KeyProviderCryptoExtension.EncryptedKeyVersion ek1 = 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         kpExt.generateEncryptedKey(encryptionKey.getName());
     assertEquals("Version name of EEK should be EEK",
         KeyProviderCryptoExtension.EEK,
@@ -92,7 +96,11 @@ public class TestKeyProviderCryptoExtension {
     assertArrayEquals(k1.getMaterial(), k1a.getMaterial());
 
     // Generate another EEK and make sure it's different from the first
+<<<<<<< HEAD
     KeyProviderCryptoExtension.EncryptedKeyVersion ek2 =
+=======
+    KeyProviderCryptoExtension.EncryptedKeyVersion ek2 = 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         kpExt.generateEncryptedKey(encryptionKey.getName());
     KeyVersion k2 = kpExt.decryptEncryptedKey(ek2);
     if (Arrays.equals(k1.getMaterial(), k2.getMaterial())) {

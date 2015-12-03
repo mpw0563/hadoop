@@ -51,6 +51,11 @@ import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.ApplicationsRequestScope;
 import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenResponse;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.FailApplicationAttemptRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.FailApplicationAttemptResponse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptsRequest;
@@ -93,8 +98,17 @@ import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateResponse;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationResponse;
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.SignalContainerRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.SignalContainerResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationResponse;
+import org.apache.hadoop.yarn.api.protocolrecords.UpdateApplicationPriorityRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.UpdateApplicationPriorityResponse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptReport;
@@ -105,6 +119,10 @@ import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerReport;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.QueueACL;
 import org.apache.hadoop.yarn.api.records.QueueInfo;
 import org.apache.hadoop.yarn.api.records.ReservationDefinition;
@@ -134,8 +152,16 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppEventType;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMoveEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppState;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNode;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptEvent;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptEventType;
+import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
+import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNode;
+import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNodeSignalContainerEvent;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerAppReport;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerNodeReport;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.YarnScheduler;
@@ -152,6 +178,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * The client interface to the Resource Manager. This module handles all the rpc
  * interfaces to the resource manager from the client.
@@ -181,6 +211,15 @@ public class ClientRMService extends AbstractService implements
   private ReservationSystem reservationSystem;
   private ReservationInputValidator rValidator;
 
+<<<<<<< HEAD
+=======
+  private static final EnumSet<RMAppState> COMPLETED_APP_STATES = EnumSet.of(
+      RMAppState.FINISHED, RMAppState.FINISHING, RMAppState.FAILED,
+      RMAppState.KILLED, RMAppState.FINAL_SAVING, RMAppState.KILLING);
+  private static final EnumSet<RMAppState> ACTIVE_APP_STATES = EnumSet.of(
+      RMAppState.ACCEPTED, RMAppState.RUNNING);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public ClientRMService(RMContext rmContext, YarnScheduler scheduler,
       RMAppManager rmAppManager, ApplicationACLsManager applicationACLsManager,
       QueueACLsManager queueACLsManager,
@@ -311,6 +350,12 @@ public class ClientRMService extends AbstractService implements
   public GetApplicationReportResponse getApplicationReport(
       GetApplicationReportRequest request) throws YarnException {
     ApplicationId applicationId = request.getApplicationId();
+<<<<<<< HEAD
+=======
+    if (applicationId == null) {
+      throw new ApplicationNotFoundException("Invalid application id: null");
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     UserGroupInformation callerUGI;
     try {
@@ -600,6 +645,79 @@ public class ClientRMService extends AbstractService implements
 
   @SuppressWarnings("unchecked")
   @Override
+<<<<<<< HEAD
+=======
+  public FailApplicationAttemptResponse failApplicationAttempt(
+      FailApplicationAttemptRequest request) throws YarnException {
+
+    ApplicationAttemptId attemptId = request.getApplicationAttemptId();
+    ApplicationId applicationId = attemptId.getApplicationId();
+
+    UserGroupInformation callerUGI;
+    try {
+      callerUGI = UserGroupInformation.getCurrentUser();
+    } catch (IOException ie) {
+      LOG.info("Error getting UGI ", ie);
+      RMAuditLogger.logFailure("UNKNOWN", AuditConstants.FAIL_ATTEMPT_REQUEST,
+          "UNKNOWN", "ClientRMService" , "Error getting UGI",
+          applicationId, attemptId);
+      throw RPCUtil.getRemoteException(ie);
+    }
+
+    RMApp application = this.rmContext.getRMApps().get(applicationId);
+    if (application == null) {
+      RMAuditLogger.logFailure(callerUGI.getUserName(),
+          AuditConstants.FAIL_ATTEMPT_REQUEST, "UNKNOWN", "ClientRMService",
+          "Trying to fail an attempt of an absent application", applicationId,
+          attemptId);
+      throw new ApplicationNotFoundException("Trying to fail an attempt "
+          + attemptId + " of an absent application " + applicationId);
+    }
+
+    RMAppAttempt appAttempt = application.getAppAttempts().get(attemptId);
+    if (appAttempt == null) {
+      throw new ApplicationAttemptNotFoundException(
+          "ApplicationAttempt with id '" + attemptId + "' doesn't exist in RM.");
+    }
+
+    if (!checkAccess(callerUGI, application.getUser(),
+        ApplicationAccessType.MODIFY_APP, application)) {
+      RMAuditLogger.logFailure(callerUGI.getShortUserName(),
+          AuditConstants.FAIL_ATTEMPT_REQUEST,
+          "User doesn't have permissions to "
+              + ApplicationAccessType.MODIFY_APP.toString(), "ClientRMService",
+          AuditConstants.UNAUTHORIZED_USER, applicationId);
+      throw RPCUtil.getRemoteException(new AccessControlException("User "
+          + callerUGI.getShortUserName() + " cannot perform operation "
+          + ApplicationAccessType.MODIFY_APP.name() + " on " + applicationId));
+    }
+
+    FailApplicationAttemptResponse response =
+        recordFactory.newRecordInstance(FailApplicationAttemptResponse.class);
+
+    if (!ACTIVE_APP_STATES.contains(application.getState())) {
+      if (COMPLETED_APP_STATES.contains(application.getState())) {
+        RMAuditLogger.logSuccess(callerUGI.getShortUserName(),
+            AuditConstants.FAIL_ATTEMPT_REQUEST, "ClientRMService",
+            applicationId);
+        return response;
+      }
+    }
+
+    this.rmContext.getDispatcher().getEventHandler().handle(
+        new RMAppAttemptEvent(attemptId, RMAppAttemptEventType.FAIL,
+        "Attempt failed by user."));
+
+    RMAuditLogger.logSuccess(callerUGI.getShortUserName(),
+        AuditConstants.FAIL_ATTEMPT_REQUEST, "ClientRMService", applicationId,
+        attemptId);
+
+    return response;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public KillApplicationResponse forceKillApplication(
       KillApplicationRequest request) throws YarnException {
 
@@ -643,8 +761,14 @@ public class ClientRMService extends AbstractService implements
       return KillApplicationResponse.newInstance(true);
     }
 
+<<<<<<< HEAD
     this.rmContext.getDispatcher().getEventHandler()
         .handle(new RMAppEvent(applicationId, RMAppEventType.KILL));
+=======
+    this.rmContext.getDispatcher().getEventHandler().handle(
+        new RMAppEvent(applicationId, RMAppEventType.KILL,
+        "Application killed by user."));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // For UnmanagedAMs, return true so they don't retry
     return KillApplicationResponse.newInstance(
@@ -751,6 +875,7 @@ public class ClientRMService extends AbstractService implements
       RMApp application = appsIter.next();
 
       // Check if current application falls under the specified scope
+<<<<<<< HEAD
       boolean allowAccess = checkAccess(callerUGI, application.getUser(),
           ApplicationAccessType.VIEW_APP, application);
       if (scope == ApplicationsRequestScope.OWN &&
@@ -758,6 +883,11 @@ public class ClientRMService extends AbstractService implements
         continue;
       } else if (scope == ApplicationsRequestScope.VIEWABLE && !allowAccess) {
         continue;
+=======
+      if (scope == ApplicationsRequestScope.OWN &&
+          !callerUGI.getUserName().equals(application.getUser())) {
+        continue;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       if (applicationTypes != null && !applicationTypes.isEmpty()) {
@@ -806,6 +936,16 @@ public class ClientRMService extends AbstractService implements
         }
       }
 
+<<<<<<< HEAD
+=======
+      // checkAccess can grab the scheduler lock so call it last
+      boolean allowAccess = checkAccess(callerUGI, application.getUser(),
+          ApplicationAccessType.VIEW_APP, application);
+      if (scope == ApplicationsRequestScope.VIEWABLE && !allowAccess) {
+        continue;
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       reports.add(application.createAndGetApplicationReport(
           callerUGI.getUserName(), allowAccess));
     }
@@ -1090,7 +1230,11 @@ public class ClientRMService extends AbstractService implements
           .contains(UserGroupInformation.getCurrentUser()
                   .getRealAuthenticationMethod());
     } else {
+<<<<<<< HEAD
       return true;
+=======
+      return false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -1269,7 +1413,11 @@ public class ClientRMService extends AbstractService implements
           .format(
               "Reservation {0} is within threshold so attempting to create synchronously.",
               reservationId));
+<<<<<<< HEAD
       reservationSystem.synchronizePlan(planName);
+=======
+      reservationSystem.synchronizePlan(planName, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LOG.info(MessageFormat.format("Created reservation {0} synchronously.",
           reservationId));
     }
@@ -1300,4 +1448,145 @@ public class ClientRMService extends AbstractService implements
     }
     return callerUGI.getShortUserName();
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public UpdateApplicationPriorityResponse updateApplicationPriority(
+      UpdateApplicationPriorityRequest request) throws YarnException,
+      IOException {
+
+    ApplicationId applicationId = request.getApplicationId();
+    Priority newAppPriority = request.getApplicationPriority();
+    UserGroupInformation callerUGI;
+    try {
+      callerUGI = UserGroupInformation.getCurrentUser();
+    } catch (IOException ie) {
+      LOG.info("Error getting UGI ", ie);
+      RMAuditLogger.logFailure("UNKNOWN", AuditConstants.UPDATE_APP_PRIORITY,
+          "UNKNOWN", "ClientRMService", "Error getting UGI", applicationId);
+      throw RPCUtil.getRemoteException(ie);
+    }
+
+    RMApp application = this.rmContext.getRMApps().get(applicationId);
+    if (application == null) {
+      RMAuditLogger.logFailure(callerUGI.getUserName(),
+          AuditConstants.UPDATE_APP_PRIORITY, "UNKNOWN", "ClientRMService",
+          "Trying to update priority of an absent application", applicationId);
+      throw new ApplicationNotFoundException(
+          "Trying to update priority of an absent application "
+          + applicationId);
+    }
+
+    if (!checkAccess(callerUGI, application.getUser(),
+        ApplicationAccessType.MODIFY_APP, application)) {
+      RMAuditLogger.logFailure(callerUGI.getShortUserName(),
+          AuditConstants.UPDATE_APP_PRIORITY,
+          "User doesn't have permissions to "
+              + ApplicationAccessType.MODIFY_APP.toString(), "ClientRMService",
+          AuditConstants.UNAUTHORIZED_USER, applicationId);
+      throw RPCUtil.getRemoteException(new AccessControlException("User "
+          + callerUGI.getShortUserName() + " cannot perform operation "
+          + ApplicationAccessType.MODIFY_APP.name() + " on " + applicationId));
+    }
+
+    UpdateApplicationPriorityResponse response = recordFactory
+        .newRecordInstance(UpdateApplicationPriorityResponse.class);
+    // Update priority only when app is tracked by the scheduler
+    if (!ACTIVE_APP_STATES.contains(application.getState())) {
+      if (COMPLETED_APP_STATES.contains(application.getState())) {
+        // If Application is in any of the final states, change priority
+        // can be skipped rather throwing exception.
+        RMAuditLogger.logSuccess(callerUGI.getShortUserName(),
+            AuditConstants.UPDATE_APP_PRIORITY, "ClientRMService",
+            applicationId);
+        return response;
+      }
+      String msg = "Application in " + application.getState()
+          + " state cannot update priority.";
+      RMAuditLogger
+          .logFailure(callerUGI.getShortUserName(),
+              AuditConstants.UPDATE_APP_PRIORITY, "UNKNOWN", "ClientRMService",
+              msg);
+      throw new YarnException(msg);
+    }
+
+    try {
+      rmContext.getScheduler().updateApplicationPriority(newAppPriority,
+          applicationId);
+    } catch (YarnException ex) {
+      RMAuditLogger.logFailure(callerUGI.getShortUserName(),
+          AuditConstants.UPDATE_APP_PRIORITY, "UNKNOWN", "ClientRMService",
+          ex.getMessage());
+      throw ex;
+    }
+
+    RMAuditLogger.logSuccess(callerUGI.getShortUserName(),
+        AuditConstants.UPDATE_APP_PRIORITY, "ClientRMService", applicationId);
+    return response;
+  }
+
+  /**
+   * Signal a container.
+   * After the request passes some sanity check, it will be delivered
+   * to RMNodeImpl so that the next NM heartbeat will pick up the signal request
+   */
+  @Override
+  public SignalContainerResponse signalContainer(
+      SignalContainerRequest request) throws YarnException, IOException {
+    ContainerId containerId = request.getContainerId();
+
+    UserGroupInformation callerUGI;
+    try {
+      callerUGI = UserGroupInformation.getCurrentUser();
+    } catch (IOException ie) {
+      LOG.info("Error getting UGI ", ie);
+      throw RPCUtil.getRemoteException(ie);
+    }
+
+    ApplicationId applicationId = containerId.getApplicationAttemptId().
+        getApplicationId();
+    RMApp application = this.rmContext.getRMApps().get(applicationId);
+    if (application == null) {
+      RMAuditLogger.logFailure(callerUGI.getUserName(),
+          AuditConstants.SIGNAL_CONTAINER, "UNKNOWN", "ClientRMService",
+          "Trying to signal an absent container", applicationId, containerId);
+      throw RPCUtil
+          .getRemoteException("Trying to signal an absent container "
+              + containerId);
+    }
+
+    if (!checkAccess(callerUGI, application.getUser(),
+        ApplicationAccessType.MODIFY_APP, application)) {
+      RMAuditLogger.logFailure(callerUGI.getShortUserName(),
+          AuditConstants.SIGNAL_CONTAINER, "User doesn't have permissions to "
+              + ApplicationAccessType.MODIFY_APP.toString(), "ClientRMService",
+          AuditConstants.UNAUTHORIZED_USER, applicationId);
+      throw RPCUtil.getRemoteException(new AccessControlException("User "
+          + callerUGI.getShortUserName() + " cannot perform operation "
+          + ApplicationAccessType.MODIFY_APP.name() + " on " + applicationId));
+    }
+
+    RMContainer container = scheduler.getRMContainer(containerId);
+    if (container != null) {
+      this.rmContext.getDispatcher().getEventHandler().handle(
+          new RMNodeSignalContainerEvent(container.getContainer().getNodeId(),
+              request));
+      RMAuditLogger.logSuccess(callerUGI.getShortUserName(),
+          AuditConstants.SIGNAL_CONTAINER, "ClientRMService", applicationId,
+          containerId);
+    } else {
+      RMAuditLogger.logFailure(callerUGI.getUserName(),
+          AuditConstants.SIGNAL_CONTAINER, "UNKNOWN", "ClientRMService",
+          "Trying to signal an absent container", applicationId, containerId);
+      throw RPCUtil
+          .getRemoteException("Trying to signal an absent container "
+              + containerId);
+    }
+
+    return recordFactory
+        .newRecordInstance(SignalContainerResponse.class);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

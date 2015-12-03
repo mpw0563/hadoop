@@ -42,8 +42,11 @@ import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
 import org.apache.hadoop.hdfs.web.HftpFileSystem;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.web.WebHdfsConstants;
 import org.apache.hadoop.hdfs.web.WebHdfsTestUtil;
 import org.apache.hadoop.hdfs.web.WebHdfsFileSystem;
@@ -117,7 +120,10 @@ public class TestAuditLogs {
     final long precision = 1L;
     conf.setLong(DFSConfigKeys.DFS_NAMENODE_ACCESSTIME_PRECISION_KEY, precision);
     conf.setLong(DFSConfigKeys.DFS_BLOCKREPORT_INTERVAL_MSEC_KEY, 10000L);
+<<<<<<< HEAD
     conf.setBoolean(HdfsClientConfigKeys.DFS_WEBHDFS_ENABLED_KEY, true);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     conf.setBoolean(DFSConfigKeys.DFS_NAMENODE_AUDIT_LOG_ASYNC_KEY, useAsyncLog);
     util = new DFSTestUtil.Builder().setName("TestAuditAllowed").
         setNumFiles(20).build();
@@ -226,6 +232,7 @@ public class TestAuditLogs {
     assertTrue("failed to stat file", st != null && st.isFile());
   }
 
+<<<<<<< HEAD
   /** test that access via Hftp puts proper entry in audit log */
   @Test
   public void testAuditHftp() throws Exception {
@@ -250,6 +257,8 @@ public class TestAuditLogs {
     }
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** test that denied access via webhdfs puts proper entry in audit log */
   @Test
   public void testAuditWebHdfsDenied() throws Exception {

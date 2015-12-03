@@ -22,6 +22,10 @@ import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.BlockStoragePolicy;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockStoragePolicySuite;
 import org.apache.hadoop.hdfs.server.namenode.INode;
 import org.apache.hadoop.hdfs.server.namenode.INodeFile;
@@ -53,12 +57,22 @@ public class TestFileWithSnapshotFeature {
     BlockInfo[] blocks = new BlockInfo[] {
         new BlockInfoContiguous(new Block(1, BLOCK_SIZE, 1), REPL_1)
     };
+<<<<<<< HEAD
+=======
+    BlockManager bm = mock(BlockManager.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // No snapshot
     INodeFile file = mock(INodeFile.class);
     when(file.getFileWithSnapshotFeature()).thenReturn(sf);
     when(file.getBlocks()).thenReturn(blocks);
     when(file.getStoragePolicyID()).thenReturn((byte) 1);
+<<<<<<< HEAD
+=======
+    Whitebox.setInternalState(file, "header", (long) REPL_1 << 48);
+    when(file.getPreferredBlockReplication()).thenReturn(REPL_1);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(bsps.getPolicy(anyByte())).thenReturn(bsp);
     INode.BlocksMapUpdateInfo collectedBlocks = mock(
         INode.BlocksMapUpdateInfo.class);
@@ -72,7 +86,10 @@ public class TestFileWithSnapshotFeature {
 
     // INode only exists in the snapshot
     INodeFile snapshotINode = mock(INodeFile.class);
+<<<<<<< HEAD
     when(file.getPreferredBlockReplication()).thenReturn(REPL_1);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Whitebox.setInternalState(snapshotINode, "header", (long) REPL_3 << 48);
     Whitebox.setInternalState(diff, "snapshotINode", snapshotINode);
     when(diff.getSnapshotINode()).thenReturn(snapshotINode);
@@ -81,6 +98,10 @@ public class TestFileWithSnapshotFeature {
         .thenReturn(Lists.newArrayList(SSD));
     when(bsp.chooseStorageTypes(REPL_3))
         .thenReturn(Lists.newArrayList(DISK));
+<<<<<<< HEAD
+=======
+    blocks[0].setReplication(REPL_3);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     sf.updateQuotaAndCollectBlocks(ctx, file, diff);
     counts = ctx.quotaDelta().getCountsCopy();
     Assert.assertEquals((REPL_3 - REPL_1) * BLOCK_SIZE,

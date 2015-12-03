@@ -24,6 +24,16 @@
   dust.loadSource(dust.compile($('#tmpl-datanode-volume-failures').html(), 'datanode-volume-failures'));
   dust.loadSource(dust.compile($('#tmpl-snapshot').html(), 'snapshot-info'));
 
+<<<<<<< HEAD
+=======
+  $.fn.dataTable.ext.order['ng-value'] = function (settings, col)
+  {
+    return this.api().column(col, {order:'index'} ).nodes().map(function (td, i) {
+      return $(td).attr('ng-value');
+    });
+  };
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   function load_overview() {
     var BEANS = [
       {"name": "nn",      "url": "/jmx?qry=Hadoop:service=NameNode,name=NameNodeInfo"},
@@ -50,7 +60,11 @@
 
       'helper_date_tostring' : function (chunk, ctx, bodies, params) {
         var value = dust.helpers.tap(params.value, chunk, ctx);
+<<<<<<< HEAD
         return chunk.write('' + new Date(Number(value)).toLocaleString());
+=======
+        return chunk.write('' + moment(Number(value)).format('ddd MMM DD HH:mm:ss ZZ YYYY'));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     };
 
@@ -96,6 +110,12 @@
           b.capacityUsedPercentage = b.capacityUsed * 100.0 / b.capacityTotal;
           b.capacityRemainingPercentage = b.capacityRemaining * 100.0 / b.capacityTotal;
         }
+<<<<<<< HEAD
+=======
+
+        data.fs.ObjectsTotal = data.fs.FilesTotal + data.fs.BlocksTotal;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         render();
       }),
       function (url, jqxhr, text, err) {
@@ -168,7 +188,11 @@
     var HELPERS = {
       'helper_relative_time' : function (chunk, ctx, bodies, params) {
         var value = dust.helpers.tap(params.value, chunk, ctx);
+<<<<<<< HEAD
         return chunk.write(moment().subtract(Number(value), 'seconds').format('YYYY-MM-DD HH:mm:ss'));
+=======
+        return chunk.write(moment().subtract(Number(value), 'seconds').format('ddd MMM DD HH:mm:ss ZZ YYYY'));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       },
       'helper_usage_bar' : function (chunk, ctx, bodies, params) {
         var value = dust.helpers.tap(params.value, chunk, ctx);
@@ -176,7 +200,11 @@
         var r = null;
         if (v < 70) {
           r = 'progress-bar-success';
+<<<<<<< HEAD
         } else if (u.usedPercentage < 85) {
+=======
+        } else if (v < 85) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           r = 'progress-bar-warning';
         } else {
           r = "progress-bar-danger";
@@ -235,6 +263,19 @@
         var base = dust.makeBase(HELPERS);
         dust.render('datanode-info', base.push(data), function(err, out) {
           $('#tab-datanode').html(out);
+<<<<<<< HEAD
+=======
+          $('#table-datanodes').dataTable( {
+            'lengthMenu': [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
+            'columns': [
+              { 'orderDataType': 'ng-value', 'searchable': true },
+              { 'orderDataType': 'ng-value', 'type': 'numeric' },
+              { 'orderDataType': 'ng-value', 'type': 'numeric' },
+              { 'orderData': 3, 'type': 'numeric' },
+              { 'orderDataType': 'ng-value', 'type': 'numeric'},
+              { 'orderData': 5 }
+            ]});
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           $('#ui-tabs a[href="#tab-datanode"]').tab('show');
         });
       })).error(ajax_error_handler);
@@ -245,7 +286,11 @@
     var HELPERS = {
       'helper_date_tostring' : function (chunk, ctx, bodies, params) {
         var value = dust.helpers.tap(params.value, chunk, ctx);
+<<<<<<< HEAD
         return chunk.write('' + new Date(Number(value)).toLocaleString());
+=======
+        return chunk.write('' + moment(Number(value)).format('ddd MMM DD HH:mm:ss ZZ YYYY'));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     };
 

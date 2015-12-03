@@ -43,7 +43,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+<<<<<<< HEAD
 import java.util.concurrent.Callable;
+=======
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,8 +62,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.net.SocketFactory;
 import javax.security.sasl.Sasl;
 
+<<<<<<< HEAD
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -92,7 +100,12 @@ import org.apache.hadoop.util.ProtoUtil;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Time;
+<<<<<<< HEAD
 import org.apache.htrace.Trace;
+=======
+import org.apache.htrace.core.Span;
+import org.apache.htrace.core.Tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -105,6 +118,8 @@ import com.google.protobuf.CodedOutputStream;
  * 
  * @see Server
  */
+@InterfaceAudience.LimitedPrivate(value = { "Common", "HDFS", "MapReduce", "Yarn" })
+@InterfaceStability.Evolving
 public class Client {
   
   public static final Log LOG = LogFactory.getLog(Client.class);
@@ -125,8 +140,13 @@ public class Client {
     retryCount.set(rc);
   }
 
+<<<<<<< HEAD
   private final Cache<ConnectionId, Connection> connections =
       CacheBuilder.newBuilder().build();
+=======
+  private ConcurrentMap<ConnectionId, Connection> connections =
+      new ConcurrentHashMap<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private Class<? extends Writable> valueClass;   // class of call values
   private AtomicBoolean running = new AtomicBoolean(true); // if client runs
@@ -139,8 +159,11 @@ public class Client {
 
   private final boolean fallbackAllowed;
   private final byte[] clientId;
+<<<<<<< HEAD
   
   final static int CONNECTION_CONTEXT_CALL_ID = -3;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   /**
    * Executor on which IPC calls' parameters are sent.
@@ -197,9 +220,16 @@ public class Client {
             clientExecutor.shutdownNow();
           }
         } catch (InterruptedException e) {
+<<<<<<< HEAD
           LOG.error("Interrupted while waiting for clientExecutor" +
               "to stop", e);
           clientExecutor.shutdownNow();
+=======
+          LOG.warn("Interrupted while waiting for clientExecutor" +
+              " to stop");
+          clientExecutor.shutdownNow();
+          Thread.currentThread().interrupt();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         clientExecutor = null;
       }
@@ -256,6 +286,13 @@ public class Client {
     conf.setInt(CommonConfigurationKeys.IPC_CLIENT_CONNECT_TIMEOUT_KEY, timeout);
   }
 
+<<<<<<< HEAD
+=======
+  @VisibleForTesting
+  public static final ExecutorService getClientExecutor() {
+    return Client.clientExcecutorFactory.clientExecutor;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Increment this client's reference count
    *
@@ -717,8 +754,14 @@ public class Client {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Connecting to "+server);
         }
+<<<<<<< HEAD
         if (Trace.isTracing()) {
           Trace.addTimelineAnnotation("IPC client connecting to " + server);
+=======
+        Span span = Tracer.getCurrentSpan();
+        if (span != null) {
+          span.addTimelineAnnotation("IPC client connecting to " + server);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         short numRetries = 0;
         Random rand = null;
@@ -743,7 +786,16 @@ public class Client {
                       return setupSaslConnection(in2, out2);
                     }
                   });
+<<<<<<< HEAD
             } catch (Exception ex) {
+=======
+            } catch (IOException ex) {
+              if (saslRpcClient == null) {
+                // whatever happened -it can't be handled, so rethrow
+                throw ex;
+              }
+              // otherwise, assume a connection problem
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               authMethod = saslRpcClient.getAuthMethod();
               if (rand == null) {
                 rand = new Random();
@@ -791,8 +843,14 @@ public class Client {
           // update last activity time
           touch();
 
+<<<<<<< HEAD
           if (Trace.isTracing()) {
             Trace.addTimelineAnnotation("IPC client connected to " + server);
+=======
+          span = Tracer.getCurrentSpan();
+          if (span != null) {
+            span.addTimelineAnnotation("IPC client connected to " + server);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
 
           // start the receiver thread after the socket connection has been set
@@ -804,7 +862,7 @@ public class Client {
         if (t instanceof IOException) {
           markClosed((IOException)t);
         } else {
-          markClosed(new IOException("Couldn't set up IO streams", t));
+          markClosed(new IOException("Couldn't set up IO streams: " + t, t));
         }
         close();
       }
@@ -1170,7 +1228,14 @@ public class Client {
         return;
       }
 
+<<<<<<< HEAD
       connections.invalidate(remoteId);
+=======
+      // We have marked this connection as closed. Other thread could have
+      // already known it and replace this closedConnection with a new one.
+      // We should only remove this closedConnection.
+      connections.remove(remoteId, this);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // close the streams and therefore the socket
       IOUtils.closeStream(out);
@@ -1257,7 +1322,11 @@ public class Client {
     }
     
     // wake up all connections
+<<<<<<< HEAD
     for (Connection conn : connections.asMap().values()) {
+=======
+    for (Connection conn : connections.values()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       conn.interrupt();
     }
     
@@ -1281,7 +1350,10 @@ public class Client {
     ConnectionId remoteId = ConnectionId.getConnectionId(address, null, null, 0,
         conf);
     return call(RpcKind.RPC_BUILTIN, param, remoteId);
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -1419,20 +1491,18 @@ public class Client {
       throw new IOException(e);
     }
 
+<<<<<<< HEAD
     boolean interrupted = false;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     synchronized (call) {
       while (!call.done) {
         try {
           call.wait();                           // wait for the result
         } catch (InterruptedException ie) {
-          // save the fact that we were interrupted
-          interrupted = true;
+          Thread.currentThread().interrupt();
+          throw new InterruptedIOException("Call interrupted");
         }
-      }
-
-      if (interrupted) {
-        // set the interrupt flag now that we are done waiting
-        Thread.currentThread().interrupt();
       }
 
       if (call.error != null) {
@@ -1457,14 +1527,23 @@ public class Client {
   @InterfaceAudience.Private
   @InterfaceStability.Unstable
   Set<ConnectionId> getConnectionIds() {
+<<<<<<< HEAD
     return connections.asMap().keySet();
+=======
+    return connections.keySet();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /** Get a connection from the pool, or create a new one and add it to the
    * pool.  Connections to a given ConnectionId are reused. */
+<<<<<<< HEAD
   private Connection getConnection(
       final ConnectionId remoteId,
       Call call, final int serviceClass, AtomicBoolean fallbackToSimpleAuth)
+=======
+  private Connection getConnection(ConnectionId remoteId,
+      Call call, int serviceClass, AtomicBoolean fallbackToSimpleAuth)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throws IOException {
     if (!running.get()) {
       // the client is stopped
@@ -1475,6 +1554,7 @@ public class Client {
      * connectionsId object and with set() method. We need to manage the
      * refs for keys in HashMap properly. For now its ok.
      */
+<<<<<<< HEAD
     while(true) {
       try {
         connection = connections.get(remoteId, new Callable<Connection>() {
@@ -1503,6 +1583,32 @@ public class Client {
     //block above. The reason for that is if the server happens to be slow,
     //it will take longer to establish a connection and that will slow the
     //entire system down.
+=======
+    while (true) {
+      // These lines below can be shorten with computeIfAbsent in Java8
+      connection = connections.get(remoteId);
+      if (connection == null) {
+        connection = new Connection(remoteId, serviceClass);
+        Connection existing = connections.putIfAbsent(remoteId, connection);
+        if (existing != null) {
+          connection = existing;
+        }
+      }
+
+      if (connection.addCall(call)) {
+        break;
+      } else {
+        // This connection is closed, should be removed. But other thread could
+        // have already known this closedConnection, and replace it with a new
+        // connection. So we should call conditional remove to make sure we only
+        // remove this closedConnection.
+        connections.remove(remoteId, connection);
+      }
+    }
+
+    // If the server happens to be slow, the method below will take longer to
+    // establish a connection.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     connection.setupIOstreams(fallbackToSimpleAuth);
     return connection;
   }

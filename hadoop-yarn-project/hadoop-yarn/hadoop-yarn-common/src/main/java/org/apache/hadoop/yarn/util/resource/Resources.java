@@ -267,6 +267,14 @@ public class Resources {
     return smaller.getMemory() <= bigger.getMemory() &&
         smaller.getVirtualCores() <= bigger.getVirtualCores();
   }
+<<<<<<< HEAD
+=======
+
+  public static boolean fitsIn(ResourceCalculator rc, Resource cluster,
+      Resource smaller, Resource bigger) {
+    return rc.fitsIn(cluster, smaller, bigger);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   public static Resource componentwiseMin(Resource lhs, Resource rhs) {
     return createResource(Math.min(lhs.getMemory(), rhs.getMemory()),

@@ -18,6 +18,10 @@ package org.apache.hadoop.security;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHENTICATION;
 import static org.apache.hadoop.security.UserGroupInformation.AuthenticationMethod.*;
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -110,7 +114,11 @@ public class TestSecurityUtil {
 
   @Test
   public void testLocalHostNameForNullOrWild() throws Exception {
+<<<<<<< HEAD
     String local = StringUtils.toLowerCase(SecurityUtil.getLocalHostName());
+=======
+    String local = StringUtils.toLowerCase(SecurityUtil.getLocalHostName(null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals("hdfs/" + local + "@REALM",
                  SecurityUtil.getServerPrincipal("hdfs/_HOST@REALM", (String)null));
     assertEquals("hdfs/" + local + "@REALM",

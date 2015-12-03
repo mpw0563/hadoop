@@ -32,9 +32,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * ProducerConsumer class encapsulates input and output queues and a
+<<<<<<< HEAD
  * thread-pool of Workers that loop on WorkRequest<T> inputQueue and for each
  * consumed WorkRequest Workers invoke WorkRequestProcessor.processItem()
  * and output resulting WorkReport<R> to the outputQueue.
+=======
+ * thread-pool of Workers that loop on WorkRequest{@literal <T>} inputQueue
+ * and for each consumed WorkRequest Workers invoke
+ * WorkRequestProcessor.processItem() and output resulting
+ * WorkReport{@literal <R>} to the outputQueue.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  */
 public class ProducerConsumer<T, R> {
   private Log LOG = LogFactory.getLog(ProducerConsumer.class);
@@ -57,9 +64,15 @@ public class ProducerConsumer<T, R> {
   }
 
   /**
+<<<<<<< HEAD
    *  Add another worker that will consume WorkRequest<T> items from input
    *  queue, process each item using supplied processor, and for every
    *  processed item output WorkReport<R> to output queue.
+=======
+   *  Add another worker that will consume WorkRequest{@literal <T>} items
+   *  from input queue, process each item using supplied processor, and for
+   *  every processed item output WorkReport{@literal <R>} to output queue.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    *
    *  @param processor  Processor implementing WorkRequestProcessor interface.
    *
@@ -102,7 +115,11 @@ public class ProducerConsumer<T, R> {
   /**
    *  Blocking put workRequest to ProducerConsumer input queue.
    *
+<<<<<<< HEAD
    *  @param  WorkRequest<T> item to be processed.
+=======
+   *  @param  workRequest item to be processed.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   public void put(WorkRequest<T> workRequest) {
     boolean isDone = false;
@@ -120,7 +137,11 @@ public class ProducerConsumer<T, R> {
   /**
    *  Blocking take from ProducerConsumer output queue that can be interrupted.
    *
+<<<<<<< HEAD
    *  @return  WorkReport<R> item returned by processor's processItem().
+=======
+   *  @return  item returned by processor's processItem().
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   public WorkReport<R> take() throws InterruptedException {
     WorkReport<R> report = outputQueue.take();
@@ -132,7 +153,11 @@ public class ProducerConsumer<T, R> {
    *  Blocking take from ProducerConsumer output queue (catches exceptions and
    *  retries forever).
    *
+<<<<<<< HEAD
    *  @return  WorkReport<R> item returned by processor's processItem().
+=======
+   *  @return  item returned by processor's processItem().
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   public WorkReport<R> blockingTake() {
     while (true) {

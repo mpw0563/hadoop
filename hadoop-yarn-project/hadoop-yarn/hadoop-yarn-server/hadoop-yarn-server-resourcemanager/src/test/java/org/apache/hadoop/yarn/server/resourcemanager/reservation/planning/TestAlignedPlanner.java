@@ -33,6 +33,10 @@ import org.apache.hadoop.yarn.api.records.ReservationRequest;
 import org.apache.hadoop.yarn.api.records.ReservationRequestInterpreter;
 import org.apache.hadoop.yarn.api.records.ReservationRequests;
 import org.apache.hadoop.yarn.api.records.Resource;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.CapacityOverTimePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.InMemoryPlan;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.InMemoryReservationAllocation;
@@ -710,9 +714,14 @@ public class TestAlignedPlanner {
 
     Resource clusterCapacity = Resource.newInstance(capacityMem, capacityCores);
 
+<<<<<<< HEAD
     // Set configuration
     ReservationSystemTestUtil testUtil = new ReservationSystemTestUtil();
     String reservationQ = testUtil.getFullReservationQueueName();
+=======
+    String reservationQ =
+        ReservationSystemTestUtil.getFullReservationQueueName();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     float instConstraint = 100;
     float avgConstraint = 100;
 
@@ -724,6 +733,10 @@ public class TestAlignedPlanner {
     policy.init(reservationQ, conf);
 
     QueueMetrics queueMetrics = mock(QueueMetrics.class);
+<<<<<<< HEAD
+=======
+    RMContext context = ReservationSystemTestUtil.createMockRMContext();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Set planning agent
     agent = new AlignedPlannerWithGreedy();
@@ -731,7 +744,11 @@ public class TestAlignedPlanner {
     // Create Plan
     plan =
         new InMemoryPlan(queueMetrics, policy, agent, clusterCapacity, step,
+<<<<<<< HEAD
             res, minAlloc, maxAlloc, "dedicated", null, true);
+=======
+            res, minAlloc, maxAlloc, "dedicated", null, true, context);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private int initializeScenario1() throws PlanningException {
@@ -782,12 +799,24 @@ public class TestAlignedPlanner {
   private void addFixedAllocation(long start, long step, int[] f)
       throws PlanningException {
 
+<<<<<<< HEAD
     assertTrue(plan.toString(),
         plan.addReservation(new InMemoryReservationAllocation(
             ReservationSystemTestUtil.getNewReservationId(), null,
             "user_fixed", "dedicated", start, start + f.length * step,
             ReservationSystemTestUtil.generateAllocation(start, step, f), res,
             minAlloc)));
+=======
+    ReservationDefinition rDef =
+        ReservationSystemTestUtil.createSimpleReservationDefinition(
+            start, start + f.length * step, f.length * step);
+    assertTrue(plan.toString(),
+        plan.addReservation(new InMemoryReservationAllocation(
+            ReservationSystemTestUtil.getNewReservationId(), rDef,
+            "user_fixed", "dedicated", start, start + f.length * step,
+            ReservationSystemTestUtil.generateAllocation(start, step, f), res,
+            minAlloc), false));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   }
 

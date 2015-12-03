@@ -143,7 +143,11 @@ public class MockNM {
         new HashMap<ApplicationId, List<ContainerStatus>>(1);
     ContainerStatus containerStatus = BuilderUtils.newContainerStatus(
         BuilderUtils.newContainerId(attemptId, containerId), containerState,
+<<<<<<< HEAD
         "Success", 0);
+=======
+        "Success", 0, BuilderUtils.newResource(memory, vCores));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ArrayList<ContainerStatus> containerStatusList =
         new ArrayList<ContainerStatus>(1);
     containerStatusList.add(containerStatus);

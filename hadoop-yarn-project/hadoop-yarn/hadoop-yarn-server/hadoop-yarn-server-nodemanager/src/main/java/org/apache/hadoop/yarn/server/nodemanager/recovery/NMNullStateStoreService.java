@@ -27,6 +27,10 @@ import org.apache.hadoop.yarn.api.protocolrecords.StartContainerRequest;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ContainerId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Resource;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnProtos.LocalResourceProto;
 import org.apache.hadoop.yarn.proto.YarnServerNodemanagerRecoveryProtos.ContainerManagerApplicationProto;
 import org.apache.hadoop.yarn.proto.YarnServerNodemanagerRecoveryProtos.DeletionServiceDeleteTaskProto;
@@ -88,6 +92,14 @@ public class NMNullStateStoreService extends NMStateStoreService {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void storeContainerResourceChanged(ContainerId containerId,
+      Resource capability) throws IOException {
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void storeContainerKilled(ContainerId containerId)
       throws IOException {
   }

@@ -36,8 +36,11 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+<<<<<<< HEAD
 import org.apache.hadoop.mapreduce.security.token.delegation.DelegationTokenIdentifier;
 import org.apache.hadoop.io.Text;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapred.ClusterStatus.BlackListInfo;
 import org.apache.hadoop.mapred.JobClient.NetworkedJob;
 import org.apache.hadoop.mapred.JobClient.TaskStatusFilter;
@@ -49,8 +52,11 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
 import org.junit.Test;
+<<<<<<< HEAD
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class TestNetworkedJob {
   private static String TEST_ROOT_DIR = new File(System.getProperty(
@@ -221,11 +227,14 @@ public class TestNetworkedJob {
           status2.getBlackListedTrackersInfo());
       assertEquals(status.getMapTasks(), status2.getMapTasks());
 
+<<<<<<< HEAD
       try {
       } catch (RuntimeException e) {
         assertTrue(e.getMessage().endsWith("not found on CLASSPATH"));
       }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // test taskStatusfilter
       JobClient.setTaskOutputFilter(job, TaskStatusFilter.ALL);
       assertEquals(JobClient.getTaskOutputFilter(job), TaskStatusFilter.ALL);
@@ -256,6 +265,7 @@ public class TestNetworkedJob {
       assertEquals(aai.length, 2);
       assertEquals(aai[0].getQueueName(), "root");
       assertEquals(aai[1].getQueueName(), "default");
+<<<<<<< HEAD
       // test token
       Token<DelegationTokenIdentifier> token = client
           .getDelegationToken(new Text(UserGroupInformation.getCurrentUser()
@@ -265,6 +275,10 @@ public class TestNetworkedJob {
       // test JobClient
       
    
+=======
+      
+      // test JobClient
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // The following asserts read JobStatus twice and ensure the returned
       // JobStatus objects correspond to the same Job.
       assertEquals("Expected matching JobIDs", jobId, client.getJob(jobId)

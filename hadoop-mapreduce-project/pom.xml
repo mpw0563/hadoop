@@ -18,12 +18,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../hadoop-project</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-mapreduce</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <packaging>pom</packaging>
   <name>Apache Hadoop MapReduce</name>
   <url>http://hadoop.apache.org/mapreduce/</url>
@@ -194,7 +202,11 @@
         <configuration>
           <excludes>
             <exclude>.eclipse.templates/</exclude>
+<<<<<<< HEAD
             <exclude>CHANGES.txt</exclude>
+=======
+            <exclude>CHANGES.*txt</exclude>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             <exclude>lib/jdiff/**</exclude>
           </excludes>
         </configuration>
@@ -236,6 +248,37 @@
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
+<<<<<<< HEAD
+=======
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>dist</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <echo file="${project.build.directory}/dist-copynativelibs.sh">
+                      LIB_DIR="${mr.basedir}/hadoop-mapreduce-client/hadoop-mapreduce-client-nativetask/target/native/target/usr/local/lib"
+                      if [ -d $${LIB_DIR} ] ; then
+                        TARGET_DIR="${project.build.directory}/${project.artifactId}-${project.version}/lib/native"
+                        mkdir -p $${TARGET_DIR}
+                        cp -R $${LIB_DIR}/lib* $${TARGET_DIR}
+                      fi
+                    </echo>
+                    <exec executable="${shell-executable}" dir="${project.build.directory}" failonerror="true">
+                      <arg line="./dist-copynativelibs.sh"/>
+                    </exec>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             <artifactId>maven-assembly-plugin</artifactId>
             <dependencies>
               <dependency>

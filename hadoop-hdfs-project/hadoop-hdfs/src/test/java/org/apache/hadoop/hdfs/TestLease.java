@@ -43,8 +43,13 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.client.impl.LeaseRenewer;
 import org.apache.hadoop.hdfs.protocol.ClientProtocol;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+=======
+import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.NameNodeAdapter;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
 import org.apache.hadoop.io.EnumSetWritable;
@@ -99,8 +104,13 @@ public class TestLease {
       // call renewLease() manually.
       // make it look like the soft limit has been exceeded.
       LeaseRenewer originalRenewer = dfs.getLeaseRenewer();
+<<<<<<< HEAD
       dfs.lastLeaseRenewal = Time.monotonicNow()
       - HdfsServerConstants.LEASE_SOFTLIMIT_PERIOD - 1000;
+=======
+      dfs.lastLeaseRenewal = Time.monotonicNow() -
+          HdfsConstants.LEASE_SOFTLIMIT_PERIOD - 1000;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       try {
         dfs.renewLease();
       } catch (IOException e) {}
@@ -116,7 +126,11 @@ public class TestLease {
 
       // make it look like the hard limit has been exceeded.
       dfs.lastLeaseRenewal = Time.monotonicNow()
+<<<<<<< HEAD
       - HdfsServerConstants.LEASE_HARDLIMIT_PERIOD - 1000;
+=======
+      - HdfsConstants.LEASE_HARDLIMIT_PERIOD - 1000;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       dfs.renewLease();
 
       // this should not work.
@@ -354,12 +368,20 @@ public class TestLease {
     Mockito.doReturn(
         new HdfsFileStatus(0, false, 1, 1024, 0, 0, new FsPermission(
             (short) 777), "owner", "group", new byte[0], new byte[0],
+<<<<<<< HEAD
             1010, 0, null, (byte) 0)).when(mcp).getFileInfo(anyString());
+=======
+            1010, 0, null, (byte) 0, null)).when(mcp).getFileInfo(anyString());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Mockito
         .doReturn(
             new HdfsFileStatus(0, false, 1, 1024, 0, 0, new FsPermission(
                 (short) 777), "owner", "group", new byte[0], new byte[0],
+<<<<<<< HEAD
                 1010, 0, null, (byte) 0))
+=======
+                1010, 0, null, (byte) 0, null))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .when(mcp)
         .create(anyString(), (FsPermission) anyObject(), anyString(),
             (EnumSetWritable<CreateFlag>) anyObject(), anyBoolean(),

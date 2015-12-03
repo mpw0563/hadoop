@@ -101,7 +101,11 @@ The Aggregation interval is configured via the property :
 
 $H3 Start/Stop the KMS
 
+<<<<<<< HEAD
 To start/stop KMS use KMS's bin/kms.sh script. For example:
+=======
+To start/stop KMS use KMS's sbin/kms.sh script. For example:
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     hadoop-${project.version} $ sbin/kms.sh start
 

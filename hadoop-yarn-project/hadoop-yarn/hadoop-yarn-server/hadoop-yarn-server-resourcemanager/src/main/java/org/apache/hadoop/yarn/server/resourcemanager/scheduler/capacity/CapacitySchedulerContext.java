@@ -54,8 +54,11 @@ public interface CapacitySchedulerContext {
    */
   Configuration getConf();
 
+<<<<<<< HEAD
   Comparator<FiCaSchedulerApp> getApplicationComparator();
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   ResourceCalculator getResourceCalculator();
 
   Comparator<CSQueue> getNonPartitionedQueueComparator();

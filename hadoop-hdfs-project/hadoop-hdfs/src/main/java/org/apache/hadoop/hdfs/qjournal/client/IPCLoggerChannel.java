@@ -592,6 +592,7 @@ public class IPCLoggerChannel implements AsyncLogger {
       }
     });
   }
+<<<<<<< HEAD
 
   @Override
   public ListenableFuture<Void> discardSegments(final long startTxId) {
@@ -603,6 +604,8 @@ public class IPCLoggerChannel implements AsyncLogger {
       }
     });
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   @Override
   public ListenableFuture<Void> doPreUpgrade() {
@@ -661,6 +664,20 @@ public class IPCLoggerChannel implements AsyncLogger {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public ListenableFuture<Void> discardSegments(final long startTxId) {
+    return singleThreadExecutor.submit(new Callable<Void>() {
+      @Override
+      public Void call() throws IOException {
+        getProxy().discardSegments(journalId, startTxId);
+        return null;
+      }
+    });
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public ListenableFuture<Long> getJournalCTime() {
     return singleThreadExecutor.submit(new Callable<Long>() {
       @Override

@@ -61,4 +61,13 @@ public interface NameNodeStatusMXBean {
    * @return the most recent HA transition time in milliseconds from the epoch.
    */
   public long getLastHATransitionTime();
+<<<<<<< HEAD
+=======
+
+  /**
+   * Gets number of bytes in blocks with future generation stamps.
+   * @return number of bytes that can be deleted if exited from safe mode.
+   */
+  long getBytesWithFutureGenerationStamps();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

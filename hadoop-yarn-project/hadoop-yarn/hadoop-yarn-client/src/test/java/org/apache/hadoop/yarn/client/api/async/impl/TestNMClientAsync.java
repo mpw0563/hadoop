@@ -36,6 +36,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Resource;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Assert;
 
 import org.apache.hadoop.conf.Configuration;
@@ -50,7 +54,10 @@ import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.Token;
 import org.apache.hadoop.yarn.client.api.NMClient;
 import org.apache.hadoop.yarn.client.api.async.NMClientAsync;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.client.api.async.impl.NMClientAsyncImpl;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.factories.RecordFactory;
@@ -117,6 +124,13 @@ public class TestNMClientAsync {
       asyncClient.startContainerAsync(container, clc);
     }
     while (!((TestCallbackHandler1) asyncClient.getCallbackHandler())
+<<<<<<< HEAD
+=======
+        .isIncreaseResourceFailureCallsExecuted()) {
+      Thread.sleep(10);
+    }
+    while (!((TestCallbackHandler1) asyncClient.getCallbackHandler())
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .isStopFailureCallsExecuted()) {
       Thread.sleep(10);
     }
@@ -183,7 +197,11 @@ public class TestNMClientAsync {
   }
 
   private class TestCallbackHandler1
+<<<<<<< HEAD
       implements NMClientAsync.CallbackHandler {
+=======
+      extends NMClientAsync.AbstractCallbackHandler {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     private boolean path = true;
 
@@ -196,6 +214,13 @@ public class TestNMClientAsync {
     private AtomicInteger actualQueryFailure = new AtomicInteger(0);
     private AtomicInteger actualStopSuccess = new AtomicInteger(0);
     private AtomicInteger actualStopFailure = new AtomicInteger(0);
+<<<<<<< HEAD
+=======
+    private AtomicInteger actualIncreaseResourceSuccess =
+        new AtomicInteger(0);
+    private AtomicInteger actualIncreaseResourceFailure =
+        new AtomicInteger(0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     private AtomicIntegerArray actualStartSuccessArray;
     private AtomicIntegerArray actualStartFailureArray;
@@ -203,6 +228,11 @@ public class TestNMClientAsync {
     private AtomicIntegerArray actualQueryFailureArray;
     private AtomicIntegerArray actualStopSuccessArray;
     private AtomicIntegerArray actualStopFailureArray;
+<<<<<<< HEAD
+=======
+    private AtomicIntegerArray actualIncreaseResourceSuccessArray;
+    private AtomicIntegerArray actualIncreaseResourceFailureArray;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     private Set<String> errorMsgs =
         Collections.synchronizedSet(new HashSet<String>());
@@ -217,6 +247,13 @@ public class TestNMClientAsync {
       actualQueryFailureArray = new AtomicIntegerArray(expectedFailure);
       actualStopSuccessArray = new AtomicIntegerArray(expectedSuccess);
       actualStopFailureArray = new AtomicIntegerArray(expectedFailure);
+<<<<<<< HEAD
+=======
+      actualIncreaseResourceSuccessArray =
+          new AtomicIntegerArray(expectedSuccess);
+      actualIncreaseResourceFailureArray =
+          new AtomicIntegerArray(expectedFailure);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     @SuppressWarnings("deprecation")
@@ -236,7 +273,15 @@ public class TestNMClientAsync {
         asyncClient.getContainerStatusAsync(containerId, nodeId);
       } else {
         // move on to the following failure tests
+<<<<<<< HEAD
         asyncClient.stopContainerAsync(containerId, nodeId);
+=======
+        // make sure we pass in the container with the same
+        // containerId
+        Container container = Container.newInstance(
+            containerId, nodeId, null, null, null, containerToken);
+        asyncClient.increaseContainerResourceAsync(container);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       // Shouldn't crash the test thread
@@ -255,7 +300,15 @@ public class TestNMClientAsync {
       actualQuerySuccess.addAndGet(1);
       actualQuerySuccessArray.set(containerId.getId(), 1);
       // move on to the following success tests
+<<<<<<< HEAD
       asyncClient.stopContainerAsync(containerId, nodeId);
+=======
+      // make sure we pass in the container with the same
+      // containerId
+      Container container = Container.newInstance(
+          containerId, nodeId, null, null, null, containerToken);
+      asyncClient.increaseContainerResourceAsync(container);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Shouldn't crash the test thread
       throw new RuntimeException("Ignorable Exception");
@@ -263,6 +316,26 @@ public class TestNMClientAsync {
 
     @SuppressWarnings("deprecation")
     @Override
+<<<<<<< HEAD
+=======
+    public void onContainerResourceIncreased(
+        ContainerId containerId, Resource resource) {
+      if (containerId.getId() >= expectedSuccess) {
+        errorMsgs.add("Container " + containerId +
+            " should throw the exception onContainerResourceIncreased");
+        return;
+      }
+      actualIncreaseResourceSuccess.addAndGet(1);
+      actualIncreaseResourceSuccessArray.set(containerId.getId(), 1);
+      // move on to the following success tests
+      asyncClient.stopContainerAsync(containerId, nodeId);
+      // throw a fake user exception, and shouldn't crash the test
+      throw new RuntimeException("Ignorable Exception");
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void onContainerStopped(ContainerId containerId) {
       if (containerId.getId() >= expectedSuccess) {
         errorMsgs.add("Container " + containerId +
@@ -302,6 +375,29 @@ public class TestNMClientAsync {
 
     @SuppressWarnings("deprecation")
     @Override
+<<<<<<< HEAD
+=======
+    public void onIncreaseContainerResourceError(
+        ContainerId containerId, Throwable t) {
+      if (containerId.getId() < expectedSuccess + expectedFailure) {
+        errorMsgs.add("Container " + containerId +
+            " shouldn't throw the exception onIncreaseContainerResourceError");
+        return;
+      }
+      actualIncreaseResourceFailure.addAndGet(1);
+      actualIncreaseResourceFailureArray.set(
+          containerId.getId() - expectedSuccess - expectedFailure, 1);
+      // increase container resource error should NOT change the
+      // the container status to FAILED
+      // move on to the following failure tests
+      asyncClient.stopContainerAsync(containerId, nodeId);
+      // Shouldn't crash the test thread
+      throw new RuntimeException("Ignorable Exception");
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void onStopContainerError(ContainerId containerId, Throwable t) {
       if (t instanceof RuntimeException) {
         errorMsgs.add("Unexpected throwable from callback functions should be" +
@@ -345,10 +441,18 @@ public class TestNMClientAsync {
       boolean isAllSuccessCallsExecuted =
           actualStartSuccess.get() == expectedSuccess &&
           actualQuerySuccess.get() == expectedSuccess &&
+<<<<<<< HEAD
+=======
+          actualIncreaseResourceSuccess.get() == expectedSuccess &&
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           actualStopSuccess.get() == expectedSuccess;
       if (isAllSuccessCallsExecuted) {
         assertAtomicIntegerArray(actualStartSuccessArray);
         assertAtomicIntegerArray(actualQuerySuccessArray);
+<<<<<<< HEAD
+=======
+        assertAtomicIntegerArray(actualIncreaseResourceSuccessArray);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         assertAtomicIntegerArray(actualStopSuccessArray);
       }
       return isAllSuccessCallsExecuted;
@@ -365,6 +469,18 @@ public class TestNMClientAsync {
       return isStartAndQueryFailureCallsExecuted;
     }
 
+<<<<<<< HEAD
+=======
+    public boolean isIncreaseResourceFailureCallsExecuted() {
+      boolean isIncreaseResourceFailureCallsExecuted =
+          actualIncreaseResourceFailure.get() == expectedFailure;
+      if (isIncreaseResourceFailureCallsExecuted) {
+        assertAtomicIntegerArray(actualIncreaseResourceFailureArray);
+      }
+      return isIncreaseResourceFailureCallsExecuted;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public boolean isStopFailureCallsExecuted() {
       boolean isStopFailureCallsExecuted =
           actualStopFailure.get() == expectedFailure;
@@ -392,6 +508,11 @@ public class TestNMClientAsync {
         when(client.getContainerStatus(any(ContainerId.class),
             any(NodeId.class))).thenReturn(
                 recordFactory.newRecordInstance(ContainerStatus.class));
+<<<<<<< HEAD
+=======
+        doNothing().when(client).increaseContainerResource(
+            any(Container.class));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         doNothing().when(client).stopContainer(any(ContainerId.class),
             any(NodeId.class));
         break;
@@ -411,6 +532,11 @@ public class TestNMClientAsync {
         when(client.getContainerStatus(any(ContainerId.class),
             any(NodeId.class))).thenReturn(
                 recordFactory.newRecordInstance(ContainerStatus.class));
+<<<<<<< HEAD
+=======
+        doThrow(RPCUtil.getRemoteException("Increase Resource Exception"))
+            .when(client).increaseContainerResource(any(Container.class));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         doThrow(RPCUtil.getRemoteException("Stop Exception")).when(client)
             .stopContainer(any(ContainerId.class), any(NodeId.class));
     }
@@ -493,7 +619,11 @@ public class TestNMClientAsync {
   }
 
   private class TestCallbackHandler2
+<<<<<<< HEAD
       implements NMClientAsync.CallbackHandler {
+=======
+      extends NMClientAsync.AbstractCallbackHandler {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     private CyclicBarrier barrierC;
     private AtomicBoolean exceptionOccurred = new AtomicBoolean(false);
 
@@ -512,6 +642,13 @@ public class TestNMClientAsync {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void onContainerResourceIncreased(
+        ContainerId containerId, Resource resource) {}
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void onContainerStopped(ContainerId containerId) {
     }
 
@@ -537,9 +674,18 @@ public class TestNMClientAsync {
     }
 
     @Override
+<<<<<<< HEAD
     public void onStopContainerError(ContainerId containerId, Throwable t) {
     }
 
+=======
+    public void onIncreaseContainerResourceError(
+        ContainerId containerId, Throwable t) {}
+
+    @Override
+    public void onStopContainerError(ContainerId containerId, Throwable t) {
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private Container mockContainer(int i) {

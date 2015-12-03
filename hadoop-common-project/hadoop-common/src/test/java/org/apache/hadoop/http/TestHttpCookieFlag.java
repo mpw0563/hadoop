@@ -17,7 +17,10 @@ import org.junit.Assert;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.net.NetUtils;
+<<<<<<< HEAD
 import org.apache.hadoop.security.authentication.client.AuthenticatedURL;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.authentication.server.AuthenticationFilter;
 import org.apache.hadoop.security.ssl.KeyStoreTestUtil;
 import org.apache.hadoop.security.ssl.SSLFactory;
@@ -27,12 +30,18 @@ import org.junit.Test;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.*;
+<<<<<<< HEAD
 import javax.servlet.http.Cookie;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+<<<<<<< HEAD
 import java.net.MalformedURLException;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.net.URI;
 import java.net.URL;
 import java.security.GeneralSecurityException;
@@ -89,9 +98,13 @@ public class TestHttpCookieFlag {
     sslConfDir = KeyStoreTestUtil.getClasspathDir(TestSSLHttpServer.class);
 
     KeyStoreTestUtil.setupSSLConfig(keystoresDir, sslConfDir, conf, false);
+<<<<<<< HEAD
     Configuration sslConf = new Configuration(false);
     sslConf.addResource("ssl-server.xml");
     sslConf.addResource("ssl-client.xml");
+=======
+    Configuration sslConf = KeyStoreTestUtil.getSslConfig();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     clientSslFactory = new SSLFactory(SSLFactory.Mode.CLIENT, sslConf);
     clientSslFactory.init();

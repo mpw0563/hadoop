@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.hdfs.server.namenode.snapshot;
 
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.hdfs.server.namenode.INodeId.INVALID_INODE_ID;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -268,7 +272,11 @@ public class TestSnapshotDeletion {
     checkQuotaUsageComputation(dir, 8, BLOCKSIZE * REPLICATION * 3);
     // check blocks of tempFile
     for (BlockInfo b : blocks) {
+<<<<<<< HEAD
       assertNull(blockmanager.getBlockCollection(b));
+=======
+      assertEquals(INVALID_INODE_ID, b.getBlockCollectionId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     
     // make a change: create a new file under subsub
@@ -345,7 +353,11 @@ public class TestSnapshotDeletion {
     // newFile
     checkQuotaUsageComputation(dir, 9L, BLOCKSIZE * REPLICATION * 4);
     for (BlockInfo b : blocks) {
+<<<<<<< HEAD
       assertNull(blockmanager.getBlockCollection(b));
+=======
+      assertEquals(INVALID_INODE_ID, b.getBlockCollectionId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     
     // make sure the whole subtree of sub is stored correctly in snapshot
@@ -508,7 +520,11 @@ public class TestSnapshotDeletion {
     // metaChangeFile's replication factor decreases
     checkQuotaUsageComputation(dir, 6, 2 * BLOCKSIZE * REPLICATION - BLOCKSIZE);
     for (BlockInfo b : blocks) {
+<<<<<<< HEAD
       assertNull(blockmanager.getBlockCollection(b));
+=======
+      assertEquals(INVALID_INODE_ID, b.getBlockCollectionId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     
     // check 1. there is no snapshot s0
@@ -782,7 +798,11 @@ public class TestSnapshotDeletion {
     // modify file10, to check if the posterior diff was set correctly
     hdfs.setReplication(file10, REPLICATION);
     checkQuotaUsageComputation(snapshotRoot, dirNodeNum + 7, 20 * BLOCKSIZE);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path file10_s1 = SnapshotTestHelper.getSnapshotPath(snapshotRoot, "s1",
         modDirStr + "file10");
     Path file11_s1 = SnapshotTestHelper.getSnapshotPath(snapshotRoot, "s1",
@@ -830,7 +850,11 @@ public class TestSnapshotDeletion {
         blockmanager);
     TestSnapshotBlocksMap.assertBlockCollection(file13_s1.toString(), 1, fsdir,
         blockmanager);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // make sure file14 and file15 are not included in s1
     Path file14_s1 = SnapshotTestHelper.getSnapshotPath(snapshotRoot, "s1",
         modDirStr + "file14");
@@ -839,6 +863,7 @@ public class TestSnapshotDeletion {
     assertFalse(hdfs.exists(file14_s1));
     assertFalse(hdfs.exists(file15_s1));
     for (BlockInfo b : blocks_14) {
+<<<<<<< HEAD
       assertNull(blockmanager.getBlockCollection(b));
     }
     
@@ -849,6 +874,22 @@ public class TestSnapshotDeletion {
     
     INodeFile nodeFile12 = (INodeFile) fsdir.getINode(file12_s1.toString());
     assertEquals(REPLICATION_1, nodeFile12.getPreferredBlockReplication());
+=======
+      assertEquals(INVALID_INODE_ID, b.getBlockCollectionId());
+    }
+
+    INodeFile nodeFile13 = (INodeFile) fsdir.getINode(file13.toString());
+    for (BlockInfo b: nodeFile13.getBlocks()) {
+      assertEquals(REPLICATION_1, b.getReplication());
+    }
+    TestSnapshotBlocksMap.assertBlockCollection(file13.toString(), 1, fsdir,
+        blockmanager);
+
+    INodeFile nodeFile12 = (INodeFile) fsdir.getINode(file12_s1.toString());
+    for (BlockInfo b: nodeFile12.getBlocks()) {
+      assertEquals(REPLICATION_1, b.getReplication());
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /** Test deleting snapshots with modification on the metadata of directory */ 
@@ -1039,6 +1080,7 @@ public class TestSnapshotDeletion {
   public void testDeleteSnapshotCommandWithIllegalArguments() throws Exception {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     PrintStream psOut = new PrintStream(out);
+<<<<<<< HEAD
     System.setOut(psOut);
     System.setErr(psOut);
     FsShell shell = new FsShell();
@@ -1058,6 +1100,34 @@ public class TestSnapshotDeletion {
         argv2[0] + ": Incorrect number of arguments."));
     psOut.close();
     out.close();
+=======
+    PrintStream oldOut = System.out;
+    PrintStream oldErr = System.err;
+    try {
+      System.setOut(psOut);
+      System.setErr(psOut);
+      FsShell shell = new FsShell();
+      shell.setConf(conf);
+
+      String[] argv1 = { "-deleteSnapshot", "/tmp" };
+      int val = shell.run(argv1);
+      assertTrue(val == -1);
+      assertTrue(out.toString()
+          .contains(argv1[0] + ": Incorrect number of arguments."));
+      out.reset();
+
+      String[] argv2 = { "-deleteSnapshot", "/tmp", "s1", "s2" };
+      val = shell.run(argv2);
+      assertTrue(val == -1);
+      assertTrue(out.toString()
+          .contains(argv2[0] + ": Incorrect number of arguments."));
+      psOut.close();
+      out.close();
+    } finally {
+      System.setOut(oldOut);
+      System.setErr(oldErr);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /*

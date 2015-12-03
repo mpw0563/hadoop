@@ -59,7 +59,11 @@ public class ConcatSourcesParam extends StringParam {
 
   /** @return the absolute path. */
   public final String[] getAbsolutePaths() {
+<<<<<<< HEAD
     final String[] paths = getValue().split(",");
     return paths;
+=======
+    return getValue().split(",");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

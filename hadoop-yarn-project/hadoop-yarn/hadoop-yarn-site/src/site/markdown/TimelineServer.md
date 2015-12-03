@@ -185,6 +185,17 @@ selected if this policy is either of `HTTPS_ONLY` or `HTTP_AND_HTTPS`.
 | `yarn.timeline-service.client.retry-interval-ms` | The interval in milliseconds between retries for the timeline service client. Defaults to `1000`. |
 | `yarn.timeline-service.generic-application-history.max-applications` | The max number of applications could be fetched by using REST API or application history protocol and shown in timeline server web ui. Defaults to `10000`. |
 
+<<<<<<< HEAD
+=======
+#### UI Hosting Configuration
+
+The timeline service can host multiple UIs if enabled. The service can support both static web sites hosted in a directory or war files bundled. The web UI is then hosted on the timeline service HTTP port under the path configured.
+| Configuration Property | Description |
+|:---- |:---- |
+| `yarn.timeline-service.ui-names` | Comma separated list of UIs that will be hosted. Defaults to `none`. |
+| `yarn.timeline-service.ui-on-disk-path.$name` | For each of the ui-names, an on disk path should be specified to the directory service static content or the location of a web archive (war file). |
+| `yarn.timeline-service.ui-web-path.$name` | For each of the ui-names, the web path should be specified relative to the Timeline server root. Paths should begin with a starting slash. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 
 #### Security Configuration
@@ -1088,7 +1099,15 @@ Response Body:
           "startedTime":1430425001004,
           "finishedTime":1430425008861,
           "elapsedTime":7857,
+<<<<<<< HEAD
           "unmanagedApplication":"false"},
+=======
+          "unmanagedApplication":"false",
+          "applicationPriority":0,
+          "appNodeLabelExpression":"",
+          "amNodeLabelExpression":""
+          },
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           {
           "appId":"application_1430424020775_0003",
           "currentAppAttemptId":"appattempt_1430424020775_0003_000001",
@@ -1108,7 +1127,15 @@ Response Body:
           "startedTime":1430424956650,
           "finishedTime":1430424963907,
           "elapsedTime":7257,
+<<<<<<< HEAD
           "unmanagedApplication":"false"},
+=======
+          "unmanagedApplication":"false",
+          "applicationPriority":0,
+          "appNodeLabelExpression":"",
+          "amNodeLabelExpression":""
+          },
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           {
           "appId":"application_1430424020775_0002",
           "currentAppAttemptId":"appattempt_1430424020775_0002_000001",
@@ -1128,7 +1155,15 @@ Response Body:
           "startedTime":1430424769395,
           "finishedTime":1430424776594,
           "elapsedTime":7199,
+<<<<<<< HEAD
           "unmanagedApplication":"false"},
+=======
+          "unmanagedApplication":"false",
+          "applicationPriority":0,
+          "appNodeLabelExpression":"",
+          "amNodeLabelExpression":""
+          },
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           {
           "appId":"application_1430424020775_0001",
           "currentAppAttemptId":"appattempt_1430424020775_0001_000001",
@@ -1149,7 +1184,14 @@ Response Body:
           "finishedTime":1430424776594,
           "elapsedTime":18344,
           "applicationTags":"mrapplication,ta-example",
+<<<<<<< HEAD
           "unmanagedApplication":"false"
+=======
+          "unmanagedApplication":"false",
+          "applicationPriority":0,
+          "appNodeLabelExpression":"",
+          "amNodeLabelExpression":""
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
       ]
     }
@@ -1192,6 +1234,12 @@ Response Body:
         <finishedTime>1430425008861</finishedTime>
         <elapsedTime>7857</elapsedTime>
         <unmanagedApplication>false</unmanagedApplication>
+<<<<<<< HEAD
+=======
+        <applicationPriority>0</applicationPriority>
+        <appNodeLabelExpression></appNodeLabelExpression>
+        <amNodeLabelExpression></amNodeLabelExpression>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </app>
       <app>
         <appId>application_1430424020775_0003</appId>
@@ -1213,6 +1261,12 @@ Response Body:
         <finishedTime>1430424963907</finishedTime>
         <elapsedTime>7257</elapsedTime>
         <unmanagedApplication>false</unmanagedApplication>
+<<<<<<< HEAD
+=======
+        <applicationPriority>0</applicationPriority>
+        <appNodeLabelExpression></appNodeLabelExpression>
+        <amNodeLabelExpression></amNodeLabelExpression>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </app>
       <app>
         <appId>application_1430424020775_0002</appId>
@@ -1234,6 +1288,12 @@ Response Body:
         <finishedTime>1430424776594</finishedTime>
         <elapsedTime>7199</elapsedTime>
         <unmanagedApplication>false</unmanagedApplication>
+<<<<<<< HEAD
+=======
+        <applicationPriority>0</applicationPriority>
+        <appNodeLabelExpression></appNodeLabelExpression>
+        <amNodeLabelExpression></amNodeLabelExpression>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </app>
       <app>
         <appId>application_1430424020775_0001</appId>
@@ -1256,6 +1316,12 @@ Response Body:
         <elapsedTime>18344</elapsedTime>
         <applicationTags>mrapplication,ta-example</applicationTags>
         <unmanagedApplication>false</unmanagedApplication>
+<<<<<<< HEAD
+=======
+        <applicationPriority>0</applicationPriority>
+        <appNodeLabelExpression></appNodeLabelExpression>
+        <amNodeLabelExpression></amNodeLabelExpression>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </app>
     </apps>
 
@@ -1307,7 +1373,13 @@ None
 | `rpcPort` | int | The RPC port of the ApplicationMaster; zero if no IPC service declared |
 | `applicationTags` | string | The application tags. |
 | `unmanagedApplication` | boolean | Is the application unmanaged. |
+<<<<<<< HEAD
 
+=======
+| `applicationPriority` | int | Priority of the submitted application. |
+| `appNodeLabelExpression` | string |Node Label expression which is used to identify the nodes on which application's containers are expected to run by default.|
+| `amNodeLabelExpression` | string | Node Label expression which is used to identify the node on which application's  AM container is expected to run.|
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 ### Response Examples:
 
 #### JSON response
@@ -1344,7 +1416,14 @@ Response Body:
       "finishedTime": 1430424072153,
       "elapsedTime": 18344,
       "applicationTags": mrapplication,tag-example,
+<<<<<<< HEAD
       "unmanagedApplication":"false"
+=======
+      "unmanagedApplication": "false",
+      "applicationPriority": 0,
+      "appNodeLabelExpression": "",
+      "amNodeLabelExpression": ""
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
 #### XML response
@@ -1384,6 +1463,12 @@ Response Body:
        <elapsedTime>18344</elapsedTime>
        <applicationTags>mrapplication,ta-example</applicationTags>
        <unmanagedApplication>false</unmanagedApplication>
+<<<<<<< HEAD
+=======
+       <applicationPriority>0</applicationPriority>
+       <appNodeLabelExpression><appNodeLabelExpression>
+       <amNodeLabelExpression><amNodeLabelExpression>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      </app>
 
 ## <a name="REST_API_APPLICATION_ATTEMPT_LIST"></a>Application Attempt List

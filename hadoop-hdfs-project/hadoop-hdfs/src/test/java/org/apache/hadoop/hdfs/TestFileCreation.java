@@ -20,10 +20,17 @@ import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.IO_FILE_BUFFER_
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.IO_FILE_BUFFER_SIZE_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BLOCK_SIZE_DEFAULT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BLOCK_SIZE_KEY;
+<<<<<<< HEAD
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BYTES_PER_CHECKSUM_DEFAULT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BYTES_PER_CHECKSUM_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_DEFAULT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_KEY;
+=======
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_BYTES_PER_CHECKSUM_DEFAULT;
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_BYTES_PER_CHECKSUM_KEY;
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_DEFAULT;
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_WRITE_PACKET_SIZE_KEY;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_DATANODE_SYNCONCLOSE_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_HEARTBEAT_INTERVAL_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HEARTBEAT_RECHECK_INTERVAL_KEY;
@@ -33,16 +40,26 @@ import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_REPLICATION_KEY;
 import static org.apache.hadoop.test.MetricsAsserts.assertCounter;
 import static org.apache.hadoop.test.MetricsAsserts.getMetrics;
 import static org.junit.Assert.assertEquals;
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.assertNull;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+<<<<<<< HEAD
 import java.io.File;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.io.InputStreamReader;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
@@ -51,8 +68,6 @@ import java.net.UnknownHostException;
 import java.security.PrivilegedExceptionAction;
 import java.util.EnumSet;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.fs.CreateFlag;
@@ -65,8 +80,13 @@ import org.apache.hadoop.fs.InvalidPathException;
 import org.apache.hadoop.fs.ParentNotDirectoryException;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsPermission;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.client.HdfsDataOutputStream;
 import org.apache.hadoop.hdfs.protocol.Block;
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+import org.apache.hadoop.hdfs.client.HdfsDataOutputStream;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
@@ -98,10 +118,9 @@ public class TestFileCreation {
   static final String DIR = "/" + TestFileCreation.class.getSimpleName() + "/";
 
   {
-    //((Log4JLogger)DataNode.LOG).getLogger().setLevel(Level.ALL);
-    ((Log4JLogger)LeaseManager.LOG).getLogger().setLevel(Level.ALL);
-    ((Log4JLogger)LogFactory.getLog(FSNamesystem.class)).getLogger().setLevel(Level.ALL);
-    ((Log4JLogger)DFSClient.LOG).getLogger().setLevel(Level.ALL);
+    GenericTestUtils.setLogLevel(LeaseManager.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(FSNamesystem.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(DFSClient.LOG, Level.ALL);
   }
   private static final String RPC_DETAILED_METRICS =
       "RpcDetailedActivityForPort";
@@ -217,9 +236,15 @@ public class TestFileCreation {
       throws IOException {
     Configuration conf = new HdfsConfiguration();
     if (netIf != null) {
+<<<<<<< HEAD
       conf.set(DFSConfigKeys.DFS_CLIENT_LOCAL_INTERFACES, netIf);
     }
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_USE_DN_HOSTNAME, useDnHostname);
+=======
+      conf.set(HdfsClientConfigKeys.DFS_CLIENT_LOCAL_INTERFACES, netIf);
+    }
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_USE_DN_HOSTNAME, useDnHostname);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (useDnHostname) {
       // Since the mini cluster only listens on the loopback we have to
       // ensure the hostname used to access DNs maps to the loopback. We
@@ -794,6 +819,7 @@ public class TestFileCreation {
     }
     MiniDFSCluster cluster = new MiniDFSCluster.Builder(conf).build();
     FileSystem fs = cluster.getFileSystem();
+<<<<<<< HEAD
     final Path path = new Path("/" + Time.now()
         + "-testFileCreationNonRecursive");
     FSDataOutputStream out = null;
@@ -860,27 +886,110 @@ public class TestFileCreation {
           + " createNonRecursive() should throw FileNotFoundException ",
           expectedException != null
               && expectedException instanceof FileNotFoundException);
+=======
+
+    try {
+      testFileCreationNonRecursive(fs);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       fs.close();
       cluster.shutdown();
     }
   }
 
-  // creates a file using DistributedFileSystem.createNonRecursive()
-  static FSDataOutputStream createNonRecursive(FileSystem fs, Path name,
+  // Worker method for testing non-recursive. Extracted to allow other
+  // FileSystem implementations to re-use the tests
+  public static void testFileCreationNonRecursive(FileSystem fs) throws IOException {
+    final Path path = new Path("/" + Time.now()
+        + "-testFileCreationNonRecursive");
+    FSDataOutputStream out = null;
+    IOException expectedException = null;
+    final String nonExistDir = "/non-exist-" + Time.now();
+
+    fs.delete(new Path(nonExistDir), true);
+    EnumSet<CreateFlag> createFlag = EnumSet.of(CreateFlag.CREATE);
+    // Create a new file in root dir, should succeed
+    assertNull(createNonRecursive(fs, path, 1, createFlag));
+
+    // Create a file when parent dir exists as file, should fail
+    expectedException = createNonRecursive(fs, new Path(path, "Create"), 1, createFlag);
+
+    assertTrue("Create a file when parent directory exists as a file"
+        + " should throw ParentNotDirectoryException ",
+        expectedException != null
+            && expectedException instanceof ParentNotDirectoryException);
+    fs.delete(path, true);
+    // Create a file in a non-exist directory, should fail
+    final Path path2 = new Path(nonExistDir + "/testCreateNonRecursive");
+    expectedException =  createNonRecursive(fs, path2, 1, createFlag);
+
+    assertTrue("Create a file in a non-exist dir using"
+        + " createNonRecursive() should throw FileNotFoundException ",
+        expectedException != null
+            && expectedException instanceof FileNotFoundException);
+
+    EnumSet<CreateFlag> overwriteFlag =
+      EnumSet.of(CreateFlag.CREATE, CreateFlag.OVERWRITE);
+    // Overwrite a file in root dir, should succeed
+    assertNull(createNonRecursive(fs, path, 1, overwriteFlag));
+
+    // Overwrite a file when parent dir exists as file, should fail
+    expectedException = createNonRecursive(fs, new Path(path, "Overwrite"), 1, overwriteFlag);
+
+    assertTrue("Overwrite a file when parent directory exists as a file"
+        + " should throw ParentNotDirectoryException ",
+        expectedException != null
+            && expectedException instanceof ParentNotDirectoryException);
+    fs.delete(path, true);
+
+    // Overwrite a file in a non-exist directory, should fail
+    final Path path3 = new Path(nonExistDir + "/testOverwriteNonRecursive");
+    expectedException = createNonRecursive(fs, path3, 1, overwriteFlag);
+
+    assertTrue("Overwrite a file in a non-exist dir using"
+        + " createNonRecursive() should throw FileNotFoundException ",
+        expectedException != null
+            && expectedException instanceof FileNotFoundException);
+  }
+
+  // Attempts to create and close a file using FileSystem.createNonRecursive(),
+  // catching and returning an exception if one occurs or null
+  // if the operation is successful.
+  static IOException createNonRecursive(FileSystem fs, Path name,
       int repl, EnumSet<CreateFlag> flag) throws IOException {
+<<<<<<< HEAD
     System.out.println("createNonRecursive: Created " + name + " with " + repl
         + " replica.");
     FSDataOutputStream stm = ((DistributedFileSystem) fs).createNonRecursive(
         name, FsPermission.getDefault(), flag, fs.getConf().getInt(
             CommonConfigurationKeys.IO_FILE_BUFFER_SIZE_KEY, 4096), (short) repl,  blockSize, null);
     return stm;
+=======
+    try {
+      System.out.println("createNonRecursive: Attempting to create " + name +
+          " with " + repl + " replica.");
+      int bufferSize = fs.getConf()
+          .getInt(CommonConfigurationKeys.IO_FILE_BUFFER_SIZE_KEY, 4096);
+      FSDataOutputStream stm = fs.createNonRecursive(name,
+          FsPermission.getDefault(), flag, bufferSize, (short) repl,  blockSize,
+          null);
+      stm.close();
+    } catch (IOException e) {
+      return e;
+    }
+    return null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
-  
 
+<<<<<<< HEAD
 /**
  * Test that file data becomes available before file is closed.
  */
+=======
+  /**
+   * Test that file data becomes available before file is closed.
+  */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testFileCreationSimulated() throws IOException {
     simulatedStorage = true;
@@ -1001,6 +1110,7 @@ public class TestFileCreation {
       for(DatanodeInfo datanodeinfo: locatedblock.getLocations()) {
         DataNode datanode = cluster.getDataNode(datanodeinfo.getIpcPort());
         ExtendedBlock blk = locatedblock.getBlock();
+<<<<<<< HEAD
         Block b = DataNodeTestUtils.getFSDataset(datanode).getStoredBlock(
             blk.getBlockPoolId(), blk.getBlockId());
         final File blockfile = DataNodeTestUtils.getFile(datanode,
@@ -1008,8 +1118,11 @@ public class TestFileCreation {
         System.out.println("blockfile=" + blockfile);
         if (blockfile != null) {
           BufferedReader in = new BufferedReader(new FileReader(blockfile));
+=======
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(
+            datanode.getFSDataset().getBlockInputStream(blk, 0)))) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           assertEquals("something", in.readLine());
-          in.close();
           successcount++;
         }
       }

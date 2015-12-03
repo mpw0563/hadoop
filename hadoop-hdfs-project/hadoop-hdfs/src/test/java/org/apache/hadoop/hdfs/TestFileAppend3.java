@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+<<<<<<< HEAD
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -29,6 +30,15 @@ import java.util.List;
 
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.fs.CreateFlag;
+=======
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.List;
+
+import org.apache.hadoop.fs.CreateFlag;
+import org.apache.hadoop.hdfs.server.datanode.FsDatasetTestUtils.MaterializedReplica;
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.mockito.invocation.InvocationOnMock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -314,6 +324,7 @@ public class TestFileAppend3  {
     DatanodeInfo[] datanodeinfos = lb.getLocations();
     assertEquals(repl, datanodeinfos.length);
     final DataNode dn = cluster.getDataNode(datanodeinfos[0].getIpcPort());
+<<<<<<< HEAD
     final File f = DataNodeTestUtils.getBlockFile(
         dn, blk.getBlockPoolId(), blk.getLocalBlock());
     final RandomAccessFile raf = new RandomAccessFile(f, "rw");
@@ -321,6 +332,9 @@ public class TestFileAppend3  {
     assertEquals(len1, raf.length());
     raf.setLength(0);
     raf.close();
+=======
+    cluster.getMaterializedReplica(dn, blk).truncateData(0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     //c. Open file in "append mode".  Append a new block worth of data. Close file.
     final int len2 = (int)BLOCK_SIZE; 

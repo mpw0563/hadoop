@@ -32,7 +32,14 @@ import org.apache.hadoop.mapreduce.v2.proto.MRProtos.JobReportProto;
 import org.apache.hadoop.mapreduce.v2.proto.MRProtos.JobReportProtoOrBuilder;
 import org.apache.hadoop.mapreduce.v2.proto.MRProtos.JobStateProto;
 import org.apache.hadoop.mapreduce.v2.util.MRProtoUtils;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.impl.pb.ProtoBase;
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+import org.apache.hadoop.yarn.api.records.impl.pb.PriorityPBImpl;
+import org.apache.hadoop.yarn.api.records.impl.pb.ProtoBase;
+import org.apache.hadoop.yarn.proto.YarnProtos.PriorityProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 
     
@@ -41,11 +48,16 @@ public class JobReportPBImpl extends ProtoBase<JobReportProto> implements
   JobReportProto proto = JobReportProto.getDefaultInstance();
   JobReportProto.Builder builder = null;
   boolean viaProto = false;
-  
+
   private JobId jobId = null;
   private List<AMInfo> amInfos = null;
+<<<<<<< HEAD
   
   
+=======
+  private Priority jobPriority = null;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public JobReportPBImpl() {
     builder = JobReportProto.newBuilder();
   }
@@ -69,6 +81,12 @@ public class JobReportPBImpl extends ProtoBase<JobReportProto> implements
     if (this.amInfos != null) {
       addAMInfosToProto();
     }
+<<<<<<< HEAD
+=======
+    if (this.jobPriority != null) {
+      builder.setJobPriority(convertToProtoFormat(this.jobPriority));
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private synchronized void mergeLocalToProto() {
@@ -170,6 +188,7 @@ public class JobReportPBImpl extends ProtoBase<JobReportProto> implements
     builder.setSetupProgress((setupProgress));
   }
 
+<<<<<<< HEAD
   @Override
   public synchronized long getSubmitTime() {
     JobReportProtoOrBuilder p = viaProto ? proto : builder;
@@ -183,6 +202,21 @@ public class JobReportPBImpl extends ProtoBase<JobReportProto> implements
   }
 
   @Override
+=======
+  @Override
+  public synchronized long getSubmitTime() {
+    JobReportProtoOrBuilder p = viaProto ? proto : builder;
+    return (p.getSubmitTime());
+  }
+
+  @Override
+  public synchronized void setSubmitTime(long submitTime) {
+    maybeInitBuilder();
+    builder.setSubmitTime((submitTime));
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized long getStartTime() {
     JobReportProtoOrBuilder p = viaProto ? proto : builder;
     return (p.getStartTime());
@@ -333,11 +367,23 @@ public class JobReportPBImpl extends ProtoBase<JobReportProto> implements
     return MRProtoUtils.convertFromProtoFormat(e);
   }
 
+<<<<<<< HEAD
+=======
+  private PriorityPBImpl convertFromProtoFormat(PriorityProto p) {
+    return new PriorityPBImpl(p);
+  }
+
+  private PriorityProto convertToProtoFormat(Priority t) {
+    return ((PriorityPBImpl)t).getProto();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public synchronized boolean isUber() {
     JobReportProtoOrBuilder p = viaProto ? proto : builder;
     return p.getIsUber();
   }
+<<<<<<< HEAD
 
   @Override
   public synchronized void setIsUber(boolean isUber) {
@@ -345,3 +391,34 @@ public class JobReportPBImpl extends ProtoBase<JobReportProto> implements
     builder.setIsUber(isUber);
   }
 }  
+=======
+
+  @Override
+  public synchronized void setIsUber(boolean isUber) {
+    maybeInitBuilder();
+    builder.setIsUber(isUber);
+  }
+
+  @Override
+  public synchronized Priority getJobPriority() {
+    JobReportProtoOrBuilder p = viaProto ? proto : builder;
+    if (this.jobPriority != null) {
+      return this.jobPriority;
+    }
+    if (!p.hasJobPriority()) {
+      return null;
+    }
+    this.jobPriority = convertFromProtoFormat(p.getJobPriority());
+    return this.jobPriority;
+  }
+
+  @Override
+  public synchronized void setJobPriority(Priority priority) {
+    maybeInitBuilder();
+    if (priority == null) {
+      builder.clearJobPriority();
+    }
+    this.jobPriority = priority;
+  }
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

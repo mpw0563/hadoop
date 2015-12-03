@@ -36,7 +36,12 @@ import org.apache.hadoop.ipc.Server;
 import org.apache.hadoop.mapred.SortedRanges.Range;
 import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.TypeConverter;
+import org.apache.hadoop.mapreduce.checkpoint.TaskCheckpointID;
 import org.apache.hadoop.mapreduce.security.token.JobTokenSecretManager;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.v2.api.records.TaskId;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.v2.app.AppContext;
 import org.apache.hadoop.mapreduce.v2.app.TaskAttemptListener;
 import org.apache.hadoop.mapreduce.v2.app.TaskHeartbeatHandler;
@@ -45,9 +50,14 @@ import org.apache.hadoop.mapreduce.v2.app.job.Task;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptDiagnosticsUpdateEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEventType;
-import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptStatusUpdateEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptStatusUpdateEvent.TaskAttemptStatus;
+<<<<<<< HEAD
 import org.apache.hadoop.mapreduce.v2.app.rm.RMHeartbeatHandler;
+=======
+import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptStatusUpdateEvent;
+import org.apache.hadoop.mapreduce.v2.app.rm.RMHeartbeatHandler;
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.AMPreemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.v2.app.security.authorize.MRAMPolicyProvider;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.authorize.PolicyProvider;
@@ -84,6 +94,7 @@ public class TaskAttemptListenerImpl extends CompositeService
       .newSetFromMap(new ConcurrentHashMap<WrappedJvmID, Boolean>());
 
   private JobTokenSecretManager jobTokenSecretManager = null;
+<<<<<<< HEAD
 
   private byte[] encryptedSpillKey;
 
@@ -91,10 +102,31 @@ public class TaskAttemptListenerImpl extends CompositeService
       JobTokenSecretManager jobTokenSecretManager,
       RMHeartbeatHandler rmHeartbeatHandler,
       byte[] secretShuffleKey) {
+=======
+  private AMPreemptionPolicy preemptionPolicy;
+  private byte[] encryptedSpillKey;
+
+  public TaskAttemptListenerImpl(AppContext context,
+      JobTokenSecretManager jobTokenSecretManager,
+      RMHeartbeatHandler rmHeartbeatHandler,
+      AMPreemptionPolicy preemptionPolicy) {
+    this(context, jobTokenSecretManager, rmHeartbeatHandler,
+            preemptionPolicy, null);
+  }
+
+  public TaskAttemptListenerImpl(AppContext context,
+      JobTokenSecretManager jobTokenSecretManager,
+      RMHeartbeatHandler rmHeartbeatHandler,
+      AMPreemptionPolicy preemptionPolicy, byte[] secretShuffleKey) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     super(TaskAttemptListenerImpl.class.getName());
     this.context = context;
     this.jobTokenSecretManager = jobTokenSecretManager;
     this.rmHeartbeatHandler = rmHeartbeatHandler;
+<<<<<<< HEAD
+=======
+    this.preemptionPolicy = preemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.encryptedSpillKey = secretShuffleKey;
   }
 
@@ -231,6 +263,22 @@ public class TaskAttemptListenerImpl extends CompositeService
   }
 
   @Override
+  public void preempted(TaskAttemptID taskAttemptID, TaskStatus taskStatus)
+          throws IOException, InterruptedException {
+    LOG.info("Preempted state update from " + taskAttemptID.toString());
+    // An attempt is telling us that it got preempted.
+    org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId attemptID =
+        TypeConverter.toYarn(taskAttemptID);
+
+    preemptionPolicy.reportSuccessfulPreemption(attemptID);
+    taskHeartbeatHandler.progressing(attemptID);
+
+    context.getEventHandler().handle(
+        new TaskAttemptEvent(attemptID,
+            TaskAttemptEventType.TA_PREEMPTED));
+  }
+
+  @Override
   public void done(TaskAttemptID taskAttemptID) throws IOException {
     LOG.info("Done acknowledgement from " + taskAttemptID.toString());
 
@@ -252,6 +300,10 @@ public class TaskAttemptListenerImpl extends CompositeService
 
     org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId attemptID =
         TypeConverter.toYarn(taskAttemptID);
+
+    // handling checkpoints
+    preemptionPolicy.handleFailedContainer(attemptID);
+
     context.getEventHandler().handle(
         new TaskAttemptEvent(attemptID, TaskAttemptEventType.TA_FAILMSG));
   }
@@ -266,6 +318,10 @@ public class TaskAttemptListenerImpl extends CompositeService
 
     org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId attemptID =
         TypeConverter.toYarn(taskAttemptID);
+
+    // handling checkpoints
+    preemptionPolicy.handleFailedContainer(attemptID);
+
     context.getEventHandler().handle(
         new TaskAttemptEvent(attemptID, TaskAttemptEventType.TA_FAILMSG));
   }
@@ -293,6 +349,7 @@ public class TaskAttemptListenerImpl extends CompositeService
     taskHeartbeatHandler.progressing(attemptID);
     
     return new MapTaskCompletionEventsUpdate(events, shouldReset);
+<<<<<<< HEAD
   }
 
   @Override
@@ -301,6 +358,8 @@ public class TaskAttemptListenerImpl extends CompositeService
       LOG.debug("Ping from " + taskAttemptID.toString());
     }
     return true;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -325,10 +384,38 @@ public class TaskAttemptListenerImpl extends CompositeService
   }
 
   @Override
-  public boolean statusUpdate(TaskAttemptID taskAttemptID,
+  public AMFeedback statusUpdate(TaskAttemptID taskAttemptID,
       TaskStatus taskStatus) throws IOException, InterruptedException {
+<<<<<<< HEAD
     org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId yarnAttemptID =
         TypeConverter.toYarn(taskAttemptID);
+=======
+
+    org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId yarnAttemptID =
+        TypeConverter.toYarn(taskAttemptID);
+
+    AMFeedback feedback = new AMFeedback();
+    feedback.setTaskFound(true);
+
+    // Propagating preemption to the task if TASK_PREEMPTION is enabled
+    if (getConfig().getBoolean(MRJobConfig.TASK_PREEMPTION, false)
+        && preemptionPolicy.isPreempted(yarnAttemptID)) {
+      feedback.setPreemption(true);
+      LOG.info("Setting preemption bit for task: "+ yarnAttemptID
+          + " of type " + yarnAttemptID.getTaskId().getTaskType());
+    }
+
+    if (taskStatus == null) {
+      //We are using statusUpdate only as a simple ping
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Ping from " + taskAttemptID.toString());
+      }
+      return feedback;
+    }
+
+    // if we are here there is an actual status update to be processed
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     taskHeartbeatHandler.progressing(yarnAttemptID);
     TaskAttemptStatus taskAttemptStatus =
         new TaskAttemptStatus();
@@ -389,7 +476,7 @@ public class TaskAttemptListenerImpl extends CompositeService
     context.getEventHandler().handle(
         new TaskAttemptStatusUpdateEvent(taskAttemptStatus.id,
             taskAttemptStatus));
-    return true;
+    return feedback;
   }
 
   @Override
@@ -415,7 +502,11 @@ public class TaskAttemptListenerImpl extends CompositeService
 
     JVMId jvmId = context.jvmId;
     LOG.info("JVM with ID : " + jvmId + " asked for a task");
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     JvmTask jvmTask = null;
     // TODO: Is it an authorized container to get a task? Otherwise return null.
 
@@ -498,4 +589,18 @@ public class TaskAttemptListenerImpl extends CompositeService
     return ProtocolSignature.getProtocolSignature(this, 
         protocol, clientVersion, clientMethodsHash);
   }
+
+  // task checkpoint bookeeping
+  @Override
+  public TaskCheckpointID getCheckpointID(TaskID taskId) {
+    TaskId tid = TypeConverter.toYarn(taskId);
+    return preemptionPolicy.getCheckpointID(tid);
+  }
+
+  @Override
+  public void setCheckpointID(TaskID taskId, TaskCheckpointID cid) {
+    TaskId tid = TypeConverter.toYarn(taskId);
+    preemptionPolicy.setCheckpointID(tid, cid);
+  }
+
 }

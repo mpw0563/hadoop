@@ -162,6 +162,16 @@ public interface NameNodeMXBean {
   public long getNumberOfMissingBlocksWithReplicationFactorOne();
 
   /**
+<<<<<<< HEAD
+=======
+   * Gets the total number of snapshottable dirs in the system.
+   *
+   * @return the total number of snapshottable dirs in the system
+   */
+  public long getNumberOfSnapshottableDirs();
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Gets the number of threads.
    * 
    * @return the number of threads
@@ -232,11 +242,18 @@ public interface NameNodeMXBean {
   public String getJournalTransactionInfo();
 
   /**
+<<<<<<< HEAD
    * Gets the NN start time
    *
    * @return the NN start time
    */
   public String getNNStarted();
+=======
+   * Gets the NN start time in milliseconds.
+   * @return the NN start time in msec
+   */
+  long getNNStartedTimeInMillis();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Get the compilation information which contains date, user and branch
@@ -266,4 +283,12 @@ public interface NameNodeMXBean {
    */
   public Map<String, Integer> getDistinctVersions();
   
+<<<<<<< HEAD
+=======
+  /**
+   * Get namenode directory size.
+   */
+  String getNameDirSize();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

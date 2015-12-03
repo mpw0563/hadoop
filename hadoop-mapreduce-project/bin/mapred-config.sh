@@ -18,6 +18,7 @@
 # included in all the mapred scripts with source command
 # should not be executed directly
 
+<<<<<<< HEAD
 bin=`which "$0"`
 bin=`dirname "${bin}"`
 bin=`cd "$bin"; pwd`
@@ -34,11 +35,60 @@ elif [ -e "${HADOOP_HOME}/bin/hadoop-config.sh" ]; then
   . "$HADOOP_HOME"/bin/hadoop-config.sh
 elif [ -e "${HADOOP_MAPRED_HOME}/bin/hadoop-config.sh" ]; then
   . "$HADOOP_MAPRED_HOME"/bin/hadoop-config.sh
-else
-  echo "Hadoop common not found."
-  exit
+=======
+function hadoop_subproject_init
+{
+  if [[ -z "${HADOOP_MAPRED_ENV_PROCESSED}" ]]; then
+    if [[ -e "${HADOOP_CONF_DIR}/mapred-env.sh" ]]; then
+      . "${HADOOP_CONF_DIR}/mapred-env.sh"
+      export HADOOP_MAPRED_ENV_PROCESSED=true
+    fi
+  fi
+  
+  # at some point in time, someone thought it would be a good idea to
+  # create separate vars for every subproject.  *sigh*
+  # let's perform some overrides and setup some defaults for bw compat
+  # this way the common hadoop var's == subproject vars and can be
+  # used interchangeable from here on out
+  # ...
+  # this should get deprecated at some point.
+
+  hadoop_deprecate_envvar HADOOP_MAPRED_LOG_DIR HADOOP_LOG_DIR
+
+  hadoop_deprecate_envvar HADOOP_MAPRED_LOGFILE HADOOP_LOGFILE
+  
+  hadoop_deprecate_envvar HADOOP_MAPRED_NICENESS HADOOP_NICENESS
+  
+  hadoop_deprecate_envvar HADOOP_MAPRED_STOP_TIMEOUT HADOOP_STOP_TIMEOUT
+  
+  hadoop_deprecate_envvar HADOOP_MAPRED_PID_DIR HADOOP_PID_DIR
+
+  hadoop_deprecate_envvar HADOOP_MAPRED_ROOT_LOGGER HADOOP_ROOT_LOGGER
+
+  HADOOP_MAPRED_HOME="${HADOOP_MAPRED_HOME:-$HADOOP_PREFIX}"
+
+  hadoop_deprecate_envvar HADOOP_MAPRED_IDENT_STRING HADOOP_IDENT_STRING
+}
+
+if [[ -z "${HADOOP_LIBEXEC_DIR}" ]]; then
+  _mc_this="${BASH_SOURCE-$0}"
+  HADOOP_LIBEXEC_DIR=$(cd -P -- "$(dirname -- "${_mc_this}")" >/dev/null && pwd -P)
 fi
 
+if [[ -n "${HADOOP_COMMON_HOME}" ]] &&
+   [[ -e "${HADOOP_COMMON_HOME}/libexec/hadoop-config.sh" ]]; then
+  . "${HADOOP_COMMON_HOME}/libexec/hadoop-config.sh"
+elif [[ -e "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh" ]]; then
+  . "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh"
+elif [ -e "${HADOOP_PREFIX}/libexec/hadoop-config.sh" ]; then
+  . "${HADOOP_PREFIX}/libexec/hadoop-config.sh"
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+else
+  echo "ERROR: Hadoop common not found." 2>&1
+  exit 1
+fi
+
+<<<<<<< HEAD
 # Only set locally to use in HADOOP_OPTS. No need to export.
 # The following defaults are useful when somebody directly invokes bin/mapred.
 HADOOP_MAPRED_LOG_DIR=${HADOOP_MAPRED_LOG_DIR:-${HADOOP_MAPRED_HOME}/logs}
@@ -50,3 +100,5 @@ HADOOP_OPTS="$HADOOP_OPTS -Dhadoop.log.file=$HADOOP_MAPRED_LOGFILE"
 export HADOOP_OPTS="$HADOOP_OPTS -Dhadoop.root.logger=${HADOOP_MAPRED_ROOT_LOGGER}"
 
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

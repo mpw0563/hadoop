@@ -20,13 +20,21 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../../../../../hadoop-project</relativePath>
   </parent>
 
   <groupId>org.apache.hadoop.contrib</groupId>
   <artifactId>hadoop-hdfs-bkjournal</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Apache Hadoop HDFS BookKeeper Journal</description>
   <name>Apache Hadoop HDFS BookKeeper Journal</name>
   <packaging>jar</packaging>
@@ -52,11 +60,14 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <artifactId>hadoop-hdfs</artifactId>
       <scope>provided</scope>
     </dependency>
+<<<<<<< HEAD
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs-client</artifactId>
       <scope>provided</scope>
     </dependency>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <dependency> 
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
@@ -113,6 +124,10 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
               <imports>
                 <param>${basedir}/../../../../../hadoop-common-project/hadoop-common/src/main/proto</param>
                 <param>${basedir}/../../../../../hadoop-hdfs-project/hadoop-hdfs-client/src/main/proto</param>
+<<<<<<< HEAD
+=======
+                <param>${basedir}/../../../../../hadoop-hdfs-project/hadoop-hdfs/src/main/proto</param>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                 <param>${basedir}/src/main/proto</param>
               </imports>
               <source>

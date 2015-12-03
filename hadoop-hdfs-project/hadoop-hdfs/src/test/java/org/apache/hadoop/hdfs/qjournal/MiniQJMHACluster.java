@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hdfs.qjournal;
 
+<<<<<<< HEAD
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_HA_NAMENODES_KEY_PREFIX;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_RPC_ADDRESS_KEY;
 
@@ -25,10 +26,13 @@ import java.net.BindException;
 import java.net.URI;
 import java.util.Random;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.MiniDFSNNTopology;
@@ -36,24 +40,49 @@ import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.StartupOption;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider;
+=======
+import org.apache.hadoop.hdfs.MiniDFSCluster;
+import org.apache.hadoop.hdfs.MiniDFSNNTopology;
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.StartupOption;
+import org.apache.hadoop.hdfs.server.namenode.NameNode;
+import org.apache.hadoop.hdfs.server.namenode.ha.HATestUtil;
+
+import java.io.IOException;
+import java.net.BindException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class MiniQJMHACluster {
   private MiniDFSCluster cluster;
   private MiniJournalCluster journalCluster;
   private final Configuration conf;
   private static final Log LOG = LogFactory.getLog(MiniQJMHACluster.class);
+<<<<<<< HEAD
   
   public static final String NAMESERVICE = "ns1";
   private static final String NN1 = "nn1";
   private static final String NN2 = "nn2";
+=======
+
+  public static final String NAMESERVICE = "ns1";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static final Random RANDOM = new Random();
   private int basePort = 10000;
 
   public static class Builder {
     private final Configuration conf;
     private StartupOption startOpt = null;
+<<<<<<< HEAD
     private final MiniDFSCluster.Builder dfsBuilder;
     
+=======
+    private int numNNs = 2;
+    private final MiniDFSCluster.Builder dfsBuilder;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public Builder(Configuration conf) {
       this.conf = conf;
       // most QJMHACluster tests don't need DataNodes, so we'll make
@@ -64,7 +93,11 @@ public class MiniQJMHACluster {
     public MiniDFSCluster.Builder getDfsBuilder() {
       return dfsBuilder;
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public MiniQJMHACluster build() throws IOException {
       return new MiniQJMHACluster(this);
     }
@@ -72,6 +105,7 @@ public class MiniQJMHACluster {
     public void startupOption(StartupOption startOpt) {
       this.startOpt = startOpt;
     }
+<<<<<<< HEAD
   }
   
   public static MiniDFSNNTopology createDefaultTopology(int basePort) {
@@ -81,6 +115,27 @@ public class MiniQJMHACluster {
             .setHttpPort(basePort + 1)).addNN(
         new MiniDFSNNTopology.NNConf("nn2").setIpcPort(basePort + 2)
             .setHttpPort(basePort + 3)));
+=======
+
+    public Builder setNumNameNodes(int nns) {
+      this.numNNs = nns;
+      return this;
+    }
+  }
+
+  public static MiniDFSNNTopology createDefaultTopology(int nns, int startingPort) {
+    MiniDFSNNTopology.NSConf nameservice = new MiniDFSNNTopology.NSConf(NAMESERVICE);
+    for (int i = 0; i < nns; i++) {
+      nameservice.addNN(new MiniDFSNNTopology.NNConf("nn" + i).setIpcPort(startingPort++)
+          .setHttpPort(startingPort++));
+    }
+
+    return new MiniDFSNNTopology().addNameservice(nameservice);
+  }
+
+  public static MiniDFSNNTopology createDefaultTopology(int basePort) {
+    return createDefaultTopology(2, basePort);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private MiniQJMHACluster(Builder builder) throws IOException {
@@ -94,10 +149,17 @@ public class MiniQJMHACluster {
             .build();
         URI journalURI = journalCluster.getQuorumJournalURI(NAMESERVICE);
 
+<<<<<<< HEAD
         // start cluster with 2 NameNodes
         MiniDFSNNTopology topology = createDefaultTopology(basePort);
 
         initHAConf(journalURI, builder.conf);
+=======
+        // start cluster with specified NameNodes
+        MiniDFSNNTopology topology = createDefaultTopology(builder.numNNs, basePort);
+
+        initHAConf(journalURI, builder.conf, builder.numNNs);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
         // First start up the NNs just to format the namespace. The MinIDFSCluster
         // has no way to just format the NameNodes without also starting them.
@@ -110,8 +172,14 @@ public class MiniQJMHACluster {
         Configuration confNN0 = cluster.getConfiguration(0);
         NameNode.initializeSharedEdits(confNN0, true);
 
+<<<<<<< HEAD
         cluster.getNameNodeInfos()[0].setStartOpt(builder.startOpt);
         cluster.getNameNodeInfos()[1].setStartOpt(builder.startOpt);
+=======
+        for (MiniDFSCluster.NameNodeInfo nn : cluster.getNameNodeInfos()) {
+          nn.setStartOpt(builder.startOpt);
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
         // restart the cluster
         cluster.restartNameNodes();
@@ -123,6 +191,7 @@ public class MiniQJMHACluster {
       }
     }
   }
+<<<<<<< HEAD
   
   private Configuration initHAConf(URI journalURI, Configuration conf) {
     conf.set(DFSConfigKeys.DFS_NAMENODE_SHARED_EDITS_DIR_KEY,
@@ -141,13 +210,34 @@ public class MiniQJMHACluster {
         ConfiguredFailoverProxyProvider.class.getName());
     conf.set("fs.defaultFS", "hdfs://" + NAMESERVICE);
     
+=======
+
+  private Configuration initHAConf(URI journalURI, Configuration conf, int numNNs) {
+    conf.set(DFSConfigKeys.DFS_NAMENODE_SHARED_EDITS_DIR_KEY,
+        journalURI.toString());
+
+    List<String> nns = new ArrayList<String>(numNNs);
+    int port = basePort;
+    for (int i = 0; i < numNNs; i++) {
+      nns.add("127.0.0.1:" + port);
+      // increment by 2 each time to account for the http port in the config setting
+      port += 2;
+    }
+
+    // use standard failover configurations
+    HATestUtil.setFailoverConfigurations(conf, NAMESERVICE, nns);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return conf;
   }
 
   public MiniDFSCluster getDfsCluster() {
     return cluster;
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public MiniJournalCluster getJournalCluster() {
     return journalCluster;
   }

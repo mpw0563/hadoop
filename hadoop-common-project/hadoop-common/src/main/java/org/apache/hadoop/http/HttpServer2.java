@@ -462,6 +462,7 @@ public final class HttpServer2 implements FilterContainer {
                  Collections.<String, String> emptyMap(), new String[] { "/*" });
   }
 
+<<<<<<< HEAD
   private static class SelectChannelConnectorWithSafeStartup
       extends SelectChannelConnector {
     public SelectChannelConnectorWithSafeStartup() {
@@ -497,6 +498,11 @@ public final class HttpServer2 implements FilterContainer {
   @InterfaceAudience.Private
   public static Connector createDefaultChannelConnector() {
     SelectChannelConnector ret = new SelectChannelConnectorWithSafeStartup();
+=======
+  @InterfaceAudience.Private
+  public static Connector createDefaultChannelConnector() {
+    SelectChannelConnector ret = new SelectChannelConnector();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ret.setLowResourceMaxIdleTime(10000);
     ret.setAcceptQueueSize(128);
     ret.setResolveNames(false);
@@ -562,6 +568,12 @@ public final class HttpServer2 implements FilterContainer {
     staticContext.setResourceBase(appDir + "/static");
     staticContext.addServlet(DefaultServlet.class, "/*");
     staticContext.setDisplayName("static");
+<<<<<<< HEAD
+=======
+    @SuppressWarnings("unchecked")
+    Map<String, String> params = staticContext.getInitParams();
+    params.put("org.mortbay.jetty.servlet.Default.dirAllowed", "false");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     setContextAttributes(staticContext, conf);
     defaultContexts.put(staticContext, true);
   }
@@ -573,7 +585,13 @@ public final class HttpServer2 implements FilterContainer {
 
   /**
    * Add default servlets.
+<<<<<<< HEAD
    */
+=======
+   * Note: /metrics servlet will be removed in 3.X release.
+   */
+  @SuppressWarnings("deprecation")
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected void addDefaultServlets() {
     // set up default servlets
     addServlet("stacks", "/stacks", StackServlet.class);

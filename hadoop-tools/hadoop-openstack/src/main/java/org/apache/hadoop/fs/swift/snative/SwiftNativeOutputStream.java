@@ -261,7 +261,11 @@ class SwiftNativeOutputStream extends OutputStream {
     assert len >= 0  : "remainder to write is negative";
     SwiftUtils.debug(LOG," writeToBackupStream(offset=%d, len=%d)", offset, len);
     if (len == 0) {
+<<<<<<< HEAD
       //no remainder -downgrade to noop
+=======
+      //no remainder -downgrade to no-op
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return;
     }
 

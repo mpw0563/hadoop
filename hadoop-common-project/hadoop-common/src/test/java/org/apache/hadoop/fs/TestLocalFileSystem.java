@@ -19,8 +19,14 @@ package org.apache.hadoop.fs;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem.Statistics;
+<<<<<<< HEAD
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Shell;
+=======
+import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.util.Shell;
+import org.apache.hadoop.util.StringUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import static org.apache.hadoop.fs.FileSystemTestHelper.*;
 
@@ -71,6 +77,10 @@ public class TestLocalFileSystem {
     FileUtil.setWritable(base, true);
     FileUtil.fullyDelete(base);
     assertTrue(!base.exists());
+<<<<<<< HEAD
+=======
+    RawLocalFileSystem.useStatIfAvailable();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -272,10 +282,21 @@ public class TestLocalFileSystem {
   public void testHasFileDescriptor() throws IOException {
     Path path = new Path(TEST_ROOT_DIR, "test-file");
     writeFile(fileSys, path, 1);
+<<<<<<< HEAD
     BufferedFSInputStream bis = new BufferedFSInputStream(
         new RawLocalFileSystem().new LocalFSFileInputStream(path), 1024);
     assertNotNull(bis.getFileDescriptor());
     bis.close();
+=======
+    BufferedFSInputStream bis = null;
+    try {
+      bis = new BufferedFSInputStream(new RawLocalFileSystem()
+        .new LocalFSFileInputStream(path), 1024);
+      assertNotNull(bis.getFileDescriptor());
+    } finally {
+      IOUtils.cleanup(null, bis);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test(timeout = 1000)

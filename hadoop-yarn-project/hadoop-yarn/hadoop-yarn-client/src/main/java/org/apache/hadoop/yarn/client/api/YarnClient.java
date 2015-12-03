@@ -49,10 +49,18 @@ import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeLabel;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.QueueInfo;
 import org.apache.hadoop.yarn.api.records.QueueUserACLInfo;
 import org.apache.hadoop.yarn.api.records.ReservationDefinition;
 import org.apache.hadoop.yarn.api.records.ReservationId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.SignalContainerCommand;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.Token;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.api.records.YarnClusterMetrics;
@@ -136,6 +144,26 @@ public abstract class YarnClient extends AbstractService {
 
   /**
    * <p>
+<<<<<<< HEAD
+=======
+   * Fail an application attempt identified by given ID.
+   * </p>
+   *
+   * @param applicationAttemptId
+   *          {@link ApplicationAttemptId} of the attempt to fail.
+   * @throws YarnException
+   *           in case of errors or if YARN rejects the request due to
+   *           access-control restrictions.
+   * @throws IOException
+   * @see #getQueueAclsInfo()
+   */
+  public abstract void failApplicationAttempt(
+      ApplicationAttemptId applicationAttemptId) throws YarnException,
+      IOException;
+
+  /**
+   * <p>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Kill an application identified by given ID.
    * </p>
    * 
@@ -666,4 +694,35 @@ public abstract class YarnClient extends AbstractService {
   @Unstable
   public abstract List<NodeLabel> getClusterNodeLabels()
       throws YarnException, IOException;
+<<<<<<< HEAD
+=======
+
+  /**
+   * <p>
+   * The interface used by client to set priority of an application
+   * </p>
+   * @param applicationId
+   * @param priority
+   * @throws YarnException
+   * @throws IOException
+   */
+  @Public
+  @Unstable
+  public abstract void updateApplicationPriority(ApplicationId applicationId,
+      Priority priority) throws YarnException, IOException;
+
+  /**
+   * <p>
+   * Signal a container identified by given ID.
+   * </p>
+   *
+   * @param containerId
+   *          {@link ContainerId} of the container that needs to be signaled
+   * @param command the signal container command
+   * @throws YarnException
+   * @throws IOException
+   */
+  public abstract void signalContainer(ContainerId containerId,
+      SignalContainerCommand command) throws YarnException, IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

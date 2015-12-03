@@ -19,8 +19,16 @@ package org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair;
 
 import static org.junit.Assert.*;
 
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.HashSet;
+=======
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Map;
 import java.util.Set;
 
@@ -393,6 +401,24 @@ public class TestQueuePlacementPolicy {
         SimpleGroupsMapping.class, GroupMappingServiceProvider.class);
   }
 
+<<<<<<< HEAD
+=======
+  @Test(expected=IOException.class)
+  public void testEmptyGroupsPrimaryGroupRule() throws Exception {
+    StringBuffer sb = new StringBuffer();
+    sb.append("<queuePlacementPolicy>");
+    sb.append("  <rule name='primaryGroup' create=\"false\" />");
+    sb.append("  <rule name='default' />");
+    sb.append("</queuePlacementPolicy>");
+
+    // Add a static mapping that returns empty groups for users
+    conf.setStrings(CommonConfigurationKeys
+        .HADOOP_USER_GROUP_STATIC_OVERRIDES, "emptygroupuser=");
+    QueuePlacementPolicy policy = parse(sb.toString());
+    policy.assignAppToQueue(null, "emptygroupuser");
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private QueuePlacementPolicy parse(String str) throws Exception {
     // Read and parse the allocations file.
     DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory

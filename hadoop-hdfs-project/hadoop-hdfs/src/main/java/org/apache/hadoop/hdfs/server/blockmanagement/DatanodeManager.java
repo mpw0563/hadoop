@@ -39,6 +39,10 @@ import org.apache.hadoop.hdfs.server.namenode.CachedBlock;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.hdfs.server.namenode.Namesystem;
 import org.apache.hadoop.hdfs.server.protocol.*;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.protocol.BlockECRecoveryCommand.BlockECRecoveryInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.protocol.BlockRecoveryCommand.RecoveringBlock;
 import org.apache.hadoop.ipc.Server;
 import org.apache.hadoop.net.*;
@@ -131,6 +135,7 @@ public class DatanodeManager {
    * writing to stale datanodes, i.e., continue using stale nodes for writing.
    */
   private final float ratioUseStaleDataNodesForWrite;
+<<<<<<< HEAD
 
   /** The number of stale DataNodes */
   private volatile int numStaleNodes;
@@ -138,6 +143,15 @@ public class DatanodeManager {
   /** The number of stale storages */
   private volatile int numStaleStorages;
 
+=======
+
+  /** The number of stale DataNodes */
+  private volatile int numStaleNodes;
+
+  /** The number of stale storages */
+  private volatile int numStaleStorages;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Number of blocks to check for each postponedMisreplicatedBlocks iteration
    */
@@ -178,14 +192,23 @@ public class DatanodeManager {
       final Configuration conf) throws IOException {
     this.namesystem = namesystem;
     this.blockManager = blockManager;
+<<<<<<< HEAD
     
+=======
+     
+    networktopology = NetworkTopology.getInstance(conf);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.heartbeatManager = new HeartbeatManager(namesystem, blockManager, conf);
     this.decomManager = new DecommissionManager(namesystem, blockManager,
         heartbeatManager);
     this.fsClusterStats = newFSClusterStats();
 
+<<<<<<< HEAD
     networktopology = NetworkTopology.getInstance(conf);
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.defaultXferPort = NetUtils.createSocketAddr(
           conf.getTrimmed(DFSConfigKeys.DFS_DATANODE_ADDRESS_KEY,
               DFSConfigKeys.DFS_DATANODE_ADDRESS_DEFAULT)).getPort();
@@ -308,7 +331,11 @@ public class DatanodeManager {
   
   void activate(final Configuration conf) {
     decomManager.activate(conf);
+<<<<<<< HEAD
     heartbeatManager.activate(conf);
+=======
+    heartbeatManager.activate();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   void close() {
@@ -419,6 +446,7 @@ public class DatanodeManager {
   /** @return the Host2NodesMap */
   public Host2NodesMap getHost2DatanodeMap() {
     return this.host2DatanodeMap;
+<<<<<<< HEAD
   }
 
   /**
@@ -483,6 +511,72 @@ public class DatanodeManager {
   }
 
   /**
+=======
+  }
+
+  /**
+   * Given datanode address or host name, returns the DatanodeDescriptor for the
+   * same, or if it doesn't find the datanode, it looks for a machine local and
+   * then rack local datanode, if a rack local datanode is not possible either,
+   * it returns the DatanodeDescriptor of any random node in the cluster.
+   *
+   * @param address hostaddress:transfer address
+   * @return the best match for the given datanode
+   */
+  DatanodeDescriptor getDatanodeDescriptor(String address) {
+    DatanodeID dnId = parseDNFromHostsEntry(address);
+    String host = dnId.getIpAddr();
+    int xferPort = dnId.getXferPort();
+    DatanodeDescriptor node = getDatanodeByXferAddr(host, xferPort);
+    if (node == null) {
+      node = getDatanodeByHost(host);
+    }
+    if (node == null) {
+      String networkLocation = 
+          resolveNetworkLocationWithFallBackToDefaultLocation(dnId);
+
+      // If the current cluster doesn't contain the node, fallback to
+      // something machine local and then rack local.
+      List<Node> rackNodes = getNetworkTopology()
+                                   .getDatanodesInRack(networkLocation);
+      if (rackNodes != null) {
+        // Try something machine local.
+        for (Node rackNode : rackNodes) {
+          if (((DatanodeDescriptor) rackNode).getIpAddr().equals(host)) {
+            node = (DatanodeDescriptor) rackNode;
+            break;
+          }
+        }
+
+        // Try something rack local.
+        if (node == null && !rackNodes.isEmpty()) {
+          node = (DatanodeDescriptor) (rackNodes
+              .get(ThreadLocalRandom.current().nextInt(rackNodes.size())));
+        }
+      }
+
+      // If we can't even choose rack local, just choose any node in the
+      // cluster.
+      if (node == null) {
+        node = (DatanodeDescriptor)getNetworkTopology()
+                                   .chooseRandom(NodeBase.ROOT);
+      }
+    }
+    return node;
+  }
+
+
+  /** Get a datanode descriptor given corresponding DatanodeUUID */
+  DatanodeDescriptor getDatanode(final String datanodeUuid) {
+    if (datanodeUuid == null) {
+      return null;
+    }
+
+    return datanodeMap.get(datanodeUuid);
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Get data node by datanode ID.
    * 
    * @param nodeID datanode ID
@@ -505,13 +599,35 @@ public class DatanodeManager {
   }
 
   public DatanodeStorageInfo[] getDatanodeStorageInfos(
+<<<<<<< HEAD
       DatanodeID[] datanodeID, String[] storageIDs)
           throws UnregisteredNodeException {
+=======
+      DatanodeID[] datanodeID, String[] storageIDs,
+      String format, Object... args) throws UnregisteredNodeException {
+    if (datanodeID.length != storageIDs.length) {
+      final String err = (storageIDs.length == 0?
+          "Missing storageIDs: It is likely that the HDFS client,"
+          + " who made this call, is running in an older version of Hadoop"
+          + " which does not support storageIDs."
+          : "Length mismatched: storageIDs.length=" + storageIDs.length + " != "
+          ) + " datanodeID.length=" + datanodeID.length;
+      throw new HadoopIllegalArgumentException(
+          err + ", "+ String.format(format, args));
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (datanodeID.length == 0) {
       return null;
     }
     final DatanodeStorageInfo[] storages = new DatanodeStorageInfo[datanodeID.length];
     for(int i = 0; i < datanodeID.length; i++) {
+<<<<<<< HEAD
+=======
+      if (datanodeID[i].equals(DatanodeID.EMPTY_DATANODE_ID)) {
+        storages[i] = null;
+        continue;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final DatanodeDescriptor dd = getDatanode(datanodeID[i]);
       storages[i] = dd.getStorageInfo(storageIDs[i]);
     }
@@ -629,6 +745,7 @@ public class DatanodeManager {
   private void incrementVersionCount(String version) {
     if (version == null) {
       return;
+<<<<<<< HEAD
     }
     synchronized(datanodeMap) {
       Integer count = this.datanodesSoftwareVersions.get(version);
@@ -827,6 +944,221 @@ public class DatanodeManager {
         // Include list is not empty, an existing datanode does not appear
         // in both include or exclude lists and it has been decommissioned.
         it.remove();
+=======
+    }
+    synchronized(datanodeMap) {
+      Integer count = this.datanodesSoftwareVersions.get(version);
+      count = count == null ? 1 : count + 1;
+      this.datanodesSoftwareVersions.put(version, count);
+    }
+  }
+
+  private void decrementVersionCount(String version) {
+    if (version == null) {
+      return;
+    }
+    synchronized(datanodeMap) {
+      Integer count = this.datanodesSoftwareVersions.get(version);
+      if(count != null) {
+        if(count > 1) {
+          this.datanodesSoftwareVersions.put(version, count-1);
+        } else {
+          this.datanodesSoftwareVersions.remove(version);
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      }
+    }
+  }
+
+<<<<<<< HEAD
+  /**
+   * Decommission the node if it is in the host exclude list.
+   *
+   * @param nodeReg datanode
+   */
+  void startDecommissioningIfExcluded(DatanodeDescriptor nodeReg) {
+    // If the registered node is in exclude list, then decommission it
+    if (getHostFileManager().isExcluded(nodeReg)) {
+      decomManager.startDecommission(nodeReg);
+=======
+  private boolean shouldCountVersion(DatanodeDescriptor node) {
+    return node.getSoftwareVersion() != null && node.isAlive() &&
+      !isDatanodeDead(node);
+  }
+
+  private void countSoftwareVersions() {
+    synchronized(datanodeMap) {
+      HashMap<String, Integer> versionCount = new HashMap<>();
+      for(DatanodeDescriptor dn: datanodeMap.values()) {
+        // Check isAlive too because right after removeDatanode(),
+        // isDatanodeDead() is still true 
+        if(shouldCountVersion(dn))
+        {
+          Integer num = versionCount.get(dn.getSoftwareVersion());
+          num = num == null ? 1 : num+1;
+          versionCount.put(dn.getSoftwareVersion(), num);
+        }
+      }
+      this.datanodesSoftwareVersions = versionCount;
+    }
+  }
+
+  public HashMap<String, Integer> getDatanodesSoftwareVersions() {
+    synchronized(datanodeMap) {
+      return new HashMap<> (this.datanodesSoftwareVersions);
+    }
+  }
+  
+  /**
+   *  Resolve a node's network location. If the DNS to switch mapping fails 
+   *  then this method guarantees default rack location. 
+   *  @param node to resolve to network location
+   *  @return network location path
+   */
+  private String resolveNetworkLocationWithFallBackToDefaultLocation (
+      DatanodeID node) {
+    String networkLocation;
+    try {
+      networkLocation = resolveNetworkLocation(node);
+    } catch (UnresolvedTopologyException e) {
+      LOG.error("Unresolved topology mapping. Using " +
+          NetworkTopology.DEFAULT_RACK + " for host " + node.getHostName());
+      networkLocation = NetworkTopology.DEFAULT_RACK;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    }
+    return networkLocation;
+  }
+  
+  /**
+<<<<<<< HEAD
+   * Register the given datanode with the namenode. NB: the given
+   * registration is mutated and given back to the datanode.
+   *
+   * @param nodeReg the datanode registration
+   * @throws DisallowedDatanodeException if the registration request is
+   *    denied because the datanode does not match includes/excludes
+   * @throws UnresolvedTopologyException if the registration request is 
+   *    denied because resolving datanode network location fails.
+   */
+  public void registerDatanode(DatanodeRegistration nodeReg)
+      throws DisallowedDatanodeException, UnresolvedTopologyException {
+    InetAddress dnAddress = Server.getRemoteIp();
+    if (dnAddress != null) {
+      // Mostly called inside an RPC, update ip and peer hostname
+      String hostname = dnAddress.getHostName();
+      String ip = dnAddress.getHostAddress();
+      if (checkIpHostnameInRegistration && !isNameResolved(dnAddress)) {
+        // Reject registration of unresolved datanode to prevent performance
+        // impact of repetitive DNS lookups later.
+        final String message = "hostname cannot be resolved (ip="
+            + ip + ", hostname=" + hostname + ")";
+        LOG.warn("Unresolved datanode registration: " + message);
+        throw new DisallowedDatanodeException(nodeReg, message);
+      }
+      // update node registration with the ip and hostname from rpc request
+      nodeReg.setIpAddr(ip);
+      nodeReg.setPeerHostName(hostname);
+    }
+    
+=======
+   * Resolve a node's network location. If the DNS to switch mapping fails, 
+   * then this method throws UnresolvedTopologyException. 
+   * @param node to resolve to network location
+   * @return network location path.
+   * @throws UnresolvedTopologyException if the DNS to switch mapping fails 
+   *    to resolve network location.
+   */
+  private String resolveNetworkLocation (DatanodeID node) 
+      throws UnresolvedTopologyException {
+    List<String> names = new ArrayList<>(1);
+    if (dnsToSwitchMapping instanceof CachedDNSToSwitchMapping) {
+      names.add(node.getIpAddr());
+    } else {
+      names.add(node.getHostName());
+    }
+    
+    List<String> rName = resolveNetworkLocation(names);
+    String networkLocation;
+    if (rName == null) {
+      LOG.error("The resolve call returned null!");
+        throw new UnresolvedTopologyException(
+            "Unresolved topology mapping for host " + node.getHostName());
+    } else {
+      networkLocation = rName.get(0);
+    }
+    return networkLocation;
+  }
+
+  /**
+   * Resolve network locations for specified hosts
+   *
+   * @param names
+   * @return Network locations if available, Else returns null
+   */
+  public List<String> resolveNetworkLocation(List<String> names) {
+    // resolve its network location
+    List<String> rName = dnsToSwitchMapping.resolve(names);
+    return rName;
+  }
+
+  /**
+   * Resolve a node's dependencies in the network. If the DNS to switch 
+   * mapping fails then this method returns empty list of dependencies 
+   * @param node to get dependencies for
+   * @return List of dependent host names
+   */
+  private List<String> getNetworkDependenciesWithDefault(DatanodeInfo node) {
+    List<String> dependencies;
+    try {
+      dependencies = getNetworkDependencies(node);
+    } catch (UnresolvedTopologyException e) {
+      LOG.error("Unresolved dependency mapping for host " + 
+          node.getHostName() +". Continuing with an empty dependency list");
+      dependencies = Collections.emptyList();
+    }
+    return dependencies;
+  }
+  
+  /**
+   * Resolves a node's dependencies in the network. If the DNS to switch 
+   * mapping fails to get dependencies, then this method throws 
+   * UnresolvedTopologyException. 
+   * @param node to get dependencies for
+   * @return List of dependent host names 
+   * @throws UnresolvedTopologyException if the DNS to switch mapping fails
+   */
+  private List<String> getNetworkDependencies(DatanodeInfo node)
+      throws UnresolvedTopologyException {
+    List<String> dependencies = Collections.emptyList();
+
+    if (dnsToSwitchMapping instanceof DNSToSwitchMappingWithDependency) {
+      //Get dependencies
+      dependencies = 
+          ((DNSToSwitchMappingWithDependency)dnsToSwitchMapping).getDependency(
+              node.getHostName());
+      if(dependencies == null) {
+        LOG.error("The dependency call returned null for host " + 
+            node.getHostName());
+        throw new UnresolvedTopologyException("The dependency call returned " + 
+            "null for host " + node.getHostName());
+      }
+    }
+
+    return dependencies;
+  }
+
+  /**
+   * Remove decommissioned datanode from the the list of live or dead nodes.
+   * This is used to not to display a decommissioned datanode to the operators.
+   * @param nodeList , array list of live or dead nodes.
+   */
+  private void removeDecomNodeFromList(
+      final List<DatanodeDescriptor> nodeList) {
+    Iterator<DatanodeDescriptor> it=null;
+    for (it = nodeList.iterator(); it.hasNext();) {
+      DatanodeDescriptor node = it.next();
+      if (node.isDecommissioned()) {
+        it.remove();
       }
     }
   }
@@ -873,6 +1205,7 @@ public class DatanodeManager {
       nodeReg.setPeerHostName(hostname);
     }
     
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       nodeReg.setExportedKeys(blockManager.getBlockKeys());
   
@@ -1128,6 +1461,7 @@ public class DatanodeManager {
    */
   public int getNumStaleNodes() {
     return this.numStaleNodes;
+<<<<<<< HEAD
   }
 
   /**
@@ -1138,6 +1472,18 @@ public class DatanodeManager {
   }
 
   /**
+=======
+  }
+
+  /**
+   * Get the number of content stale storages.
+   */
+  public int getNumStaleStorages() {
+    return numStaleStorages;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Set the number of content stale storages.
    *
    * @param numStaleStorages The number of content stale storages.
@@ -1180,6 +1526,7 @@ public class DatanodeManager {
   }
 
   /**
+<<<<<<< HEAD
    * @return true if this cluster has ever consisted of multiple racks, even if
    *         it is not now a multi-rack cluster.
    */
@@ -1211,8 +1558,73 @@ public class DatanodeManager {
       hasClusterEverBeenMultiRack = true;
       if (namesystem.isPopulatingReplQueues()) {
         blockManager.processMisReplicatedBlocks();
+=======
+   * Check if the cluster now consists of multiple racks. If it does, and this
+   * is the first time it's consisted of multiple racks, then process blocks
+   * that may now be misreplicated.
+   * 
+   * @param node DN which caused cluster to become multi-rack. Used for logging.
+   */
+  @VisibleForTesting
+  void checkIfClusterIsNowMultiRack(DatanodeDescriptor node) {
+    if (!hasClusterEverBeenMultiRack && networktopology.getNumOfRacks() > 1) {
+      String message = "DN " + node + " joining cluster has expanded a formerly " +
+          "single-rack cluster to be multi-rack. ";
+      if (blockManager.isPopulatingReplQueues()) {
+        message += "Re-checking all blocks for replication, since they should " +
+            "now be replicated cross-rack";
+        LOG.info(message);
+      } else {
+        message += "Not checking for mis-replicated blocks because this NN is " +
+            "not yet processing repl queues.";
+        LOG.debug(message);
+      }
+      hasClusterEverBeenMultiRack = true;
+      if (blockManager.isPopulatingReplQueues()) {
+        blockManager.processMisReplicatedBlocks();
       }
     }
+  }
+
+  /**
+   * Parse a DatanodeID from a hosts file entry
+   * @param hostLine of form [hostname|ip][:port]?
+   * @return DatanodeID constructed from the given string
+   */
+  private DatanodeID parseDNFromHostsEntry(String hostLine) {
+    DatanodeID dnId;
+    String hostStr;
+    int port;
+    int idx = hostLine.indexOf(':');
+
+    if (-1 == idx) {
+      hostStr = hostLine;
+      port = DFSConfigKeys.DFS_DATANODE_DEFAULT_PORT;
+    } else {
+      hostStr = hostLine.substring(0, idx);
+      port = Integer.parseInt(hostLine.substring(idx+1));
+    }
+
+    if (InetAddresses.isInetAddress(hostStr)) {
+      // The IP:port is sufficient for listing in a report
+      dnId = new DatanodeID(hostStr, "", "", port,
+          DFSConfigKeys.DFS_DATANODE_HTTP_DEFAULT_PORT,
+          DFSConfigKeys.DFS_DATANODE_HTTPS_DEFAULT_PORT,
+          DFSConfigKeys.DFS_DATANODE_IPC_DEFAULT_PORT);
+    } else {
+      String ipAddr = "";
+      try {
+        ipAddr = InetAddress.getByName(hostStr).getHostAddress();
+      } catch (UnknownHostException e) {
+        LOG.warn("Invalid hostname " + hostStr + " in hosts file");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      }
+      dnId = new DatanodeID(ipAddr, hostStr, "", port,
+          DFSConfigKeys.DFS_DATANODE_HTTP_DEFAULT_PORT,
+          DFSConfigKeys.DFS_DATANODE_HTTPS_DEFAULT_PORT,
+          DFSConfigKeys.DFS_DATANODE_IPC_DEFAULT_PORT);
+    }
+<<<<<<< HEAD
   }
 
   /**
@@ -1252,6 +1664,8 @@ public class DatanodeManager {
           DFSConfigKeys.DFS_DATANODE_HTTPS_DEFAULT_PORT,
           DFSConfigKeys.DFS_DATANODE_IPC_DEFAULT_PORT);
     }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return dnId;
   }
 
@@ -1278,11 +1692,22 @@ public class DatanodeManager {
       for (DatanodeDescriptor dn : datanodeMap.values()) {
         final boolean isDead = isDatanodeDead(dn);
         final boolean isDecommissioning = dn.isDecommissionInProgress();
+<<<<<<< HEAD
         if ((listLiveNodes && !isDead) ||
             (listDeadNodes && isDead) ||
             (listDecommissioningNodes && isDecommissioning)) {
             nodes.add(dn);
         }
+=======
+
+        if (((listLiveNodes && !isDead) ||
+            (listDeadNodes && isDead) ||
+            (listDecommissioningNodes && isDecommissioning)) &&
+            hostFileManager.isIncluded(dn)) {
+          nodes.add(dn);
+        }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         foundNodes.add(HostFileManager.resolvedAddressFromDatanodeID(dn));
       }
     }
@@ -1290,7 +1715,11 @@ public class DatanodeManager {
 
     if (listDeadNodes) {
       for (InetSocketAddress addr : includedNodes) {
+<<<<<<< HEAD
         if (foundNodes.matchedBy(addr) || excludedNodes.match(addr)) {
+=======
+        if (foundNodes.matchedBy(addr)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           continue;
         }
         // The remaining nodes are ones that are referenced by the hosts
@@ -1307,6 +1736,12 @@ public class DatanodeManager {
                 addr.getPort() == 0 ? defaultXferPort : addr.getPort(),
                 defaultInfoPort, defaultInfoSecurePort, defaultIpcPort));
         setDatanodeDead(dn);
+<<<<<<< HEAD
+=======
+        if (excludedNodes.match(addr)) {
+          dn.setDecommissioned();
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         nodes.add(dn);
       }
     }
@@ -1363,7 +1798,11 @@ public class DatanodeManager {
           throw new DisallowedDatanodeException(nodeinfo);
         }
 
+<<<<<<< HEAD
         if (nodeinfo == null || !nodeinfo.isAlive) {
+=======
+        if (nodeinfo == null || !nodeinfo.isAlive()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           return new DatanodeCommand[]{RegisterCommand.REGISTER};
         }
 
@@ -1379,6 +1818,7 @@ public class DatanodeManager {
         }
 
         //check lease recovery
+<<<<<<< HEAD
         BlockInfoContiguousUnderConstruction[] blocks = nodeinfo
             .getLeaseRecoveryCommand(Integer.MAX_VALUE);
         if (blocks != null) {
@@ -1392,15 +1832,39 @@ public class DatanodeManager {
             for (int i = 0; i < storages.length; i++) {
               if (!storages[i].getDatanodeDescriptor().isStale(staleInterval)) {
                 recoveryLocations.add(storages[i]);
+=======
+        BlockInfo[] blocks = nodeinfo.getLeaseRecoveryCommand(Integer.MAX_VALUE);
+        if (blocks != null) {
+          BlockRecoveryCommand brCommand = new BlockRecoveryCommand(
+              blocks.length);
+          for (BlockInfo b : blocks) {
+            BlockUnderConstructionFeature uc = b.getUnderConstructionFeature();
+            assert uc != null;
+            final DatanodeStorageInfo[] storages = uc.getExpectedStorageLocations();
+            // Skip stale nodes during recovery - not heart beated for some time (30s by default).
+            final List<DatanodeStorageInfo> recoveryLocations =
+                new ArrayList<>(storages.length);
+            for (DatanodeStorageInfo storage : storages) {
+              if (!storage.getDatanodeDescriptor().isStale(staleInterval)) {
+                recoveryLocations.add(storage);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               }
             }
             // If we are performing a truncate recovery than set recovery fields
             // to old block.
+<<<<<<< HEAD
             boolean truncateRecovery = b.getTruncateBlock() != null;
             boolean copyOnTruncateRecovery = truncateRecovery &&
                 b.getTruncateBlock().getBlockId() != b.getBlockId();
             ExtendedBlock primaryBlock = (copyOnTruncateRecovery) ?
                 new ExtendedBlock(blockPoolId, b.getTruncateBlock()) :
+=======
+            boolean truncateRecovery = uc.getTruncateBlock() != null;
+            boolean copyOnTruncateRecovery = truncateRecovery &&
+                uc.getTruncateBlock().getBlockId() != b.getBlockId();
+            ExtendedBlock primaryBlock = (copyOnTruncateRecovery) ?
+                new ExtendedBlock(blockPoolId, uc.getTruncateBlock()) :
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                 new ExtendedBlock(blockPoolId, b);
             // If we only get 1 replica after eliminating stale nodes, then choose all
             // replicas for recovery and let the primary data node handle failures.
@@ -1417,6 +1881,7 @@ public class DatanodeManager {
               // in block recovery.
               recoveryInfos = DatanodeStorageInfo.toDatanodeInfos(storages);
             }
+<<<<<<< HEAD
             if(truncateRecovery) {
               Block recoveryBlock = (copyOnTruncateRecovery) ? b :
                   b.getTruncateBlock();
@@ -1426,6 +1891,19 @@ public class DatanodeManager {
               brCommand.add(new RecoveringBlock(primaryBlock, recoveryInfos,
                                                 b.getBlockRecoveryId()));
             }
+=======
+            RecoveringBlock rBlock;
+            if(truncateRecovery) {
+              Block recoveryBlock = (copyOnTruncateRecovery) ? b :
+                  uc.getTruncateBlock();
+              rBlock = new RecoveringBlock(primaryBlock, recoveryInfos,
+                  recoveryBlock);
+            } else {
+              rBlock = new RecoveringBlock(primaryBlock, recoveryInfos,
+                  uc.getBlockRecoveryId());
+            }
+            brCommand.add(rBlock);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
           return new DatanodeCommand[] { brCommand };
         }
@@ -1437,6 +1915,13 @@ public class DatanodeManager {
         if (pendingList != null) {
           cmds.add(new BlockCommand(DatanodeProtocol.DNA_TRANSFER, blockPoolId,
               pendingList));
+        }
+        // checking pending erasure coding tasks
+        List<BlockECRecoveryInfo> pendingECList =
+            nodeinfo.getErasureCodeCommand(maxTransfers);
+        if (pendingECList != null) {
+          cmds.add(new BlockECRecoveryCommand(DatanodeProtocol.DNA_ERASURE_CODING_RECOVERY,
+              pendingECList));
         }
         //check block invalidation
         Block[] blks = nodeinfo.getInvalidateBlocks(blockInvalidateLimit);

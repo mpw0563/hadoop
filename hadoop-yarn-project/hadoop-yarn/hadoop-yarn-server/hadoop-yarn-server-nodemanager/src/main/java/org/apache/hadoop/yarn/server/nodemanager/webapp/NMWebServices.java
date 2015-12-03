@@ -129,7 +129,11 @@ public class NMWebServices {
           String msg = "Error: You must specify a non-empty string for the user";
           throw new BadRequestException(msg);
         }
+<<<<<<< HEAD
         if (!appInfo.getUser().toString().equals(userQuery)) {
+=======
+        if (!appInfo.getUser().equals(userQuery)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           continue;
         }
       }
@@ -158,7 +162,12 @@ public class NMWebServices {
   @GET
   @Path("/containers")
   @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+<<<<<<< HEAD
   public ContainersInfo getNodeContainers() {
+=======
+  public ContainersInfo getNodeContainers(@javax.ws.rs.core.Context
+      HttpServletRequest hsr) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     init();
     ContainersInfo allContainers = new ContainersInfo();
     for (Entry<ContainerId, Container> entry : this.nmContext.getContainers()
@@ -168,7 +177,11 @@ public class NMWebServices {
         continue;
       }
       ContainerInfo info = new ContainerInfo(this.nmContext, entry.getValue(),
+<<<<<<< HEAD
           uriInfo.getBaseUri().toString(), webapp.name());
+=======
+          uriInfo.getBaseUri().toString(), webapp.name(), hsr.getRemoteUser());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       allContainers.add(info);
     }
     return allContainers;
@@ -177,7 +190,12 @@ public class NMWebServices {
   @GET
   @Path("/containers/{containerid}")
   @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+<<<<<<< HEAD
   public ContainerInfo getNodeContainer(@PathParam("containerid") String id) {
+=======
+  public ContainerInfo getNodeContainer(@javax.ws.rs.core.Context
+      HttpServletRequest hsr, @PathParam("containerid") String id) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ContainerId containerId = null;
     init();
     try {
@@ -191,7 +209,11 @@ public class NMWebServices {
       throw new NotFoundException("container with id, " + id + ", not found");
     }
     return new ContainerInfo(this.nmContext, container, uriInfo.getBaseUri()
+<<<<<<< HEAD
         .toString(), webapp.name());
+=======
+        .toString(), webapp.name(), hsr.getRemoteUser());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   }
   

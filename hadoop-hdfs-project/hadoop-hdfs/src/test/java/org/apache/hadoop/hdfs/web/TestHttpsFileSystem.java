@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+<<<<<<< HEAD
 import java.net.URI;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -30,7 +33,10 @@ import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.http.HttpConfig;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.ssl.KeyStoreTestUtil;
@@ -53,7 +59,10 @@ public class TestHttpsFileSystem {
   @BeforeClass
   public static void setUp() throws Exception {
     conf = new Configuration();
+<<<<<<< HEAD
     conf.setBoolean(HdfsClientConfigKeys.DFS_WEBHDFS_ENABLED_KEY, true);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     conf.set(DFSConfigKeys.DFS_HTTP_POLICY_KEY, HttpConfig.Policy.HTTPS_ONLY.name());
     conf.set(DFSConfigKeys.DFS_NAMENODE_HTTPS_ADDRESS_KEY, "localhost:0");
     conf.set(DFSConfigKeys.DFS_DATANODE_HTTPS_ADDRESS_KEY, "localhost:0");
@@ -65,6 +74,13 @@ public class TestHttpsFileSystem {
     sslConfDir = KeyStoreTestUtil.getClasspathDir(TestHttpsFileSystem.class);
 
     KeyStoreTestUtil.setupSSLConfig(keystoresDir, sslConfDir, conf, false);
+<<<<<<< HEAD
+=======
+    conf.set(DFSConfigKeys.DFS_CLIENT_HTTPS_KEYSTORE_RESOURCE_KEY,
+        KeyStoreTestUtil.getClientSSLConfigFileName());
+    conf.set(DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_RESOURCE_KEY,
+        KeyStoreTestUtil.getServerSSLConfigFileName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
     cluster.waitActive();
@@ -84,6 +100,7 @@ public class TestHttpsFileSystem {
   }
 
   @Test
+<<<<<<< HEAD
   public void testHsftpFileSystem() throws Exception {
     FileSystem fs = FileSystem.get(new URI("hsftp://" + nnAddr), conf);
     Assert.assertTrue(fs.exists(new Path("/test")));
@@ -94,6 +111,8 @@ public class TestHttpsFileSystem {
   }
 
   @Test
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testSWebHdfsFileSystem() throws Exception {
     FileSystem fs = WebHdfsTestUtil.getWebHdfsFileSystem(conf, "swebhdfs");
     final Path f = new Path("/testswebhdfs");

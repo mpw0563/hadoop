@@ -26,6 +26,11 @@ import org.junit.Test;
 public class TestBlockLocation {
 
   private static final String[] EMPTY_STR_ARRAY = new String[0];
+<<<<<<< HEAD
+=======
+  private static final StorageType[] EMPTY_STORAGE_TYPE_ARRAY =
+      new StorageType[0];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private static void checkBlockLocation(final BlockLocation loc)
       throws Exception {
@@ -36,22 +41,43 @@ public class TestBlockLocation {
       final long offset, final long length, final boolean corrupt)
       throws Exception {
     checkBlockLocation(loc, EMPTY_STR_ARRAY, EMPTY_STR_ARRAY, EMPTY_STR_ARRAY,
+<<<<<<< HEAD
         EMPTY_STR_ARRAY, offset, length, corrupt);
+=======
+        EMPTY_STR_ARRAY, EMPTY_STR_ARRAY, EMPTY_STORAGE_TYPE_ARRAY, offset,
+        length, corrupt);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static void checkBlockLocation(final BlockLocation loc,
       String[] names, String[] hosts, String[] cachedHosts,
+<<<<<<< HEAD
       String[] topologyPaths, final long offset, final long length,
+=======
+      String[] topologyPaths,
+      String[] storageIds, StorageType[] storageTypes,
+      final long offset, final long length,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final boolean corrupt) throws Exception {
     assertNotNull(loc.getHosts());
     assertNotNull(loc.getCachedHosts());
     assertNotNull(loc.getNames());
     assertNotNull(loc.getTopologyPaths());
+<<<<<<< HEAD
+=======
+    assertNotNull(loc.getStorageIds());
+    assertNotNull(loc.getStorageTypes());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     assertArrayEquals(hosts, loc.getHosts());
     assertArrayEquals(cachedHosts, loc.getCachedHosts());
     assertArrayEquals(names, loc.getNames());
     assertArrayEquals(topologyPaths, loc.getTopologyPaths());
+<<<<<<< HEAD
+=======
+    assertArrayEquals(storageIds, loc.getStorageIds());
+    assertArrayEquals(storageTypes, loc.getStorageTypes());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     assertEquals(offset, loc.getOffset());
     assertEquals(length, loc.getLength());
@@ -75,6 +101,11 @@ public class TestBlockLocation {
     checkBlockLocation(loc, 1, 2, true);
     loc = new BlockLocation(null, null, null, null, 1, 2, true);
     checkBlockLocation(loc, 1, 2, true);
+<<<<<<< HEAD
+=======
+    loc = new BlockLocation(null, null, null, null, null, null, 1, 2, true);
+    checkBlockLocation(loc, 1, 2, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -95,14 +126,29 @@ public class TestBlockLocation {
     String[] hosts = new String[] { "host" };
     String[] cachedHosts = new String[] { "cachedHost" };
     String[] topologyPaths = new String[] { "path" };
+<<<<<<< HEAD
+=======
+    String[] storageIds = new String[] { "storageId" };
+    StorageType[] storageTypes = new StorageType[] { StorageType.DISK };
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     loc.setNames(names);
     loc.setHosts(hosts);
     loc.setCachedHosts(cachedHosts);
     loc.setTopologyPaths(topologyPaths);
+<<<<<<< HEAD
     loc.setOffset(1);
     loc.setLength(2);
     loc.setCorrupt(true);
     checkBlockLocation(loc, names, hosts, cachedHosts, topologyPaths, 1, 2,
         true);
+=======
+    loc.setStorageIds(storageIds);
+    loc.setStorageTypes(storageTypes);
+    loc.setOffset(1);
+    loc.setLength(2);
+    loc.setCorrupt(true);
+    checkBlockLocation(loc, names, hosts, cachedHosts, topologyPaths,
+        storageIds, storageTypes, 1, 2, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

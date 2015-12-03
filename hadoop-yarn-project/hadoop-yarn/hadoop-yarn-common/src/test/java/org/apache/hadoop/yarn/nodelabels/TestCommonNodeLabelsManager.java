@@ -280,18 +280,30 @@ public class TestCommonNodeLabelsManager extends NodeLabelTestBase {
     mgr.removeFromClusterNodeLabels(ImmutableSet.of("p1"));
     assertMapEquals(mgr.getNodeLabels(),
         ImmutableMap.of(toNodeId("n2"), toSet("p2"), toNodeId("n3"), toSet("p3")));
+<<<<<<< HEAD
     assertCollectionEquals(mgr.lastRemovedlabels, Arrays.asList("p1"));
+=======
+    assertCollectionEquals(Arrays.asList("p1"), mgr.lastRemovedlabels);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     mgr.removeFromClusterNodeLabels(ImmutableSet.of("p2", "p3"));
     Assert.assertTrue(mgr.getNodeLabels().isEmpty());
     Assert.assertTrue(mgr.getClusterNodeLabelNames().isEmpty());
+<<<<<<< HEAD
     assertCollectionEquals(mgr.lastRemovedlabels, Arrays.asList("p2", "p3"));
+=======
+    assertCollectionEquals(Arrays.asList("p2", "p3"), mgr.lastRemovedlabels);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @Test(timeout = 5000) 
   public void testTrimLabelsWhenAddRemoveNodeLabels() throws IOException {
     mgr.addToCluserNodeLabelsWithDefaultExclusivity(toSet(" p1"));
+<<<<<<< HEAD
     assertCollectionEquals(mgr.getClusterNodeLabelNames(), toSet("p1"));
+=======
+    assertCollectionEquals(toSet("p1"), mgr.getClusterNodeLabelNames());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     mgr.removeFromClusterNodeLabels(toSet("p1 "));
     Assert.assertTrue(mgr.getClusterNodeLabelNames().isEmpty());
   }

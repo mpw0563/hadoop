@@ -40,10 +40,15 @@ import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.MiniDFSNNTopology;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.protocolPB.DatanodeProtocolClientSideTranslatorPB;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockCollection;
+=======
+import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+import org.apache.hadoop.hdfs.protocolPB.DatanodeProtocolClientSideTranslatorPB;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockManagerTestUtil;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockPlacementPolicy;
@@ -631,6 +636,7 @@ public class TestDNFencing {
     }
 
     @Override
+<<<<<<< HEAD
     public DatanodeStorageInfo chooseReplicaToDelete(BlockCollection inode,
         Block block, short replicationFactor,
         Collection<DatanodeStorageInfo> first,
@@ -638,6 +644,15 @@ public class TestDNFencing {
         List<StorageType> excessTypes) {
       
       Collection<DatanodeStorageInfo> chooseFrom = !first.isEmpty() ? first : second;
+=======
+    public DatanodeStorageInfo chooseReplicaToDelete(
+        Collection<DatanodeStorageInfo> moreThanOne,
+        Collection<DatanodeStorageInfo> exactlyOne,
+        List<StorageType> excessTypes) {
+
+      Collection<DatanodeStorageInfo> chooseFrom = !moreThanOne.isEmpty() ?
+          moreThanOne : exactlyOne;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       List<DatanodeStorageInfo> l = Lists.newArrayList(chooseFrom);
       return l.get(ThreadLocalRandom.current().nextInt(l.size()));

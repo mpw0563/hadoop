@@ -27,17 +27,30 @@ import java.util.Map;
 
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.StringUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.NodeLabel;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.nodelabels.RMNodeLabel;
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerHealth;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CSQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.QueueCapacities;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.UserInfo;
 import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.CapacitySchedulerInfo;
 import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.CapacitySchedulerLeafQueueInfo;
 import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.CapacitySchedulerQueueInfo;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.PartitionQueueCapacitiesInfo;
+import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.PartitionResourceUsageInfo;
+import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.ResourceInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
 import org.apache.hadoop.yarn.util.Times;
 import org.apache.hadoop.yarn.webapp.ResponseInfo;
@@ -69,6 +82,10 @@ class CapacitySchedulerPage extends RmView {
     CapacitySchedulerInfo csinfo;
     CapacitySchedulerQueueInfo qinfo;
     String label;
+<<<<<<< HEAD
+=======
+    boolean isExclusiveNodeLabel;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   static class LeafQueueInfoBlock extends HtmlBlock {
@@ -91,12 +108,22 @@ class CapacitySchedulerPage extends RmView {
     }
 
     private void renderLeafQueueInfoWithPartition(Block html) {
+<<<<<<< HEAD
       nodeLabel = nodeLabel.length() == 0 ? "<DEFAULT_PARTITION>" : nodeLabel;
       // first display the queue's label specific details :
       ResponseInfo ri =
           info("\'" + lqinfo.getQueuePath().substring(5)
               + "\' Queue Status for Partition \'" + nodeLabel + "\'");
       renderQueueCapacityInfo(ri);
+=======
+      String nodeLabelDisplay = nodeLabel.length() == 0
+          ? NodeLabel.DEFAULT_NODE_LABEL_PARTITION : nodeLabel;
+      // first display the queue's label specific details :
+      ResponseInfo ri =
+          info("\'" + lqinfo.getQueuePath().substring(5)
+              + "\' Queue Status for Partition \'" + nodeLabelDisplay + "\'");
+      renderQueueCapacityInfo(ri, nodeLabel);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       html._(InfoBlock.class);
       // clear the info contents so this queue's info doesn't accumulate into
       // another queue's info
@@ -118,7 +145,11 @@ class CapacitySchedulerPage extends RmView {
       ResponseInfo ri =
           info("\'" + lqinfo.getQueuePath().substring(5) + "\' Queue Status")
               ._("Queue State:", lqinfo.getQueueState());
+<<<<<<< HEAD
       renderQueueCapacityInfo(ri);
+=======
+      renderQueueCapacityInfo(ri, "");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       renderCommonLeafQueueInfo(ri);
       html._(InfoBlock.class);
       // clear the info contents so this queue's info doesn't accumulate into
@@ -126,6 +157,7 @@ class CapacitySchedulerPage extends RmView {
       ri.clear();
     }
 
+<<<<<<< HEAD
     private void renderQueueCapacityInfo(ResponseInfo ri) {
       ri.
       _("Used Capacity:", percent(lqinfo.getUsedCapacity() / 100)).
@@ -135,6 +167,21 @@ class CapacitySchedulerPage extends RmView {
       _("Absolute Configured Capacity:", percent(lqinfo.getAbsoluteCapacity() / 100)).
       _("Absolute Configured Max Capacity:", percent(lqinfo.getAbsoluteMaxCapacity() / 100)).
       _("Used Resources:", lqinfo.getResourcesUsed().toString());
+=======
+    private void renderQueueCapacityInfo(ResponseInfo ri, String label) {
+      PartitionQueueCapacitiesInfo capacities =
+          lqinfo.getCapacities().getPartitionQueueCapacitiesInfo(label);
+      PartitionResourceUsageInfo resourceUsages =
+          lqinfo.getResources().getPartitionResourceUsageInfo(label);
+      ri.
+      _("Used Capacity:", percent(capacities.getUsedCapacity() / 100)).
+      _("Configured Capacity:", percent(capacities.getCapacity() / 100)).
+      _("Configured Max Capacity:", percent(capacities.getMaxCapacity() / 100)).
+      _("Absolute Used Capacity:", percent(capacities.getAbsoluteUsedCapacity() / 100)).
+      _("Absolute Configured Capacity:", percent(capacities.getAbsoluteCapacity() / 100)).
+      _("Absolute Configured Max Capacity:", percent(capacities.getAbsoluteMaxCapacity() / 100)).
+      _("Used Resources:", resourceUsages.getUsed().toString());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     private void renderCommonLeafQueueInfo(ResponseInfo ri) {
@@ -148,21 +195,42 @@ class CapacitySchedulerPage extends RmView {
       _("Used Application Master Resources:", lqinfo.getUsedAMResource().toString()).
       _("Max Application Master Resources Per User:", lqinfo.getUserAMResourceLimit().toString()).
       _("Configured Minimum User Limit Percent:", Integer.toString(lqinfo.getUserLimit()) + "%").
+<<<<<<< HEAD
       _("Configured User Limit Factor:", StringUtils.format(
           "%.1f", lqinfo.getUserLimitFactor())).
       _("Accessible Node Labels:", StringUtils.join(",", lqinfo.getNodeLabels())).
       _("Ordering Policy: ", lqinfo.getOrderingPolicyInfo()).
       _("Preemption:", lqinfo.getPreemptionDisabled() ? "disabled" : "enabled");
+=======
+      _("Configured User Limit Factor:", lqinfo.getUserLimitFactor()).
+      _("Accessible Node Labels:", StringUtils.join(",", lqinfo.getNodeLabels())).
+      _("Ordering Policy: ", lqinfo.getOrderingPolicyInfo()).
+      _("Preemption:", lqinfo.getPreemptionDisabled() ? "disabled" : "enabled").
+      _("Default Node Label Expression:",
+              lqinfo.getDefaultNodeLabelExpression() == null
+                  ? NodeLabel.DEFAULT_NODE_LABEL_PARTITION
+                  : lqinfo.getDefaultNodeLabelExpression()).
+      _("Default Application Priority:",
+              Integer.toString(lqinfo.getDefaultApplicationPriority()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   static class QueueUsersInfoBlock extends HtmlBlock {
     final CapacitySchedulerLeafQueueInfo lqinfo;
+<<<<<<< HEAD
+=======
+    private String nodeLabel;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     @Inject
     QueueUsersInfoBlock(ViewContext ctx, CSQInfo info) {
       super(ctx);
       lqinfo = (CapacitySchedulerLeafQueueInfo) info.qinfo;
+<<<<<<< HEAD
+=======
+      nodeLabel = info.label;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     @Override
@@ -180,9 +248,20 @@ class CapacitySchedulerPage extends RmView {
 
       ArrayList<UserInfo> users = lqinfo.getUsers().getUsersList();
       for (UserInfo userInfo : users) {
+<<<<<<< HEAD
         tbody.tr().td(userInfo.getUsername())
             .td(userInfo.getUserResourceLimit().toString())
             .td(userInfo.getResourcesUsed().toString())
+=======
+        ResourceInfo resourcesUsed = userInfo.getResourcesUsed();
+        if (nodeLabel != null) {
+          resourcesUsed = userInfo.getResourceUsageInfo()
+              .getPartitionResourceUsageInfo(nodeLabel).getUsed();
+        }
+        tbody.tr().td(userInfo.getUsername())
+            .td(userInfo.getUserResourceLimit().toString())
+            .td(resourcesUsed.toString())
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             .td(lqinfo.getUserAMResourceLimit().toString())
             .td(userInfo.getAMResourcesUsed().toString())
             .td(Integer.toString(userInfo.getNumActiveApplications()))
@@ -203,6 +282,7 @@ class CapacitySchedulerPage extends RmView {
 
     @Override
     public void render(Block html) {
+<<<<<<< HEAD
       ArrayList<CapacitySchedulerQueueInfo> subQueues =
           (csqinfo.qinfo == null) ? csqinfo.csinfo.getQueues().getQueueInfoList()
               : csqinfo.qinfo.getQueues().getQueueInfoList();
@@ -212,6 +292,34 @@ class CapacitySchedulerPage extends RmView {
         float absCap = info.getAbsoluteCapacity() / 100;
         float absMaxCap = info.getAbsoluteMaxCapacity() / 100;
         float absUsedCap = info.getAbsoluteUsedCapacity() / 100;
+=======
+      ArrayList<CapacitySchedulerQueueInfo> subQueues = (csqinfo.qinfo == null)
+          ? csqinfo.csinfo.getQueues().getQueueInfoList()
+          : csqinfo.qinfo.getQueues().getQueueInfoList();
+
+      UL<Hamlet> ul = html.ul("#pq");
+      float used;
+      float absCap;
+      float absMaxCap;
+      float absUsedCap;
+      for (CapacitySchedulerQueueInfo info : subQueues) {
+        String nodeLabel = (csqinfo.label == null) ? "" : csqinfo.label;
+        //DEFAULT_NODE_LABEL_PARTITION is accessible to all queues
+        //other exclsiveNodeLabels are accessible only if configured
+        if (!nodeLabel.isEmpty()// i.e. its DEFAULT_NODE_LABEL_PARTITION
+            && csqinfo.isExclusiveNodeLabel
+            && !info.getNodeLabels().contains("*")
+            && !info.getNodeLabels().contains(nodeLabel)) {
+          continue;
+        }
+        PartitionQueueCapacitiesInfo partitionQueueCapsInfo = info
+            .getCapacities().getPartitionQueueCapacitiesInfo(nodeLabel);
+        used = partitionQueueCapsInfo.getUsedCapacity() / 100;
+        absCap = partitionQueueCapsInfo.getAbsoluteCapacity() / 100;
+        absMaxCap = partitionQueueCapsInfo.getAbsoluteMaxCapacity() / 100;
+        absUsedCap = partitionQueueCapsInfo.getAbsoluteUsedCapacity() / 100;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         LI<UL<Hamlet>> li = ul.
           li().
             a(_Q).$style(width(absMaxCap * Q_MAX_WIDTH)).
@@ -335,6 +443,7 @@ class CapacitySchedulerPage extends RmView {
           _();
 
         float used = 0;
+<<<<<<< HEAD
         if (null == nodeLabelsInfo
             || (nodeLabelsInfo.size() == 1 && nodeLabelsInfo.get(0)
                 .getLabelName().isEmpty())) {
@@ -345,6 +454,15 @@ class CapacitySchedulerPage extends RmView {
           csqinfo.csinfo = sinfo;
           csqinfo.qinfo = null;
 
+=======
+
+        CSQueue root = cs.getRootQueue();
+        CapacitySchedulerInfo sinfo = new CapacitySchedulerInfo(root, cs);
+        csqinfo.csinfo = sinfo;
+
+        if (null == nodeLabelsInfo || (nodeLabelsInfo.size() == 1
+            && nodeLabelsInfo.get(0).getLabelName().isEmpty())) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           used = sinfo.getUsedCapacity() / 100;
           //label is not enabled in the cluster or there's only "default" label,
           ul.li().
@@ -357,6 +475,7 @@ class CapacitySchedulerPage extends RmView {
             _(QueueBlock.class)._();
         } else {
           for (RMNodeLabel label : nodeLabelsInfo) {
+<<<<<<< HEAD
             CSQueue root = cs.getRootQueue();
             CapacitySchedulerInfo sinfo =
                 new CapacitySchedulerInfo(root, cs, label);
@@ -370,6 +489,18 @@ class CapacitySchedulerPage extends RmView {
             used = queueCapacities.getUsedCapacity(label.getLabelName());
             String partitionUiTag =
                 "Partition: " + nodeLabel + " " + label.getResource();
+=======
+            csqinfo.qinfo = null;
+            csqinfo.label = label.getLabelName();
+            csqinfo.isExclusiveNodeLabel = label.getIsExclusive();
+            String nodeLabelDisplay = csqinfo.label.length() == 0
+                ? NodeLabel.DEFAULT_NODE_LABEL_PARTITION : csqinfo.label;
+            PartitionQueueCapacitiesInfo capacities = sinfo.getCapacities()
+                .getPartitionQueueCapacitiesInfo(csqinfo.label);
+            used = capacities.getUsedCapacity() / 100;
+            String partitionUiTag =
+                "Partition: " + nodeLabelDisplay + " " + label.getResource();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             ul.li().
             a(_Q).$style(width(Q_MAX_WIDTH)).
               span().$style(join(width(used), ";left:0%;",

@@ -200,13 +200,22 @@ public class BuilderUtils {
   }
 
   public static ContainerStatus newContainerStatus(ContainerId containerId,
+<<<<<<< HEAD
       ContainerState containerState, String diagnostics, int exitStatus) {
+=======
+      ContainerState containerState, String diagnostics, int exitStatus,
+      Resource capability) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ContainerStatus containerStatus = recordFactory
       .newRecordInstance(ContainerStatus.class);
     containerStatus.setState(containerState);
     containerStatus.setContainerId(containerId);
     containerStatus.setDiagnostics(diagnostics);
     containerStatus.setExitStatus(exitStatus);
+<<<<<<< HEAD
+=======
+    containerStatus.setCapability(capability);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return containerStatus;
   }
 
@@ -306,6 +315,21 @@ public class BuilderUtils {
     return request;
   }
 
+<<<<<<< HEAD
+=======
+  public static ResourceRequest newResourceRequest(Priority priority,
+      String hostName, Resource capability, int numContainers, String label) {
+    ResourceRequest request =
+        recordFactory.newRecordInstance(ResourceRequest.class);
+    request.setPriority(priority);
+    request.setResourceName(hostName);
+    request.setCapability(capability);
+    request.setNumContainers(numContainers);
+    request.setNodeLabelExpression(label);
+    return request;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static ResourceRequest newResourceRequest(ResourceRequest r) {
     ResourceRequest request = recordFactory
         .newRecordInstance(ResourceRequest.class);

@@ -20,7 +20,10 @@ package org.apache.hadoop.fs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
@@ -42,7 +45,11 @@ public class TestUnbuffer {
     Configuration conf = new Configuration();
     // Set a new ClientContext.  This way, we will have our own PeerCache,
     // rather than sharing one with other unit tests.
+<<<<<<< HEAD
     conf.set(DFSConfigKeys.DFS_CLIENT_CONTEXT,
+=======
+    conf.set(HdfsClientConfigKeys.DFS_CLIENT_CONTEXT,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         "testUnbufferClosesSocketsContext");
 
     // Disable short-circuit reads.  With short-circuit, we wouldn't hold open a
@@ -50,9 +57,15 @@ public class TestUnbuffer {
     conf.setBoolean(HdfsClientConfigKeys.Read.ShortCircuit.KEY, false);
 
     // Set a really long socket timeout to avoid test timing issues.
+<<<<<<< HEAD
     conf.setLong(DFSConfigKeys.DFS_CLIENT_SOCKET_TIMEOUT_KEY,
         100000000L);
     conf.setLong(DFSConfigKeys.DFS_CLIENT_SOCKET_CACHE_EXPIRY_MSEC_KEY,
+=======
+    conf.setLong(HdfsClientConfigKeys.DFS_CLIENT_SOCKET_TIMEOUT_KEY,
+        100000000L);
+    conf.setLong(HdfsClientConfigKeys.DFS_CLIENT_SOCKET_CACHE_EXPIRY_MSEC_KEY,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         100000000L);
 
     MiniDFSCluster cluster = null;

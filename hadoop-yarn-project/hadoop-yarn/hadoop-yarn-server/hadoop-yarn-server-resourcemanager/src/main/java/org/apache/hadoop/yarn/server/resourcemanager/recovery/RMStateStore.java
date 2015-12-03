@@ -45,6 +45,10 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.api.records.impl.pb.ApplicationSubmissionContextPBImpl;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.conf.HAUtil;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.event.AsyncDispatcher;
 import org.apache.hadoop.yarn.event.Dispatcher;
@@ -66,7 +70,11 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptEventType;
 import org.apache.hadoop.yarn.state.InvalidStateTransitionException;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.state.SingleArcTransition;
+=======
+import org.apache.hadoop.yarn.state.MultipleArcTransition;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.state.StateMachine;
 import org.apache.hadoop.yarn.state.StateMachineFactory;
 
@@ -99,7 +107,14 @@ public abstract class RMStateStore extends AbstractService {
 
   public static final Log LOG = LogFactory.getLog(RMStateStore.class);
 
+<<<<<<< HEAD
   private enum RMStateStoreState {
+=======
+  /**
+   * The enum defines state of RMStateStore.
+   */
+  public enum RMStateStoreState {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ACTIVE,
     FENCED
   };
@@ -113,6 +128,7 @@ public abstract class RMStateStore extends AbstractService {
                                                     RMStateStoreEventType,
                                                     RMStateStoreEvent>(
       RMStateStoreState.ACTIVE)
+<<<<<<< HEAD
       .addTransition(RMStateStoreState.ACTIVE, RMStateStoreState.ACTIVE,
           RMStateStoreEventType.STORE_APP, new StoreAppTransition())
       .addTransition(RMStateStoreState.ACTIVE, RMStateStoreState.ACTIVE,
@@ -148,6 +164,55 @@ public abstract class RMStateStore extends AbstractService {
           RMStateStoreEventType.UPDATE_RESERVATION,
           new UpdateReservationAllocationTransition())
       .addTransition(RMStateStoreState.ACTIVE, RMStateStoreState.ACTIVE,
+=======
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.STORE_APP, new StoreAppTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.UPDATE_APP, new UpdateAppTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.REMOVE_APP, new RemoveAppTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.STORE_APP_ATTEMPT,
+          new StoreAppAttemptTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.UPDATE_APP_ATTEMPT,
+          new UpdateAppAttemptTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.STORE_MASTERKEY,
+          new StoreRMDTMasterKeyTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.REMOVE_MASTERKEY,
+          new RemoveRMDTMasterKeyTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.STORE_DELEGATION_TOKEN,
+          new StoreRMDTTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.REMOVE_DELEGATION_TOKEN,
+          new RemoveRMDTTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.UPDATE_DELEGATION_TOKEN,
+          new UpdateRMDTTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.UPDATE_AMRM_TOKEN,
+          new StoreOrUpdateAMRMTokenTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+          RMStateStoreEventType.STORE_RESERVATION,
+          new StoreReservationAllocationTransition())
+      .addTransition(RMStateStoreState.ACTIVE,
+          EnumSet.of(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           RMStateStoreEventType.REMOVE_RESERVATION,
           new RemoveReservationAllocationTransition())
       .addTransition(RMStateStoreState.ACTIVE, RMStateStoreState.FENCED,
@@ -167,7 +232,10 @@ public abstract class RMStateStore extends AbstractService {
           RMStateStoreEventType.UPDATE_DELEGATION_TOKEN,
           RMStateStoreEventType.UPDATE_AMRM_TOKEN,
           RMStateStoreEventType.STORE_RESERVATION,
+<<<<<<< HEAD
           RMStateStoreEventType.UPDATE_RESERVATION,
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           RMStateStoreEventType.REMOVE_RESERVATION));
 
   private final StateMachine<RMStateStoreState,
@@ -175,6 +243,7 @@ public abstract class RMStateStore extends AbstractService {
                              RMStateStoreEvent> stateMachine;
 
   private static class StoreAppTransition
+<<<<<<< HEAD
       implements SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -183,6 +252,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      implements MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreAppEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ApplicationStateData appState =
           ((RMStateStoreAppEvent) event).getAppState();
       ApplicationId appId =
@@ -194,12 +276,19 @@ public abstract class RMStateStore extends AbstractService {
                RMAppEventType.APP_NEW_SAVED));
       } catch (Exception e) {
         LOG.error("Error storing app: " + appId, e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     };
   }
 
   private static class UpdateAppTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -208,6 +297,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateUpdateAppEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ApplicationStateData appState =
           ((RMStateUpdateAppEvent) event).getAppState();
       ApplicationId appId =
@@ -215,16 +317,29 @@ public abstract class RMStateStore extends AbstractService {
       LOG.info("Updating info for app: " + appId);
       try {
         store.updateApplicationStateInternal(appId, appState);
+<<<<<<< HEAD
         store.notifyApplication(new RMAppEvent(appId,
                RMAppEventType.APP_UPDATE_SAVED));
       } catch (Exception e) {
         LOG.error("Error updating app: " + appId, e);
         store.notifyStoreOperationFailed(e);
       }
+=======
+        if (((RMStateUpdateAppEvent) event).isNotifyApplication()) {
+          store.notifyApplication(new RMAppEvent(appId,
+              RMAppEventType.APP_UPDATE_SAVED));
+        }
+      } catch (Exception e) {
+        LOG.error("Error updating app: " + appId, e);
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     };
   }
 
   private static class RemoveAppTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -233,6 +348,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreRemoveAppEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ApplicationStateData appState =
           ((RMStateStoreRemoveAppEvent) event).getAppState();
       ApplicationId appId =
@@ -242,12 +370,19 @@ public abstract class RMStateStore extends AbstractService {
         store.removeApplicationStateInternal(appState);
       } catch (Exception e) {
         LOG.error("Error removing app: " + appId, e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     };
   }
 
   private static class StoreAppAttemptTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -256,6 +391,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreAppAttemptEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ApplicationAttemptStateData attemptState =
           ((RMStateStoreAppAttemptEvent) event).getAppAttemptState();
       try {
@@ -269,12 +417,19 @@ public abstract class RMStateStore extends AbstractService {
                RMAppAttemptEventType.ATTEMPT_NEW_SAVED));
       } catch (Exception e) {
         LOG.error("Error storing appAttempt: " + attemptState.getAttemptId(), e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     };
   }
 
   private static class UpdateAppAttemptTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -283,6 +438,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateUpdateAppAttemptEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ApplicationAttemptStateData attemptState =
           ((RMStateUpdateAppAttemptEvent) event).getAppAttemptState();
       try {
@@ -296,12 +464,19 @@ public abstract class RMStateStore extends AbstractService {
                RMAppAttemptEventType.ATTEMPT_UPDATE_SAVED));
       } catch (Exception e) {
         LOG.error("Error updating appAttempt: " + attemptState.getAttemptId(), e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     };
   }
 
   private static class StoreRMDTTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -310,6 +485,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreRMDTEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RMStateStoreRMDTEvent dtEvent = (RMStateStoreRMDTEvent) event;
       try {
         LOG.info("Storing RMDelegationToken and SequenceNumber");
@@ -318,12 +506,19 @@ public abstract class RMStateStore extends AbstractService {
       } catch (Exception e) {
         LOG.error("Error While Storing RMDelegationToken and SequenceNumber ",
             e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   private static class RemoveRMDTTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -332,6 +527,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreRMDTEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RMStateStoreRMDTEvent dtEvent = (RMStateStoreRMDTEvent) event;
       try {
         LOG.info("Removing RMDelegationToken and SequenceNumber");
@@ -339,12 +547,19 @@ public abstract class RMStateStore extends AbstractService {
       } catch (Exception e) {
         LOG.error("Error While Removing RMDelegationToken and SequenceNumber ",
             e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   private static class UpdateRMDTTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -354,6 +569,19 @@ public abstract class RMStateStore extends AbstractService {
         return;
       }
 
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreRMDTEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RMStateStoreRMDTEvent dtEvent = (RMStateStoreRMDTEvent) event;
       try {
         LOG.info("Updating RMDelegationToken and SequenceNumber");
@@ -362,12 +590,19 @@ public abstract class RMStateStore extends AbstractService {
       } catch (Exception e) {
         LOG.error("Error While Updating RMDelegationToken and SequenceNumber ",
             e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   private static class StoreRMDTMasterKeyTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -376,6 +611,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreRMDTMasterKeyEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RMStateStoreRMDTMasterKeyEvent dtEvent =
           (RMStateStoreRMDTMasterKeyEvent) event;
       try {
@@ -383,12 +631,19 @@ public abstract class RMStateStore extends AbstractService {
         store.storeRMDTMasterKeyState(dtEvent.getDelegationKey());
       } catch (Exception e) {
         LOG.error("Error While Storing RMDTMasterKey.", e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   private static class RemoveRMDTMasterKeyTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -397,6 +652,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreRMDTMasterKeyEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RMStateStoreRMDTMasterKeyEvent dtEvent =
           (RMStateStoreRMDTMasterKeyEvent) event;
       try {
@@ -404,12 +672,19 @@ public abstract class RMStateStore extends AbstractService {
         store.removeRMDTMasterKeyState(dtEvent.getDelegationKey());
       } catch (Exception e) {
         LOG.error("Error While Removing RMDTMasterKey.", e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   private static class StoreOrUpdateAMRMTokenTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -420,18 +695,39 @@ public abstract class RMStateStore extends AbstractService {
       }
       RMStateStoreAMRMTokenEvent amrmEvent = (RMStateStoreAMRMTokenEvent) event;
 
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreAMRMTokenEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      RMStateStoreAMRMTokenEvent amrmEvent = (RMStateStoreAMRMTokenEvent) event;
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       try {
         LOG.info("Updating AMRMToken");
         store.storeOrUpdateAMRMTokenSecretManagerState(
             amrmEvent.getAmrmTokenSecretManagerState(), amrmEvent.isUpdate());
       } catch (Exception e) {
         LOG.error("Error storing info for AMRMTokenSecretManager", e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   private static class StoreReservationAllocationTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -440,6 +736,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreStoreReservationEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RMStateStoreStoreReservationEvent reservationEvent =
           (RMStateStoreStoreReservationEvent) event;
       try {
@@ -451,6 +760,7 @@ public abstract class RMStateStore extends AbstractService {
             reservationEvent.getReservationIdName());
       } catch (Exception e) {
         LOG.error("Error while storing reservation allocation.", e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
     }
@@ -478,10 +788,16 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Error while updating reservation allocation.", e);
         store.notifyStoreOperationFailed(e);
       }
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   private static class RemoveReservationAllocationTransition implements
+<<<<<<< HEAD
       SingleArcTransition<RMStateStore, RMStateStoreEvent> {
     @Override
     public void transition(RMStateStore store, RMStateStoreEvent event) {
@@ -490,6 +806,19 @@ public abstract class RMStateStore extends AbstractService {
         LOG.error("Illegal event type: " + event.getClass());
         return;
       }
+=======
+      MultipleArcTransition<RMStateStore, RMStateStoreEvent,
+          RMStateStoreState> {
+    @Override
+    public RMStateStoreState transition(RMStateStore store,
+        RMStateStoreEvent event) {
+      if (!(event instanceof RMStateStoreStoreReservationEvent)) {
+        // should never happen
+        LOG.error("Illegal event type: " + event.getClass());
+        return RMStateStoreState.ACTIVE;
+      }
+      boolean isFenced = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RMStateStoreStoreReservationEvent reservationEvent =
           (RMStateStoreStoreReservationEvent) event;
       try {
@@ -500,11 +829,24 @@ public abstract class RMStateStore extends AbstractService {
             reservationEvent.getReservationIdName());
       } catch (Exception e) {
         LOG.error("Error while removing reservation allocation.", e);
+<<<<<<< HEAD
         store.notifyStoreOperationFailed(e);
       }
     }
   }
 
+=======
+        isFenced = store.notifyStoreOperationFailedInternal(e);
+      }
+      return finalState(isFenced);
+    }
+  }
+
+  private static RMStateStoreState finalState(boolean isFenced) {
+    return isFenced ? RMStateStoreState.FENCED : RMStateStoreState.ACTIVE;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public RMStateStore() {
     super(RMStateStore.class.getName());
     ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -706,6 +1048,14 @@ public abstract class RMStateStore extends AbstractService {
     dispatcher.getEventHandler().handle(new RMStateUpdateAppEvent(appState));
   }
 
+<<<<<<< HEAD
+=======
+  public void updateApplicationStateSynchronously(
+      ApplicationStateData appState, boolean notifyApp) {
+    handleStoreEvent(new RMStateUpdateAppEvent(appState, notifyApp));
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void updateFencedState() {
     handleStoreEvent(new RMStateStoreEvent(RMStateStoreEventType.FENCED));
   }
@@ -854,6 +1204,7 @@ public abstract class RMStateStore extends AbstractService {
         planName, reservationIdName));
   }
 
+<<<<<<< HEAD
   public void updateReservation(
       ReservationAllocationStateProto reservationAllocation,
       String planName, String reservationIdName) {
@@ -862,6 +1213,8 @@ public abstract class RMStateStore extends AbstractService {
         planName, reservationIdName));
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void removeReservation(String planName, String reservationIdName) {
     handleStoreEvent(new RMStateStoreStoreReservationEvent(
             null, RMStateStoreEventType.REMOVE_RESERVATION,
@@ -887,6 +1240,7 @@ public abstract class RMStateStore extends AbstractService {
 
   /**
    * Blocking API
+<<<<<<< HEAD
    * Derived classes must implement this method to update the state of
    * a reservation allocation.
    */
@@ -896,6 +1250,8 @@ public abstract class RMStateStore extends AbstractService {
 
   /**
    * Blocking API
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Derived classes must implement this method to remove the state of
    * DelegationToken Master Key
    */
@@ -998,20 +1354,43 @@ public abstract class RMStateStore extends AbstractService {
     }
   }
 
+<<<<<<< HEAD
   @SuppressWarnings("unchecked")
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * This method is called to notify the ResourceManager that the store
    * operation has failed.
    * @param failureCause the exception due to which the operation failed
    */
   protected void notifyStoreOperationFailed(Exception failureCause) {
+<<<<<<< HEAD
     LOG.error("State store operation failed ", failureCause);
     if (failureCause instanceof StoreFencedException) {
       updateFencedState();
+=======
+    if (isFencedState()) {
+      return;
+    }
+    if (notifyStoreOperationFailedInternal(failureCause)) {
+      updateFencedState();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean notifyStoreOperationFailedInternal(
+      Exception failureCause) {
+    boolean isFenced = false;
+    LOG.error("State store operation failed ", failureCause);
+    if (HAUtil.isHAEnabled(getConfig())) {
+      LOG.warn("State-store fenced ! Transitioning RM to standby");
+      isFenced = true;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Thread standByTransitionThread =
           new Thread(new StandByTransitionThread());
       standByTransitionThread.setName("StandByTransitionThread Handler");
       standByTransitionThread.start();
+<<<<<<< HEAD
     } else {
       if (YarnConfiguration.shouldRMFailFast(getConfig())) {
         rmDispatcher.getEventHandler().handle(
@@ -1019,6 +1398,17 @@ public abstract class RMStateStore extends AbstractService {
                 failureCause));
       }
     }
+=======
+    } else if (YarnConfiguration.shouldRMFailFast(getConfig())) {
+      LOG.fatal("Fail RM now due to state-store error!");
+      rmDispatcher.getEventHandler().handle(
+          new RMFatalEvent(RMFatalEventType.STATE_STORE_OP_FAILED,
+              failureCause));
+    } else {
+      LOG.warn("Skip the state-store error.");
+    }
+    return isFenced;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
  
   @SuppressWarnings("unchecked")

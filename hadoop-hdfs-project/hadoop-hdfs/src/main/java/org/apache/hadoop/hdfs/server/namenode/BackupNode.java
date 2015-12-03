@@ -30,12 +30,20 @@ import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.NameNodeProxies;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction;
 import org.apache.hadoop.hdfs.protocol.UnregisteredNodeException;
 import org.apache.hadoop.hdfs.protocol.proto.JournalProtocolProtos.JournalProtocolService;
 import org.apache.hadoop.hdfs.protocolPB.JournalProtocolPB;
 import org.apache.hadoop.hdfs.protocolPB.JournalProtocolServerSideTranslatorPB;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+=======
+import org.apache.hadoop.hdfs.protocol.UnregisteredNodeException;
+import org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction;
+import org.apache.hadoop.hdfs.protocol.proto.JournalProtocolProtos.JournalProtocolService;
+import org.apache.hadoop.hdfs.protocolPB.JournalProtocolPB;
+import org.apache.hadoop.hdfs.protocolPB.JournalProtocolServerSideTranslatorPB;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.NamenodeRole;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.StartupOption;
@@ -47,11 +55,16 @@ import org.apache.hadoop.hdfs.server.protocol.JournalProtocol;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocol;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeRegistration;
 import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
+import org.apache.hadoop.ipc.StandbyException;
 import org.apache.hadoop.ipc.RPC;
 import org.apache.hadoop.ipc.StandbyException;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 
+<<<<<<< HEAD
+=======
+import com.google.common.annotations.VisibleForTesting;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.protobuf.BlockingService;
 
 /**
@@ -157,7 +170,11 @@ public class BackupNode extends NameNode {
     // Backup node should never do lease recovery,
     // therefore lease hard limit should never expire.
     namesystem.leaseManager.setLeasePeriod(
+<<<<<<< HEAD
         HdfsServerConstants.LEASE_SOFTLIMIT_PERIOD, Long.MAX_VALUE);
+=======
+        HdfsConstants.LEASE_SOFTLIMIT_PERIOD, Long.MAX_VALUE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // register with the active name-node 
     registerWith(nsInfo);
@@ -177,6 +194,12 @@ public class BackupNode extends NameNode {
 
   @Override // NameNode
   public void stop() {
+    stop(true);
+  }
+  
+  @VisibleForTesting
+  void stop(boolean reportError) {
+   
     if(checkpointManager != null) {
       // Prevent from starting a new checkpoint.
       // Checkpoints that has already been started may proceed until 
@@ -186,7 +209,10 @@ public class BackupNode extends NameNode {
       // ClosedByInterruptException.
       checkpointManager.shouldRun = false;
     }
-    if(namenode != null && getRegistration() != null) {
+    
+    // reportError is a test hook to simulate backupnode crashing and not
+    // doing a clean exit w.r.t active namenode
+    if (reportError && namenode != null && getRegistration() != null) {
       // Exclude this node from the list of backup streams on the name-node
       try {
         namenode.errorReport(getRegistration(), NamenodeProtocol.FATAL,
@@ -208,7 +234,13 @@ public class BackupNode extends NameNode {
 
     // Abort current log segment - otherwise the NN shutdown code
     // will close it gracefully, which is incorrect.
+<<<<<<< HEAD
     getFSImage().getEditLog().abortCurrentLogSegment();
+=======
+    if (namesystem != null) {
+      getFSImage().getEditLog().abortCurrentLogSegment();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Stop name-node threads
     super.stop();
@@ -256,7 +288,11 @@ public class BackupNode extends NameNode {
     }
 
     /////////////////////////////////////////////////////
+<<<<<<< HEAD
     // BackupNodeProtocol implementation for backup node.
+=======
+    // JournalProtocol implementation for backup node.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /////////////////////////////////////////////////////
     @Override
     public void startLogSegment(JournalInfo journalInfo, long epoch,

@@ -37,6 +37,11 @@ message NodeStatusProto {
   optional NodeHealthStatusProto nodeHealthStatus = 4;
   repeated ApplicationIdProto keep_alive_applications = 5;
   optional ResourceUtilizationProto containers_utilization = 6;
+<<<<<<< HEAD
+=======
+  optional ResourceUtilizationProto node_utilization = 7;
+  repeated ContainerProto increased_containers = 8;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 message MasterKeyProto {
@@ -59,4 +64,8 @@ message ResourceUtilizationProto {
   optional int32 pmem = 1;
   optional int32 vmem = 2;
   optional float cpu = 3;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

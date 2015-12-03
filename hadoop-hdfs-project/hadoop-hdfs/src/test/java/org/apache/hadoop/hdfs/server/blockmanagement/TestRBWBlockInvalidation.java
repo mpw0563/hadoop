@@ -22,7 +22,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.Closeable;
+<<<<<<< HEAD
 import java.io.File;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.IOException;
 import java.util.List;
 
@@ -37,10 +40,15 @@ import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.MiniDFSCluster.DataNodeProperties;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
+=======
+import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+import org.apache.hadoop.hdfs.server.datanode.FsDatasetTestUtils.MaterializedReplica;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem;
 import org.apache.hadoop.hdfs.server.namenode.ha.HATestUtil;
 import org.apache.hadoop.hdfs.server.namenode.ha.TestDNFencing.RandomDeleterPolicy;
@@ -91,6 +99,7 @@ public class TestRBWBlockInvalidation {
       out.writeBytes("HDFS-3157: " + testPath);
       out.hsync();
       cluster.startDataNodes(conf, 1, true, null, null, null);
+<<<<<<< HEAD
       String bpid = namesystem.getBlockPoolId();
       ExtendedBlock blk = DFSTestUtil.getFirstBlock(fs, testPath);
       Block block = blk.getLocalBlock();
@@ -104,6 +113,16 @@ public class TestRBWBlockInvalidation {
           blockFile.delete());
       assertTrue("Could not delete the block meta file from the RBW folder",
           metaFile.delete());
+=======
+      ExtendedBlock blk = DFSTestUtil.getFirstBlock(fs, testPath);
+
+      // Delete partial block and its meta information from the RBW folder
+      // of first datanode.
+      MaterializedReplica replica = cluster.getMaterializedReplica(0, blk);
+
+      replica.deleteData();
+      replica.deleteMeta();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       out.close();
       

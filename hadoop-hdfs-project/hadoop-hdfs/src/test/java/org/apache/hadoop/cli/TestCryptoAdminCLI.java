@@ -149,18 +149,30 @@ public class TestCryptoAdminCLI extends CLITestHelperDFS {
     }
 
     @Override
+<<<<<<< HEAD
     public CommandExecutor getExecutor(String tag)
+=======
+    public CommandExecutor getExecutor(String tag, Configuration conf)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         throws IllegalArgumentException {
       if (getType() instanceof CLICommandCryptoAdmin) {
         return new CryptoAdminCmdExecutor(tag, new CryptoAdmin(conf));
       }
+<<<<<<< HEAD
       return super.getExecutor(tag);
+=======
+      return super.getExecutor(tag, conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   @Override
   protected Result execute(CLICommand cmd) throws Exception {
+<<<<<<< HEAD
     return cmd.getExecutor(namenode).executeCommand(cmd.getCmd());
+=======
+    return cmd.getExecutor(namenode, conf).executeCommand(cmd.getCmd());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test

@@ -49,9 +49,15 @@ public class StorageInfo {
   public long  cTime;           // creation time of the file system state
 
   protected final NodeType storageType; // Type of the node using this storage 
+<<<<<<< HEAD
 
   protected static final String STORAGE_FILE_VERSION    = "VERSION";
   
+=======
+  
+  protected static final String STORAGE_FILE_VERSION    = "VERSION";
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public StorageInfo(NodeType type) {
     this(0, 0, "", 0L, type);
   }
@@ -117,7 +123,36 @@ public class StorageInfo {
     return Joiner.on(":").join(
         layoutVersion, namespaceID, cTime, clusterID);
   }
+<<<<<<< HEAD
 
+=======
+  
+  public static int getNsIdFromColonSeparatedString(String in) {
+    return Integer.parseInt(in.split(":")[1]);
+  }
+  
+  public static String getClusterIdFromColonSeparatedString(String in) {
+    return in.split(":")[3];
+  }
+  
+  /**
+   * Read properties from the VERSION file in the given storage directory.
+   */
+  public void readProperties(StorageDirectory sd) throws IOException {
+    Properties props = readPropertiesFile(sd.getVersionFile());
+    setFieldsFromProperties(props, sd);
+  }
+  
+  /**
+   * Read properties from the the previous/VERSION file in the given storage directory.
+   */
+  public void readPreviousVersionProperties(StorageDirectory sd)
+      throws IOException {
+    Properties props = readPropertiesFile(sd.getPreviousVersionFile());
+    setFieldsFromProperties(props, sd);
+  }
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Get common storage fields.
    * Should be overloaded if additional fields need to be get.
@@ -133,7 +168,11 @@ public class StorageInfo {
     setClusterId(props, layoutVersion, sd);
     checkStorageType(props, sd);
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** Validate and set storage type from {@link Properties}*/
   protected void checkStorageType(Properties props, StorageDirectory sd)
       throws InconsistentFSStateException {
@@ -195,6 +234,18 @@ public class StorageInfo {
     this.layoutVersion = lv;
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * Return the type of node serviced by this storage.
+   *
+   * @return type of node serviced by this storage.
+   */
+  public NodeType getNodeType() {
+    return storageType;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public int getServiceLayoutVersion() {
     return storageType == NodeType.DATA_NODE ? HdfsServerConstants.DATANODE_LAYOUT_VERSION
         : HdfsServerConstants.NAMENODE_LAYOUT_VERSION;
@@ -204,7 +255,11 @@ public class StorageInfo {
     return storageType == NodeType.DATA_NODE? DataNodeLayoutVersion.FEATURES
         : NameNodeLayoutVersion.FEATURES;
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected static String getProperty(Properties props, StorageDirectory sd,
       String name) throws InconsistentFSStateException {
     String property = props.getProperty(name);
@@ -214,6 +269,7 @@ public class StorageInfo {
     }
     return property;
   }
+<<<<<<< HEAD
   
   public static int getNsIdFromColonSeparatedString(String in) {
     return Integer.parseInt(in.split(":")[1]);
@@ -239,6 +295,8 @@ public class StorageInfo {
     Properties props = readPropertiesFile(sd.getPreviousVersionFile());
     setFieldsFromProperties(props, sd);
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public static Properties readPropertiesFile(File from) throws IOException {
     RandomAccessFile file = new RandomAccessFile(from, "rws");

@@ -31,7 +31,12 @@ public class UserParam extends StringParam {
   /** Default parameter value. */
   public static final String DEFAULT = "";
 
+<<<<<<< HEAD
   private static Domain domain = new Domain(NAME, Pattern.compile(DFS_WEBHDFS_USER_PATTERN_DEFAULT));
+=======
+  private static Domain domain = new Domain(NAME,
+      Pattern.compile(DFS_WEBHDFS_USER_PATTERN_DEFAULT));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @VisibleForTesting
   public static Domain getUserPatternDomain() {
@@ -65,7 +70,12 @@ public class UserParam extends StringParam {
    * @param str a string representation of the parameter value.
    */
   public UserParam(final String str) {
+<<<<<<< HEAD
     super(domain, str == null || str.equals(DEFAULT)? null : validateLength(str));
+=======
+    super(domain, str == null ||
+        str.equals(DEFAULT) ? null : validateLength(str));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

@@ -297,7 +297,15 @@ public final class FSImageFormatProtobuf {
       blockIdManager.setGenerationStampV1(s.getGenstampV1());
       blockIdManager.setGenerationStampV2(s.getGenstampV2());
       blockIdManager.setGenerationStampV1Limit(s.getGenstampV1Limit());
+<<<<<<< HEAD
       blockIdManager.setLastAllocatedBlockId(s.getLastAllocatedBlockId());
+=======
+      blockIdManager.setLastAllocatedContiguousBlockId(s.getLastAllocatedBlockId());
+      if (s.hasLastAllocatedStripedBlockId()) {
+        blockIdManager.setLastAllocatedStripedBlockId(
+            s.getLastAllocatedStripedBlockId());
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       imgTxId = s.getTransactionId();
       if (s.hasRollingUpgradeStartTime()
           && fsn.getFSImage().hasRollbackFSImage()) {
@@ -549,7 +557,12 @@ public final class FSImageFormatProtobuf {
           .setGenstampV1(blockIdManager.getGenerationStampV1())
           .setGenstampV1Limit(blockIdManager.getGenerationStampV1Limit())
           .setGenstampV2(blockIdManager.getGenerationStampV2())
+<<<<<<< HEAD
           .setLastAllocatedBlockId(blockIdManager.getLastAllocatedBlockId())
+=======
+          .setLastAllocatedBlockId(blockIdManager.getLastAllocatedContiguousBlockId())
+          .setLastAllocatedStripedBlockId(blockIdManager.getLastAllocatedStripedBlockId())
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           .setTransactionId(context.getTxId());
 
       // We use the non-locked version of getNamespaceInfo here since

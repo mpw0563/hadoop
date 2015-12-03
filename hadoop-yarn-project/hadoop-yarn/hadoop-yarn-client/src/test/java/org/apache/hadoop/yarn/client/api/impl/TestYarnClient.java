@@ -77,6 +77,10 @@ import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateResponse;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.SignalContainerRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptReport;
@@ -97,6 +101,10 @@ import org.apache.hadoop.yarn.api.records.ReservationRequest;
 import org.apache.hadoop.yarn.api.records.ReservationRequestInterpreter;
 import org.apache.hadoop.yarn.api.records.ReservationRequests;
 import org.apache.hadoop.yarn.api.records.Resource;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.SignalContainerCommand;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.YarnApplicationAttemptState;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.AHSClient;
@@ -125,6 +133,10 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
+<<<<<<< HEAD
+=======
+import org.mockito.ArgumentCaptor;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class TestYarnClient {
 
@@ -1299,4 +1311,29 @@ public class TestYarnClient {
       }
     }
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testSignalContainer() throws Exception {
+    Configuration conf = new Configuration();
+    @SuppressWarnings("resource")
+    final YarnClient client = new MockYarnClient();
+    client.init(conf);
+    client.start();
+    ApplicationId applicationId = ApplicationId.newInstance(1234, 5);
+    ApplicationAttemptId appAttemptId = ApplicationAttemptId.newInstance(
+        applicationId, 1);
+    ContainerId containerId = ContainerId.newContainerId(appAttemptId, 1);
+    SignalContainerCommand command = SignalContainerCommand.OUTPUT_THREAD_DUMP;
+    client.signalContainer(containerId, command);
+    final ArgumentCaptor<SignalContainerRequest> signalReqCaptor =
+        ArgumentCaptor.forClass(SignalContainerRequest.class);
+    verify(((MockYarnClient) client).getRMClient())
+        .signalContainer(signalReqCaptor.capture());
+    SignalContainerRequest request = signalReqCaptor.getValue();
+    Assert.assertEquals(containerId, request.getContainerId());
+    Assert.assertEquals(command, request.getCommand());
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

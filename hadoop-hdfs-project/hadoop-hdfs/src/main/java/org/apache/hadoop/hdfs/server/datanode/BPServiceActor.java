@@ -44,6 +44,12 @@ import org.apache.hadoop.hdfs.protocol.RollingUpgradeStatus;
 import org.apache.hadoop.hdfs.protocol.UnregisteredNodeException;
 import org.apache.hadoop.hdfs.protocolPB.DatanodeProtocolClientSideTranslatorPB;
 import org.apache.hadoop.hdfs.server.common.IncorrectVersionException;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.datanode.dataset.DatasetSpi;
+import org.apache.hadoop.hdfs.server.datanode.dataset.VolumeSpi;
+import org.apache.hadoop.hdfs.server.datanode.metrics.FSDatasetMBean;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem;
 import org.apache.hadoop.hdfs.server.protocol.BlockReportContext;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeCommand;
@@ -111,6 +117,10 @@ class BPServiceActor implements Runnable {
   private volatile boolean sendImmediateIBR = false;
   private volatile boolean shouldServiceRun = true;
   private final DataNode dn;
+<<<<<<< HEAD
+=======
+  private DatasetSpi<? extends VolumeSpi> dataset = null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final DNConf dnConf;
   private long prevBlockReportId;
 
@@ -221,8 +231,13 @@ class BPServiceActor implements Runnable {
     // Verify that this matches the other NN in this HA pair.
     // This also initializes our block pool in the DN if we are
     // the first NN connection for this BP.
+<<<<<<< HEAD
     bpos.verifyAndSetNamespaceInfo(nsInfo);
     
+=======
+    dataset = bpos.verifyAndSetNamespaceInfo(nsInfo);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Second phase of the handshake with the NN.
     register(nsInfo);
   }
@@ -331,7 +346,11 @@ class BPServiceActor implements Runnable {
       String storageUuid, boolean now) {
     synchronized (pendingIncrementalBRperStorage) {
       addPendingReplicationBlockInfo(
+<<<<<<< HEAD
           bInfo, dn.getFSDataset().getStorage(storageUuid));
+=======
+          bInfo, dataset.getStorage(storageUuid));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       sendImmediateIBR = true;
       // If now is true, the report is sent right away.
       // Otherwise, it will be sent out in the next heartbeat.
@@ -345,7 +364,11 @@ class BPServiceActor implements Runnable {
       ReceivedDeletedBlockInfo bInfo, String storageUuid) {
     synchronized (pendingIncrementalBRperStorage) {
       addPendingReplicationBlockInfo(
+<<<<<<< HEAD
           bInfo, dn.getFSDataset().getStorage(storageUuid));
+=======
+          bInfo, dataset.getStorage(storageUuid));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -432,7 +455,11 @@ class BPServiceActor implements Runnable {
 
     long brCreateStartTime = monotonicNow();
     Map<DatanodeStorage, BlockListAsLongs> perVolumeBlockLists =
+<<<<<<< HEAD
         dn.getFSDataset().getBlockReports(bpos.getBlockPoolId());
+=======
+        dataset.getBlockReports(bpos.getBlockPoolId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Convert the reports to the format expected by the NN.
     int i = 0;
@@ -505,8 +532,12 @@ class BPServiceActor implements Runnable {
   }
 
   DatanodeCommand cacheReport() throws IOException {
+<<<<<<< HEAD
     // If caching is disabled, do not send a cache report
     if (dn.getFSDataset().getCacheCapacity() == 0) {
+=======
+    if (!dataset.isCachingSupported()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return null;
     }
     // send cache report if timer has expired.
@@ -519,7 +550,11 @@ class BPServiceActor implements Runnable {
       lastCacheReport = startTime;
 
       String bpid = bpos.getBlockPoolId();
+<<<<<<< HEAD
       List<Long> blockIds = dn.getFSDataset().getCacheReport(bpid);
+=======
+      List<Long> blockIds = dataset.getCacheReport(bpid);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       long createTime = monotonicNow();
 
       cmd = bpNamenode.cacheReport(bpRegistration, bpid, blockIds);
@@ -538,13 +573,20 @@ class BPServiceActor implements Runnable {
   
   HeartbeatResponse sendHeartBeat(boolean requestBlockReportLease)
       throws IOException {
+<<<<<<< HEAD
     StorageReport[] reports =
         dn.getFSDataset().getStorageReports(bpos.getBlockPoolId());
+=======
+    scheduler.scheduleNextHeartbeat();
+    StorageReport[] reports =
+        dataset.getStorageReports(bpos.getBlockPoolId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (LOG.isDebugEnabled()) {
       LOG.debug("Sending heartbeat with " + reports.length +
                 " storage reports from service actor: " + this);
     }
     
+<<<<<<< HEAD
     VolumeFailureSummary volumeFailureSummary = dn.getFSDataset()
         .getVolumeFailureSummary();
     int numFailedVolumes = volumeFailureSummary != null ?
@@ -553,6 +595,20 @@ class BPServiceActor implements Runnable {
         reports,
         dn.getFSDataset().getCacheCapacity(),
         dn.getFSDataset().getCacheUsed(),
+=======
+    VolumeFailureSummary volumeFailureSummary =
+        dataset.getVolumeFailureSummary();
+    int numFailedVolumes = volumeFailureSummary != null ?
+        volumeFailureSummary.getFailedStorageLocations().length : 0;
+
+    FSDatasetMBean mbean = (dataset instanceof FSDatasetMBean) ?
+        ((FSDatasetMBean) dataset) : null;
+
+    return bpNamenode.sendHeartbeat(bpRegistration,
+        reports,
+        mbean != null ? mbean.getCacheCapacity() : 0,
+        mbean != null ? mbean.getCacheUsed() : 0,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         dn.getXmitsInProgress(),
         dn.getXceiverCount(),
         numFailedVolumes,
@@ -651,7 +707,10 @@ class BPServiceActor implements Runnable {
           //
           boolean requestBlockReportLease = (fullBlockReportLeaseId == 0) &&
                   scheduler.isBlockReportDue(startTime);
+<<<<<<< HEAD
           scheduler.scheduleNextHeartbeat();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           if (!dn.areHeartbeatsDisabledForTests()) {
             resp = sendHeartBeat(requestBlockReportLease);
             assert resp != null;
@@ -767,15 +826,25 @@ class BPServiceActor implements Runnable {
   void register(NamespaceInfo nsInfo) throws IOException {
     // The handshake() phase loaded the block pool storage
     // off disk - so update the bpRegistration object from that info
+<<<<<<< HEAD
     bpRegistration = bpos.createRegistration();
+=======
+    DatanodeRegistration newBpRegistration = bpos.createRegistration();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     LOG.info(this + " beginning handshake with NN");
 
     while (shouldRun()) {
       try {
         // Use returned registration from namenode with updated fields
+<<<<<<< HEAD
         bpRegistration = bpNamenode.registerDatanode(bpRegistration);
         bpRegistration.setNamespaceInfo(nsInfo);
+=======
+        newBpRegistration = bpNamenode.registerDatanode(newBpRegistration);
+        newBpRegistration.setNamespaceInfo(nsInfo);
+        bpRegistration = newBpRegistration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         break;
       } catch(EOFException e) {  // namenode might have just restarted
         LOG.info("Problem connecting to server: " + nnAddr + " :"
@@ -1063,7 +1132,11 @@ class BPServiceActor implements Runnable {
 
     long scheduleNextHeartbeat() {
       // Numerical overflow is possible here and is okay.
+<<<<<<< HEAD
       nextHeartbeatTime += heartbeatIntervalMs;
+=======
+      nextHeartbeatTime = monotonicNow() + heartbeatIntervalMs;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return nextHeartbeatTime;
     }
 

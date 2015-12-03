@@ -54,12 +54,15 @@ public class FsDatasetTestUtil {
     return FsDatasetUtil.getMetaFile(getBlockFile(fsd, bpid, b), b
         .getGenerationStamp());
   }
+<<<<<<< HEAD
   
   public static boolean unlinkBlock(FsDatasetSpi<?> fsd,
       ExtendedBlock block, int numLinks) throws IOException {
     final ReplicaInfo info = ((FsDatasetImpl)fsd).getReplicaInfo(block);
     return info.unlinkBlock(numLinks);
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public static ReplicaInfo fetchReplicaInfo (final FsDatasetSpi<?> fsd,
       final String bpid, final long blockId) {

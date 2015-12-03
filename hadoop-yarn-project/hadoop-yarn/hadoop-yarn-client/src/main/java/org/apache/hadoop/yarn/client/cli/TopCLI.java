@@ -875,8 +875,13 @@ public class TopCLI extends YarnCLI {
       System.out.println("Delay: " + (refreshPeriod / 1000)
           + " secs; Secure mode: " + UserGroupInformation.isSecurityEnabled());
       System.out.println("");
+<<<<<<< HEAD
       System.out.println("  s + Enter : Select sort field");
       System.out.println("  f + Enter : Select fields to display");
+=======
+      System.out.println("  s + Enter: Select sort field");
+      System.out.println("  f + Enter: Select fields to display");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       System.out.println("  R + Enter: Reverse current sort order");
       System.out.println("  h + Enter: Display this screen");
       System.out.println("  q + Enter: Quit");

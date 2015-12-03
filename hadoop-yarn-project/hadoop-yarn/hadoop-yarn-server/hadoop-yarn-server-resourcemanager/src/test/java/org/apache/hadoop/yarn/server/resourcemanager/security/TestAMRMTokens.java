@@ -171,7 +171,12 @@ public class TestAMRMTokens {
       ContainerStatus containerStatus =
           BuilderUtils.newContainerStatus(attempt.getMasterContainer().getId(),
               ContainerState.COMPLETE,
+<<<<<<< HEAD
               "AM Container Finished", 0);
+=======
+              "AM Container Finished", 0,
+              attempt.getMasterContainer().getResource());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       rm.getRMContext()
           .getDispatcher()
           .getEventHandler()

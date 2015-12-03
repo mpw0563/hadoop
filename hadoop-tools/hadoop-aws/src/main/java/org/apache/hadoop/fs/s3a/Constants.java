@@ -45,7 +45,11 @@ public class Constants {
 
   // number of times we should retry errors
   public static final String MAX_ERROR_RETRIES = "fs.s3a.attempts.maximum";
+<<<<<<< HEAD
   public static final int DEFAULT_MAX_ERROR_RETRIES = 10;
+=======
+  public static final int DEFAULT_MAX_ERROR_RETRIES = 20;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // seconds until we give up trying to establish a connection to s3
   public static final String ESTABLISH_TIMEOUT = "fs.s3a.connection.establish.timeout";
@@ -53,7 +57,11 @@ public class Constants {
   
   // seconds until we give up on a connection to s3
   public static final String SOCKET_TIMEOUT = "fs.s3a.connection.timeout";
+<<<<<<< HEAD
   public static final int DEFAULT_SOCKET_TIMEOUT = 50000;
+=======
+  public static final int DEFAULT_SOCKET_TIMEOUT = 200000;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // number of records to get while paging through a directory listing
   public static final String MAX_PAGING_KEYS = "fs.s3a.paging.maximum";
@@ -61,6 +69,7 @@ public class Constants {
 
   // the maximum number of threads to allow in the pool used by TransferManager
   public static final String MAX_THREADS = "fs.s3a.threads.max";
+<<<<<<< HEAD
   public static final int DEFAULT_MAX_THREADS = 256;
 
   // the number of threads to keep in the pool used by TransferManager
@@ -75,6 +84,17 @@ public class Constants {
   // the maximum number of tasks that the LinkedBlockingQueue can hold
   public static final String MAX_TOTAL_TASKS = "fs.s3a.max.total.tasks";
   public static final int DEFAULT_MAX_TOTAL_TASKS = 1000;
+=======
+  public static final int DEFAULT_MAX_THREADS = 10;
+
+  // the time an idle thread waits before terminating
+  public static final String KEEPALIVE_TIME = "fs.s3a.threads.keepalivetime";
+  public static final int DEFAULT_KEEPALIVE_TIME = 60;
+
+  // the maximum number of tasks cached if all threads are already uploading
+  public static final String MAX_TOTAL_TASKS = "fs.s3a.max.total.tasks";
+  public static final int DEFAULT_MAX_TOTAL_TASKS = 5;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // size of each of or multipart pieces in bytes
   public static final String MULTIPART_SIZE = "fs.s3a.multipart.size";

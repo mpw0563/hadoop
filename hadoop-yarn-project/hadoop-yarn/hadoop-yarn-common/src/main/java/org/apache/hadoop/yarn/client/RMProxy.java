@@ -232,7 +232,12 @@ public class RMProxy<T> {
 
     RetryPolicy retryPolicy = null;
     if (waitForEver) {
+<<<<<<< HEAD
       retryPolicy = RetryPolicies.RETRY_FOREVER;
+=======
+      retryPolicy = RetryPolicies.retryForeverWithFixedSleep(
+          rmConnectionRetryIntervalMS, TimeUnit.MILLISECONDS);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else {
       retryPolicy =
           RetryPolicies.retryUpToMaximumTimeWithFixedSleep(rmConnectWaitMS,
@@ -249,8 +254,15 @@ public class RMProxy<T> {
     exceptionToPolicyMap.put(ConnectTimeoutException.class, retryPolicy);
     exceptionToPolicyMap.put(RetriableException.class, retryPolicy);
     exceptionToPolicyMap.put(SocketException.class, retryPolicy);
+<<<<<<< HEAD
 
     return RetryPolicies.retryByException(
+=======
+    // YARN-4288: local IOException is also possible.
+    exceptionToPolicyMap.put(IOException.class, retryPolicy);
+    // Not retry on remote IO exception.
+    return RetryPolicies.retryOtherThanRemoteException(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         RetryPolicies.TRY_ONCE_THEN_FAIL, exceptionToPolicyMap);
   }
 }

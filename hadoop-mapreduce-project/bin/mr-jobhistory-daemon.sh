@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 
 #
 # Environment Variables
@@ -145,3 +146,37 @@ case $startStop in
     ;;
 
 esac
+=======
+function hadoop_usage
+{
+  echo "Usage: mr-jobhistory-daemon.sh [--config confdir] (start|stop|status) <hadoop-command> <args...>"
+}
+
+# let's locate libexec...
+if [[ -n "${HADOOP_PREFIX}" ]]; then
+  HADOOP_DEFAULT_LIBEXEC_DIR="${HADOOP_PREFIX}/libexec"
+else
+  this="${BASH_SOURCE-$0}"
+  bin=$(cd -P -- "$(dirname -- "${this}")" >/dev/null && pwd -P)
+  HADOOP_DEFAULT_LIBEXEC_DIR="${bin}/../libexec"
+fi
+
+HADOOP_LIBEXEC_DIR="${HADOOP_LIBEXEC_DIR:-$HADOOP_DEFAULT_LIBEXEC_DIR}"
+# shellcheck disable=SC2034
+HADOOP_NEW_CONFIG=true
+if [[ -f "${HADOOP_LIBEXEC_DIR}/yarn-config.sh" ]]; then
+  . "${HADOOP_LIBEXEC_DIR}/yarn-config.sh"
+else
+  echo "ERROR: Cannot execute ${HADOOP_LIBEXEC_DIR}/yarn-config.sh." 2>&1
+  exit 1
+fi
+
+daemonmode=$1
+shift
+
+hadoop_error "WARNING: Use of this script to ${daemonmode} the MR JobHistory daemon is deprecated."
+hadoop_error "WARNING: Attempting to execute replacement \"mapred --daemon ${daemonmode}\" instead."
+
+exec "${HADOOP_MAPRED_HOME}/bin/mapred" \
+--config "${HADOOP_CONF_DIR}" --daemon "${daemonmode}" "$@"
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

@@ -79,6 +79,10 @@ import org.apache.hadoop.yarn.state.StateMachineFactory;
 import org.apache.hadoop.yarn.util.Clock;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.SystemClock;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.util.resource.Resources;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class ContainerImpl implements Container {
 
@@ -91,7 +95,11 @@ public class ContainerImpl implements Container {
   private final ContainerLaunchContext launchContext;
   private final ContainerTokenIdentifier containerTokenIdentifier;
   private final ContainerId containerId;
+<<<<<<< HEAD
   private final Resource resource;
+=======
+  private volatile Resource resource;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final String user;
   private int exitCode = ContainerExitStatus.INVALID;
   private final StringBuilder diagnostics;
@@ -153,13 +161,26 @@ public class ContainerImpl implements Container {
       Credentials creds, NodeManagerMetrics metrics,
       ContainerTokenIdentifier containerTokenIdentifier,
       RecoveredContainerStatus recoveredStatus, int exitCode,
+<<<<<<< HEAD
       String diagnostics, boolean wasKilled) {
+=======
+      String diagnostics, boolean wasKilled, Resource recoveredCapability) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this(conf, dispatcher, stateStore, launchContext, creds, metrics,
         containerTokenIdentifier);
     this.recoveredStatus = recoveredStatus;
     this.exitCode = exitCode;
     this.recoveredAsKilled = wasKilled;
     this.diagnostics.append(diagnostics);
+<<<<<<< HEAD
+=======
+    if (recoveredCapability != null
+        && !this.resource.equals(recoveredCapability)) {
+      // resource capability had been updated before NM was down
+      this.resource = Resource.newInstance(recoveredCapability.getMemory(),
+          recoveredCapability.getVirtualCores());
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static final ContainerDiagnosticsUpdateTransition UPDATE_DIAGNOSTICS_TRANSITION =
@@ -249,7 +270,11 @@ public class ContainerImpl implements Container {
         ContainerEventType.KILL_CONTAINER, new KillTransition())
     .addTransition(ContainerState.RUNNING, ContainerState.EXITED_WITH_FAILURE,
         ContainerEventType.CONTAINER_KILLED_ON_REQUEST,
+<<<<<<< HEAD
         new KilledExternallyTransition()) 
+=======
+        new KilledExternallyTransition())
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // From CONTAINER_EXITED_WITH_SUCCESS State
     .addTransition(ContainerState.EXITED_WITH_SUCCESS, ContainerState.DONE,
@@ -424,7 +449,11 @@ public class ContainerImpl implements Container {
     this.readLock.lock();
     try {
       return BuilderUtils.newContainerStatus(this.containerId,
+<<<<<<< HEAD
         getCurrentState(), diagnostics.toString(), exitCode);
+=======
+        getCurrentState(), diagnostics.toString(), exitCode, getResource());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       this.readLock.unlock();
     }
@@ -451,7 +480,18 @@ public class ContainerImpl implements Container {
 
   @Override
   public Resource getResource() {
+<<<<<<< HEAD
     return this.resource;
+=======
+    return Resources.clone(this.resource);
+  }
+
+  @Override
+  public void setResource(Resource targetResource) {
+    Resource currentResource = getResource();
+    this.resource = Resources.clone(targetResource);
+    this.metrics.changeContainer(currentResource, targetResource);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override

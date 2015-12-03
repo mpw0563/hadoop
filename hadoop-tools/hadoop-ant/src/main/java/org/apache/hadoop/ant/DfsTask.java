@@ -32,7 +32,10 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.hadoop.classification.InterfaceAudience;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.HdfsConfiguration;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * {@link org.apache.hadoop.fs.FsShell FsShell} wrapper for ant Task.
@@ -40,6 +43,15 @@ import org.apache.hadoop.hdfs.HdfsConfiguration;
 @InterfaceAudience.Private
 public class DfsTask extends Task {
 
+<<<<<<< HEAD
+=======
+  static {
+    // adds the default resources
+    Configuration.addDefaultResource("hdfs-default.xml");
+    Configuration.addDefaultResource("hdfs-site.xml");
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Default sink for {@link java.lang.System#out}
    * and {@link java.lang.System#err}.
@@ -187,7 +199,11 @@ public class DfsTask extends Task {
     try {
       pushContext();
 
+<<<<<<< HEAD
       Configuration conf = new HdfsConfiguration();
+=======
+      Configuration conf = new Configuration();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       conf.setClassLoader(confloader);
       exit_code = ToolRunner.run(conf, shell,
           argv.toArray(new String[argv.size()]));

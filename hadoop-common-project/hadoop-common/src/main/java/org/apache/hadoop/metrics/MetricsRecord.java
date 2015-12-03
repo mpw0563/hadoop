@@ -67,7 +67,14 @@ import org.apache.hadoop.classification.InterfaceStability;
  * it is OK for different threads to call <code>update()</code> on MetricsRecord instances 
  * with the same set of tag names and tag values.  Different threads should 
  * <b>not</b> use the same MetricsRecord instance at the same time.
+<<<<<<< HEAD
  */
+=======
+ *
+ * @deprecated Use {@link org.apache.hadoop.metrics2.MetricsRecord} instead.
+ */
+@Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public interface MetricsRecord {

@@ -51,7 +51,10 @@ import org.junit.rules.ExpectedException;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+<<<<<<< HEAD
 import com.google.common.collect.TreeMultiset;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class TestFileJournalManager {
   static final Log LOG = LogFactory.getLog(TestFileJournalManager.class);
@@ -116,7 +119,11 @@ public class TestFileJournalManager {
     }
     return numTransactions;
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** 
    * Test the normal operation of loading transactions from
    * file journal manager. 3 edits directories are setup without any

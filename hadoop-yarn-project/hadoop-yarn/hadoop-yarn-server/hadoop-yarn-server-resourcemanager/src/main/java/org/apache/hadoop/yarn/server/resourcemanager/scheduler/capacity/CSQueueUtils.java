@@ -138,11 +138,22 @@ class CSQueueUtils {
             csConf.getNonLabeledQueueCapacity(queuePath) / 100);
         queueCapacities.setMaximumCapacity(CommonNodeLabelsManager.NO_LABEL,
             csConf.getNonLabeledQueueMaximumCapacity(queuePath) / 100);
+<<<<<<< HEAD
+=======
+        queueCapacities.setMaxAMResourcePercentage(
+            CommonNodeLabelsManager.NO_LABEL,
+            csConf.getMaximumAMResourcePercentPerPartition(queuePath, label));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else {
         queueCapacities.setCapacity(label,
             csConf.getLabeledQueueCapacity(queuePath, label) / 100);
         queueCapacities.setMaximumCapacity(label,
             csConf.getLabeledQueueMaximumCapacity(queuePath, label) / 100);
+<<<<<<< HEAD
+=======
+        queueCapacities.setMaxAMResourcePercentage(label,
+            csConf.getMaximumAMResourcePercentPerPartition(queuePath, label));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
   }

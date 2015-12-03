@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.fs;
 
+<<<<<<< HEAD
 import junit.framework.AssertionFailedError;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.tracing.SetSpanReceiver;
@@ -24,6 +25,18 @@ import org.apache.hadoop.tracing.SpanReceiverHost;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.htrace.SamplerBuilder;
 import org.apache.htrace.impl.AlwaysSampler;
+=======
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import junit.framework.AssertionFailedError;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.tracing.SetSpanReceiver;
+import org.apache.hadoop.util.ToolRunner;
+import org.apache.htrace.core.AlwaysSampler;
+import org.apache.htrace.core.Tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,10 +62,17 @@ public class TestFsShell {
   @Test
   public void testTracing() throws Throwable {
     Configuration conf = new Configuration();
+<<<<<<< HEAD
     String prefix = FsShell.SEHLL_HTRACE_PREFIX;
     conf.set(prefix + SpanReceiverHost.SPAN_RECEIVERS_CONF_SUFFIX,
         SetSpanReceiver.class.getName());
     conf.set(prefix + SamplerBuilder.SAMPLER_CONF_KEY,
+=======
+    String prefix = "fs.shell.htrace.";
+    conf.set(prefix + Tracer.SPAN_RECEIVER_CLASSES_KEY,
+        SetSpanReceiver.class.getName());
+    conf.set(prefix + Tracer.SAMPLER_CLASSES_KEY,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         AlwaysSampler.class.getName());
     conf.setQuietMode(false);
     FsShell shell = new FsShell(conf);
@@ -67,4 +87,36 @@ public class TestFsShell {
         SetSpanReceiver.getMap()
             .get("help").get(0).getKVAnnotations().get("args"));
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testDFSWithInvalidCommmand() throws Throwable {
+    Configuration conf = new Configuration();
+    FsShell shell = new FsShell(conf);
+    String[] args = new String[1];
+    args[0] = "dfs -mkdirs";
+    final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    final PrintStream out = new PrintStream(bytes);
+    final PrintStream oldErr = System.err;
+    try {
+      System.setErr(out);
+      ToolRunner.run(shell, args);
+      String errorValue=new String(bytes.toString());
+      Assert
+      .assertTrue(
+          "FSShell dfs command did not print the error " +
+          "message when invalid command is passed",
+          errorValue.contains("-mkdirs: Unknown command"));
+      Assert
+          .assertTrue(
+              "FSShell dfs command did not print help " +
+              "message when invalid command is passed",
+          errorValue.contains("Usage: hadoop fs [generic options]"));
+    } finally {
+      IOUtils.closeStream(out);
+      System.setErr(oldErr);
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

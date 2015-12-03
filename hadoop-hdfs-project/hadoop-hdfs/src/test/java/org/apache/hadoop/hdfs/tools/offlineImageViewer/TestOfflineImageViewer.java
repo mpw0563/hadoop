@@ -67,6 +67,10 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.net.NetUtils;
 import org.apache.hadoop.security.token.Token;
 import org.junit.AfterClass;
+<<<<<<< HEAD
+=======
+import org.junit.Assert;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -196,6 +200,7 @@ public class TestOfflineImageViewer {
     copyPartOfFile(originalFsimage, truncatedFile);
     new FileDistributionCalculator(new Configuration(), 0, 0, output)
         .visit(new RandomAccessFile(truncatedFile, "r"));
+<<<<<<< HEAD
   }
 
   private void copyPartOfFile(File src, File dest) throws IOException {
@@ -366,6 +371,211 @@ public class TestOfflineImageViewer {
         fileNames.add(fields[0]);
       }
     }
+=======
+  }
+
+  private void copyPartOfFile(File src, File dest) throws IOException {
+    FileInputStream in = null;
+    FileOutputStream out = null;
+    final int MAX_BYTES = 700;
+    try {
+      in = new FileInputStream(src);
+      out = new FileOutputStream(dest);
+      in.getChannel().transferTo(0, MAX_BYTES, out.getChannel());
+    } finally {
+      IOUtils.cleanup(null, in);
+      IOUtils.cleanup(null, out);
+    }
+  }
+
+  @Test
+  public void testFileDistributionCalculator() throws IOException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    PrintStream o = new PrintStream(output);
+    new FileDistributionCalculator(new Configuration(), 0, 0, o)
+        .visit(new RandomAccessFile(originalFsimage, "r"));
+    o.close();
+
+    String outputString = output.toString();
+    Pattern p = Pattern.compile("totalFiles = (\\d+)\n");
+    Matcher matcher = p.matcher(outputString);
+    assertTrue(matcher.find() && matcher.groupCount() == 1);
+    int totalFiles = Integer.parseInt(matcher.group(1));
+    assertEquals(NUM_DIRS * FILES_PER_DIR, totalFiles);
+
+    p = Pattern.compile("totalDirectories = (\\d+)\n");
+    matcher = p.matcher(outputString);
+    assertTrue(matcher.find() && matcher.groupCount() == 1);
+    int totalDirs = Integer.parseInt(matcher.group(1));
+    // totalDirs includes root directory, empty directory, and xattr directory
+    assertEquals(NUM_DIRS + 4, totalDirs);
+
+    FileStatus maxFile = Collections.max(writtenFiles.values(),
+        new Comparator<FileStatus>() {
+      @Override
+      public int compare(FileStatus first, FileStatus second) {
+        return first.getLen() < second.getLen() ? -1 :
+            ((first.getLen() == second.getLen()) ? 0 : 1);
+      }
+    });
+    p = Pattern.compile("maxFileSize = (\\d+)\n");
+    matcher = p.matcher(output.toString("UTF-8"));
+    assertTrue(matcher.find() && matcher.groupCount() == 1);
+    assertEquals(maxFile.getLen(), Long.parseLong(matcher.group(1)));
+  }
+
+  @Test
+  public void testFileDistributionCalculatorWithOptions() throws Exception {
+    int status = OfflineImageViewerPB.run(new String[] {"-i",
+        originalFsimage.getAbsolutePath(), "-o", "-", "-p", "FileDistribution",
+        "-maxSize", "512", "-step", "8"});
+    assertEquals(0, status);
+  }
+
+  @Test
+  public void testPBImageXmlWriter() throws IOException, SAXException,
+      ParserConfigurationException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    PrintStream o = new PrintStream(output);
+    PBImageXmlWriter v = new PBImageXmlWriter(new Configuration(), o);
+    v.visit(new RandomAccessFile(originalFsimage, "r"));
+    SAXParserFactory spf = SAXParserFactory.newInstance();
+    SAXParser parser = spf.newSAXParser();
+    final String xml = output.toString();
+    parser.parse(new InputSource(new StringReader(xml)), new DefaultHandler());
+  }
+
+  @Test
+  public void testWebImageViewer() throws Exception {
+    WebImageViewer viewer = new WebImageViewer(
+        NetUtils.createSocketAddr("localhost:0"));
+    try {
+      viewer.initServer(originalFsimage.getAbsolutePath());
+      int port = viewer.getPort();
+
+      // create a WebHdfsFileSystem instance
+      URI uri = new URI("webhdfs://localhost:" + String.valueOf(port));
+      Configuration conf = new Configuration();
+      WebHdfsFileSystem webhdfs = (WebHdfsFileSystem)FileSystem.get(uri, conf);
+
+      // verify the number of directories
+      FileStatus[] statuses = webhdfs.listStatus(new Path("/"));
+      assertEquals(NUM_DIRS + 3, statuses.length); // contains empty and xattr directory
+
+      // verify the number of files in the directory
+      statuses = webhdfs.listStatus(new Path("/dir0"));
+      assertEquals(FILES_PER_DIR, statuses.length);
+
+      // compare a file
+      FileStatus status = webhdfs.listStatus(new Path("/dir0/file0"))[0];
+      FileStatus expected = writtenFiles.get("/dir0/file0");
+      compareFile(expected, status);
+
+      // LISTSTATUS operation to an empty directory
+      statuses = webhdfs.listStatus(new Path("/emptydir"));
+      assertEquals(0, statuses.length);
+
+      // LISTSTATUS operation to a invalid path
+      URL url = new URL("http://localhost:" + port +
+                    "/webhdfs/v1/invalid/?op=LISTSTATUS");
+      verifyHttpResponseCode(HttpURLConnection.HTTP_NOT_FOUND, url);
+
+      // LISTSTATUS operation to a invalid prefix
+      url = new URL("http://localhost:" + port + "/foo");
+      verifyHttpResponseCode(HttpURLConnection.HTTP_NOT_FOUND, url);
+
+      // GETFILESTATUS operation
+      status = webhdfs.getFileStatus(new Path("/dir0/file0"));
+      compareFile(expected, status);
+
+      // GETFILESTATUS operation to a invalid path
+      url = new URL("http://localhost:" + port +
+                    "/webhdfs/v1/invalid/?op=GETFILESTATUS");
+      verifyHttpResponseCode(HttpURLConnection.HTTP_NOT_FOUND, url);
+
+      // invalid operation
+      url = new URL("http://localhost:" + port + "/webhdfs/v1/?op=INVALID");
+      verifyHttpResponseCode(HttpURLConnection.HTTP_BAD_REQUEST, url);
+
+      // invalid method
+      url = new URL("http://localhost:" + port + "/webhdfs/v1/?op=LISTSTATUS");
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      connection.setRequestMethod("POST");
+      connection.connect();
+      assertEquals(HttpURLConnection.HTTP_BAD_METHOD,
+          connection.getResponseCode());
+    } finally {
+      // shutdown the viewer
+      viewer.close();
+    }
+  }
+
+  @Test
+  public void testPBDelimitedWriter() throws IOException, InterruptedException {
+    testPBDelimitedWriter("");  // Test in memory db.
+    testPBDelimitedWriter(
+        new FileSystemTestHelper().getTestRootDir() + "/delimited.db");
+  }
+
+  @Test
+  public void testInvalidProcessorOption() throws Exception {
+    int status =
+        OfflineImageViewerPB.run(new String[] { "-i",
+            originalFsimage.getAbsolutePath(), "-o", "-", "-p", "invalid" });
+    assertTrue("Exit code returned for invalid processor option is incorrect",
+        status != 0);
+  }
+
+  @Test
+  public void testOfflineImageViewerHelpMessage() throws Throwable {
+    final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    final PrintStream out = new PrintStream(bytes);
+    final PrintStream oldOut = System.out;
+    try {
+      System.setOut(out);
+      int status = OfflineImageViewerPB.run(new String[] { "-h" });
+      assertTrue("Exit code returned for help option is incorrect", status == 0);
+      Assert.assertFalse(
+          "Invalid Command error displayed when help option is passed.", bytes
+              .toString().contains("Error parsing command-line options"));
+      status =
+          OfflineImageViewerPB.run(new String[] { "-h", "-i",
+              originalFsimage.getAbsolutePath(), "-o", "-", "-p",
+              "FileDistribution", "-maxSize", "512", "-step", "8" });
+      Assert.assertTrue(
+          "Exit code returned for help with other option is incorrect",
+          status == -1);
+    } finally {
+      System.setOut(oldOut);
+      IOUtils.closeStream(out);
+    }
+  }
+  private void testPBDelimitedWriter(String db)
+      throws IOException, InterruptedException {
+    final String DELIMITER = "\t";
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+    try (PrintStream o = new PrintStream(output)) {
+      PBImageDelimitedTextWriter v =
+          new PBImageDelimitedTextWriter(o, DELIMITER, db);
+      v.visit(new RandomAccessFile(originalFsimage, "r"));
+    }
+
+    Set<String> fileNames = new HashSet<>();
+    try (
+        ByteArrayInputStream input =
+            new ByteArrayInputStream(output.toByteArray());
+        BufferedReader reader =
+            new BufferedReader(new InputStreamReader(input))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+        String[] fields = line.split(DELIMITER);
+        assertEquals(12, fields.length);
+        fileNames.add(fields[0]);
+      }
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // writtenFiles does not contain root directory and "invalid XML char" dir.
     for (Iterator<String> it = fileNames.iterator(); it.hasNext(); ) {

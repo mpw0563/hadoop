@@ -18,7 +18,11 @@
 
 package org.apache.hadoop.util;
 
+<<<<<<< HEAD
 import org.apache.hadoop.util.NativeCodeLoader;
+=======
+import org.apache.hadoop.io.erasurecode.ErasureCodeNative;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.crypto.OpensslCipher;
 import org.apache.hadoop.io.compress.Lz4Codec;
@@ -27,10 +31,23 @@ import org.apache.hadoop.io.compress.bzip2.Bzip2Factory;
 import org.apache.hadoop.io.compress.zlib.ZlibFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
+<<<<<<< HEAD
+=======
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @InterfaceAudience.Private
 @InterfaceStability.Unstable
 public class NativeLibraryChecker {
+<<<<<<< HEAD
+=======
+  public static final Logger LOG =
+      LoggerFactory.getLogger(NativeLibraryChecker.class);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * A tool to test native library availability, 
    */
@@ -59,6 +76,10 @@ public class NativeLibraryChecker {
     boolean nativeHadoopLoaded = NativeCodeLoader.isNativeCodeLoaded();
     boolean zlibLoaded = false;
     boolean snappyLoaded = false;
+<<<<<<< HEAD
+=======
+    boolean isalLoaded = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // lz4 is linked within libhadoop
     boolean lz4Loaded = nativeHadoopLoaded;
     boolean bzip2Loaded = Bzip2Factory.isNativeBzip2Loaded(conf);
@@ -69,6 +90,10 @@ public class NativeLibraryChecker {
     String hadoopLibraryName = "";
     String zlibLibraryName = "";
     String snappyLibraryName = "";
+<<<<<<< HEAD
+=======
+    String isalDetail = "";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String lz4LibraryName = "";
     String bzip2LibraryName = "";
     String winutilsPath = null;
@@ -79,18 +104,40 @@ public class NativeLibraryChecker {
       if (zlibLoaded) {
         zlibLibraryName = ZlibFactory.getLibraryName();
       }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       snappyLoaded = NativeCodeLoader.buildSupportsSnappy() &&
           SnappyCodec.isNativeCodeLoaded();
       if (snappyLoaded && NativeCodeLoader.buildSupportsSnappy()) {
         snappyLibraryName = SnappyCodec.getLibraryName();
       }
+<<<<<<< HEAD
       if (OpensslCipher.getLoadingFailureReason() != null) {
         openSslDetail = OpensslCipher.getLoadingFailureReason();
+=======
+
+      isalDetail = ErasureCodeNative.getLoadingFailureReason();
+      if (isalDetail != null) {
+        isalLoaded = false;
+      } else {
+        isalDetail = ErasureCodeNative.getLibraryName();
+        isalLoaded = true;
+      }
+
+      openSslDetail = OpensslCipher.getLoadingFailureReason();
+      if (openSslDetail != null) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         openSslLoaded = false;
       } else {
         openSslDetail = OpensslCipher.getLibraryName();
         openSslLoaded = true;
       }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (lz4Loaded) {
         lz4LibraryName = Lz4Codec.getLibraryName();
       }
@@ -99,12 +146,26 @@ public class NativeLibraryChecker {
       }
     }
 
+<<<<<<< HEAD
     // winutils.exe is required on Windows
     winutilsPath = Shell.getWinUtilsPath();
     if (winutilsPath != null) {
       winutilsExists = true;
     } else {
       winutilsPath = "";
+=======
+    if (Shell.WINDOWS) {
+      // winutils.exe is required on Windows
+      try {
+        winutilsPath = Shell.getWinUtilsFile().getCanonicalPath();
+        winutilsExists = true;
+      } catch (IOException e) {
+        LOG.debug("No Winutils: ", e);
+        winutilsPath = e.getMessage();
+        winutilsExists = false;
+      }
+      System.out.printf("winutils: %b %s%n", winutilsExists, winutilsPath);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     System.out.println("Native library checking:");
@@ -114,6 +175,11 @@ public class NativeLibraryChecker {
     System.out.printf("lz4:     %b %s%n", lz4Loaded, lz4LibraryName);
     System.out.printf("bzip2:   %b %s%n", bzip2Loaded, bzip2LibraryName);
     System.out.printf("openssl: %b %s%n", openSslLoaded, openSslDetail);
+<<<<<<< HEAD
+=======
+    System.out.printf("ISA-L:   %b %s%n", isalLoaded, isalDetail);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (Shell.WINDOWS) {
       System.out.printf("winutils: %b %s%n", winutilsExists, winutilsPath);
     }

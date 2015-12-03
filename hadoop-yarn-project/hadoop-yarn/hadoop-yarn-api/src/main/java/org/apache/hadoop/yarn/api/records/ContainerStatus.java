@@ -34,6 +34,10 @@ import org.apache.hadoop.yarn.util.Records;
  *   <li>{@code ContainerState} of the container.</li>
  *   <li><em>Exit status</em> of a completed container.</li>
  *   <li><em>Diagnostic</em> message for a failed container.</li>
+<<<<<<< HEAD
+=======
+ *   <li>{@link Resource} allocated to the container.</li>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * </ul>
  */
 @Public
@@ -114,4 +118,19 @@ public abstract class ContainerStatus {
   @Private
   @Unstable
   public abstract void setDiagnostics(String diagnostics);
+<<<<<<< HEAD
+=======
+
+  /**
+   * Get the <code>Resource</code> allocated to the container.
+   * @return <code>Resource</code> allocated to the container
+   */
+  @Public
+  @Unstable
+  public abstract Resource getCapability();
+
+  @Private
+  @Unstable
+  public abstract void setCapability(Resource capability);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

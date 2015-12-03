@@ -23,6 +23,10 @@ package org.apache.hadoop.hdfs.server.blockmanagement;
  */
 public class NumberReplicas {
   private int liveReplicas;
+<<<<<<< HEAD
+=======
+  private int readOnlyReplicas;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // Tracks only the decommissioning replicas
   private int decommissioning;
@@ -33,6 +37,7 @@ public class NumberReplicas {
   private int replicasOnStaleNodes;
 
   NumberReplicas() {
+<<<<<<< HEAD
     initialize(0, 0, 0, 0, 0, 0);
   }
 
@@ -44,6 +49,20 @@ public class NumberReplicas {
   void initialize(int live, int decommissioned, int decommissioning,
                   int corrupt, int excess, int stale) {
     liveReplicas = live;
+=======
+    this(0, 0, 0, 0, 0, 0, 0);
+  }
+
+  NumberReplicas(int live, int readonly, int decommissioned,
+      int decommissioning, int corrupt, int excess, int stale) {
+    set(live, readonly, decommissioned, decommissioning, corrupt, excess, stale);
+  }
+
+  void set(int live, int readonly, int decommissioned, int decommissioning,
+      int corrupt, int excess, int stale) {
+    liveReplicas = live;
+    readOnlyReplicas = readonly;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.decommissioning = decommissioning;
     this.decommissioned = decommissioned;
     corruptReplicas = corrupt;
@@ -55,6 +74,13 @@ public class NumberReplicas {
     return liveReplicas;
   }
 
+<<<<<<< HEAD
+=======
+  public int readOnlyReplicas() {
+    return readOnlyReplicas;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    *
    * @return decommissioned replicas + decommissioning replicas
@@ -64,6 +90,7 @@ public class NumberReplicas {
   @Deprecated
   public int decommissionedReplicas() {
     return decommissionedAndDecommissioning();
+<<<<<<< HEAD
   }
 
   /**
@@ -80,10 +107,31 @@ public class NumberReplicas {
    */
   public int decommissioned() {
     return decommissioned;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
    *
+<<<<<<< HEAD
+=======
+   * @return decommissioned and decommissioning replicas
+   */
+  public int decommissionedAndDecommissioning() {
+    return decommissioned + decommissioning;
+  }
+
+  /**
+   *
+   * @return decommissioned replicas only
+   */
+  public int decommissioned() {
+    return decommissioned;
+  }
+
+  /**
+   *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @return decommissioning replicas only
    */
   public int decommissioning() {

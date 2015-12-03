@@ -29,8 +29,16 @@ import org.apache.hadoop.fs.permission.PermissionStatus;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
+=======
+import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
+import org.apache.hadoop.hdfs.protocol.LocatedBlock;
+import org.apache.hadoop.hdfs.server.blockmanagement.DatanodeDescriptor;
+import org.apache.hadoop.hdfs.server.blockmanagement.DatanodeManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
 import org.apache.hadoop.net.StaticMapping;
 import org.junit.After;
@@ -81,7 +89,41 @@ public class TestDefaultBlockPlacementPolicy {
     // Map client to RACK2
     String clientRack = "/RACK2";
     StaticMapping.addNodeToRack(clientMachine, clientRack);
+<<<<<<< HEAD
     testPlacement(clientMachine, clientRack);
+=======
+    testPlacement(clientMachine, clientRack, true);
+  }
+
+  /**
+   * Verify local node selection
+   */
+  @Test
+  public void testLocalStoragePlacement() throws Exception {
+    String clientMachine = "/host3";
+    testPlacement(clientMachine, "/RACK3", true);
+  }
+
+  /**
+   * Verify decommissioned nodes should not be selected.
+   */
+  @Test
+  public void testPlacementWithLocalRackNodesDecommissioned() throws Exception {
+    String clientMachine = "client.foo.com";
+    // Map client to RACK3
+    String clientRack = "/RACK3";
+    StaticMapping.addNodeToRack(clientMachine, clientRack);
+    final DatanodeManager dnm = namesystem.getBlockManager().getDatanodeManager();
+    DatanodeDescriptor dnd3 = dnm.getDatanode(
+        cluster.getDataNodes().get(3).getDatanodeId());
+    assertEquals(dnd3.getNetworkLocation(), clientRack);
+    dnm.getDecomManager().startDecommission(dnd3);
+    try {
+      testPlacement(clientMachine, clientRack, false);
+    } finally {
+      dnm.getDecomManager().stopDecommission(dnd3);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -93,11 +135,19 @@ public class TestDefaultBlockPlacementPolicy {
     // Don't map client machine to any rack,
     // so by default it will be treated as /default-rack
     // in that case a random node should be selected as first node.
+<<<<<<< HEAD
     testPlacement(clientMachine, null);
   }
 
   private void testPlacement(String clientMachine,
       String clientRack) throws IOException {
+=======
+    testPlacement(clientMachine, null, true);
+  }
+
+  private void testPlacement(String clientMachine,
+      String clientRack, boolean hasBlockReplicaOnRack) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // write 5 files and check whether all times block placed
     for (int i = 0; i < 5; i++) {
       String src = "/test-" + i;
@@ -111,8 +161,19 @@ public class TestDefaultBlockPlacementPolicy {
       assertEquals("Block should be allocated sufficient locations",
           REPLICATION_FACTOR, locatedBlock.getLocations().length);
       if (clientRack != null) {
+<<<<<<< HEAD
         assertEquals("First datanode should be rack local", clientRack,
             locatedBlock.getLocations()[0].getNetworkLocation());
+=======
+        if (hasBlockReplicaOnRack) {
+          assertEquals("First datanode should be rack local", clientRack,
+              locatedBlock.getLocations()[0].getNetworkLocation());
+        } else {
+          for (DatanodeInfo dni : locatedBlock.getLocations()) {
+            assertNotEquals(clientRack, dni.getNetworkLocation());
+          }
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       nameNodeRpc.abandonBlock(locatedBlock.getBlock(), fileStatus.getFileId(),
           src, clientMachine);

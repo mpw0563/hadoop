@@ -34,6 +34,10 @@ import java.io.FileDescriptor;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+<<<<<<< HEAD
+=======
+import java.nio.file.NoSuchFileException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.FileTime;
@@ -63,6 +67,11 @@ public class RawLocalFileSystem extends FileSystem {
   // Temporary workaround for HADOOP-9652.
   private static boolean useDeprecatedFileStatus = true;
 
+<<<<<<< HEAD
+=======
+  private FsPermission umask;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @VisibleForTesting
   public static void useStatIfAvailable() {
     useDeprecatedFileStatus = !Stat.isAvailable();
@@ -96,6 +105,7 @@ public class RawLocalFileSystem extends FileSystem {
   public void initialize(URI uri, Configuration conf) throws IOException {
     super.initialize(uri, conf);
     setConf(conf);
+    umask = FsPermission.getUMask(conf);
   }
   
   /*******************************************************
@@ -215,9 +225,19 @@ public class RawLocalFileSystem extends FileSystem {
     private LocalFSFileOutputStream(Path f, boolean append,
         FsPermission permission) throws IOException {
       File file = pathToFile(f);
+<<<<<<< HEAD
       if (permission == null) {
         this.fos = new FileOutputStream(file, append);
       } else {
+=======
+      if (!append && permission == null) {
+        permission = FsPermission.getFileDefault();
+      }
+      if (permission == null) {
+        this.fos = new FileOutputStream(file, append);
+      } else {
+        permission = permission.applyUMask(umask);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         if (Shell.WINDOWS && NativeIO.isAvailable()) {
           this.fos = NativeIO.Windows.createFileOutputStreamWithMode(file,
               append, permission.toShort());
@@ -311,7 +331,10 @@ public class RawLocalFileSystem extends FileSystem {
   }
   
   @Override
+<<<<<<< HEAD
   @Deprecated
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public FSDataOutputStream createNonRecursive(Path f, FsPermission permission,
       EnumSet<CreateFlag> flags, int bufferSize, short replication, long blockSize,
       Progressable progress) throws IOException {
@@ -349,6 +372,7 @@ public class RawLocalFileSystem extends FileSystem {
     File srcFile = pathToFile(src);
     File dstFile = pathToFile(dst);
     if (srcFile.renameTo(dstFile)) {
+<<<<<<< HEAD
       return true;
     }
 
@@ -358,6 +382,17 @@ public class RawLocalFileSystem extends FileSystem {
       return true;
     }
 
+=======
+      return true;
+    }
+
+    // Else try POSIX style rename on Windows only
+    if (Shell.WINDOWS &&
+        handleEmptyDstDirectoryOnWindows(src, srcFile, dst, dstFile)) {
+      return true;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // The fallback behavior accomplishes the rename by a full copy.
     if (LOG.isDebugEnabled()) {
       LOG.debug("Falling through to a copy of " + src + " to " + dst);
@@ -438,6 +473,15 @@ public class RawLocalFileSystem extends FileSystem {
     return FileUtil.fullyDelete(f);
   }
  
+<<<<<<< HEAD
+=======
+  /**
+   * {@inheritDoc}
+   *
+   * (<b>Note</b>: Returned list is not sorted in any given order,
+   * due to reliance on Java's {@link File#list()} API.)
+   */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public FileStatus[] listStatus(Path f) throws IOException {
     File localf = pathToFile(f);
@@ -487,6 +531,7 @@ public class RawLocalFileSystem extends FileSystem {
   protected boolean mkOneDirWithMode(Path p, File p2f, FsPermission permission)
       throws IOException {
     if (permission == null) {
+<<<<<<< HEAD
       return p2f.mkdir();
     } else {
       if (Shell.WINDOWS && NativeIO.isAvailable()) {
@@ -507,7 +552,29 @@ public class RawLocalFileSystem extends FileSystem {
           setPermission(p, permission);
         }
         return b;
+=======
+      permission = FsPermission.getDirDefault();
+    }
+    permission = permission.applyUMask(umask);
+    if (Shell.WINDOWS && NativeIO.isAvailable()) {
+      try {
+        NativeIO.Windows.createDirectoryWithMode(p2f, permission.toShort());
+        return true;
+      } catch (IOException e) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug(String.format(
+              "NativeIO.createDirectoryWithMode error, path = %s, mode = %o",
+              p2f, permission.toShort()), e);
+        }
+        return false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
+    } else {
+      boolean b = p2f.mkdir();
+      if (b) {
+        setPermission(p, permission);
+      }
+      return b;
     }
   }
 
@@ -637,6 +704,7 @@ public class RawLocalFileSystem extends FileSystem {
     private boolean isPermissionLoaded() {
       return !super.getOwner().isEmpty(); 
     }
+<<<<<<< HEAD
     
     DeprecatedRawLocalFileStatus(File f, long defaultBlockSize, FileSystem fs)
       throws IOException {
@@ -644,6 +712,24 @@ public class RawLocalFileSystem extends FileSystem {
           f.lastModified(),
           Files.readAttributes(f.toPath(),
             BasicFileAttributes.class).lastAccessTime().toMillis(),
+=======
+
+    private static long getLastAccessTime(File f) throws IOException {
+      long accessTime;
+      try {
+        accessTime = Files.readAttributes(f.toPath(),
+            BasicFileAttributes.class).lastAccessTime().toMillis();
+      } catch (NoSuchFileException e) {
+        throw new FileNotFoundException("File " + f + " does not exist");
+      }
+      return accessTime;
+    }
+
+    DeprecatedRawLocalFileStatus(File f, long defaultBlockSize, FileSystem fs)
+      throws IOException {
+      super(f.length(), f.isDirectory(), 1, defaultBlockSize,
+          f.lastModified(), getLastAccessTime(f),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           null, null, null,
           new Path(f.getPath()).makeQualified(fs.getUri(),
             fs.getWorkingDirectory()));
@@ -760,12 +846,18 @@ public class RawLocalFileSystem extends FileSystem {
    * Sets the {@link Path}'s last modified time and last access time to
    * the given valid times.
    *
+<<<<<<< HEAD
    * @param mtime the modification time to set (only if greater than zero).
    * @param atime the access time to set (only if greater than zero).
+=======
+   * @param mtime the modification time to set (only if no less than zero).
+   * @param atime the access time to set (only if no less than zero).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @throws IOException if setting the times fails.
    */
   @Override
   public void setTimes(Path p, long mtime, long atime) throws IOException {
+<<<<<<< HEAD
     BasicFileAttributeView view = Files.getFileAttributeView(
         pathToFile(p).toPath(), BasicFileAttributeView.class);
     FileTime fmtime = (mtime >= 0) ? FileTime.fromMillis(mtime) : null;
@@ -907,6 +999,153 @@ public class RawLocalFileSystem extends FileSystem {
     return status;
   }
 
+=======
+    try {
+      BasicFileAttributeView view = Files.getFileAttributeView(
+          pathToFile(p).toPath(), BasicFileAttributeView.class);
+      FileTime fmtime = (mtime >= 0) ? FileTime.fromMillis(mtime) : null;
+      FileTime fatime = (atime >= 0) ? FileTime.fromMillis(atime) : null;
+      view.setTimes(fmtime, fatime, null);
+    } catch (NoSuchFileException e) {
+      throw new FileNotFoundException("File " + p + " does not exist");
+    }
+  }
+
+  @Override
+  public boolean supportsSymlinks() {
+    return true;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public void createSymlink(Path target, Path link, boolean createParent)
+      throws IOException {
+    if (!FileSystem.areSymlinksEnabled()) {
+      throw new UnsupportedOperationException("Symlinks not supported");
+    }
+    final String targetScheme = target.toUri().getScheme();
+    if (targetScheme != null && !"file".equals(targetScheme)) {
+      throw new IOException("Unable to create symlink to non-local file "+
+                            "system: "+target.toString());
+    }
+    if (createParent) {
+      mkdirs(link.getParent());
+    }
+
+    // NB: Use createSymbolicLink in java.nio.file.Path once available
+    int result = FileUtil.symLink(target.toString(),
+        makeAbsolute(link).toString());
+    if (result != 0) {
+      throw new IOException("Error " + result + " creating symlink " +
+          link + " to " + target);
+    }
+  }
+
+  /**
+   * Return a FileStatus representing the given path. If the path refers
+   * to a symlink return a FileStatus representing the link rather than
+   * the object the link refers to.
+   */
+  @Override
+  public FileStatus getFileLinkStatus(final Path f) throws IOException {
+    FileStatus fi = getFileLinkStatusInternal(f, false);
+    // getFileLinkStatus is supposed to return a symlink with a
+    // qualified path
+    if (fi.isSymlink()) {
+      Path targetQual = FSLinkResolver.qualifySymlinkTarget(this.getUri(),
+          fi.getPath(), fi.getSymlink());
+      fi.setSymlink(targetQual);
+    }
+    return fi;
+  }
+
+  /**
+   * Public {@link FileStatus} methods delegate to this function, which in turn
+   * either call the new {@link Stat} based implementation or the deprecated
+   * methods based on platform support.
+   * 
+   * @param f Path to stat
+   * @param dereference whether to dereference the final path component if a
+   *          symlink
+   * @return FileStatus of f
+   * @throws IOException
+   */
+  private FileStatus getFileLinkStatusInternal(final Path f,
+      boolean dereference) throws IOException {
+    if (!useDeprecatedFileStatus) {
+      return getNativeFileLinkStatus(f, dereference);
+    } else if (dereference) {
+      return deprecatedGetFileStatus(f);
+    } else {
+      return deprecatedGetFileLinkStatusInternal(f);
+    }
+  }
+
+  /**
+   * Deprecated. Remains for legacy support. Should be removed when {@link Stat}
+   * gains support for Windows and other operating systems.
+   */
+  @Deprecated
+  private FileStatus deprecatedGetFileLinkStatusInternal(final Path f)
+      throws IOException {
+    String target = FileUtil.readLink(new File(f.toString()));
+
+    try {
+      FileStatus fs = getFileStatus(f);
+      // If f refers to a regular file or directory
+      if (target.isEmpty()) {
+        return fs;
+      }
+      // Otherwise f refers to a symlink
+      return new FileStatus(fs.getLen(),
+          false,
+          fs.getReplication(),
+          fs.getBlockSize(),
+          fs.getModificationTime(),
+          fs.getAccessTime(),
+          fs.getPermission(),
+          fs.getOwner(),
+          fs.getGroup(),
+          new Path(target),
+          f);
+    } catch (FileNotFoundException e) {
+      /* The exists method in the File class returns false for dangling
+       * links so we can get a FileNotFoundException for links that exist.
+       * It's also possible that we raced with a delete of the link. Use
+       * the readBasicFileAttributes method in java.nio.file.attributes
+       * when available.
+       */
+      if (!target.isEmpty()) {
+        return new FileStatus(0, false, 0, 0, 0, 0, FsPermission.getDefault(),
+            "", "", new Path(target), f);
+      }
+      // f refers to a file or directory that does not exist
+      throw e;
+    }
+  }
+  /**
+   * Calls out to platform's native stat(1) implementation to get file metadata
+   * (permissions, user, group, atime, mtime, etc). This works around the lack
+   * of lstat(2) in Java 6.
+   * 
+   *  Currently, the {@link Stat} class used to do this only supports Linux
+   *  and FreeBSD, so the old {@link #deprecatedGetFileLinkStatusInternal(Path)}
+   *  implementation (deprecated) remains further OS support is added.
+   *
+   * @param f File to stat
+   * @param dereference whether to dereference symlinks
+   * @return FileStatus of f
+   * @throws IOException
+   */
+  private FileStatus getNativeFileLinkStatus(final Path f,
+      boolean dereference) throws IOException {
+    checkPath(f);
+    Stat stat = new Stat(f, getDefaultBlockSize(f), dereference, this);
+    FileStatus status = stat.getFileStatus();
+    return status;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public Path getLinkTarget(Path f) throws IOException {
     FileStatus fi = getFileLinkStatusInternal(f, false);

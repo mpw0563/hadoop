@@ -50,6 +50,7 @@ import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
@@ -57,6 +58,19 @@ import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.StartupOption;
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+import org.apache.hadoop.hdfs.protocol.Block;
+import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+import org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction;
+import org.apache.hadoop.hdfs.protocol.LocatedBlock;
+import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.StartupOption;
+import org.apache.hadoop.hdfs.server.datanode.FsDatasetTestUtils;
+import org.apache.hadoop.net.ServerSocketUtil;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.util.Time;
@@ -100,7 +114,11 @@ public class TestFileTruncate {
     cluster = new MiniDFSCluster.Builder(conf)
         .format(true)
         .numDataNodes(DATANODE_NUM)
+<<<<<<< HEAD
         .nameNodePort(NameNode.DEFAULT_PORT)
+=======
+        .nameNodePort(HdfsClientConfigKeys.DFS_NAMENODE_RPC_PORT_DEFAULT)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .waitSafeMode(true)
         .build();
     fs = cluster.getFileSystem();
@@ -649,8 +667,13 @@ public class TestFileTruncate {
     checkBlockRecovery(p);
 
     NameNodeAdapter.getLeaseManager(cluster.getNamesystem())
+<<<<<<< HEAD
         .setLeasePeriod(HdfsServerConstants.LEASE_SOFTLIMIT_PERIOD,
             HdfsServerConstants.LEASE_HARDLIMIT_PERIOD);
+=======
+        .setLeasePeriod(HdfsConstants.LEASE_SOFTLIMIT_PERIOD,
+            HdfsConstants.LEASE_HARDLIMIT_PERIOD);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     checkFullFile(p, newLength, contents);
     fs.delete(p, false);
@@ -696,11 +719,19 @@ public class TestFileTruncate {
     // Wait replicas come to 3
     DFSTestUtil.waitReplication(fs, p, REPLICATION);
     // Old replica is disregarded and replaced with the truncated one
+<<<<<<< HEAD
     assertEquals(cluster.getBlockFile(dn, newBlock.getBlock()).length(), 
         newBlock.getBlockSize());
     assertTrue(cluster.getBlockMetadataFile(dn, 
         newBlock.getBlock()).getName().endsWith(
             newBlock.getBlock().getGenerationStamp() + ".meta"));
+=======
+    FsDatasetTestUtils utils = cluster.getFsDatasetTestUtils(dn);
+    assertEquals(utils.getStoredDataLength(newBlock.getBlock()),
+        newBlock.getBlockSize());
+    assertEquals(utils.getStoredGenerationStamp(newBlock.getBlock()),
+        newBlock.getBlock().getGenerationStamp());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Validate the file
     FileStatus fileStatus = fs.getFileStatus(p);
@@ -750,6 +781,7 @@ public class TestFileTruncate {
 
     // Wait replicas come to 3
     DFSTestUtil.waitReplication(fs, p, REPLICATION);
+<<<<<<< HEAD
     // New block is replicated to dn1
     assertEquals(cluster.getBlockFile(dn, newBlock.getBlock()).length(), 
         newBlock.getBlockSize());
@@ -759,6 +791,17 @@ public class TestFileTruncate {
     assertTrue(cluster.getBlockMetadataFile(dn, 
         oldBlock.getBlock()).getName().endsWith(
             oldBlock.getBlock().getGenerationStamp() + ".meta"));
+=======
+    FsDatasetTestUtils utils = cluster.getFsDatasetTestUtils(dn);
+    // New block is replicated to dn1
+    assertEquals(utils.getStoredDataLength(newBlock.getBlock()),
+        newBlock.getBlockSize());
+    // Old replica exists too since there is snapshot
+    assertEquals(utils.getStoredDataLength(oldBlock.getBlock()),
+        oldBlock.getBlockSize());
+    assertEquals(utils.getStoredGenerationStamp(oldBlock.getBlock()),
+        oldBlock.getBlock().getGenerationStamp());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Validate the file
     FileStatus fileStatus = fs.getFileStatus(p);
@@ -810,6 +853,7 @@ public class TestFileTruncate {
     // Wait replicas come to 3
     DFSTestUtil.waitReplication(fs, p, REPLICATION);
     // Old replica is disregarded and replaced with the truncated one on dn0
+<<<<<<< HEAD
     assertEquals(cluster.getBlockFile(dn0, newBlock.getBlock()).length(), 
         newBlock.getBlockSize());
     assertTrue(cluster.getBlockMetadataFile(dn0, 
@@ -822,6 +866,20 @@ public class TestFileTruncate {
     assertTrue(cluster.getBlockMetadataFile(dn1, 
         newBlock.getBlock()).getName().endsWith(
             newBlock.getBlock().getGenerationStamp() + ".meta"));
+=======
+    FsDatasetTestUtils utils = cluster.getFsDatasetTestUtils(dn0);
+    assertEquals(utils.getStoredDataLength(newBlock.getBlock()),
+        newBlock.getBlockSize());
+    assertEquals(utils.getStoredGenerationStamp(newBlock.getBlock()),
+        newBlock.getBlock().getGenerationStamp());
+
+    // Old replica is disregarded and replaced with the truncated one on dn1
+    utils = cluster.getFsDatasetTestUtils(dn1);
+    assertEquals(utils.getStoredDataLength(newBlock.getBlock()),
+        newBlock.getBlockSize());
+    assertEquals(utils.getStoredGenerationStamp(newBlock.getBlock()),
+        newBlock.getBlock().getGenerationStamp());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Validate the file
     FileStatus fileStatus = fs.getFileStatus(p);
@@ -1016,7 +1074,11 @@ public class TestFileTruncate {
           is(fsn.getBlockIdManager().getGenerationStampV2()));
       assertThat(file.getLastBlock().getBlockUCState(),
           is(HdfsServerConstants.BlockUCState.UNDER_RECOVERY));
+<<<<<<< HEAD
       long blockRecoveryId = ((BlockInfoContiguousUnderConstruction) file.getLastBlock())
+=======
+      long blockRecoveryId = file.getLastBlock().getUnderConstructionFeature()
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           .getBlockRecoveryId();
       assertThat(blockRecoveryId, is(initialGenStamp + 1));
       fsn.getEditLog().logTruncate(
@@ -1032,7 +1094,12 @@ public class TestFileTruncate {
     iip = fsn.getFSDirectory().getINodesInPath(src, true);
     file = iip.getLastINode().asFile();
     file.recordModification(iip.getLatestSnapshotId(), true);
+<<<<<<< HEAD
     assertThat(file.isBlockInLatestSnapshot(file.getLastBlock()), is(true));
+=======
+    assertThat(file.isBlockInLatestSnapshot(
+        (BlockInfoContiguous) file.getLastBlock()), is(true));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     initialGenStamp = file.getLastBlock().getGenerationStamp();
     // Test that prepareFileForTruncate sets up copy-on-write truncate
     fsn.writeLock();
@@ -1049,7 +1116,11 @@ public class TestFileTruncate {
           is(fsn.getBlockIdManager().getGenerationStampV2()));
       assertThat(file.getLastBlock().getBlockUCState(),
           is(HdfsServerConstants.BlockUCState.UNDER_RECOVERY));
+<<<<<<< HEAD
       long blockRecoveryId = ((BlockInfoContiguousUnderConstruction) file.getLastBlock())
+=======
+      long blockRecoveryId = file.getLastBlock().getUnderConstructionFeature()
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           .getBlockRecoveryId();
       assertThat(blockRecoveryId, is(initialGenStamp + 1));
       fsn.getEditLog().logTruncate(
@@ -1225,7 +1296,13 @@ public class TestFileTruncate {
       NameNode.doRollback(conf, false);
     cluster = new MiniDFSCluster.Builder(conf).numDataNodes(DATANODE_NUM)
         .format(false)
+<<<<<<< HEAD
         .nameNodePort(NameNode.DEFAULT_PORT)
+=======
+        .nameNodePort(
+            ServerSocketUtil.getPort(
+                HdfsClientConfigKeys.DFS_NAMENODE_RPC_PORT_DEFAULT, 10))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .startupOption(o==StartupOption.ROLLBACK ? StartupOption.REGULAR : o)
         .dnStartupOption(o!=StartupOption.ROLLBACK ? StartupOption.REGULAR : o)
         .build();

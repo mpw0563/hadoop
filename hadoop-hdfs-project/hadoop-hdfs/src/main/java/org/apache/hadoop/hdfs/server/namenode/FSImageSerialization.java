@@ -33,9 +33,13 @@ import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.CacheDirectiveInfo;
 import org.apache.hadoop.hdfs.protocol.CachePoolInfo;
 import org.apache.hadoop.hdfs.protocol.LayoutVersion;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
+=======
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.BlockUCState;
 import org.apache.hadoop.hdfs.server.namenode.snapshot.SnapshotFSImageFormat;
 import org.apache.hadoop.hdfs.server.namenode.snapshot.SnapshotFSImageFormat.ReferenceMap;
@@ -125,21 +129,38 @@ public class FSImageSerialization {
     short blockReplication = in.readShort();
     long modificationTime = in.readLong();
     long preferredBlockSize = in.readLong();
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int numBlocks = in.readInt();
-    BlockInfo[] blocks = new BlockInfo[numBlocks];
+
+    final BlockInfoContiguous[] blocksContiguous =
+        new BlockInfoContiguous[numBlocks];
     Block blk = new Block();
     int i = 0;
-    for (; i < numBlocks-1; i++) {
+    for (; i < numBlocks - 1; i++) {
       blk.readFields(in);
+<<<<<<< HEAD
       blocks[i] = new BlockInfoContiguous(blk, blockReplication);
+=======
+      blocksContiguous[i] = new BlockInfoContiguous(blk, blockReplication);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     // last block is UNDER_CONSTRUCTION
     if(numBlocks > 0) {
       blk.readFields(in);
+<<<<<<< HEAD
       blocks[i] = new BlockInfoContiguousUnderConstruction(
         blk, blockReplication, BlockUCState.UNDER_CONSTRUCTION, null);
+=======
+      blocksContiguous[i] = new BlockInfoContiguous(blk, blockReplication);
+      blocksContiguous[i].convertToBlockUnderConstruction(
+          BlockUCState.UNDER_CONSTRUCTION, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
+
     PermissionStatus perm = PermissionStatus.read(in);
     String clientName = readString(in);
     String clientMachine = readString(in);
@@ -152,7 +173,11 @@ public class FSImageSerialization {
     // Images in the pre-protobuf format will not have the lazyPersist flag,
     // so it is safe to pass false always.
     INodeFile file = new INodeFile(inodeId, name, perm, modificationTime,
+<<<<<<< HEAD
         modificationTime, blocks, blockReplication, preferredBlockSize, (byte)0);
+=======
+        modificationTime, blocksContiguous, blockReplication, preferredBlockSize);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     file.toUnderConstruction(clientName, clientMachine);
     return file;
   }
@@ -180,9 +205,15 @@ public class FSImageSerialization {
 
   /**
    * Serialize a {@link INodeFile} node
+<<<<<<< HEAD
    * @param node The node to write
    * @param out The {@link DataOutputStream} where the fields are written
    * @param writeBlock Whether to write block information
+=======
+   * @param file The INodeFile to write
+   * @param out The {@link DataOutputStream} where the fields are written
+   * @param writeUnderConstruction Whether to write under construction information
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   public static void writeINodeFile(INodeFile file, DataOutput out,
       boolean writeUnderConstruction) throws IOException {
@@ -305,7 +336,11 @@ public class FSImageSerialization {
     if (!isWithName) {
       Preconditions.checkState(ref instanceof INodeReference.DstReference);
       // dst snapshot id
+<<<<<<< HEAD
       out.writeInt(((INodeReference.DstReference) ref).getDstSnapshotId());
+=======
+      out.writeInt(ref.getDstSnapshotId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else {
       out.writeInt(((INodeReference.WithName) ref).getLastSnapshotId());
     }

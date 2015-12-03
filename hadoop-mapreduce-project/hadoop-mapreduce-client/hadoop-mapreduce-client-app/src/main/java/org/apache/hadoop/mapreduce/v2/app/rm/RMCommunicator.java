@@ -270,6 +270,7 @@ public abstract class RMCommunicator extends AbstractService
     super.serviceStop();
   }
 
+<<<<<<< HEAD
   protected void startAllocatorThread() {
     allocatorThread = new Thread(new Runnable() {
       @Override
@@ -294,11 +295,44 @@ public abstract class RMCommunicator extends AbstractService
             if (!stopped.get()) {
               LOG.warn("Allocated thread interrupted. Returning.");
             }
+=======
+  @VisibleForTesting
+  public class AllocatorRunnable implements Runnable {
+    @Override
+    public void run() {
+      while (!stopped.get() && !Thread.currentThread().isInterrupted()) {
+        try {
+          Thread.sleep(rmPollInterval);
+          try {
+            heartbeat();
+          } catch (RMContainerAllocationException e) {
+            LOG.error("Error communicating with RM: " + e.getMessage() , e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             return;
+          } catch (Exception e) {
+            LOG.error("ERROR IN CONTACTING RM. ", e);
+            continue;
+            // TODO: for other exceptions
           }
+
+          lastHeartbeatTime = context.getClock().getTime();
+          executeHeartbeatCallbacks();
+        } catch (InterruptedException e) {
+          if (!stopped.get()) {
+            LOG.warn("Allocated thread interrupted. Returning.");
+          }
+          return;
         }
       }
+<<<<<<< HEAD
     });
+=======
+    }
+  }
+
+  protected void startAllocatorThread() {
+    allocatorThread = new Thread(new AllocatorRunnable());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     allocatorThread.setName("RMCommunicator Allocator");
     allocatorThread.start();
   }

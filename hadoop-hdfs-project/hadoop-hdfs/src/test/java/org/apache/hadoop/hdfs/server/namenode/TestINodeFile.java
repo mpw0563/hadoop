@@ -19,8 +19,14 @@
 package org.apache.hadoop.hdfs.server.namenode;
 
 import static org.junit.Assert.assertEquals;
+<<<<<<< HEAD
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+=======
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -52,6 +58,10 @@ import org.apache.hadoop.hdfs.DFSClient;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.DFSUtil;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.DirectoryListing;
@@ -62,6 +72,10 @@ import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.apache.hadoop.hdfs.protocol.QuotaExceededException;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.snapshot.Snapshot;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
 import org.apache.hadoop.io.IOUtils;
@@ -88,12 +102,20 @@ public class TestINodeFile {
 
   INodeFile createINodeFile(short replication, long preferredBlockSize) {
     return new INodeFile(HdfsConstants.GRANDFATHER_INODE_ID, null, perm, 0L, 0L,
+<<<<<<< HEAD
         null, replication, preferredBlockSize, (byte)0);
+=======
+        null, replication, preferredBlockSize);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static INodeFile createINodeFile(byte storagePolicyID) {
     return new INodeFile(HdfsConstants.GRANDFATHER_INODE_ID, null, perm, 0L, 0L,
+<<<<<<< HEAD
         null, (short)3, 1024L, storagePolicyID);
+=======
+        null, (short)3, 1024L, storagePolicyID, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
@@ -270,8 +292,14 @@ public class TestINodeFile {
     INodeFile origFile = createINodeFiles(1, "origfile")[0];
     assertEquals("Number of blocks didn't match", origFile.numBlocks(), 1L);
 
+<<<<<<< HEAD
     INodeFile[] appendFiles =   createINodeFiles(4, "appendfile");
     origFile.concatBlocks(appendFiles);
+=======
+    INodeFile[] appendFiles = createINodeFiles(4, "appendfile");
+    BlockManager bm = Mockito.mock(BlockManager.class);
+    origFile.concatBlocks(appendFiles, bm);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals("Number of blocks didn't match", origFile.numBlocks(), 5L);
   }
   
@@ -289,7 +317,11 @@ public class TestINodeFile {
     INodeFile[] iNodes = new INodeFile[nCount];
     for (int i = 0; i < nCount; i++) {
       iNodes[i] = new INodeFile(i, null, perm, 0L, 0L, null, replication,
+<<<<<<< HEAD
           preferredBlockSize, (byte)0);
+=======
+          preferredBlockSize);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       iNodes[i].setLocalName(DFSUtil.string2Bytes(fileNamePrefix + i));
       BlockInfo newblock = new BlockInfoContiguous(replication);
       iNodes[i].addBlock(newblock);
@@ -347,7 +379,11 @@ public class TestINodeFile {
     {//cast from INodeFileUnderConstruction
       final INode from = new INodeFile(
           HdfsConstants.GRANDFATHER_INODE_ID, null, perm, 0L, 0L, null, replication,
+<<<<<<< HEAD
           1024L, (byte)0);
+=======
+          1024L);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       from.asFile().toUnderConstruction("client", "machine");
     
       //cast to INodeFile, should success
@@ -480,7 +516,11 @@ public class TestINodeFile {
 
       // Apply editlogs to fsimage, ensure inodeUnderConstruction is handled
       fsn.enterSafeMode(false);
+<<<<<<< HEAD
       fsn.saveNamespace();
+=======
+      fsn.saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fsn.leaveSafeMode();
 
       outStream.close();
@@ -910,13 +950,60 @@ public class TestINodeFile {
       assertTrue(e instanceof FileNotFoundException);
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static INodeDirectory getDir(final FSDirectory fsdir, final Path dir)
       throws IOException {
     final String dirStr = dir.toString();
     return INodeDirectory.valueOf(fsdir.getINode(dirStr), dirStr);
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * Test whether the inode in inodeMap has been replaced after regular inode
+   * replacement
+   */
+  @Test
+  public void testInodeReplacement() throws Exception {
+    final Configuration conf = new Configuration();
+    MiniDFSCluster cluster = null;
+    try {
+      cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
+      cluster.waitActive();
+      final DistributedFileSystem hdfs = cluster.getFileSystem();
+      final FSDirectory fsdir = cluster.getNamesystem().getFSDirectory();
+
+      final Path dir = new Path("/dir");
+      hdfs.mkdirs(dir);
+      INodeDirectory dirNode = getDir(fsdir, dir);
+      INode dirNodeFromNode = fsdir.getInode(dirNode.getId());
+      assertSame(dirNode, dirNodeFromNode);
+
+      // set quota to dir, which leads to node replacement
+      hdfs.setQuota(dir, Long.MAX_VALUE - 1, Long.MAX_VALUE - 1);
+      dirNode = getDir(fsdir, dir);
+      assertTrue(dirNode.isWithQuota());
+      // the inode in inodeMap should also be replaced
+      dirNodeFromNode = fsdir.getInode(dirNode.getId());
+      assertSame(dirNode, dirNodeFromNode);
+
+      hdfs.setQuota(dir, -1, -1);
+      dirNode = getDir(fsdir, dir);
+      // the inode in inodeMap should also be replaced
+      dirNodeFromNode = fsdir.getInode(dirNode.getId());
+      assertSame(dirNode, dirNodeFromNode);
+    } finally {
+      if (cluster != null) {
+        cluster.shutdown();
+      }
+    }
+  }
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testDotdotInodePath() throws Exception {
     final Configuration conf = new Configuration();
@@ -934,7 +1021,11 @@ public class TestINodeFile {
       long parentId = fsdir.getINode("/").getId();
       String testPath = "/.reserved/.inodes/" + dirId + "/..";
 
+<<<<<<< HEAD
       client = new DFSClient(NameNode.getAddress(conf), conf);
+=======
+      client = new DFSClient(DFSUtilClient.getNNAddress(conf), conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       HdfsFileStatus status = client.getFileInfo(testPath);
       assertTrue(parentId == status.getFileId());
       
@@ -950,7 +1041,10 @@ public class TestINodeFile {
       }
     }
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testLocationLimitInListingOps() throws Exception {
     final Configuration conf = new Configuration();
@@ -1071,7 +1165,11 @@ public class TestINodeFile {
   public void testFileUnderConstruction() {
     replication = 3;
     final INodeFile file = new INodeFile(HdfsConstants.GRANDFATHER_INODE_ID, null,
+<<<<<<< HEAD
         perm, 0L, 0L, null, replication, 1024L, (byte)0);
+=======
+        perm, 0L, 0L, null, replication, 1024L);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertFalse(file.isUnderConstruction());
 
     final String clientName = "client";

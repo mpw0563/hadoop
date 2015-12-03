@@ -205,7 +205,11 @@ public class NetworkTopologyWithNodeGroup extends NetworkTopology {
         LOG.info("Adding a new node: " + NodeBase.getPath(node));
         if (rack == null) {
           // We only track rack number here
+<<<<<<< HEAD
           numOfRacks++;
+=======
+          incrementRacks();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
       if(LOG.isDebugEnabled()) {

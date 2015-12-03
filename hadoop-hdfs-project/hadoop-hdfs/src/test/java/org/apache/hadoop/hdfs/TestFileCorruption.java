@@ -24,20 +24,29 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
+=======
+import java.util.Map;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ChecksumException;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.Block;
+=======
+import org.apache.hadoop.hdfs.protocol.BlockListAsLongs;
+import org.apache.hadoop.hdfs.protocol.BlockListAsLongs.BlockReportReplica;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
@@ -45,6 +54,10 @@ import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeRegistration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.protocol.DatanodeStorage;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.hadoop.test.PathUtils;
 import org.apache.log4j.Level;
@@ -74,6 +87,7 @@ public class TestFileCorruption {
       FileSystem fs = cluster.getFileSystem();
       util.createFiles(fs, "/srcdat");
       // Now deliberately remove the blocks
+<<<<<<< HEAD
       File storageDir = cluster.getInstanceStorageDir(2, 0);
       String bpid = cluster.getNamesystem().getBlockPoolId();
       File data_dir = MiniDFSCluster.getFinalizedDir(storageDir, bpid);
@@ -85,6 +99,19 @@ public class TestFileCorruption {
       for (File block : blocks) {
         System.out.println("Deliberately removing file " + block.getName());
         assertTrue("Cannot remove file.", block.delete());
+=======
+      String bpid = cluster.getNamesystem().getBlockPoolId();
+      DataNode dn = cluster.getDataNodes().get(2);
+      Map<DatanodeStorage, BlockListAsLongs> blockReports =
+          dn.getFSDataset().getBlockReports(bpid);
+      assertTrue("Blocks do not exist on data-dir", !blockReports.isEmpty());
+      for (BlockListAsLongs report : blockReports.values()) {
+        for (BlockReportReplica brr : report) {
+          LOG.info("Deliberately removing block {}", brr.getBlockName());
+          cluster.getFsDatasetTestUtils(2).getMaterializedReplica(
+              new ExtendedBlock(bpid, brr)).deleteData();
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       assertTrue("Corrupted replicas not handled properly.",
                  util.checkFiles(fs, "/srcdat"));
@@ -110,7 +137,7 @@ public class TestFileCorruption {
     // Now attempt to read the file
     DataInputStream dis = fs.open(file, 512);
     try {
-      System.out.println("A ChecksumException is expected to be logged.");
+      LOG.info("A ChecksumException is expected to be logged.");
       dis.readByte();
     } catch (ChecksumException ignore) {
       //expect this exception but let any NPE get thrown
@@ -137,6 +164,7 @@ public class TestFileCorruption {
       
       // get the block
       final String bpid = cluster.getNamesystem().getBlockPoolId();
+<<<<<<< HEAD
       File storageDir = cluster.getInstanceStorageDir(0, 0);
       File dataDir = MiniDFSCluster.getFinalizedDir(storageDir, bpid);
       assertTrue("Data directory does not exist", dataDir.exists());
@@ -146,6 +174,9 @@ public class TestFileCorruption {
         dataDir = MiniDFSCluster.getFinalizedDir(storageDir, bpid);
         blk = getBlock(bpid, dataDir);
       }
+=======
+      ExtendedBlock blk = getFirstBlock(cluster.getDataNodes().get(0), bpid);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       assertFalse("Data directory does not contain any blocks or there was an "
           + "IO error", blk==null);
 
@@ -173,11 +204,13 @@ public class TestFileCorruption {
       //clean up
       fs.delete(FILE_PATH, false);
     } finally {
-      if (cluster != null) { cluster.shutdown(); }
+      if (cluster != null) {
+        cluster.shutdown();
+      }
     }
-    
   }
   
+<<<<<<< HEAD
   public static ExtendedBlock getBlock(String bpid, File dataDir) {
     List<File> metadataFiles = MiniDFSCluster.getAllBlockMetadataFiles(dataDir);
     if (metadataFiles == null || metadataFiles.isEmpty()) {
@@ -187,6 +220,17 @@ public class TestFileCorruption {
     File blockFile = Block.metaToBlockFile(metadataFile);
     return new ExtendedBlock(bpid, Block.getBlockId(blockFile.getName()),
         blockFile.length(), Block.getGenerationStamp(metadataFile.getName()));
+=======
+  private static ExtendedBlock getFirstBlock(DataNode dn, String bpid) {
+    Map<DatanodeStorage, BlockListAsLongs> blockReports =
+        dn.getFSDataset().getBlockReports(bpid);
+    for (BlockListAsLongs blockLongs : blockReports.values()) {
+      for (BlockReportReplica block : blockLongs) {
+        return new ExtendedBlock(bpid, block);
+      }
+    }
+    return null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
 }

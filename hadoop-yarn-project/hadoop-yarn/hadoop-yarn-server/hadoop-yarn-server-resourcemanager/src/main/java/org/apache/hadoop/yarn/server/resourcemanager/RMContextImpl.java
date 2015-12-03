@@ -34,6 +34,11 @@ import org.apache.hadoop.yarn.event.Dispatcher;
 import org.apache.hadoop.yarn.server.resourcemanager.ahs.RMApplicationHistoryWriter;
 import org.apache.hadoop.yarn.server.resourcemanager.metrics.SystemMetricsPublisher;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMDelegatedNodeLabelsUpdater;
+import org.apache.hadoop.yarn.server.resourcemanager.placement.PlacementManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.ReservationSystem;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
@@ -68,12 +73,21 @@ public class RMContextImpl implements RMContext {
 
   private Configuration yarnConfiguration;
 
+<<<<<<< HEAD
+=======
+  private RMApplicationHistoryWriter rmApplicationHistoryWriter;
+  private SystemMetricsPublisher systemMetricsPublisher;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Default constructor. To be used in conjunction with setter methods for
    * individual fields.
    */
   public RMContextImpl() {
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @VisibleForTesting
@@ -87,7 +101,10 @@ public class RMContextImpl implements RMContext {
       RMContainerTokenSecretManager containerTokenSecretManager,
       NMTokenSecretManagerInRM nmTokenSecretManager,
       ClientToAMTokenSecretManagerInRM clientToAMTokenSecretManager,
+<<<<<<< HEAD
       RMApplicationHistoryWriter rmApplicationHistoryWriter,
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ResourceScheduler scheduler) {
     this();
     this.setDispatcher(rmDispatcher);
@@ -95,7 +112,11 @@ public class RMContextImpl implements RMContext {
         containerAllocationExpirer, amLivelinessMonitor, amFinishingMonitor,
         delegationTokenRenewer, appTokenSecretManager,
         containerTokenSecretManager, nmTokenSecretManager,
+<<<<<<< HEAD
         clientToAMTokenSecretManager, rmApplicationHistoryWriter,
+=======
+        clientToAMTokenSecretManager,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         scheduler));
 
     ConfigurationProvider provider = new LocalConfigurationProvider();
@@ -112,8 +133,12 @@ public class RMContextImpl implements RMContext {
       AMRMTokenSecretManager appTokenSecretManager,
       RMContainerTokenSecretManager containerTokenSecretManager,
       NMTokenSecretManagerInRM nmTokenSecretManager,
+<<<<<<< HEAD
       ClientToAMTokenSecretManagerInRM clientToAMTokenSecretManager,
       RMApplicationHistoryWriter rmApplicationHistoryWriter) {
+=======
+      ClientToAMTokenSecretManagerInRM clientToAMTokenSecretManager) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this(
       rmDispatcher,
       containerAllocationExpirer,
@@ -123,9 +148,13 @@ public class RMContextImpl implements RMContext {
       appTokenSecretManager,
       containerTokenSecretManager,
       nmTokenSecretManager,
+<<<<<<< HEAD
       clientToAMTokenSecretManager,
       rmApplicationHistoryWriter,
       null);
+=======
+      clientToAMTokenSecretManager, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -351,25 +380,42 @@ public class RMContextImpl implements RMContext {
 
   @Override
   public RMApplicationHistoryWriter getRMApplicationHistoryWriter() {
+<<<<<<< HEAD
     return activeServiceContext.getRMApplicationHistoryWriter();
+=======
+    return this.rmApplicationHistoryWriter;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
   public void setSystemMetricsPublisher(
       SystemMetricsPublisher systemMetricsPublisher) {
+<<<<<<< HEAD
     activeServiceContext.setSystemMetricsPublisher(systemMetricsPublisher);
+=======
+    this.systemMetricsPublisher = systemMetricsPublisher;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
   public SystemMetricsPublisher getSystemMetricsPublisher() {
+<<<<<<< HEAD
     return activeServiceContext.getSystemMetricsPublisher();
+=======
+    return this.systemMetricsPublisher;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
   public void setRMApplicationHistoryWriter(
       RMApplicationHistoryWriter rmApplicationHistoryWriter) {
+<<<<<<< HEAD
     activeServiceContext
         .setRMApplicationHistoryWriter(rmApplicationHistoryWriter);
+=======
+    this.rmApplicationHistoryWriter = rmApplicationHistoryWriter;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -401,6 +447,21 @@ public class RMContextImpl implements RMContext {
     activeServiceContext.setNodeLabelManager(mgr);
   }
 
+<<<<<<< HEAD
+=======
+  @Override
+  public RMDelegatedNodeLabelsUpdater getRMDelegatedNodeLabelsUpdater() {
+    return activeServiceContext.getRMDelegatedNodeLabelsUpdater();
+  }
+
+  @Override
+  public void setRMDelegatedNodeLabelsUpdater(
+      RMDelegatedNodeLabelsUpdater delegatedNodeLabelsUpdater) {
+    activeServiceContext.setRMDelegatedNodeLabelsUpdater(
+        delegatedNodeLabelsUpdater);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void setSchedulerRecoveryStartAndWaitTime(long waitTime) {
     activeServiceContext.setSchedulerRecoveryStartAndWaitTime(waitTime);
   }
@@ -439,4 +500,17 @@ public class RMContextImpl implements RMContext {
   public void setYarnConfiguration(Configuration yarnConfiguration) {
     this.yarnConfiguration=yarnConfiguration;
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public PlacementManager getQueuePlacementManager() {
+    return this.activeServiceContext.getQueuePlacementManager();
+  }
+  
+  @Override
+  public void setQueuePlacementManager(PlacementManager placementMgr) {
+    this.activeServiceContext.setQueuePlacementManager(placementMgr);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

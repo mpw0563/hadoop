@@ -18,6 +18,7 @@
 package org.apache.hadoop.hdfs.server.namenode;
 
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_TXNS_KEY;
+<<<<<<< HEAD
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -29,6 +30,8 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
@@ -38,6 +41,14 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+<<<<<<< HEAD
+=======
+import javax.management.*;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.net.URL;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 public class TestSecondaryWebUi {
   
   private static MiniDFSCluster cluster;
@@ -60,10 +71,34 @@ public class TestSecondaryWebUi {
   public static void shutDownCluster() {
     if (cluster != null) {
       cluster.shutdown();
+<<<<<<< HEAD
+    }
+    if (snn != null) {
+      snn.shutdown();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     if (snn != null) {
       snn.shutdown();
     }
+  }
+
+  @Test
+  public void testSecondaryWebUi()
+          throws IOException, MalformedObjectNameException,
+                 AttributeNotFoundException, MBeanException,
+                 ReflectionException, InstanceNotFoundException {
+    MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+    ObjectName mxbeanName = new ObjectName(
+            "Hadoop:service=SecondaryNameNode,name=SecondaryNameNodeInfo");
+
+    String[] checkpointDir = (String[]) mbs.getAttribute(mxbeanName,
+            "CheckpointDirectories");
+    Assert.assertArrayEquals(checkpointDir, snn.getCheckpointDirectories());
+    String[] checkpointEditlogDir = (String[]) mbs.getAttribute(mxbeanName,
+            "CheckpointEditlogDirectories");
+    Assert.assertArrayEquals(checkpointEditlogDir,
+            snn.getCheckpointEditlogDirectories());
   }
 
   @Test

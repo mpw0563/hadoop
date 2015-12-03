@@ -34,10 +34,19 @@ import org.apache.hadoop.fs.permission.PermissionStatus;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.BlockStoragePolicy;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.QuotaExceededException;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockCollection;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
+=======
+import org.apache.hadoop.hdfs.protocol.ErasureCodingPolicy;
+import org.apache.hadoop.hdfs.protocol.QuotaExceededException;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockCollection;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoStriped;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockStoragePolicySuite;
 import org.apache.hadoop.hdfs.server.blockmanagement.DatanodeStorageInfo;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.BlockUCState;
@@ -79,6 +88,7 @@ public class INodeFile extends INodeWithAdditionalFields
 
   /** 
    * Bit format:
+<<<<<<< HEAD
    * [4-bit storagePolicyID][12-bit replication][48-bit preferredBlockSize]
    */
   static enum HeaderFormat {
@@ -122,10 +132,72 @@ public class INodeFile extends INodeWithAdditionalFields
 
   private BlockInfo[] blocks;
 
+=======
+   * [4-bit storagePolicyID][1-bit isStriped]
+   * [11-bit replication][48-bit preferredBlockSize]
+   */
+  enum HeaderFormat {
+    PREFERRED_BLOCK_SIZE(null, 48, 1),
+    REPLICATION(PREFERRED_BLOCK_SIZE.BITS, 11, 0),
+    IS_STRIPED(REPLICATION.BITS, 1, 0),
+    STORAGE_POLICY_ID(IS_STRIPED.BITS, BlockStoragePolicySuite.ID_BIT_LENGTH,
+        0);
+
+    private final LongBitFormat BITS;
+
+    HeaderFormat(LongBitFormat previous, int length, long min) {
+      BITS = new LongBitFormat(name(), previous, length, min);
+    }
+
+    static short getReplication(long header) {
+      return (short)REPLICATION.BITS.retrieve(header);
+    }
+
+    static long getPreferredBlockSize(long header) {
+      return PREFERRED_BLOCK_SIZE.BITS.retrieve(header);
+    }
+
+    static byte getStoragePolicyID(long header) {
+      return (byte)STORAGE_POLICY_ID.BITS.retrieve(header);
+    }
+
+    static boolean isStriped(long header) {
+      long isStriped = IS_STRIPED.BITS.retrieve(header);
+      Preconditions.checkState(isStriped == 0 || isStriped == 1);
+      return isStriped == 1;
+    }
+
+    static long toLong(long preferredBlockSize, short replication,
+        boolean isStriped, byte storagePolicyID) {
+      long h = 0;
+      if (preferredBlockSize == 0) {
+        preferredBlockSize = PREFERRED_BLOCK_SIZE.BITS.getMin();
+      }
+      h = PREFERRED_BLOCK_SIZE.BITS.combine(preferredBlockSize, h);
+      // Replication factor for striped files is zero
+      if (isStriped) {
+        h = REPLICATION.BITS.combine(0L, h);
+        h = IS_STRIPED.BITS.combine(1L, h);
+      } else {
+        h = REPLICATION.BITS.combine(replication, h);
+        h = IS_STRIPED.BITS.combine(0L, h);
+      }
+      h = STORAGE_POLICY_ID.BITS.combine(storagePolicyID, h);
+      return h;
+    }
+
+  }
+
+  private long header = 0L;
+
+  private BlockInfo[] blocks;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   INodeFile(long id, byte[] name, PermissionStatus permissions, long mtime,
             long atime, BlockInfo[] blklist, short replication,
             long preferredBlockSize) {
     this(id, name, permissions, mtime, atime, blklist, replication,
+<<<<<<< HEAD
          preferredBlockSize, (byte) 0);
   }
 
@@ -172,6 +244,59 @@ public class INodeFile extends INodeWithAdditionalFields
         && getXAttrFeature() == other.getXAttrFeature();
   }
 
+=======
+        preferredBlockSize, (byte) 0, false);
+  }
+
+  INodeFile(long id, byte[] name, PermissionStatus permissions, long mtime,
+      long atime, BlockInfo[] blklist, short replication,
+      long preferredBlockSize, byte storagePolicyID, boolean isStriped) {
+    super(id, name, permissions, mtime, atime);
+    header = HeaderFormat.toLong(preferredBlockSize, replication, isStriped,
+        storagePolicyID);
+    if (blklist != null && blklist.length > 0) {
+      for (BlockInfo b : blklist) {
+        Preconditions.checkArgument(b.isStriped() == isStriped);
+      }
+    }
+    setBlocks(blklist);
+  }
+  
+  public INodeFile(INodeFile that) {
+    super(that);
+    this.header = that.header;
+    this.blocks = that.blocks;
+    this.features = that.features;
+  }
+  
+  public INodeFile(INodeFile that, FileDiffList diffs) {
+    this(that);
+    Preconditions.checkArgument(!that.isWithSnapshot());
+    this.addSnapshotFeature(diffs);
+  }
+
+  /** @return true unconditionally. */
+  @Override
+  public final boolean isFile() {
+    return true;
+  }
+
+  /** @return this object. */
+  @Override
+  public final INodeFile asFile() {
+    return this;
+  }
+
+  @Override
+  public boolean metadataEquals(INodeFileAttributes other) {
+    return other != null
+        && getHeaderLong()== other.getHeaderLong()
+        && getPermissionLong() == other.getPermissionLong()
+        && getAclFeature() == other.getAclFeature()
+        && getXAttrFeature() == other.getXAttrFeature();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /* Start of Under-Construction Feature */
 
   /**
@@ -211,6 +336,7 @@ public class INodeFile extends INodeWithAdditionalFields
       this.setModificationTime(mtime);
     }
     return this;
+<<<<<<< HEAD
   }
 
   /** Assert all blocks are complete. */
@@ -245,9 +371,82 @@ public class INodeFile extends INodeWithAdditionalFields
           BlockUCState.UNDER_CONSTRUCTION, locations);
     setBlock(numBlocks() - 1, ucBlock);
     return ucBlock;
+=======
+  }
+
+  /** Assert all blocks are complete. */
+  private void assertAllBlocksComplete() {
+    if (blocks == null) {
+      return;
+    }
+    for (int i = 0; i < blocks.length; i++) {
+      Preconditions.checkState(blocks[i].isComplete(), "Failed to finalize"
+          + " %s %s since blocks[%s] is non-complete, where blocks=%s.",
+          getClass().getSimpleName(), this, i, Arrays.asList(blocks));
+    }
+  }
+
+  @Override // BlockCollection
+  public void setBlock(int index, BlockInfo blk) {
+    Preconditions.checkArgument(blk.isStriped() == this.isStriped());
+    this.blocks[index] = blk;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  }
+
+  @Override // BlockCollection, the file should be under construction
+  public void convertLastBlockToUC(BlockInfo lastBlock,
+      DatanodeStorageInfo[] locations) throws IOException {
+    Preconditions.checkState(isUnderConstruction(),
+        "file is no longer under construction");
+    if (numBlocks() == 0) {
+      throw new IOException("Failed to set last block: File is empty.");
+    }
+    lastBlock.convertToBlockUnderConstruction(BlockUCState.UNDER_CONSTRUCTION,
+        locations);
+  }
+
+  void setLastBlock(BlockInfo blk) {
+    blk.setBlockCollectionId(this.getId());
+    setBlock(numBlocks() - 1, blk);
   }
 
   /**
+   * Remove a block from the block list. This block should be
+   * the last one on the list.
+   */
+  BlockInfo removeLastBlock(Block oldblock) {
+    Preconditions.checkState(isUnderConstruction(),
+        "file is no longer under construction");
+    if (blocks == null || blocks.length == 0) {
+      return null;
+    }
+    int size_1 = blocks.length - 1;
+    if (!blocks[size_1].equals(oldblock)) {
+      return null;
+    }
+
+    BlockInfo ucBlock = blocks[size_1];
+    //copy to a new list
+    BlockInfo[] newlist = new BlockInfo[size_1];
+    System.arraycopy(blocks, 0, newlist, 0, size_1);
+    setBlocks(newlist);
+    return ucBlock;
+  }
+
+  /* End of Under-Construction Feature */
+  
+  /* Start of Snapshot Feature */
+
+  public FileWithSnapshotFeature addSnapshotFeature(FileDiffList diffs) {
+    Preconditions.checkState(!isWithSnapshot(), 
+        "File is already with snapshot");
+    FileWithSnapshotFeature sf = new FileWithSnapshotFeature(diffs);
+    this.addFeature(sf);
+    return sf;
+  }
+  
+  /**
+<<<<<<< HEAD
    * Remove a block from the block list. This block should be
    * the last one on the list.
    */
@@ -411,6 +610,164 @@ public class INodeFile extends INodeWithAdditionalFields
       int latestSnapshotId) throws QuotaExceededException {
     recordModification(latestSnapshotId);
     setStoragePolicyID(storagePolicyId);
+=======
+   * If feature list contains a {@link FileWithSnapshotFeature}, return it;
+   * otherwise, return null.
+   */
+  public final FileWithSnapshotFeature getFileWithSnapshotFeature() {
+    return getFeature(FileWithSnapshotFeature.class);
+  }
+
+  /** Is this file has the snapshot feature? */
+  public final boolean isWithSnapshot() {
+    return getFileWithSnapshotFeature() != null;
+  }
+    
+  @Override
+  public String toDetailString() {
+    FileWithSnapshotFeature sf = this.getFileWithSnapshotFeature();
+    return super.toDetailString() + (sf == null ? "" : sf.getDetailedString()); 
+  }
+
+  @Override
+  public INodeFileAttributes getSnapshotINode(final int snapshotId) {
+    FileWithSnapshotFeature sf = this.getFileWithSnapshotFeature();
+    if (sf != null) {
+      return sf.getDiffs().getSnapshotINode(snapshotId, this);
+    } else {
+      return this;
+    }
+  }
+
+  @Override
+  public void recordModification(final int latestSnapshotId) {
+    recordModification(latestSnapshotId, false);
+  }
+
+  public void recordModification(final int latestSnapshotId, boolean withBlocks) {
+    if (isInLatestSnapshot(latestSnapshotId)
+        && !shouldRecordInSrcSnapshot(latestSnapshotId)) {
+      // the file is in snapshot, create a snapshot feature if it does not have
+      FileWithSnapshotFeature sf = this.getFileWithSnapshotFeature();
+      if (sf == null) {
+        sf = addSnapshotFeature(null);
+      }
+      // record self in the diff list if necessary
+      sf.getDiffs().saveSelf2Snapshot(latestSnapshotId, this, null, withBlocks);
+    }
+  }
+
+  public FileDiffList getDiffs() {
+    FileWithSnapshotFeature sf = this.getFileWithSnapshotFeature();
+    if (sf != null) {
+      return sf.getDiffs();
+    }
+    return null;
+  }
+  
+  /* End of Snapshot Feature */
+
+  /** @return the replication factor of the file. */
+  public final short getFileReplication(int snapshot) {
+    if (snapshot != CURRENT_STATE_ID) {
+      return getSnapshotINode(snapshot).getFileReplication();
+    }
+    return HeaderFormat.getReplication(header);
+  }
+
+  /** The same as getFileReplication(null). */
+  @Override // INodeFileAttributes
+  // TODO properly handle striped files
+  public final short getFileReplication() {
+    return getFileReplication(CURRENT_STATE_ID);
+  }
+
+  public short getPreferredBlockReplication() {
+    short max = getFileReplication(CURRENT_STATE_ID);
+    FileWithSnapshotFeature sf = this.getFileWithSnapshotFeature();
+    if (sf != null) {
+      short maxInSnapshot = sf.getMaxBlockRepInDiffs(null);
+      if (sf.isCurrentFileDeleted()) {
+        return maxInSnapshot;
+      }
+      max = maxInSnapshot > max ? maxInSnapshot : max;
+    }
+    if(!isStriped()){
+      return max;
+    }
+    // TODO support more policies based on policyId
+    ErasureCodingPolicy ecPolicy =
+        ErasureCodingPolicyManager.getSystemDefaultPolicy();
+    return (short) (ecPolicy.getNumDataUnits() + ecPolicy.getNumParityUnits());
+  }
+
+  /** Set the replication factor of this file. */
+  private void setFileReplication(short replication) {
+    header = HeaderFormat.REPLICATION.BITS.combine(replication, header);
+  }
+
+  /** Set the replication factor of this file. */
+  public final INodeFile setFileReplication(short replication,
+      int latestSnapshotId) throws QuotaExceededException {
+    recordModification(latestSnapshotId);
+    setFileReplication(replication);
+    return this;
+  }
+
+  /** @return preferred block size (in bytes) of the file. */
+  @Override
+  public long getPreferredBlockSize() {
+    return HeaderFormat.getPreferredBlockSize(header);
+  }
+
+  @Override
+  public byte getLocalStoragePolicyID() {
+    return HeaderFormat.getStoragePolicyID(header);
+  }
+
+  @Override
+  public byte getStoragePolicyID() {
+    byte id = getLocalStoragePolicyID();
+    if (id == BLOCK_STORAGE_POLICY_ID_UNSPECIFIED) {
+      return this.getParent() != null ?
+          this.getParent().getStoragePolicyID() : id;
+    }
+    return id;
+  }
+
+  private void setStoragePolicyID(byte storagePolicyId) {
+    header = HeaderFormat.STORAGE_POLICY_ID.BITS.combine(storagePolicyId,
+        header);
+  }
+
+  public final void setStoragePolicyID(byte storagePolicyId,
+      int latestSnapshotId) throws QuotaExceededException {
+    recordModification(latestSnapshotId);
+    setStoragePolicyID(storagePolicyId);
+  }
+
+
+  /**
+   * @return The ID of the erasure coding policy on the file. 0 represents no
+   *          EC policy (file is in contiguous format). 1 represents the system
+   *          default EC policy:
+   *          {@link ErasureCodingPolicyManager#SYS_DEFAULT_POLICY}.
+   * TODO: support more policies by reusing {@link HeaderFormat#REPLICATION}.
+   */
+  @VisibleForTesting
+  @Override
+  public byte getErasureCodingPolicyID() {
+    return isStriped() ? (byte)1 : (byte)0;
+  }
+
+  /**
+   * @return true if the file is in the striping layout.
+   */
+  @VisibleForTesting
+  @Override
+  public boolean isStriped() {
+    return HeaderFormat.isStriped(header);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override // INodeFileAttributes
@@ -426,10 +783,19 @@ public class INodeFile extends INodeWithAdditionalFields
 
   /** @return blocks of the file corresponding to the snapshot. */
   public BlockInfo[] getBlocks(int snapshot) {
+<<<<<<< HEAD
     if(snapshot == CURRENT_STATE_ID || getDiffs() == null) {
       return getBlocks();
     }
     FileDiff diff = getDiffs().getDiffById(snapshot);
+=======
+    if (snapshot == CURRENT_STATE_ID || getDiffs() == null) {
+      return getBlocks();
+    }
+    // find blocks stored in snapshot diffs (for truncate)
+    FileDiff diff = getDiffs().getDiffById(snapshot);
+    // note that currently FileDiff can only store contiguous blocks
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     BlockInfo[] snapshotBlocks = diff == null ? getBlocks() : diff.getBlocks();
     if (snapshotBlocks != null) {
       return snapshotBlocks;
@@ -440,6 +806,7 @@ public class INodeFile extends INodeWithAdditionalFields
     return (snapshotBlocks == null) ? getBlocks() : snapshotBlocks;
   }
 
+<<<<<<< HEAD
   /** Used during concat to update the BlockCollection for each block. */
   private void updateBlockCollection() {
     if (blocks != null) {
@@ -456,6 +823,16 @@ public class INodeFile extends INodeWithAdditionalFields
     int size = this.blocks.length;
     int totalAddedBlocks = 0;
     for(INodeFile f : inodes) {
+=======
+  /**
+   * append array of blocks to this.blocks
+   */
+  void concatBlocks(INodeFile[] inodes, BlockManager bm) {
+    int size = this.blocks.length;
+    int totalAddedBlocks = 0;
+    for(INodeFile f : inodes) {
+      Preconditions.checkState(f.isStriped() == this.isStriped());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       totalAddedBlocks += f.blocks.length;
     }
     
@@ -469,13 +846,25 @@ public class INodeFile extends INodeWithAdditionalFields
     }
 
     setBlocks(newlist);
+<<<<<<< HEAD
     updateBlockCollection();
+=======
+    for(BlockInfo b : blocks) {
+      b.setBlockCollectionId(getId());
+      short oldRepl = b.getReplication();
+      short repl = getPreferredBlockReplication();
+      if (oldRepl != repl) {
+        bm.setReplication(oldRepl, repl, b);
+      }
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /**
    * add a block to the block list
    */
   void addBlock(BlockInfo newblock) {
+    Preconditions.checkArgument(newblock.isStriped() == this.isStriped());
     if (this.blocks == null) {
       this.setBlocks(new BlockInfo[]{newblock});
     } else {
@@ -547,6 +936,7 @@ public class INodeFile extends INodeWithAdditionalFields
     if (blocks != null && reclaimContext.collectedBlocks != null) {
       for (BlockInfo blk : blocks) {
         reclaimContext.collectedBlocks.addDeleteBlock(blk);
+<<<<<<< HEAD
         blk.setBlockCollection(null);
       }
     }
@@ -630,6 +1020,96 @@ public class INodeFile extends INodeWithAdditionalFields
         fileLen = computeFileSize();
       }
     }
+=======
+        blk.setBlockCollectionId(INodeId.INVALID_INODE_ID);
+      }
+    }
+    clearBlocks();
+    if (getAclFeature() != null) {
+      AclStorage.removeAclFeature(getAclFeature());
+    }
+    clear();
+    reclaimContext.removedINodes.add(this);
+  }
+
+  @Override
+  public String getName() {
+    // Get the full path name of this inode.
+    return getFullPathName();
+  }
+
+  // This is the only place that needs to use the BlockStoragePolicySuite to
+  // derive the intended storage type usage for quota by storage type
+  @Override
+  public final QuotaCounts computeQuotaUsage(BlockStoragePolicySuite bsps,
+      byte blockStoragePolicyId, boolean useCache, int lastSnapshotId) {
+    final QuotaCounts counts = new QuotaCounts.Builder().nameSpace(1).build();
+
+    final BlockStoragePolicy bsp = (blockStoragePolicyId ==
+        BLOCK_STORAGE_POLICY_ID_UNSPECIFIED) ? null :
+        bsps.getPolicy(blockStoragePolicyId);
+    FileWithSnapshotFeature sf = getFileWithSnapshotFeature();
+    if (sf == null) {
+      counts.add(storagespaceConsumed(bsp));
+      return counts;
+    }
+
+    FileDiffList fileDiffList = sf.getDiffs();
+    int last = fileDiffList.getLastSnapshotId();
+
+    if (lastSnapshotId == Snapshot.CURRENT_STATE_ID
+        || last == Snapshot.CURRENT_STATE_ID) {
+      counts.add(storagespaceConsumed(bsp));
+      return counts;
+    }
+
+    final long ssDeltaNoReplication;
+    short replication;
+    if (isStriped()) {
+      return computeQuotaUsageWithStriped(bsp, counts);
+    }
+
+    if (last < lastSnapshotId) {
+      ssDeltaNoReplication = computeFileSize(true, false);
+      replication = getFileReplication();
+    } else {
+      int sid = fileDiffList.getSnapshotById(lastSnapshotId);
+      ssDeltaNoReplication = computeFileSize(sid);
+      replication = getFileReplication(sid);
+    }
+
+    counts.addStorageSpace(ssDeltaNoReplication * replication);
+    if (bsp != null) {
+      List<StorageType> storageTypes = bsp.chooseStorageTypes(replication);
+      for (StorageType t : storageTypes) {
+        if (!t.supportTypeQuota()) {
+          continue;
+        }
+        counts.addTypeSpace(t, ssDeltaNoReplication);
+      }
+    }
+    return counts;
+  }
+
+  /**
+   * Compute quota of striped file. Note that currently EC files do not support
+   * append/hflush/hsync, thus the file length recorded in snapshots should be
+   * the same with the current file length.
+   */
+  public final QuotaCounts computeQuotaUsageWithStriped(
+      BlockStoragePolicy bsp, QuotaCounts counts) {
+    counts.addNameSpace(1);
+    counts.add(storagespaceConsumed(bsp));
+    return counts;
+  }
+
+  @Override
+  public final ContentSummaryComputationContext computeContentSummary(
+      int snapshotId, final ContentSummaryComputationContext summary) {
+    final ContentCounts counts = summary.getCounts();
+    counts.addContent(Content.FILE, 1);
+    final long fileLen = computeFileSize(snapshotId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     counts.addContent(Content.LENGTH, fileLen);
     counts.addContent(Content.DISKSPACE, storagespaceConsumed(null)
         .getStorageSpace());
@@ -656,6 +1136,7 @@ public class INodeFile extends INodeWithAdditionalFields
   /**
    * Compute file size of the current file if the given snapshot is null;
    * otherwise, get the file size from the given snapshot.
+<<<<<<< HEAD
    */
   public final long computeFileSize(int snapshotId) {
     FileWithSnapshotFeature sf = this.getFileWithSnapshotFeature();
@@ -672,6 +1153,24 @@ public class INodeFile extends INodeWithAdditionalFields
    * Compute file size of the current file size
    * but not including the last block if it is under construction.
    */
+=======
+   */
+  public final long computeFileSize(int snapshotId) {
+    FileWithSnapshotFeature sf = this.getFileWithSnapshotFeature();
+    if (snapshotId != CURRENT_STATE_ID && sf != null) {
+      final FileDiff d = sf.getDiffs().getDiffById(snapshotId);
+      if (d != null) {
+        return d.getFileSize();
+      }
+    }
+    return computeFileSize(true, false);
+  }
+
+  /**
+   * Compute file size of the current file size
+   * but not including the last block if it is under construction.
+   */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public final long computeFileSizeNotIncludingLastUcBlock() {
     return computeFileSize(false, false);
   }
@@ -695,6 +1194,7 @@ public class INodeFile extends INodeWithAdditionalFields
     }
     final int last = blocks.length - 1;
     //check if the last block is BlockInfoUnderConstruction
+<<<<<<< HEAD
     long size = blocks[last].getNumBytes();
     if (blocks[last] instanceof BlockInfoContiguousUnderConstruction) {
        if (!includesLastUcBlock) {
@@ -705,6 +1205,22 @@ public class INodeFile extends INodeWithAdditionalFields
     }
     //sum other blocks
     for(int i = 0; i < last; i++) {
+=======
+    BlockInfo lastBlk = blocks[last];
+    long size = lastBlk.getNumBytes();
+    if (!lastBlk.isComplete()) {
+       if (!includesLastUcBlock) {
+         size = 0;
+       } else if (usePreferredBlockSize4LastUcBlock) {
+         size = isStriped()?
+             getPreferredBlockSize() *
+                 ((BlockInfoStriped)lastBlk).getDataBlockNum() :
+             getPreferredBlockSize();
+       }
+    }
+    //sum other blocks
+    for (int i = 0; i < last; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       size += blocks[i].getNumBytes();
     }
     return size;
@@ -716,6 +1232,35 @@ public class INodeFile extends INodeWithAdditionalFields
    * Use preferred block size for the last block if it is under construction.
    */
   public final QuotaCounts storagespaceConsumed(BlockStoragePolicy bsp) {
+<<<<<<< HEAD
+=======
+    if (isStriped()) {
+      return storagespaceConsumedStriped();
+    } else {
+      return storagespaceConsumedContiguous(bsp);
+    }
+  }
+
+  // TODO: support EC with heterogeneous storage
+  public final QuotaCounts storagespaceConsumedStriped() {
+    QuotaCounts counts = new QuotaCounts.Builder().build();
+    if (blocks == null || blocks.length == 0) {
+      return counts;
+    }
+
+    for (BlockInfo b : blocks) {
+      Preconditions.checkState(b.isStriped());
+      long blockSize = b.isComplete() ?
+          ((BlockInfoStriped)b).spaceConsumed() : getPreferredBlockSize() *
+          ((BlockInfoStriped)b).getTotalBlockNum();
+      counts.addStorageSpace(blockSize);
+    }
+    return  counts;
+  }
+
+  public final QuotaCounts storagespaceConsumedContiguous(
+      BlockStoragePolicy bsp) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     QuotaCounts counts = new QuotaCounts.Builder().build();
     final Iterable<BlockInfo> blocks;
     FileWithSnapshotFeature sf = getFileWithSnapshotFeature();
@@ -792,6 +1337,7 @@ public class INodeFile extends INodeWithAdditionalFields
     final BlockInfo[] oldBlocks = getBlocks();
     if (oldBlocks == null) {
       return 0;
+<<<<<<< HEAD
     }
     // find the minimum n such that the size of the first n blocks > max
     int n = 0;
@@ -802,6 +1348,18 @@ public class INodeFile extends INodeWithAdditionalFields
     if (n >= oldBlocks.length) {
       return size;
     }
+=======
+    }
+    // find the minimum n such that the size of the first n blocks > max
+    int n = 0;
+    long size = 0;
+    for(; n < oldBlocks.length && max > size; n++) {
+      size += oldBlocks[n].getNumBytes();
+    }
+    if (n >= oldBlocks.length) {
+      return size;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // starting from block n, the data is beyond max.
     // resize the array.
@@ -819,6 +1377,10 @@ public class INodeFile extends INodeWithAdditionalFields
   /**
    * compute the quota usage change for a truncate op
    * @param newLength the length for truncation
+<<<<<<< HEAD
+=======
+   * TODO: properly handle striped blocks (HDFS-7622)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    **/
   void computeQuotaDeltaForTruncate(
       long newLength, BlockStoragePolicy bsps,
@@ -858,10 +1420,16 @@ public class INodeFile extends INodeWithAdditionalFields
         truncatedBytes -= bi.getNumBytes();
       }
 
+<<<<<<< HEAD
       delta.addStorageSpace(-truncatedBytes * getPreferredBlockReplication());
       if (bsps != null) {
         List<StorageType> types = bsps.chooseStorageTypes(
             getPreferredBlockReplication());
+=======
+      delta.addStorageSpace(-truncatedBytes * bi.getReplication());
+      if (bsps != null) {
+        List<StorageType> types = bsps.chooseStorageTypes(bi.getReplication());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         for (StorageType t : types) {
           if (t.supportTypeQuota()) {
             delta.addTypeSpace(t, -truncatedBytes);
@@ -883,8 +1451,20 @@ public class INodeFile extends INodeWithAdditionalFields
     setBlocks(newBlocks);
   }
 
+<<<<<<< HEAD
   public void collectBlocksBeyondSnapshot(BlockInfo[] snapshotBlocks,
                                           BlocksMapUpdateInfo collectedBlocks) {
+=======
+  /**
+   * This function is only called when block list is stored in snapshot
+   * diffs. Note that this can only happen when truncation happens with
+   * snapshots. Since we do not support truncation with striped blocks,
+   * we only need to handle contiguous blocks here.
+   */
+  public void collectBlocksBeyondSnapshot(BlockInfo[] snapshotBlocks,
+                                          BlocksMapUpdateInfo collectedBlocks) {
+    Preconditions.checkState(!isStriped());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     BlockInfo[] oldBlocks = getBlocks();
     if(snapshotBlocks == null || oldBlocks == null)
       return;

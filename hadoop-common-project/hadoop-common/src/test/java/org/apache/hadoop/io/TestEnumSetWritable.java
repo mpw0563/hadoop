@@ -18,15 +18,24 @@
 
 package org.apache.hadoop.io;
 
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+
+
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.lang.reflect.Type;
 
+<<<<<<< HEAD
 import junit.framework.TestCase;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /** Unit test for EnumSetWritable */
-public class TestEnumSetWritable extends TestCase {
+public class TestEnumSetWritable {
 
   enum TestEnumSet {
     CREATE, OVERWRITE, APPEND;
@@ -37,6 +46,7 @@ public class TestEnumSetWritable extends TestCase {
       new EnumSetWritable<TestEnumSet>(nonEmptyFlag);
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testSerializeAndDeserializeNonEmpty() throws IOException {
     DataOutputBuffer out = new DataOutputBuffer();
     ObjectWritable.writeObject(out, nonEmptyFlagWritable, nonEmptyFlagWritable
@@ -51,6 +61,7 @@ public class TestEnumSetWritable extends TestCase {
   EnumSet<TestEnumSet> emptyFlag = EnumSet.noneOf(TestEnumSet.class);
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testSerializeAndDeserializeEmpty() throws IOException {
 
     boolean gotException = false;
@@ -78,6 +89,7 @@ public class TestEnumSetWritable extends TestCase {
   }
 
   @SuppressWarnings("unchecked")
+  @Test
   public void testSerializeAndDeserializeNull() throws IOException {
 
     boolean gotException = false;
@@ -107,6 +119,7 @@ public class TestEnumSetWritable extends TestCase {
 
   public EnumSetWritable<TestEnumSet> testField;
 
+  @Test
   public void testAvroReflect() throws Exception {
     String schema = "{\"type\":\"array\",\"items\":{\"type\":\"enum\","
         + "\"name\":\"TestEnumSet\","
@@ -121,6 +134,10 @@ public class TestEnumSetWritable extends TestCase {
   /**
    * test {@link EnumSetWritable} equals() method
    */
+<<<<<<< HEAD
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testEnumSetWritableEquals() {
     EnumSetWritable<TestEnumSet> eset1 = new EnumSetWritable<TestEnumSet>(
         EnumSet.of(TestEnumSet.APPEND, TestEnumSet.CREATE), TestEnumSet.class);
@@ -139,6 +156,10 @@ public class TestEnumSetWritable extends TestCase {
    * test {@code EnumSetWritable.write(DataOutputBuffer out)} 
    *  and iteration by TestEnumSet through iterator().
    */
+<<<<<<< HEAD
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testEnumSetWritableWriteRead() throws Exception {
     EnumSetWritable<TestEnumSet> srcSet = new EnumSetWritable<TestEnumSet>(
         EnumSet.of(TestEnumSet.APPEND, TestEnumSet.CREATE), TestEnumSet.class);

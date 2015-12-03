@@ -18,6 +18,11 @@
 package org.apache.hadoop.security;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_USER_GROUP_METRICS_PERCENTILES_INTERVALS;
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_KERBEROS_MIN_SECONDS_BEFORE_RELOGIN;
+import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_KERBEROS_MIN_SECONDS_BEFORE_RELOGIN_DEFAULT;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.apache.hadoop.util.PlatformName.IBM_JAVA;
 
 import java.io.File;
@@ -238,12 +243,11 @@ public class UserGroupInformation {
   private static AuthenticationMethod authenticationMethod;
   /** Server-side groups fetching service */
   private static Groups groups;
+  /** Min time (in seconds) before relogin for Kerberos */
+  private static long kerberosMinSecondsBeforeRelogin;
   /** The configuration to use */
   private static Configuration conf;
 
-  
-  /** Leave 10 minutes between relogin attempts. */
-  private static final long MIN_TIME_BEFORE_RELOGIN = 10 * 60 * 1000L;
   
   /**Environment variable pointing to the token cache file*/
   public static final String HADOOP_TOKEN_FILE_LOCATION = 
@@ -277,6 +281,19 @@ public class UserGroupInformation {
         throw new RuntimeException(
             "Problem with Kerberos auth_to_local name configuration", ioe);
       }
+<<<<<<< HEAD
+=======
+    }
+    try {
+        kerberosMinSecondsBeforeRelogin = 1000L * conf.getLong(
+                HADOOP_KERBEROS_MIN_SECONDS_BEFORE_RELOGIN,
+                HADOOP_KERBEROS_MIN_SECONDS_BEFORE_RELOGIN_DEFAULT);
+    }
+    catch(NumberFormatException nfe) {
+        throw new IllegalArgumentException("Invalid attribute value for " +
+                HADOOP_KERBEROS_MIN_SECONDS_BEFORE_RELOGIN + " of " +
+                conf.get(HADOOP_KERBEROS_MIN_SECONDS_BEFORE_RELOGIN));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     // If we haven't set up testing groups, use the configuration to find it
     if (!(groups instanceof TestingGroups)) {
@@ -317,6 +334,10 @@ public class UserGroupInformation {
     authenticationMethod = null;
     conf = null;
     groups = null;
+<<<<<<< HEAD
+=======
+    kerberosMinSecondsBeforeRelogin = 0;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     setLoginUser(null);
     HadoopKerberosName.setRules(null);
   }
@@ -719,7 +740,11 @@ public class UserGroupInformation {
     }
   }
 
+<<<<<<< HEAD
    /**
+=======
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Create a UserGroupInformation from a Subject with Kerberos principal.
    *
    * @param user                The KerberosPrincipal to use in UGI
@@ -905,7 +930,7 @@ public class UserGroupInformation {
                   return;
                 }
                 nextRefresh = Math.max(getRefreshTime(tgt),
-                                       now + MIN_TIME_BEFORE_RELOGIN);
+                                       now + kerberosMinSecondsBeforeRelogin);
               } catch (InterruptedException ie) {
                 LOG.warn("Terminating renewal thread");
                 return;
@@ -1150,10 +1175,10 @@ public class UserGroupInformation {
   }
 
   private boolean hasSufficientTimeElapsed(long now) {
-    if (now - user.getLastLogin() < MIN_TIME_BEFORE_RELOGIN ) {
+    if (now - user.getLastLogin() < kerberosMinSecondsBeforeRelogin ) {
       LOG.warn("Not attempting to re-login since the last re-login was " +
-          "attempted less than " + (MIN_TIME_BEFORE_RELOGIN/1000) + " seconds"+
-          " before.");
+          "attempted less than " + (kerberosMinSecondsBeforeRelogin/1000) +
+          " seconds before.");
       return false;
     }
     return true;
@@ -1516,7 +1541,9 @@ public class UserGroupInformation {
         (groups.getGroups(getShortUserName()));
       return result.toArray(new String[result.size()]);
     } catch (IOException ie) {
-      LOG.warn("No groups available for user " + getShortUserName());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("No groups available for user " + getShortUserName());
+      }
       return new String[0];
     }
   }
@@ -1658,7 +1685,14 @@ public class UserGroupInformation {
       if (LOG.isDebugEnabled()) {
         LOG.debug("PrivilegedActionException as:" + this + " cause:" + cause);
       }
+<<<<<<< HEAD
       if (cause instanceof IOException) {
+=======
+      if (cause == null) {
+        throw new RuntimeException("PrivilegedActionException with no " +
+                "underlying cause. UGI [" + this + "]", pae);
+      } else if (cause instanceof IOException) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         throw (IOException) cause;
       } else if (cause instanceof Error) {
         throw (Error) cause;
@@ -1716,5 +1750,4 @@ public class UserGroupInformation {
       System.out.println("Keytab " + loginUser.isKeytab);
     }
   }
-
 }

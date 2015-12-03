@@ -32,8 +32,9 @@ import org.apache.commons.logging.LogFactory;
  * 
  * Note if one wants a time associated with the metric then use
  * @see org.apache.hadoop.metrics.util.MetricsTimeVaryingRate
- *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.LimitedPrivate({"HDFS", "MapReduce"})
 public class MetricsTimeVaryingLong extends MetricsBase{
 
@@ -95,6 +96,7 @@ public class MetricsTimeVaryingLong extends MetricsBase{
    *
    * @param mr
    */
+  @Override
   public synchronized void pushMetric(final MetricsRecord mr) {
     intervalHeartBeat();
     try {

@@ -41,7 +41,10 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.ipc.YarnRPC;
 import org.apache.hadoop.yarn.security.NMTokenIdentifier;
 import org.apache.hadoop.yarn.server.nodemanager.DeletionService;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Records;
 import org.junit.Assert;
@@ -67,7 +70,11 @@ public class TestNMProxy extends BaseContainerManagerTest {
   protected ContainerManagerImpl
       createContainerManager(DeletionService delSrvc) {
     return new ContainerManagerImpl(context, exec, delSrvc, nodeStatusUpdater,
+<<<<<<< HEAD
       metrics, new ApplicationACLsManager(conf), dirsHandler) {
+=======
+      metrics, dirsHandler) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       @Override
       public StartContainersResponse startContainers(

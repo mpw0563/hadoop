@@ -19,12 +19,20 @@
   <parent>
     <artifactId>hadoop-yarn</artifactId>
     <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-yarn-common</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>Apache Hadoop YARN Common</name>
 
   <properties>
@@ -215,6 +223,13 @@
             <exclude>src/main/resources/webapps/static/dt-1.9.4/css/demo_table.css</exclude>
             <exclude>src/main/resources/webapps/static/dt-1.9.4/images/Sorting icons.psd</exclude>
             <exclude>src/main/resources/webapps/static/jquery/themes-1.9.1/base/jquery-ui.css</exclude>
+<<<<<<< HEAD
+=======
+            <exclude>src/test/resources/application_1440536969523_0001.har/_index</exclude>
+            <exclude>src/test/resources/application_1440536969523_0001.har/part-0</exclude>
+            <exclude>src/test/resources/application_1440536969523_0001.har/_masterindex</exclude>
+            <exclude>src/test/resources/application_1440536969523_0001.har/_SUCCESS</exclude>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           </excludes>
         </configuration>
       </plugin>

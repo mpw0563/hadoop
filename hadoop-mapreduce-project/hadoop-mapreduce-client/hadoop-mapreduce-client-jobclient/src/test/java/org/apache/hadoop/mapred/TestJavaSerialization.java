@@ -81,7 +81,11 @@ public class TestJavaSerialization extends TestCase {
   }
 
   private void cleanAndCreateInput(FileSystem fs) throws IOException {
+<<<<<<< HEAD
     fs.delete(INPUT_FILE, true);
+=======
+    fs.delete(INPUT_DIR, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     fs.delete(OUTPUT_DIR, true);
 
     OutputStream os = fs.create(INPUT_FILE);

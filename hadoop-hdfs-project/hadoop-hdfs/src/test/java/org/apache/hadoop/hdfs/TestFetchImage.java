@@ -70,7 +70,11 @@ public class TestFetchImage {
       
       cluster.getNameNodeRpc()
           .setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
+<<<<<<< HEAD
       cluster.getNameNodeRpc().saveNamespace();
+=======
+      cluster.getNameNodeRpc().saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       cluster.getNameNodeRpc()
           .setSafeMode(SafeModeAction.SAFEMODE_LEAVE, false);
       

@@ -146,7 +146,15 @@ public abstract class QueuePlacementRule {
     protected String getQueueForApp(String requestedQueue, String user,
         Groups groups, Map<FSQueueType, Set<String>> configuredQueues)
         throws IOException {
+<<<<<<< HEAD
       return "root." + cleanName(groups.getGroups(user).get(0));
+=======
+      final List<String> groupList = groups.getGroups(user);
+      if (groupList.isEmpty()) {
+        throw new IOException("No groups returned for user " + user);
+      }
+      return "root." + cleanName(groupList.get(0));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     
     @Override

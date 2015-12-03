@@ -489,9 +489,12 @@ public class TestJobHistoryEventHandler {
     TestParams t = new TestParams(false);
     Configuration conf = new YarnConfiguration();
     conf.setBoolean(YarnConfiguration.TIMELINE_SERVICE_ENABLED, true);
+<<<<<<< HEAD
     conf.setBoolean(MRJobConfig.MAPREDUCE_JOB_EMIT_TIMELINE_DATA, true);
     JHEvenHandlerForTest jheh = new JHEvenHandlerForTest(t.mockAppContext, 0);
     jheh.init(conf);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MiniYARNCluster yarnCluster = null;
     long currentTime = System.currentTimeMillis();
     try {
@@ -499,6 +502,16 @@ public class TestJobHistoryEventHandler {
             TestJobHistoryEventHandler.class.getSimpleName(), 1, 1, 1, 1);
       yarnCluster.init(conf);
       yarnCluster.start();
+<<<<<<< HEAD
+=======
+      Configuration confJHEH = new YarnConfiguration(conf);
+      confJHEH.setBoolean(MRJobConfig.MAPREDUCE_JOB_EMIT_TIMELINE_DATA, true);
+      confJHEH.set(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+          MiniYARNCluster.getHostname() + ":" +
+          yarnCluster.getApplicationHistoryServer().getPort());
+      JHEvenHandlerForTest jheh = new JHEvenHandlerForTest(t.mockAppContext, 0);
+      jheh.init(confJHEH);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       jheh.start();
       TimelineStore ts = yarnCluster.getApplicationHistoryServer()
               .getTimelineStore();

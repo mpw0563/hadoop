@@ -30,7 +30,10 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.hdfs.protocol.QuotaExceededException;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockStoragePolicySuite;
 import org.apache.hadoop.hdfs.server.namenode.AclStorage;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.namenode.Content;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.ContentCounts;
 import org.apache.hadoop.hdfs.server.namenode.ContentSummaryComputationContext;
 import org.apache.hadoop.hdfs.server.namenode.FSImageSerialization;
@@ -628,13 +631,20 @@ public class DirectoryWithSnapshotFeature implements INode.Feature {
         new ContentSummaryComputationContext(bsps);
     for(DirectoryDiff d : diffs) {
       for(INode deleted : d.getChildrenDiff().getList(ListType.DELETED)) {
+<<<<<<< HEAD
         deleted.computeContentSummary(summary);
+=======
+        deleted.computeContentSummary(Snapshot.CURRENT_STATE_ID, summary);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
     // Add the counts from deleted trees.
     counts.addContents(summary.getCounts());
+<<<<<<< HEAD
     // Add the deleted directory count.
     counts.addContent(Content.DIRECTORY, diffs.asList().size());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /**

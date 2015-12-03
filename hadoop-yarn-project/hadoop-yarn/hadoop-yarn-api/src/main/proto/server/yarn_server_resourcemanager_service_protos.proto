@@ -76,6 +76,15 @@ message UpdateNodeResourceRequestProto {
 message UpdateNodeResourceResponseProto {
 }
 
+<<<<<<< HEAD
+=======
+message RefreshNodesResourcesRequestProto {
+}
+
+message RefreshNodesResourcesResponseProto {
+}
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 message AddToClusterNodeLabelsRequestProto {
   repeated NodeLabelProto nodeLabels = 1;
 }
@@ -107,6 +116,14 @@ message CheckForDecommissioningNodesResponseProto {
   repeated NodeIdProto decommissioningNodes = 1;
 }
 
+<<<<<<< HEAD
+=======
+message RefreshClusterMaxPriorityRequestProto {
+}
+message RefreshClusterMaxPriorityResponseProto {
+}
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 message NodeIdToLabelsNameProto {
   optional NodeIdProto nodeId = 1;
   repeated string nodeLabels = 2;

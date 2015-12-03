@@ -54,6 +54,11 @@ By default `HDFS` endpoints are specified as either hostnames or IP addresses. I
 
 The solution is to have separate setting for server endpoints to force binding the wildcard IP address `INADDR_ANY` i.e. `0.0.0.0`. Do NOT supply a port number with any of these settings.
 
+<<<<<<< HEAD
+=======
+**NOTE:** Prefer using hostnames over IP addresses in master/slave configuration files.
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <property>
       <name>dfs.namenode.rpc-bind-host</name>
       <value>0.0.0.0</value>

@@ -70,7 +70,12 @@ public class FSLeafQueue extends FSQueue {
   private Resource amResourceUsage;
 
   private final ActiveUsersManager activeUsersManager;
+<<<<<<< HEAD
   
+=======
+  public static final List<FSQueue> EMPTY_LIST = Collections.emptyList();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public FSLeafQueue(String name, FairScheduler scheduler,
       FSParentQueue parent) {
     super(name, scheduler, parent);
@@ -383,7 +388,11 @@ public class FSLeafQueue extends FSQueue {
 
   @Override
   public List<FSQueue> getChildQueues() {
+<<<<<<< HEAD
     return new ArrayList<FSQueue>(1);
+=======
+    return EMPTY_LIST;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @Override

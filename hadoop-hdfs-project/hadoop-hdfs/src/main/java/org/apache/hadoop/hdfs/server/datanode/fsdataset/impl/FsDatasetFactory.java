@@ -22,12 +22,20 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 import org.apache.hadoop.hdfs.server.datanode.DataStorage;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.datanode.dataset.DatasetSpi;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
 
 /**
  * A factory for creating {@link FsDatasetImpl} objects.
  */
+<<<<<<< HEAD
 public class FsDatasetFactory extends FsDatasetSpi.Factory<FsDatasetImpl> {
+=======
+public class FsDatasetFactory extends DatasetSpi.Factory {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public FsDatasetImpl newInstance(DataNode datanode,
       DataStorage storage, Configuration conf) throws IOException {

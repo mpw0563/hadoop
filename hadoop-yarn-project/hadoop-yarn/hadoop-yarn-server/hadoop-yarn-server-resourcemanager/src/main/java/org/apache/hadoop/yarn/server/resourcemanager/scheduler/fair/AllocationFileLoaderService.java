@@ -202,7 +202,12 @@ public class AllocationFileLoaderService extends AbstractService {
    * @throws SAXException if config file is malformed.
    */
   public synchronized void reloadAllocations() throws IOException,
+<<<<<<< HEAD
       ParserConfigurationException, SAXException, AllocationConfigurationException {
+=======
+      ParserConfigurationException, SAXException,
+      AllocationConfigurationException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (allocFile == null) {
       return;
     }
@@ -225,6 +230,10 @@ public class AllocationFileLoaderService extends AbstractService {
     Set<String> reservableQueues = new HashSet<String>();
     int userMaxAppsDefault = Integer.MAX_VALUE;
     int queueMaxAppsDefault = Integer.MAX_VALUE;
+<<<<<<< HEAD
+=======
+    Resource queueMaxResourcesDefault = Resources.unbounded();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     float queueMaxAMShareDefault = 0.5f;
     long defaultFairSharePreemptionTimeout = Long.MAX_VALUE;
     long defaultMinSharePreemptionTimeout = Long.MAX_VALUE;
@@ -282,6 +291,14 @@ public class AllocationFileLoaderService extends AbstractService {
               userMaxApps.put(userName, val);
             }
           }
+<<<<<<< HEAD
+=======
+        } else if ("queueMaxResourcesDefault".equals(element.getTagName())) {
+          String text = ((Text)element.getFirstChild()).getData().trim();
+          Resource val =
+              FairSchedulerConfiguration.parseResourceConfigValue(text);
+          queueMaxResourcesDefault = val;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         } else if ("userMaxAppsDefault".equals(element.getTagName())) {
           String text = ((Text)element.getFirstChild()).getData().trim();
           int val = Integer.parseInt(text);
@@ -398,9 +415,15 @@ public class AllocationFileLoaderService extends AbstractService {
     AllocationConfiguration info = new AllocationConfiguration(minQueueResources,
         maxQueueResources, queueMaxApps, userMaxApps, queueWeights,
         queueMaxAMShares, userMaxAppsDefault, queueMaxAppsDefault,
+<<<<<<< HEAD
         queueMaxAMShareDefault, queuePolicies, defaultSchedPolicy,
         minSharePreemptionTimeouts, fairSharePreemptionTimeouts,
         fairSharePreemptionThresholds, queueAcls,
+=======
+        queueMaxResourcesDefault, queueMaxAMShareDefault, queuePolicies,
+        defaultSchedPolicy, minSharePreemptionTimeouts,
+        fairSharePreemptionTimeouts, fairSharePreemptionThresholds, queueAcls,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         newPlacementPolicy, configuredQueues, globalReservationQueueConfig,
         reservableQueues);
     

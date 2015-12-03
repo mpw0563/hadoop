@@ -28,6 +28,10 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSUtil;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.UserGroupInformation;
 
 import com.google.common.base.Joiner;
@@ -80,6 +84,17 @@ class BlockPoolManager {
   synchronized List<BPOfferService> getAllNamenodeThreads() {
     return Collections.unmodifiableList(offerServices);
   }
+<<<<<<< HEAD
+=======
+
+  synchronized List<NamespaceInfo> getAllNamespaceInfos() {
+    List<NamespaceInfo> nsInfos = new ArrayList<>();
+    for (final BPOfferService bpos : getAllNamenodeThreads()) {
+      nsInfos.add(bpos.getNamespaceInfo());
+    }
+    return nsInfos;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       
   synchronized BPOfferService get(String bpid) {
     return bpByBlockPoolId.get(bpid);

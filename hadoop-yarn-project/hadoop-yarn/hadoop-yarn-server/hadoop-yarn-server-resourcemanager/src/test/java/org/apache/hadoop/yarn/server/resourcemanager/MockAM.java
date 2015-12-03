@@ -34,6 +34,10 @@ import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterRespo
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.ContainerResourceChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
@@ -235,6 +239,17 @@ public class MockAM {
           releases, null);
     return allocate(req);
   }
+<<<<<<< HEAD
+=======
+  
+  public AllocateResponse sendContainerResizingRequest(
+      List<ContainerResourceChangeRequest> increaseRequests,
+      List<ContainerResourceChangeRequest> decreaseRequests) throws Exception {
+    final AllocateRequest req = AllocateRequest.newInstance(0, 0F, null, null,
+        null, increaseRequests, decreaseRequests);
+    return allocate(req);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public AllocateResponse allocate(AllocateRequest allocateRequest)
             throws Exception {

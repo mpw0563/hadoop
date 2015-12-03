@@ -40,7 +40,11 @@ public class DurationStats {
   }
 
   /**
+<<<<<<< HEAD
    * construct from anothr stats entry;
+=======
+   * construct from another stats entry;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * all value are copied.
    * @param that the source statistics
    */

@@ -22,7 +22,11 @@ import java.net.HttpURLConnection;
 /** Http GET operation parameter. */
 public class GetOpParam extends HttpOpParam<GetOpParam.Op> {
   /** Get operations. */
+<<<<<<< HEAD
   public static enum Op implements HttpOpParam.Op {
+=======
+  public enum Op implements HttpOpParam.Op {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     OPEN(true, HttpURLConnection.HTTP_OK),
 
     GETFILESTATUS(false, HttpURLConnection.HTTP_OK),
@@ -52,7 +56,11 @@ public class GetOpParam extends HttpOpParam<GetOpParam.Op> {
     }
 
     Op(final boolean redirect, final int expectedHttpResponseCode,
+<<<<<<< HEAD
        final boolean requireAuth) {
+=======
+        final boolean requireAuth) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.redirect = redirect;
       this.expectedHttpResponseCode = expectedHttpResponseCode;
       this.requireAuth = requireAuth;
@@ -89,7 +97,11 @@ public class GetOpParam extends HttpOpParam<GetOpParam.Op> {
     }
   }
 
+<<<<<<< HEAD
   private static final Domain<Op> DOMAIN = new Domain<Op>(NAME, Op.class);
+=======
+  private static final Domain<Op> DOMAIN = new Domain<>(NAME, Op.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Constructor.
@@ -103,4 +115,8 @@ public class GetOpParam extends HttpOpParam<GetOpParam.Op> {
   public String getName() {
     return NAME;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

@@ -28,16 +28,31 @@ import org.apache.hadoop.security.AuthenticationFilterInitializer;
 import org.apache.hadoop.service.Service.STATE;
 import org.apache.hadoop.util.ExitUtil;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.applicationhistoryservice.webapp.AHSWebApp;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.timeline.MemoryTimelineStore;
 import org.apache.hadoop.yarn.server.timeline.TimelineStore;
 import org.apache.hadoop.yarn.server.timeline.recovery.MemoryTimelineStateStore;
 import org.apache.hadoop.yarn.server.timeline.recovery.TimelineStateStore;
 import org.apache.hadoop.yarn.server.timeline.security.TimelineAuthenticationFilterInitializer;
+<<<<<<< HEAD
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+=======
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.HashMap;
 import java.util.Map;
 
@@ -138,8 +153,13 @@ public class TestApplicationHistoryServer {
     HashMap<String, String> driver = new HashMap<String, String>();
     driver.put("", TimelineAuthenticationFilterInitializer.class.getName());
     driver.put(StaticUserWebFilter.class.getName(),
+<<<<<<< HEAD
       TimelineAuthenticationFilterInitializer.class.getName() + ","
           + StaticUserWebFilter.class.getName());
+=======
+        StaticUserWebFilter.class.getName() + "," +
+            TimelineAuthenticationFilterInitializer.class.getName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     driver.put(AuthenticationFilterInitializer.class.getName(),
       TimelineAuthenticationFilterInitializer.class.getName());
     driver.put(TimelineAuthenticationFilterInitializer.class.getName(),
@@ -173,4 +193,52 @@ public class TestApplicationHistoryServer {
     }
   }
 
+<<<<<<< HEAD
+=======
+  @Test(timeout = 240000)
+  public void testHostedUIs() throws Exception {
+
+    ApplicationHistoryServer historyServer = new ApplicationHistoryServer();
+    Configuration config = new YarnConfiguration();
+    config.setClass(YarnConfiguration.TIMELINE_SERVICE_STORE,
+        MemoryTimelineStore.class, TimelineStore.class);
+    config.setClass(YarnConfiguration.TIMELINE_SERVICE_STATE_STORE_CLASS,
+        MemoryTimelineStateStore.class, TimelineStateStore.class);
+    config.set(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+        "localhost:0");
+    final String UI1 = "UI1";
+    String connFileStr = "";
+
+    File diskFile = new File("./pom.xml");
+    String diskFileStr = readInputStream(new FileInputStream(diskFile));
+    try {
+      config.set(YarnConfiguration.TIMELINE_SERVICE_UI_NAMES, UI1);
+      config.set(YarnConfiguration.TIMELINE_SERVICE_UI_WEB_PATH_PREFIX + UI1,
+          "/" + UI1);
+      config.set(YarnConfiguration.TIMELINE_SERVICE_UI_ON_DISK_PATH_PREFIX
+          + UI1, "./");
+      historyServer.init(config);
+      historyServer.start();
+      URL url = new URL("http://localhost:" + historyServer.getPort() + "/"
+          + UI1 + "/pom.xml");
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.connect();
+      assertEquals(HttpURLConnection.HTTP_OK, conn.getResponseCode());
+      connFileStr = readInputStream(conn.getInputStream());
+    } finally {
+      historyServer.stop();
+    }
+    assertEquals("Web file contents should be the same as on disk contents",
+        diskFileStr, connFileStr);
+  }
+  private String readInputStream(InputStream input) throws Exception {
+    ByteArrayOutputStream data = new ByteArrayOutputStream();
+    byte[] buffer = new byte[512];
+    int read;
+    while ((read = input.read(buffer)) >= 0) {
+      data.write(buffer, 0, read);
+    }
+    return new String(data.toByteArray(), "UTF-8");
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

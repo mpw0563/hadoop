@@ -116,6 +116,7 @@ public class NullRMStateStore extends RMStateStore {
   }
 
   @Override
+<<<<<<< HEAD
   protected void updateReservationState(
       ReservationAllocationStateProto reservationAllocation, String planName,
       String reservationIdName) throws Exception {
@@ -123,6 +124,8 @@ public class NullRMStateStore extends RMStateStore {
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void removeRMDTMasterKeyState(DelegationKey delegationKey) throws Exception {
     // Do nothing
   }
@@ -175,7 +178,10 @@ public class NullRMStateStore extends RMStateStore {
   public void removeApplication(ApplicationId removeAppId) throws Exception {
     // Do nothing
   }
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

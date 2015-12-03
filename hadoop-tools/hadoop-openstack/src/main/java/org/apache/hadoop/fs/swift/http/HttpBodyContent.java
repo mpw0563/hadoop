@@ -26,7 +26,11 @@ public class HttpBodyContent {
 
   /**
    * build a body response
+<<<<<<< HEAD
    * @param inputStream input stream from the operatin
+=======
+   * @param inputStream input stream from the operation
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param contentLength length of content; may be -1 for "don't know"
    */
   public HttpBodyContent(HttpInputStreamWithRelease inputStream,

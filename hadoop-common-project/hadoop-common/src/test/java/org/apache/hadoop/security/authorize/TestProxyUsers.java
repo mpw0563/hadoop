@@ -187,12 +187,21 @@ public class TestProxyUsers {
         .createRemoteUser(REAL_USER_NAME);
     UserGroupInformation proxyUserUgi = UserGroupInformation.createProxyUserForTesting(
         AUTHORIZED_PROXY_USER_NAME, realUserUgi, GROUP_NAMES);
+<<<<<<< HEAD
 
     // From good IP
     assertAuthorized(proxyUserUgi, "1.2.3.4");
     // From bad IP
     assertNotAuthorized(proxyUserUgi, "1.2.3.5");
 
+=======
+
+    // From good IP
+    assertAuthorized(proxyUserUgi, "1.2.3.4");
+    // From bad IP
+    assertNotAuthorized(proxyUserUgi, "1.2.3.5");
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Now try proxying a user that's not allowed
     realUserUgi = UserGroupInformation.createRemoteUser(REAL_USER_NAME);
     proxyUserUgi = UserGroupInformation.createProxyUserForTesting(
@@ -334,6 +343,48 @@ public class TestProxyUsers {
     assertNotAuthorized(proxyUserUgi, "10.221.0.0");
   }
 
+<<<<<<< HEAD
+=======
+  @Test(expected = IllegalArgumentException.class)
+  public void testNullUser() throws Exception {
+    Configuration conf = new Configuration();
+    conf.set(
+        DefaultImpersonationProvider.getTestProvider().
+            getProxySuperuserGroupConfKey(REAL_USER_NAME),
+        "*");
+    conf.set(
+        DefaultImpersonationProvider.getTestProvider().
+            getProxySuperuserIpConfKey(REAL_USER_NAME),
+        PROXY_IP_RANGE);
+    ProxyUsers.refreshSuperUserGroupsConfiguration(conf);
+    // user is null
+    ProxyUsers.authorize(null, "10.222.0.0");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testNullIpAddress() throws Exception {
+    Configuration conf = new Configuration();
+    conf.set(
+        DefaultImpersonationProvider.getTestProvider().
+            getProxySuperuserGroupConfKey(REAL_USER_NAME),
+        "*");
+    conf.set(
+        DefaultImpersonationProvider.getTestProvider().
+            getProxySuperuserIpConfKey(REAL_USER_NAME),
+        PROXY_IP_RANGE);
+    ProxyUsers.refreshSuperUserGroupsConfiguration(conf);
+
+    // First try proxying a group that's allowed
+    UserGroupInformation realUserUgi = UserGroupInformation
+        .createRemoteUser(REAL_USER_NAME);
+    UserGroupInformation proxyUserUgi = UserGroupInformation.createProxyUserForTesting(
+        PROXY_USER_NAME, realUserUgi, GROUP_NAMES);
+
+    // remote address is null
+    ProxyUsers.authorize(proxyUserUgi, null);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testWithDuplicateProxyGroups() throws Exception {
     Configuration conf = new Configuration();
@@ -508,6 +559,7 @@ public class TestProxyUsers {
       ProxyUsers.authorize(proxyUgi, host);
     } catch (AuthorizationException e) {
       fail("Did not allow authorization of " + proxyUgi + " from " + host);
+<<<<<<< HEAD
     }
   }
 
@@ -612,4 +664,110 @@ public class TestProxyUsers {
     }
   }
 
+=======
+    }
+  }
+
+  static class TestDummyImpersonationProvider implements ImpersonationProvider {
+
+    @Override
+    public void init(String configurationPrefix) {
+    }
+
+    /**
+     * Authorize a user (superuser) to impersonate another user (user1) if the 
+     * superuser belongs to the group "sudo_user1" .
+     */
+
+    public void authorize(UserGroupInformation user, 
+        String remoteAddress) throws AuthorizationException{
+      UserGroupInformation superUser = user.getRealUser();
+
+      String sudoGroupName = "sudo_" + user.getShortUserName();
+      if (!Arrays.asList(superUser.getGroupNames()).contains(sudoGroupName)){
+        throw new AuthorizationException("User: " + superUser.getUserName()
+            + " is not allowed to impersonate " + user.getUserName());
+      }
+    }
+
+    @Override
+    public void setConf(Configuration conf) {
+
+    }
+
+    @Override
+    public Configuration getConf() {
+      return null;
+    }
+  }
+  
+  public static void loadTest(String ipString, int testRange) {
+    Configuration conf = new Configuration();
+    conf.set(
+        DefaultImpersonationProvider.getTestProvider().
+            getProxySuperuserGroupConfKey(REAL_USER_NAME),
+        StringUtils.join(",", Arrays.asList(GROUP_NAMES)));
+
+    conf.set(
+        DefaultImpersonationProvider.getTestProvider().
+            getProxySuperuserIpConfKey(REAL_USER_NAME),
+        ipString
+        );
+    ProxyUsers.refreshSuperUserGroupsConfiguration(conf);
+
+
+    // First try proxying a group that's allowed
+    UserGroupInformation realUserUgi = UserGroupInformation
+        .createRemoteUser(REAL_USER_NAME);
+    UserGroupInformation proxyUserUgi = UserGroupInformation.createProxyUserForTesting(
+        PROXY_USER_NAME, realUserUgi, GROUP_NAMES);
+
+    long startTime = System.nanoTime();
+    SecureRandom sr = new SecureRandom();
+    for (int i=1; i < 1000000; i++){
+      try {
+        ProxyUsers.authorize(proxyUserUgi,  "1.2.3."+ sr.nextInt(testRange));
+       } catch (AuthorizationException e) {
+      }
+    }
+    long stopTime = System.nanoTime();
+    long elapsedTime = stopTime - startTime;
+    System.out.println(elapsedTime/1000000 + " ms");
+  }
+  
+  /**
+   * invokes the load Test
+   * A few sample invocations  are as below
+   * TestProxyUsers ip 128 256
+   * TestProxyUsers range 1.2.3.0/25 256
+   * TestProxyUsers ip 4 8
+   * TestProxyUsers range 1.2.3.0/30 8
+   * @param args
+   */
+  public static void main (String[] args){
+    String ipValues = null;
+
+    if (args.length != 3 || (!args[0].equals("ip") && !args[0].equals("range"))) {
+      System.out.println("Invalid invocation. The right syntax is ip/range <numberofIps/cidr> <testRange>");
+    }
+    else {
+      if (args[0].equals("ip")){
+        int numberOfIps =  Integer.parseInt(args[1]);
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i < numberOfIps; i++){
+          sb.append("1.2.3."+ i + ",");
+        }
+        ipValues = sb.toString();
+      }
+      else if (args[0].equals("range")){
+        ipValues = args[1];
+      }
+
+      int testRange = Integer.parseInt(args[2]);
+
+      loadTest(ipValues, testRange);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -42,7 +42,10 @@ import org.apache.hadoop.yarn.event.Event;
 import org.apache.hadoop.yarn.event.EventHandler;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.RMActiveServiceContext;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContextImpl;
 import org.apache.hadoop.yarn.server.resourcemanager.ahs.RMApplicationHistoryWriter;
@@ -103,7 +106,11 @@ public class TestUtils {
           new AMRMTokenSecretManager(conf, null),
           new RMContainerTokenSecretManager(conf),
           new NMTokenSecretManagerInRM(conf),
+<<<<<<< HEAD
           new ClientToAMTokenSecretManagerInRM(), writer);
+=======
+          new ClientToAMTokenSecretManagerInRM());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     RMNodeLabelsManager nlm = mock(RMNodeLabelsManager.class);
     when(
         nlm.getQueueResource(any(String.class), any(Set.class),
@@ -117,8 +124,13 @@ public class TestUtils {
     
     when(nlm.getResourceByLabel(any(String.class), any(Resource.class)))
         .thenAnswer(new Answer<Resource>() {
+<<<<<<< HEAD
           @Override
           public Resource answer(InvocationOnMock invocation) throws Throwable {
+=======
+          @Override public Resource answer(InvocationOnMock invocation)
+              throws Throwable {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             Object[] args = invocation.getArguments();
             return (Resource) args[1];
           }
@@ -126,7 +138,11 @@ public class TestUtils {
     
     rmContext.setNodeLabelManager(nlm);
     rmContext.setSystemMetricsPublisher(mock(SystemMetricsPublisher.class));
+<<<<<<< HEAD
 
+=======
+    rmContext.setRMApplicationHistoryWriter(mock(RMApplicationHistoryWriter.class));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ResourceScheduler mockScheduler = mock(ResourceScheduler.class);
     when(mockScheduler.getResourceCalculator()).thenReturn(
         new DefaultResourceCalculator());
@@ -222,6 +238,7 @@ public class TestUtils {
     when(container.getPriority()).thenReturn(priority);
     return container;
   }
+<<<<<<< HEAD
   
   @SuppressWarnings("unchecked")
   private static <E> Set<E> toSet(E... elements) {
@@ -229,6 +246,15 @@ public class TestUtils {
     return set;
   }
   
+=======
+
+  @SuppressWarnings("unchecked")
+  public static <E> Set<E> toSet(E... elements) {
+    Set<E> set = Sets.newHashSet(elements);
+    return set;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Get a queue structure:
    * <pre>

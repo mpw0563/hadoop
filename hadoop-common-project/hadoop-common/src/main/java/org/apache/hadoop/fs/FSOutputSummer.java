@@ -21,8 +21,12 @@ package org.apache.hadoop.fs;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.util.DataChecksum;
+<<<<<<< HEAD
 import org.apache.htrace.NullScope;
 import org.apache.htrace.TraceScope;
+=======
+import org.apache.htrace.core.TraceScope;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -92,7 +96,7 @@ abstract public class FSOutputSummer extends OutputStream {
    * in a checksum chunk are in the buffer.  If the buffer is empty and
    * requested length is at least as large as the size of next checksum chunk
    * size, this method will checksum and write the chunk directly 
-   * to the underlying output stream.  Thus it avoids uneccessary data copy.
+   * to the underlying output stream.  Thus it avoids unnecessary data copy.
    *
    * @param      b     the data.
    * @param      off   the start offset in the data.
@@ -196,8 +200,17 @@ abstract public class FSOutputSummer extends OutputStream {
     return sum.getChecksumSize();
   }
 
+<<<<<<< HEAD
   protected TraceScope createWriteTraceScope() {
     return NullScope.INSTANCE;
+=======
+  protected DataChecksum getDataChecksum() {
+    return sum;
+  }
+
+  protected TraceScope createWriteTraceScope() {
+    return null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Generate checksums for the given data chunks and output chunks & checksums
@@ -215,7 +228,13 @@ abstract public class FSOutputSummer extends OutputStream {
             getChecksumSize());
       }
     } finally {
+<<<<<<< HEAD
       scope.close();
+=======
+      if (scope != null) {
+        scope.close();
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 

@@ -37,6 +37,7 @@ import javax.security.auth.login.LoginContext;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -61,6 +62,7 @@ public class TestUserGroupInformation {
   // Rollover interval of percentile metrics (in seconds)
   private static final int PERCENTILES_INTERVAL = 1;
   private static Configuration conf;
+<<<<<<< HEAD
  
   /**
    * UGI should not use the default security conf, else it will collide
@@ -77,6 +79,24 @@ public class TestUserGroupInformation {
     } 
   }
   
+=======
+  
+  /**
+   * UGI should not use the default security conf, else it will collide
+   * with other classes that may change the default conf.  Using this dummy
+   * class that simply throws an exception will ensure that the tests fail
+   * if UGI uses the static default config instead of its own config
+   */
+  private static class DummyLoginConfiguration extends
+    javax.security.auth.login.Configuration
+  {
+    @Override
+    public AppConfigurationEntry[] getAppConfigurationEntry(String name) {
+      throw new RuntimeException("UGI is not using its own security conf!");
+    } 
+  }
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** configure ugi */
   @BeforeClass
   public static void setup() {
@@ -217,7 +237,12 @@ public class TestUserGroupInformation {
     }
     // get the groups
     pp = Runtime.getRuntime().exec(Shell.WINDOWS ?
+<<<<<<< HEAD
       Shell.WINUTILS + " groups -F" : "id -Gn");
+=======
+      Shell.getWinUtilsPath() + " groups -F"
+      : "id -Gn");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     br = new BufferedReader(new InputStreamReader(pp.getInputStream()));
     String line = br.readLine();
 
@@ -456,6 +481,22 @@ public class TestUserGroupInformation {
     when(t1.getService()).thenReturn(new Text("t1"));
     ugi.addToken(t1);
     checkTokens(ugi, t1, t2);
+<<<<<<< HEAD
+  
+    // overwrite t1 token with t3 - same key (!null)
+    when(t3.getService()).thenReturn(new Text("t1"));
+    ugi.addToken(t3);
+    checkTokens(ugi, t2, t3);
+
+    // just try to re-add with new name
+    when(t1.getService()).thenReturn(new Text("t1.1"));
+    ugi.addToken(t1);
+    checkTokens(ugi, t1, t2, t3);    
+
+    // just try to re-add with new name again
+    ugi.addToken(t1);
+    checkTokens(ugi, t1, t2, t3);    
+=======
   
     // overwrite t1 token with t3 - same key (!null)
     when(t3.getService()).thenReturn(new Text("t1"));
@@ -549,10 +590,93 @@ public class TestUserGroupInformation {
       assertSame(t, ugiCreds.getToken(t.getService()));
     }
     assertEquals(tokens.length, ugiCreds.numberOfTokens());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @SuppressWarnings("unchecked") // from Mockito mocks
   @Test (timeout = 30000)
+<<<<<<< HEAD
+  public <T extends TokenIdentifier> void testGetCreds() throws Exception {
+    UserGroupInformation ugi = 
+        UserGroupInformation.createRemoteUser("someone"); 
+    
+    Text service = new Text("service");
+    Token<T> t1 = mock(Token.class);
+    when(t1.getService()).thenReturn(service);
+    Token<T> t2 = mock(Token.class);
+    when(t2.getService()).thenReturn(new Text("service2"));
+    Token<T> t3 = mock(Token.class);
+    when(t3.getService()).thenReturn(service);
+    
+    // add token to ugi
+    ugi.addToken(t1);
+    ugi.addToken(t2);
+    checkTokens(ugi, t1, t2);
+
+    Credentials creds = ugi.getCredentials();
+    creds.addToken(t3.getService(), t3);
+    assertSame(t3, creds.getToken(service));
+    // check that ugi wasn't modified
+    checkTokens(ugi, t1, t2);
+  }
+
+  @SuppressWarnings("unchecked") // from Mockito mocks
+  @Test (timeout = 30000)
+  public <T extends TokenIdentifier> void testAddCreds() throws Exception {
+    UserGroupInformation ugi = 
+        UserGroupInformation.createRemoteUser("someone"); 
+    
+    Text service = new Text("service");
+    Token<T> t1 = mock(Token.class);
+    when(t1.getService()).thenReturn(service);
+    Token<T> t2 = mock(Token.class);
+    when(t2.getService()).thenReturn(new Text("service2"));
+    byte[] secret = new byte[]{};
+    Text secretKey = new Text("sshhh");
+
+    // fill credentials
+    Credentials creds = new Credentials();
+    creds.addToken(t1.getService(), t1);
+    creds.addToken(t2.getService(), t2);
+    creds.addSecretKey(secretKey, secret);
+    
+    // add creds to ugi, and check ugi
+    ugi.addCredentials(creds);
+    checkTokens(ugi, t1, t2);
+    assertSame(secret, ugi.getCredentials().getSecretKey(secretKey));
+  }
+
+  @Test (timeout = 30000)
+  public <T extends TokenIdentifier> void testGetCredsNotSame()
+      throws Exception {
+    UserGroupInformation ugi = 
+        UserGroupInformation.createRemoteUser("someone"); 
+    Credentials creds = ugi.getCredentials();
+    // should always get a new copy
+    assertNotSame(creds, ugi.getCredentials());
+  }
+
+  
+  private void checkTokens(UserGroupInformation ugi, Token<?> ... tokens) {
+    // check the ugi's token collection
+    Collection<Token<?>> ugiTokens = ugi.getTokens();
+    for (Token<?> t : tokens) {
+      assertTrue(ugiTokens.contains(t));
+    }
+    assertEquals(tokens.length, ugiTokens.size());
+
+    // check the ugi's credentials
+    Credentials ugiCreds = ugi.getCredentials();
+    for (Token<?> t : tokens) {
+      assertSame(t, ugiCreds.getToken(t.getService()));
+    }
+    assertEquals(tokens.length, ugiCreds.numberOfTokens());
+  }
+
+  @SuppressWarnings("unchecked") // from Mockito mocks
+  @Test (timeout = 30000)
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public <T extends TokenIdentifier> void testAddNamedToken() throws Exception {
     UserGroupInformation ugi = 
         UserGroupInformation.createRemoteUser("someone"); 
@@ -795,6 +919,44 @@ public class TestUserGroupInformation {
     assertEquals("guest@DEFAULT.REALM", ugi.getUserName());
   }
 
+<<<<<<< HEAD
+=======
+  /** Test hasSufficientTimeElapsed method */
+  @Test (timeout = 30000)
+  public void testHasSufficientTimeElapsed() throws Exception {
+    // Make hasSufficientTimeElapsed public
+    Method method = UserGroupInformation.class
+            .getDeclaredMethod("hasSufficientTimeElapsed", long.class);
+    method.setAccessible(true);
+
+    UserGroupInformation ugi = UserGroupInformation.getCurrentUser();
+    User user = ugi.getSubject().getPrincipals(User.class).iterator().next();
+    long now = System.currentTimeMillis();
+
+    // Using default relogin time (1 minute)
+    user.setLastLogin(now - 2 * 60 * 1000);  // 2 minutes before "now"
+    assertTrue((Boolean)method.invoke(ugi, now));
+    user.setLastLogin(now - 30 * 1000);      // 30 seconds before "now"
+    assertFalse((Boolean)method.invoke(ugi, now));
+
+    // Using relogin time of 10 minutes
+    Configuration conf2 = new Configuration(conf);
+    conf2.setLong(
+       CommonConfigurationKeysPublic.HADOOP_KERBEROS_MIN_SECONDS_BEFORE_RELOGIN,
+       10 * 60);
+    UserGroupInformation.setConfiguration(conf2);
+    user.setLastLogin(now - 15 * 60 * 1000); // 15 minutes before "now"
+    assertTrue((Boolean)method.invoke(ugi, now));
+    user.setLastLogin(now - 6 * 60 * 1000);  // 6 minutes before "now"
+    assertFalse((Boolean)method.invoke(ugi, now));
+    // Restore original conf to UGI
+    UserGroupInformation.setConfiguration(conf);
+
+    // Restore hasSufficientTimElapsed back to private
+    method.setAccessible(false);
+  }
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test(timeout=1000)
   public void testSetLoginUser() throws IOException {
     UserGroupInformation ugi = UserGroupInformation.createRemoteUser("test-user");

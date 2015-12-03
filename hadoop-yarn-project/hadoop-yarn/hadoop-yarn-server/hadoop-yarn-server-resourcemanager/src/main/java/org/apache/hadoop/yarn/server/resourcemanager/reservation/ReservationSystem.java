@@ -24,6 +24,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.recovery.Recoverable;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceScheduler;
 
@@ -40,7 +44,11 @@ import java.util.Map;
  */
 @LimitedPrivate("yarn")
 @Unstable
+<<<<<<< HEAD
 public interface ReservationSystem {
+=======
+public interface ReservationSystem extends Recoverable {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Set RMContext for {@link ReservationSystem}. This method should be called
@@ -82,8 +90,15 @@ public interface ReservationSystem {
    * the {@link ResourceScheduler}
    * 
    * @param planName the name of the {@link Plan} to be synchronized
+<<<<<<< HEAD
    */
   void synchronizePlan(String planName);
+=======
+   * @param shouldReplan replan on reduction of plan capacity if true or
+   *          proportionally scale down reservations if false
+   */
+  void synchronizePlan(String planName, boolean shouldReplan);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Return the time step (ms) at which the {@link PlanFollower} is invoked

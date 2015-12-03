@@ -26,9 +26,13 @@ import org.apache.hadoop.mapreduce.jobhistory.HistoryEvent;
 import org.apache.hadoop.mapreduce.v2.hs.JobHistory;
 
 /**
+<<<<<<< HEAD
  * {@link JobHistoryParser} that parses {@link JobHistory} files produced by
  * {@link org.apache.hadoop.mapreduce.v2.hs.JobHistory} in the same source
  * code tree as rumen.
+=======
+ * {@link JobHistoryParser} that parses JobHistory files.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  */
 public class CurrentJHParser implements JobHistoryParser {
   private EventReader reader;

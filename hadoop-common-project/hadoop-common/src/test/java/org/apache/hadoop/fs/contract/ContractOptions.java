@@ -93,6 +93,21 @@ public interface ContractOptions {
   String SUPPORTS_APPEND = "supports-append";
 
   /**
+<<<<<<< HEAD
+=======
+   * Flag to indicate that setTimes is supported.
+   * @{value}
+   */
+  String SUPPORTS_SETTIMES = "supports-settimes";
+
+  /**
+   * Flag to indicate that getFileStatus is supported.
+   * @{value}
+   */
+  String SUPPORTS_GETFILESTATUS = "supports-getfilestatus";
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Flag to indicate that renames are atomic
    * @{value}
    */

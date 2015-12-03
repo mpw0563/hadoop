@@ -32,16 +32,24 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.shell.Command;
 import org.apache.hadoop.fs.shell.CommandFactory;
 import org.apache.hadoop.fs.shell.FsCommand;
+<<<<<<< HEAD
 import org.apache.hadoop.tracing.SpanReceiverHost;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.tools.TableListing;
 import org.apache.hadoop.tracing.TraceUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+<<<<<<< HEAD
 import org.apache.htrace.Sampler;
 import org.apache.htrace.SamplerBuilder;
 import org.apache.htrace.Trace;
 import org.apache.htrace.TraceScope;
+=======
+import org.apache.htrace.core.TraceScope;
+import org.apache.htrace.core.Tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /** Provide command line access to a FileSystem. */
 @InterfaceAudience.Private
@@ -59,8 +67,13 @@ public class FsShell extends Configured implements Tool {
   private final String usagePrefix =
     "Usage: hadoop fs [generic options]";
 
+<<<<<<< HEAD
   private SpanReceiverHost spanReceiverHost;
   static final String SEHLL_HTRACE_PREFIX = "dfs.shell.htrace.";
+=======
+  private Tracer tracer;
+  static final String SHELL_HTRACE_PREFIX = "fs.shell.htrace.";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Default ctor with no configuration.  Be sure to invoke
@@ -102,8 +115,14 @@ public class FsShell extends Configured implements Tool {
       commandFactory.addObject(new Usage(), "-usage");
       registerCommands(commandFactory);
     }
+<<<<<<< HEAD
     this.spanReceiverHost =
         SpanReceiverHost.get(getConf(), SEHLL_HTRACE_PREFIX);
+=======
+    this.tracer = new Tracer.Builder("FsShell").
+        conf(TraceUtils.wrapHadoopConf(SHELL_HTRACE_PREFIX, getConf())).
+        build();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   protected void registerCommands(CommandFactory factory) {
@@ -122,6 +141,10 @@ public class FsShell extends Configured implements Tool {
    */
   public Path getCurrentTrashDir() throws IOException {
     return getTrash().getCurrentTrashDir();
+  }
+
+  protected String getUsagePrefix() {
+    return usagePrefix;
   }
 
   // NOTE: Usage/Help are inner classes to allow access to outer methods
@@ -207,7 +230,7 @@ public class FsShell extends Configured implements Tool {
       }
     } else {
       // display help or usage for all commands 
-      out.println(usagePrefix);
+      out.println(getUsagePrefix());
       
       // display list of short usages
       ArrayList<Command> instances = new ArrayList<Command>();
@@ -231,7 +254,7 @@ public class FsShell extends Configured implements Tool {
   }
 
   private void printInstanceUsage(PrintStream out, Command instance) {
-    out.println(usagePrefix + " " + instance.getUsage());
+    out.println(getUsagePrefix() + " " + instance.getUsage());
   }
 
   private void printInstanceHelp(PrintStream out, Command instance) {
@@ -248,6 +271,7 @@ public class FsShell extends Configured implements Tool {
           listing.addRow(segments[0].trim(), segments[1].trim());
           continue;
         }
+<<<<<<< HEAD
       }
 
       // Normal literal description.
@@ -268,6 +292,28 @@ public class FsShell extends Configured implements Tool {
       for (String listingLine : listing.toString().split("\n")) {
         out.println(prefix + listingLine);
       }
+=======
+      }
+
+      // Normal literal description.
+      if (listing != null) {
+        for (String listingLine : listing.toString().split("\n")) {
+          out.println(prefix + listingLine);
+        }
+        listing = null;
+      }
+
+      for (String descLine : WordUtils.wrap(
+          line, MAX_LINE_WIDTH, "\n", true).split("\n")) {
+        out.println(prefix + descLine);
+      }
+    }
+
+    if (listing != null) {
+      for (String listingLine : listing.toString().split("\n")) {
+        out.println(prefix + listingLine);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -285,8 +331,11 @@ public class FsShell extends Configured implements Tool {
   public int run(String argv[]) throws Exception {
     // initialize FsShell
     init();
+<<<<<<< HEAD
     traceSampler = new SamplerBuilder(TraceUtils.
         wrapHadoopConf(SEHLL_HTRACE_PREFIX, getConf())).build();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int exitCode = -1;
     if (argv.length < 1) {
       printUsage(System.err);
@@ -298,7 +347,11 @@ public class FsShell extends Configured implements Tool {
         if (instance == null) {
           throw new UnknownCommandException();
         }
+<<<<<<< HEAD
         TraceScope scope = Trace.startSpan(instance.getCommandName(), traceSampler);
+=======
+        TraceScope scope = tracer.newScope(instance.getCommandName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         if (scope.getSpan() != null) {
           String args = StringUtils.join(" ", argv);
           if (args.length() > 2048) {
@@ -313,6 +366,7 @@ public class FsShell extends Configured implements Tool {
         }
       } catch (IllegalArgumentException e) {
         displayError(cmd, e.getLocalizedMessage());
+        printUsage(System.err);
         if (instance != null) {
           printInstanceUsage(System.err, instance);
         }
@@ -323,6 +377,7 @@ public class FsShell extends Configured implements Tool {
         e.printStackTrace(System.err);
       }
     }
+    tracer.close();
     return exitCode;
   }
   

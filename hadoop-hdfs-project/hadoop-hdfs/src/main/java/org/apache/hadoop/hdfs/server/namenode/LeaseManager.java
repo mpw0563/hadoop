@@ -34,6 +34,10 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.util.Daemon;
@@ -69,8 +73,13 @@ public class LeaseManager {
 
   private final FSNamesystem fsnamesystem;
 
+<<<<<<< HEAD
   private long softLimit = HdfsServerConstants.LEASE_SOFTLIMIT_PERIOD;
   private long hardLimit = HdfsServerConstants.LEASE_HARDLIMIT_PERIOD;
+=======
+  private long softLimit = HdfsConstants.LEASE_SOFTLIMIT_PERIOD;
+  private long hardLimit = HdfsConstants.LEASE_HARDLIMIT_PERIOD;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   //
   // Used for handling lock-leases
@@ -108,7 +117,15 @@ public class LeaseManager {
     long numUCBlocks = 0;
     for (Long id : getINodeIdWithLeases()) {
       final INodeFile cons = fsnamesystem.getFSDirectory().getInode(id).asFile();
+<<<<<<< HEAD
       Preconditions.checkState(cons.isUnderConstruction());
+=======
+      if (!cons.isUnderConstruction()) {
+        LOG.warn("The file " + cons.getFullPathName()
+            + " is not under construction but has lease.");
+        continue;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       BlockInfo[] blocks = cons.getBlocks();
       if(blocks == null) {
         continue;
@@ -116,8 +133,13 @@ public class LeaseManager {
       for(BlockInfo b : blocks) {
         if(!b.isComplete())
           numUCBlocks++;
+<<<<<<< HEAD
       }
     }
+=======
+        }
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     LOG.info("Number of blocks under construction: " + numUCBlocks);
     return numUCBlocks;
   }
@@ -290,6 +312,7 @@ public class LeaseManager {
     @VisibleForTesting
     long getLastUpdate() {
       return lastUpdate;
+<<<<<<< HEAD
     }
   }
 
@@ -303,6 +326,21 @@ public class LeaseManager {
     }
   }
 
+=======
+    }
+  }
+
+  @VisibleForTesting
+  synchronized void removeLeases(Collection<Long> inodes) {
+    for (long inode : inodes) {
+      Lease lease = leasesById.get(inode);
+      if (lease != null) {
+        removeLease(lease, inode);
+      }
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void setLeasePeriod(long softLimit, long hardLimit) {
     this.softLimit = softLimit;
     this.hardLimit = hardLimit; 

@@ -73,6 +73,10 @@ message NameSystemSection {
   optional uint64 lastAllocatedBlockId = 5;
   optional uint64 transactionId = 6;
   optional uint64 rollingUpgradeStartTime = 7;
+<<<<<<< HEAD
+=======
+  optional uint64 lastAllocatedStripedBlockId = 8;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 /**
@@ -139,6 +143,10 @@ message INodeSection {
     optional AclFeatureProto acl = 8;
     optional XAttrFeatureProto xAttrs = 9;
     optional uint32 storagePolicyID = 10;
+<<<<<<< HEAD
+=======
+    optional bool isStriped = 11;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   message QuotaByStorageTypeEntryProto {

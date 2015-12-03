@@ -25,6 +25,10 @@ import static org.apache.hadoop.fs.CreateFlag.OVERWRITE;
 
 import java.io.DataOutputStream;
 import java.io.File;
+<<<<<<< HEAD
+=======
+import java.io.FileNotFoundException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
@@ -486,8 +490,17 @@ public class DefaultContainerExecutor extends ContainerExecutor {
     for (Path baseDir : baseDirs) {
       Path del = subDir == null ? baseDir : new Path(baseDir, subDir);
       LOG.info("Deleting path : " + del);
+<<<<<<< HEAD
       if (!lfs.delete(del, true)) {
         LOG.warn("delete returned false for path: [" + del + "]");
+=======
+      try {
+        if (!lfs.delete(del, true)) {
+          LOG.warn("delete returned false for path: [" + del + "]");
+        }
+      } catch (FileNotFoundException e) {
+        continue;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
   }

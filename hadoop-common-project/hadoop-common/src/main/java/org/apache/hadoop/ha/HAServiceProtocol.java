@@ -151,12 +151,20 @@ public interface HAServiceProtocol {
   /**
    * Return the current status of the service. The status indicates
    * the current <em>state</em> (e.g ACTIVE/STANDBY) as well as
+<<<<<<< HEAD
    * some additional information. {@see HAServiceStatus}
+=======
+   * some additional information.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * 
    * @throws AccessControlException
    *           if access is denied.
    * @throws IOException
    *           if other errors happen
+<<<<<<< HEAD
+=======
+   * @see HAServiceStatus
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   @Idempotent
   public HAServiceStatus getServiceStatus() throws AccessControlException,

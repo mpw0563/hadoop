@@ -83,7 +83,11 @@ public class CreateEditsLog {
       }
 
       final INodeFile inode = new INodeFile(inodeId.nextValue(), null,
+<<<<<<< HEAD
           p, 0L, 0L, blocks, replication, blockSize, (byte)0);
+=======
+          p, 0L, 0L, blocks, replication, blockSize);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       inode.toUnderConstruction("", "");
 
      // Append path to filename with information about blockIDs 

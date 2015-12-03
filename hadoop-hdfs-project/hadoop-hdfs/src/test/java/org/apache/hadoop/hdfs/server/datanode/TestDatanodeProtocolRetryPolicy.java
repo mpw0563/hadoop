@@ -32,7 +32,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.google.common.base.Supplier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.fs.FileSystem;
@@ -83,7 +86,11 @@ public class TestDatanodeProtocolRetryPolicy {
       DFSTestUtil.getLocalDatanodeRegistration();
 
   static {
+<<<<<<< HEAD
     ((Log4JLogger)LOG).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

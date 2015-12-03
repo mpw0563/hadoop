@@ -54,7 +54,10 @@ import org.apache.hadoop.yarn.server.nodemanager.containermanager.localizer.even
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.loghandler.LogHandler;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.loghandler.event.LogHandlerEvent;
 import org.apache.hadoop.yarn.server.nodemanager.metrics.NodeManagerMetrics;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class DummyContainerManager extends ContainerManagerImpl {
 
@@ -63,11 +66,17 @@ public class DummyContainerManager extends ContainerManagerImpl {
   
   public DummyContainerManager(Context context, ContainerExecutor exec,
       DeletionService deletionContext, NodeStatusUpdater nodeStatusUpdater,
+<<<<<<< HEAD
       NodeManagerMetrics metrics,
       ApplicationACLsManager applicationACLsManager,
       LocalDirsHandlerService dirsHandler) {
     super(context, exec, deletionContext, nodeStatusUpdater, metrics,
       applicationACLsManager, dirsHandler);
+=======
+      NodeManagerMetrics metrics, LocalDirsHandlerService dirsHandler) {
+    super(context, exec, deletionContext, nodeStatusUpdater, metrics,
+        dirsHandler);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -194,8 +203,15 @@ public class DummyContainerManager extends ContainerManagerImpl {
   }
   
   @Override
+<<<<<<< HEAD
   protected void authorizeStartRequest(NMTokenIdentifier nmTokenIdentifier,
       ContainerTokenIdentifier containerTokenIdentifier) throws YarnException {
+=======
+  protected void authorizeStartAndResourceIncreaseRequest(
+      NMTokenIdentifier nmTokenIdentifier,
+      ContainerTokenIdentifier containerTokenIdentifier,
+      boolean startRequest) throws YarnException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // do nothing
   }
   

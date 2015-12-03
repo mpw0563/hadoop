@@ -37,7 +37,11 @@ import org.apache.hadoop.crypto.Encryptor;
 /**
  * A KeyProvider with Cryptographic Extensions specifically for generating
  * and decrypting encrypted encryption keys.
+<<<<<<< HEAD
  *
+=======
+ * 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  */
 @InterfaceAudience.Private
 public class KeyProviderCryptoExtension extends
@@ -194,7 +198,11 @@ public class KeyProviderCryptoExtension extends
      * of the key and is encrypted using the same cipher.
      * <p/>
      * NOTE: The generated key is not stored by the <code>KeyProvider</code>
+<<<<<<< HEAD
      *
+=======
+     * 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * @param encryptionKeyName
      *          The latest KeyVersion of this key's material will be encrypted.
      * @return EncryptedKeyVersion with the generated key material, the version
@@ -212,7 +220,11 @@ public class KeyProviderCryptoExtension extends
     /**
      * Decrypts an encrypted byte[] key material using the given a key version
      * name and initialization vector.
+<<<<<<< HEAD
      *
+=======
+     * 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * @param encryptedKeyVersion
      *          contains keyVersionName and IV to decrypt the encrypted key
      *          material
@@ -232,7 +244,11 @@ public class KeyProviderCryptoExtension extends
   private static class DefaultCryptoExtension implements CryptoExtension {
 
     private final KeyProvider keyProvider;
+<<<<<<< HEAD
     private static final ThreadLocal<SecureRandom> RANDOM =
+=======
+    private static final ThreadLocal<SecureRandom> RANDOM = 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         new ThreadLocal<SecureRandom>() {
       @Override
       protected SecureRandom initialValue() {
@@ -362,7 +378,11 @@ public class KeyProviderCryptoExtension extends
    * @return EncryptedKeyVersion with the generated key material, the version
    * name is 'EEK' (for Encrypted Encryption Key)
    * @throws IOException thrown if the key material could not be generated
+<<<<<<< HEAD
    * @throws GeneralSecurityException thrown if the key material could not be
+=======
+   * @throws GeneralSecurityException thrown if the key material could not be 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * encrypted because of a cryptographic issue.
    */
   public EncryptedKeyVersion generateEncryptedKey(String encryptionKeyName)
@@ -375,20 +395,32 @@ public class KeyProviderCryptoExtension extends
    * Decrypts an encrypted byte[] key material using the given a key version
    * name and initialization vector.
    *
+<<<<<<< HEAD
    * @param encryptedKey contains keyVersionName and IV to decrypt the encrypted
+=======
+   * @param encryptedKey contains keyVersionName and IV to decrypt the encrypted 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * key material
    * @return a KeyVersion with the decrypted key material, the version name is
    * 'EK' (For Encryption Key)
    * @throws IOException thrown if the key material could not be decrypted
+<<<<<<< HEAD
    * @throws GeneralSecurityException thrown if the key material could not be
    * decrypted because of a cryptographic issue.
    */
   public KeyVersion decryptEncryptedKey(EncryptedKeyVersion encryptedKey)
+=======
+   * @throws GeneralSecurityException thrown if the key material could not be 
+   * decrypted because of a cryptographic issue.
+   */
+  public KeyVersion decryptEncryptedKey(EncryptedKeyVersion encryptedKey) 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throws IOException, GeneralSecurityException {
     return getExtension().decryptEncryptedKey(encryptedKey);
   }
 
   /**
+<<<<<<< HEAD
    * Creates a <code>KeyProviderCryptoExtension</code> using a given
    * {@link KeyProvider}.
    * <p/>
@@ -398,6 +430,17 @@ public class KeyProviderCryptoExtension extends
    * implementation will be used.
    *
    * @param keyProvider <code>KeyProvider</code> to use to create the
+=======
+   * Creates a <code>KeyProviderCryptoExtension</code> using a given 
+   * {@link KeyProvider}.
+   * <p/>
+   * If the given <code>KeyProvider</code> implements the 
+   * {@link CryptoExtension} interface the <code>KeyProvider</code> itself
+   * will provide the extension functionality, otherwise a default extension
+   * implementation will be used.
+   * 
+   * @param keyProvider <code>KeyProvider</code> to use to create the 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * <code>KeyProviderCryptoExtension</code> extension.
    * @return a <code>KeyProviderCryptoExtension</code> instance using the
    * given <code>KeyProvider</code>.

@@ -34,6 +34,10 @@ import com.google.common.cache.CacheBuilder;
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.server.datanode.BlockScanner.Conf;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeReference;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeSpi.BlockIterator;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeSpi;
@@ -433,8 +437,14 @@ public class VolumeScanner extends Thread {
     BlockSender blockSender = null;
     try {
       blockSender = new BlockSender(block, 0, -1,
+<<<<<<< HEAD
           false, true, true, datanode, null,
           CachingStrategy.newDropBehind());
+=======
+          false, true, true, datanode,
+          (FsDatasetSpi<?>) datanode.getDataset(block.getBlockPoolId()),
+          null, CachingStrategy.newDropBehind());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throttler.setBandwidth(bytesPerSec);
       long bytesRead = blockSender.sendBlock(nullStream, null, throttler);
       resultHandler.handle(block, null);

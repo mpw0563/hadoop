@@ -27,8 +27,13 @@ import org.apache.hadoop.metrics2.MetricsException;
 import org.apache.hadoop.metrics2.MetricsSystem;
 import org.apache.hadoop.metrics2.impl.MetricsSystemImpl;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
- * The default metrics system singleton
+ * The default metrics system singleton. This class is used by all the daemon
+ * processes(such as NameNode, DataNode, JobTracker etc.). During daemon process
+ * initialization the processes call {@link DefaultMetricsSystem#init(String)}
+ * to initialize the {@link MetricsSystem}.
  */
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
@@ -37,7 +42,13 @@ public enum DefaultMetricsSystem {
 
   private AtomicReference<MetricsSystem> impl =
       new AtomicReference<MetricsSystem>(new MetricsSystemImpl());
+  
+  @VisibleForTesting
   volatile boolean miniClusterMode = false;
+<<<<<<< HEAD
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   transient final UniqueNames mBeanNames = new UniqueNames();
   transient final UniqueNames sourceNames = new UniqueNames();
 
@@ -87,12 +98,12 @@ public enum DefaultMetricsSystem {
 
   MetricsSystem getImpl() { return impl.get(); }
 
-  @InterfaceAudience.Private
+  @VisibleForTesting
   public static void setMiniClusterMode(boolean choice) {
     INSTANCE.miniClusterMode = choice;
   }
 
-  @InterfaceAudience.Private
+  @VisibleForTesting
   public static boolean inMiniClusterMode() {
     return INSTANCE.miniClusterMode;
   }

@@ -18,8 +18,13 @@
 package org.apache.hadoop.hdfs.shortcircuit;
 
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BLOCK_SIZE_KEY;
+<<<<<<< HEAD
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_CLIENT_CONTEXT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC;
+=======
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_CONTEXT;
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_DOMAIN_SOCKET_PATH_KEY;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -268,7 +273,11 @@ public class TestShortCircuitCache {
     }
     // The last two replicas should still be cached.
     for (int i = 1; i < pairs.length; i++) {
+<<<<<<< HEAD
       final Integer iVal = new Integer(i);
+=======
+      final Integer iVal = i;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       replicaInfos[i] = cache.fetchOrCreate(
           new ExtendedBlockId(i, "test_bp1"),
             new ShortCircuitReplicaCreator() {
@@ -321,7 +330,11 @@ public class TestShortCircuitCache {
     };
     final long HOUR_IN_MS = 60 * 60 * 1000;
     for (int i = 0; i < pairs.length; i++) {
+<<<<<<< HEAD
       final Integer iVal = new Integer(i);
+=======
+      final Integer iVal = i;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final ExtendedBlockId key = new ExtendedBlockId(i, "test_bp1");
       replicaInfos[i] = cache.fetchOrCreate(key,
           new ShortCircuitReplicaCreator() {
@@ -671,8 +684,13 @@ public class TestShortCircuitCache {
 
     // The second read should fail, and we should only have 1 segment and 1 slot
     // left.
+<<<<<<< HEAD
     fs.getClient().getConf().getShortCircuitConf().brfFailureInjector =
         new TestCleanupFailureInjector();
+=======
+    BlockReaderFactory.setFailureInjectorForTesting(
+        new TestCleanupFailureInjector());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       DFSTestUtil.readFileBuffer(fs, TEST_PATH2);
     } catch (Throwable t) {
@@ -766,8 +784,13 @@ public class TestShortCircuitCache {
         new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
     cluster.waitActive();
     DistributedFileSystem fs = cluster.getFileSystem();
+<<<<<<< HEAD
     fs.getClient().getConf().getShortCircuitConf().brfFailureInjector =
         new TestPreReceiptVerificationFailureInjector();
+=======
+    BlockReaderFactory.setFailureInjectorForTesting(
+        new TestPreReceiptVerificationFailureInjector());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final Path TEST_PATH1 = new Path("/test_file1");
     DFSTestUtil.createFile(fs, TEST_PATH1, 4096, (short)1, 0xFADE2);
     final Path TEST_PATH2 = new Path("/test_file2");

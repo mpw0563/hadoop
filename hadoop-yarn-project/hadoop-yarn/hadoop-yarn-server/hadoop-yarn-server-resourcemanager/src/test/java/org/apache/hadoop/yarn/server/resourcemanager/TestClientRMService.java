@@ -30,10 +30,15 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+<<<<<<< HEAD
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+=======
+import java.util.ArrayList;
+import java.util.Arrays;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +52,7 @@ import java.util.concurrent.CyclicBarrier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.util.KerberosName;
@@ -55,6 +61,12 @@ import org.apache.hadoop.yarn.MockApps;
 import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.ApplicationsRequestScope;
 import org.apache.hadoop.yarn.api.protocolrecords.CancelDelegationTokenRequest;
+=======
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.yarn.MockApps;
+import org.apache.hadoop.yarn.api.ApplicationClientProtocol;
+import org.apache.hadoop.yarn.api.protocolrecords.ApplicationsRequestScope;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptReportResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.GetApplicationAttemptsRequest;
@@ -79,7 +91,10 @@ import org.apache.hadoop.yarn.api.protocolrecords.GetQueueInfoResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.KillApplicationResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.MoveApplicationAcrossQueuesRequest;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.protocolrecords.RenewDelegationTokenRequest;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationDeleteResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionRequest;
@@ -87,6 +102,10 @@ import org.apache.hadoop.yarn.api.protocolrecords.ReservationSubmissionResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.ReservationUpdateResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.SubmitApplicationRequest;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.UpdateApplicationPriorityRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
@@ -102,13 +121,20 @@ import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeLabel;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.QueueACL;
 import org.apache.hadoop.yarn.api.records.QueueInfo;
 import org.apache.hadoop.yarn.api.records.ReservationDefinition;
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.api.records.ReservationRequest;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ReservationRequestInterpreter;
 import org.apache.hadoop.yarn.api.records.ReservationRequests;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
@@ -121,16 +147,26 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
 import org.apache.hadoop.yarn.ipc.YarnRPC;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.security.client.RMDelegationTokenIdentifier;
 import org.apache.hadoop.yarn.server.resourcemanager.ahs.RMApplicationHistoryWriter;
 import org.apache.hadoop.yarn.server.resourcemanager.metrics.SystemMetricsPublisher;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.NullRMStateStore;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.ahs.RMApplicationHistoryWriter;
+import org.apache.hadoop.yarn.server.resourcemanager.metrics.SystemMetricsPublisher;
+import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.ReservationSystemTestUtil;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppState;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptImpl;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
@@ -141,6 +177,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.YarnScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacitySchedulerConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.security.QueueACLsManager;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.security.RMDelegationTokenSecretManager;
 import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
@@ -152,6 +189,15 @@ import org.apache.hadoop.yarn.util.resource.Resources;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+=======
+import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
+import org.apache.hadoop.yarn.server.utils.BuilderUtils;
+import org.apache.hadoop.yarn.util.Clock;
+import org.apache.hadoop.yarn.util.UTCClock;
+import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
+import org.apache.hadoop.yarn.util.resource.Resources;
+import org.junit.Assert;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
@@ -165,6 +211,7 @@ public class TestClientRMService {
       .getRecordFactory(null);
 
   private String appType = "MockApp";
+<<<<<<< HEAD
 
   private static RMDelegationTokenSecretManager dtsm;
   
@@ -190,6 +237,12 @@ public class TestClientRMService {
     }
   }
   
+=======
+  
+  private final static String QUEUE_1 = "Q-1";
+  private final static String QUEUE_2 = "Q-2";
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testGetClusterNodes() throws Exception {
     MockRM rm = new MockRM() {
@@ -330,6 +383,48 @@ public class TestClientRMService {
           report.getApplicationResourceUsageReport();
       Assert.assertEquals(10, usageReport.getMemorySeconds());
       Assert.assertEquals(3, usageReport.getVcoreSeconds());
+<<<<<<< HEAD
+=======
+      Assert.assertEquals("<Not set>", report.getAmNodeLabelExpression());
+      Assert.assertEquals("<Not set>", report.getAppNodeLabelExpression());
+
+      // if application has am node label set to blank
+      ApplicationId appId2 = getApplicationId(2);
+      when(mockAclsManager.checkAccess(UserGroupInformation.getCurrentUser(),
+          ApplicationAccessType.VIEW_APP, null, appId2)).thenReturn(true);
+      request.setApplicationId(appId2);
+      response = rmService.getApplicationReport(request);
+      report = response.getApplicationReport();
+
+      Assert.assertEquals(NodeLabel.DEFAULT_NODE_LABEL_PARTITION,
+          report.getAmNodeLabelExpression());
+      Assert.assertEquals(NodeLabel.NODE_LABEL_EXPRESSION_NOT_SET,
+          report.getAppNodeLabelExpression());
+
+      // if application has am node label set to blank
+      ApplicationId appId3 = getApplicationId(3);
+      when(mockAclsManager.checkAccess(UserGroupInformation.getCurrentUser(),
+          ApplicationAccessType.VIEW_APP, null, appId3)).thenReturn(true);
+
+      request.setApplicationId(appId3);
+      response = rmService.getApplicationReport(request);
+      report = response.getApplicationReport();
+
+      Assert.assertEquals("high-mem", report.getAmNodeLabelExpression());
+      Assert.assertEquals("high-mem", report.getAppNodeLabelExpression());
+
+      // if application id is null
+      GetApplicationReportRequest invalidRequest = recordFactory
+          .newRecordInstance(GetApplicationReportRequest.class);
+      invalidRequest.setApplicationId(null);
+      try {
+        rmService.getApplicationReport(invalidRequest);
+      } catch (YarnException e) {
+        // rmService should return a ApplicationNotFoundException
+        // when a null application id is provided
+        Assert.assertTrue(e instanceof ApplicationNotFoundException);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       rmService.close();
     }
@@ -602,6 +697,7 @@ public class TestClientRMService {
     Assert.assertEquals(0, applications1.size());
   }
 
+<<<<<<< HEAD
   private static final UserGroupInformation owner =
       UserGroupInformation.createRemoteUser("owner");
   private static final UserGroupInformation other =
@@ -825,6 +921,9 @@ public class TestClientRMService {
     rmService.cancelDelegationToken(request);
   }
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test (timeout = 30000)
   @SuppressWarnings ("rawtypes")
   public void testAppSubmit() throws Exception {
@@ -1191,11 +1290,19 @@ public class TestClientRMService {
     ApplicationId applicationId3 = getApplicationId(3);
     YarnConfiguration config = new YarnConfiguration();
     apps.put(applicationId1, getRMApp(rmContext, yarnScheduler, applicationId1,
+<<<<<<< HEAD
         config, "testqueue", 10, 3));
     apps.put(applicationId2, getRMApp(rmContext, yarnScheduler, applicationId2,
         config, "a", 20, 2));
     apps.put(applicationId3, getRMApp(rmContext, yarnScheduler, applicationId3,
         config, "testqueue", 40, 5));
+=======
+        config, "testqueue", 10, 3,null,null));
+    apps.put(applicationId2, getRMApp(rmContext, yarnScheduler, applicationId2,
+        config, "a", 20, 2,null,""));
+    apps.put(applicationId3, getRMApp(rmContext, yarnScheduler, applicationId3,
+        config, "testqueue", 40, 5,"high-mem","high-mem"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return apps;
   }
   
@@ -1218,10 +1325,18 @@ public class TestClientRMService {
 
   private RMAppImpl getRMApp(RMContext rmContext, YarnScheduler yarnScheduler,
       ApplicationId applicationId3, YarnConfiguration config, String queueName,
+<<<<<<< HEAD
       final long memorySeconds, final long vcoreSeconds) {
     ApplicationSubmissionContext asContext = mock(ApplicationSubmissionContext.class);
     when(asContext.getMaxAppAttempts()).thenReturn(1);
 
+=======
+      final long memorySeconds, final long vcoreSeconds,
+      String appNodeLabelExpression, String amNodeLabelExpression) {
+    ApplicationSubmissionContext asContext = mock(ApplicationSubmissionContext.class);
+    when(asContext.getMaxAppAttempts()).thenReturn(1);
+    when(asContext.getNodeLabelExpression()).thenReturn(appNodeLabelExpression);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     RMAppImpl app =
         spy(new RMAppImpl(applicationId3, rmContext, config, null, null,
             queueName, asContext, yarnScheduler, null,
@@ -1242,7 +1357,11 @@ public class TestClientRMService {
                     return report;
                   }
               });
+<<<<<<< HEAD
 
+=======
+    app.getAMResourceRequest().setNodeLabelExpression(amNodeLabelExpression);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ApplicationAttemptId attemptId = ApplicationAttemptId.newInstance(
         ApplicationId.newInstance(123456, 1), 1);
     RMAppAttemptImpl rmAppAttemptImpl = spy(new RMAppAttemptImpl(attemptId,
@@ -1327,7 +1446,12 @@ public class TestClientRMService {
     long duration = 60000;
     long deadline = (long) (arrival + 1.05 * duration);
     ReservationSubmissionRequest sRequest =
+<<<<<<< HEAD
         createSimpleReservationRequest(4, arrival, deadline, duration);
+=======
+        ReservationSystemTestUtil.createSimpleReservationRequest(4, arrival,
+            deadline, duration);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ReservationSubmissionResponse sResponse = null;
     try {
       sResponse = clientService.submitReservation(sRequest);
@@ -1379,6 +1503,7 @@ public class TestClientRMService {
     rm = null;
   }
 
+<<<<<<< HEAD
   private ReservationSubmissionRequest createSimpleReservationRequest(
       int numContainers, long arrival, long deadline, long duration) {
     // create a request with a single atomic ask
@@ -1397,6 +1522,8 @@ public class TestClientRMService {
     return request;
   }
   
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testGetNodeLabels() throws Exception {
     MockRM rm = new MockRM() {
@@ -1543,4 +1670,71 @@ public class TestClientRMService {
     rpc.stopProxy(client, conf);
     rm.close();
   }
+<<<<<<< HEAD
+=======
+
+  @Test(timeout = 120000)
+  public void testUpdateApplicationPriorityRequest() throws Exception {
+    int maxPriority = 10;
+    int appPriority = 5;
+    YarnConfiguration conf = new YarnConfiguration();
+    conf.setInt(YarnConfiguration.MAX_CLUSTER_LEVEL_APPLICATION_PRIORITY,
+        maxPriority);
+    MockRM rm = new MockRM(conf);
+    rm.init(conf);
+    rm.start();
+
+    // Start app1 with appPriority 5
+    RMApp app1 = rm.submitApp(1024, Priority.newInstance(appPriority));
+
+    Assert.assertEquals("Incorrect priority has been set to application",
+        appPriority, app1.getApplicationSubmissionContext().getPriority()
+            .getPriority());
+
+    appPriority = 9;
+    ClientRMService rmService = rm.getClientRMService();
+    UpdateApplicationPriorityRequest updateRequest =
+        UpdateApplicationPriorityRequest.newInstance(app1.getApplicationId(),
+            Priority.newInstance(appPriority));
+
+    rmService.updateApplicationPriority(updateRequest);
+
+    Assert.assertEquals("Incorrect priority has been set to application",
+        appPriority, app1.getApplicationSubmissionContext().getPriority()
+            .getPriority());
+
+    rm.killApp(app1.getApplicationId());
+    rm.waitForState(app1.getApplicationId(), RMAppState.KILLED);
+
+    appPriority = 8;
+    UpdateApplicationPriorityRequest updateRequestNew =
+        UpdateApplicationPriorityRequest.newInstance(app1.getApplicationId(),
+            Priority.newInstance(appPriority));
+    // Update priority request for application in KILLED state
+    rmService.updateApplicationPriority(updateRequestNew);
+
+    // Hence new priority should not be updated
+    Assert.assertNotEquals("Priority should not be updated as app is in KILLED state",
+        appPriority, app1.getApplicationSubmissionContext().getPriority()
+            .getPriority());
+    Assert.assertEquals("Priority should be same as old one before update",
+        9, app1.getApplicationSubmissionContext().getPriority()
+            .getPriority());
+
+    // Update priority request for invalid application id.
+    ApplicationId invalidAppId = ApplicationId.newInstance(123456789L, 3);
+    updateRequest =
+        UpdateApplicationPriorityRequest.newInstance(invalidAppId,
+            Priority.newInstance(appPriority));
+    try {
+      rmService.updateApplicationPriority(updateRequest);
+      Assert
+          .fail("ApplicationNotFoundException should be thrown for invalid application id");
+    } catch (ApplicationNotFoundException e) {
+      // Expected
+    }
+
+    rm.stop();
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

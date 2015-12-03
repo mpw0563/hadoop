@@ -30,6 +30,10 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.classification.InterfaceAudience.Private;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.FileSystem;
@@ -52,6 +56,25 @@ public class LocalDirsHandlerService extends AbstractService {
 
   private static Log LOG = LogFactory.getLog(LocalDirsHandlerService.class);
 
+<<<<<<< HEAD
+=======
+  /**
+   * Good local directories, use internally,
+   * initial value is the same as NM_LOCAL_DIRS.
+   */
+  @Private
+  static final String NM_GOOD_LOCAL_DIRS =
+      YarnConfiguration.NM_PREFIX + "good-local-dirs";
+
+  /**
+   * Good log directories, use internally,
+   * initial value is the same as NM_LOG_DIRS.
+   */
+  @Private
+  static final String NM_GOOD_LOG_DIRS =
+      YarnConfiguration.NM_PREFIX + "good-log-dirs";
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** Timer used to schedule disk health monitoring code execution */
   private Timer dirsHandlerScheduler;
   private long diskHealthCheckInterval;
@@ -97,15 +120,36 @@ public class LocalDirsHandlerService extends AbstractService {
   private final class MonitoringTimerTask extends TimerTask {
 
     public MonitoringTimerTask(Configuration conf) throws YarnRuntimeException {
+<<<<<<< HEAD
       float maxUsableSpacePercentagePerDisk =
           conf.getFloat(
             YarnConfiguration.NM_MAX_PER_DISK_UTILIZATION_PERCENTAGE,
             YarnConfiguration.DEFAULT_NM_MAX_PER_DISK_UTILIZATION_PERCENTAGE);
+=======
+      float highUsableSpacePercentagePerDisk =
+          conf.getFloat(
+            YarnConfiguration.NM_MAX_PER_DISK_UTILIZATION_PERCENTAGE,
+            YarnConfiguration.DEFAULT_NM_MAX_PER_DISK_UTILIZATION_PERCENTAGE);
+      float lowUsableSpacePercentagePerDisk =
+          conf.getFloat(
+              YarnConfiguration.NM_WM_LOW_PER_DISK_UTILIZATION_PERCENTAGE,
+              highUsableSpacePercentagePerDisk);
+      if (lowUsableSpacePercentagePerDisk > highUsableSpacePercentagePerDisk) {
+        LOG.warn("Using " + YarnConfiguration.
+            NM_MAX_PER_DISK_UTILIZATION_PERCENTAGE + " as " +
+            YarnConfiguration.NM_WM_LOW_PER_DISK_UTILIZATION_PERCENTAGE +
+            ", because " + YarnConfiguration.
+            NM_WM_LOW_PER_DISK_UTILIZATION_PERCENTAGE +
+            " is not configured properly.");
+        lowUsableSpacePercentagePerDisk = highUsableSpacePercentagePerDisk;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       long minFreeSpacePerDiskMB =
           conf.getLong(YarnConfiguration.NM_MIN_PER_DISK_FREE_SPACE_MB,
             YarnConfiguration.DEFAULT_NM_MIN_PER_DISK_FREE_SPACE_MB);
       localDirs =
           new DirectoryCollection(
+<<<<<<< HEAD
             validatePaths(conf
               .getTrimmedStrings(YarnConfiguration.NM_LOCAL_DIRS)),
             maxUsableSpacePercentagePerDisk, minFreeSpacePerDiskMB);
@@ -116,6 +160,31 @@ public class LocalDirsHandlerService extends AbstractService {
       localDirsAllocator = new LocalDirAllocator(
           YarnConfiguration.NM_LOCAL_DIRS);
       logDirsAllocator = new LocalDirAllocator(YarnConfiguration.NM_LOG_DIRS);
+=======
+              validatePaths(conf
+                  .getTrimmedStrings(YarnConfiguration.NM_LOCAL_DIRS)),
+              highUsableSpacePercentagePerDisk,
+              lowUsableSpacePercentagePerDisk,
+              minFreeSpacePerDiskMB);
+      logDirs =
+          new DirectoryCollection(
+              validatePaths(conf
+                  .getTrimmedStrings(YarnConfiguration.NM_LOG_DIRS)),
+              highUsableSpacePercentagePerDisk,
+              lowUsableSpacePercentagePerDisk,
+              minFreeSpacePerDiskMB);
+
+      String local = conf.get(YarnConfiguration.NM_LOCAL_DIRS);
+      conf.set(NM_GOOD_LOCAL_DIRS,
+          (local != null) ? local : "");
+      localDirsAllocator = new LocalDirAllocator(
+          NM_GOOD_LOCAL_DIRS);
+      String log = conf.get(YarnConfiguration.NM_LOG_DIRS);
+      conf.set(NM_GOOD_LOG_DIRS,
+          (log != null) ? log : "");
+      logDirsAllocator = new LocalDirAllocator(
+          NM_GOOD_LOG_DIRS);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     @Override
@@ -373,10 +442,17 @@ public class LocalDirsHandlerService extends AbstractService {
 
     Configuration conf = getConfig();
     List<String> localDirs = getLocalDirs();
+<<<<<<< HEAD
     conf.setStrings(YarnConfiguration.NM_LOCAL_DIRS,
                     localDirs.toArray(new String[localDirs.size()]));
     List<String> logDirs = getLogDirs();
     conf.setStrings(YarnConfiguration.NM_LOG_DIRS,
+=======
+    conf.setStrings(NM_GOOD_LOCAL_DIRS,
+                    localDirs.toArray(new String[localDirs.size()]));
+    List<String> logDirs = getLogDirs();
+    conf.setStrings(NM_GOOD_LOG_DIRS,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       logDirs.toArray(new String[logDirs.size()]));
     if (!areDisksHealthy()) {
       // Just log.

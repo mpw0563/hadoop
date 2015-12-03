@@ -24,11 +24,19 @@ import java.util.List;
 import com.google.common.annotations.VisibleForTesting;
 
 import org.apache.hadoop.fs.StorageType;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.protocol.Block;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeStorage;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeStorage.State;
 import org.apache.hadoop.hdfs.server.protocol.StorageReport;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * A Datanode has one or more storages. A storage in the Datanode is represented
  * by this class.
@@ -197,7 +205,11 @@ public class DatanodeStorageInfo {
     this.lastBlockReportId = lastBlockReportId;
   }
 
+<<<<<<< HEAD
   State getState() {
+=======
+  public State getState() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return this.state;
   }
 
@@ -209,6 +221,10 @@ public class DatanodeStorageInfo {
     return getState() == State.FAILED && numBlocks != 0;
   }
 
+<<<<<<< HEAD
+=======
+  @VisibleForTesting
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public String getStorageID() {
     return storageID;
   }
@@ -233,7 +249,11 @@ public class DatanodeStorageInfo {
     return blockPoolUsed;
   }
 
+<<<<<<< HEAD
   public AddBlockResult addBlock(BlockInfo b) {
+=======
+  public AddBlockResult addBlock(BlockInfo b, Block reportedBlock) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // First check whether the block belongs to a different storage
     // on the same DN.
     AddBlockResult result = AddBlockResult.ADDED;
@@ -252,10 +272,25 @@ public class DatanodeStorageInfo {
     }
 
     // add to the head of the data-node list
+<<<<<<< HEAD
     b.addStorage(this);
     blockList = b.listInsert(blockList, this);
     numBlocks++;
     return result;
+=======
+    b.addStorage(this, reportedBlock);
+    insertToList(b);
+    return result;
+  }
+
+  AddBlockResult addBlock(BlockInfo b) {
+    return addBlock(b, b);
+  }
+
+  public void insertToList(BlockInfo b) {
+    blockList = b.listInsert(blockList, this);
+    numBlocks++;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public boolean removeBlock(BlockInfo b) {
@@ -274,7 +309,10 @@ public class DatanodeStorageInfo {
   
   Iterator<BlockInfo> getBlockIterator() {
     return new BlockIterator(blockList);
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

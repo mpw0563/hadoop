@@ -175,11 +175,26 @@ public class DistCp extends Configured implements Tool {
         job = createJob();
       }
       if (inputOptions.shouldUseDiff()) {
+<<<<<<< HEAD
         if (!DistCpSync.sync(inputOptions, getConf())) {
           inputOptions.disableUsingDiff();
         }
       }
       createInputFileListing(job);
+=======
+        DistCpSync distCpSync = new DistCpSync(inputOptions, getConf());
+        if (distCpSync.sync()) {
+          createInputFileListingWithDiff(job, distCpSync);
+        } else {
+          inputOptions.disableUsingDiff();
+        }
+      }
+
+      // Fallback to default DistCp if without "diff" option or sync failed.
+      if (!inputOptions.shouldUseDiff()) {
+        createInputFileListing(job);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       job.submit();
       submitted = true;
@@ -385,6 +400,25 @@ public class DistCp extends Configured implements Tool {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Create input listing based on snapshot diff report.
+   * @param job - Handle to job
+   * @param distCpSync the class wraps the snapshot diff report
+   * @return Returns the path where the copy listing is created
+   * @throws IOException - If any
+   */
+  private Path createInputFileListingWithDiff(Job job, DistCpSync distCpSync)
+      throws IOException {
+    Path fileListingPath = getFileListingPath();
+    CopyListing copyListing = new SimpleCopyListing(job.getConfiguration(),
+        job.getCredentials(), distCpSync);
+    copyListing.buildListing(fileListingPath, inputOptions);
+    return fileListingPath;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Get default name of the copy listing file. Use the meta folder
    * to create the copy listing file
    *

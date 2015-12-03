@@ -20,6 +20,10 @@ package org.apache.hadoop.yarn.server.resourcemanager.webapp;
 
 import static org.apache.hadoop.yarn.webapp.view.JQueryUI.DATATABLES_ID;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.NodeLabel;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.nodelabels.RMNodeLabel;
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
@@ -58,9 +62,14 @@ public class NodeLabelsPage extends RmView {
       RMNodeLabelsManager nlm = rm.getRMContext().getNodeLabelManager();
       for (RMNodeLabel info : nlm.pullRMNodeLabelsInfo()) {
         TR<TBODY<TABLE<Hamlet>>> row =
+<<<<<<< HEAD
             tbody.tr().td(
                 info.getLabelName().isEmpty() ? "<DEFAULT_PARTITION>" : info
                     .getLabelName());
+=======
+            tbody.tr().td(info.getLabelName().isEmpty()
+                ? NodeLabel.DEFAULT_NODE_LABEL_PARTITION : info.getLabelName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         String type =
             (info.getIsExclusive()) ? "Exclusive Partition"
                 : "Non Exclusive Partition";

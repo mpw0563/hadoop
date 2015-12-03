@@ -250,9 +250,9 @@ public class LocalDirAllocator {
     private int dirNumLastAccessed;
     private Random dirIndexRandomizer = new Random();
     private FileSystem localFS;
-    private DF[] dirDF;
+    private DF[] dirDF = new DF[0];
     private String contextCfgItemName;
-    private String[] localDirs;
+    private String[] localDirs = new String[0];
     private String savedLocalDirs = "";
 
     public AllocatorPerContext(String contextCfgItemName) {
@@ -265,6 +265,9 @@ public class LocalDirAllocator {
     private synchronized void confChanged(Configuration conf) 
         throws IOException {
       String newLocalDirs = conf.get(contextCfgItemName);
+      if (null == newLocalDirs) {
+        throw new IOException(contextCfgItemName + " not configured");
+      }
       if (!newLocalDirs.equals(savedLocalDirs)) {
         localDirs = StringUtils.getTrimmedStrings(newLocalDirs);
         localFS = FileSystem.getLocal(conf);
@@ -301,8 +304,10 @@ public class LocalDirAllocator {
         dirDF = dfList.toArray(new DF[dirs.size()]);
         savedLocalDirs = newLocalDirs;
         
-        // randomize the first disk picked in the round-robin selection 
-        dirNumLastAccessed = dirIndexRandomizer.nextInt(dirs.size());
+        if (dirs.size() > 0) {
+          // randomize the first disk picked in the round-robin selection
+          dirNumLastAccessed = dirIndexRandomizer.nextInt(dirs.size());
+        }
       }
     }
 

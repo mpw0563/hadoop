@@ -39,6 +39,10 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.fs.UnsupportedFileSystemException;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.net.ServerSocketUtil;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.yarn.api.ContainerManagementProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.GetContainerStatusesRequest;
@@ -215,7 +219,11 @@ public class TestNodeManagerReboot {
     
   }
 
+<<<<<<< HEAD
   private void restartNM(int maxTries) {
+=======
+  private void restartNM(int maxTries) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     nm.stop();
     nm = new MyNodeManager();
     nm.start();
@@ -296,7 +304,11 @@ public class TestNodeManagerReboot {
 
   private class MyNodeManager extends NodeManager {
 
+<<<<<<< HEAD
     public MyNodeManager() {
+=======
+    public MyNodeManager() throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       super();
       this.init(createNMConfig());
     }
@@ -315,11 +327,21 @@ public class TestNodeManagerReboot {
       return delService;
     }
 
+<<<<<<< HEAD
     private YarnConfiguration createNMConfig() {
       YarnConfiguration conf = new YarnConfiguration();
       conf.setInt(YarnConfiguration.NM_PMEM_MB, 5 * 1024); // 5GB
       conf.set(YarnConfiguration.NM_ADDRESS, "127.0.0.1:12345");
       conf.set(YarnConfiguration.NM_LOCALIZER_ADDRESS, "127.0.0.1:12346");
+=======
+    private YarnConfiguration createNMConfig() throws IOException {
+      YarnConfiguration conf = new YarnConfiguration();
+      conf.setInt(YarnConfiguration.NM_PMEM_MB, 5 * 1024); // 5GB
+      conf.set(YarnConfiguration.NM_ADDRESS,
+          "127.0.0.1:" + ServerSocketUtil.getPort(49152, 10));
+      conf.set(YarnConfiguration.NM_LOCALIZER_ADDRESS, "127.0.0.1:"
+          + ServerSocketUtil.getPort(49153, 10));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       conf.set(YarnConfiguration.NM_LOG_DIRS, logsDir.getAbsolutePath());
       conf.set(YarnConfiguration.NM_LOCAL_DIRS, nmLocalDir.getAbsolutePath());
       conf.setLong(YarnConfiguration.NM_LOG_RETAIN_SECONDS, 1);

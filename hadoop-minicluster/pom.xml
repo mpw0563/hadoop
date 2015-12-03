@@ -18,12 +18,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../hadoop-project</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-minicluster</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <packaging>jar</packaging>
 
   <description>Apache Hadoop Mini-Cluster</description>

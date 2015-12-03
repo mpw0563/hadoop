@@ -38,6 +38,10 @@ public class SchedulerInfo {
   protected ResourceInfo minAllocResource;
   protected ResourceInfo maxAllocResource;
   protected EnumSet<SchedulerResourceTypes> schedulingResourceTypes;
+<<<<<<< HEAD
+=======
+  protected int maximumClusterPriority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public SchedulerInfo() {
   } // JAXB needs this
@@ -55,6 +59,11 @@ public class SchedulerInfo {
     this.minAllocResource = new ResourceInfo(rs.getMinimumResourceCapability());
     this.maxAllocResource = new ResourceInfo(rs.getMaximumResourceCapability());
     this.schedulingResourceTypes = rs.getSchedulingResourceTypes();
+<<<<<<< HEAD
+=======
+    this.maximumClusterPriority =
+        rs.getMaxClusterLevelAppPriority().getPriority();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public String getSchedulerType() {
@@ -73,4 +82,10 @@ public class SchedulerInfo {
     return this.schedulingResourceTypes.toString();
   }
 
+<<<<<<< HEAD
+=======
+  public int getMaxClusterLevelAppPriority() {
+    return this.maximumClusterPriority;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

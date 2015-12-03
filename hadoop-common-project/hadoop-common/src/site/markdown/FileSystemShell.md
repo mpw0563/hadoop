@@ -185,7 +185,11 @@ Example:
 * `hadoop fs -count hdfs://nn1.example.com/file1 hdfs://nn2.example.com/file2`
 * `hadoop fs -count -q hdfs://nn1.example.com/file1`
 * `hadoop fs -count -q -h hdfs://nn1.example.com/file1`
+<<<<<<< HEAD
 * `hdfs dfs -count -q -h -v hdfs://nn1.example.com/file1`
+=======
+* `hadoop fs -count -q -h -v hdfs://nn1.example.com/file1`
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Exit Code:
 
@@ -271,7 +275,11 @@ expunge
 
 Usage: `hadoop fs -expunge`
 
+<<<<<<< HEAD
 Empty the Trash. Refer to the [HDFS Architecture Guide](../hadoop-hdfs/HdfsDesign.html) for more information on the Trash feature.
+=======
+If trash is enabled when a file is deleted, HDFS instead moves the deleted file to a trash directory. This command causes HDFS to permanently delete files from the trash that are older than the retention threshold. Refer to the [File Deletes and Undeletes Guide](../hadoop-hdfs/HdfsDesign.html#File_Deletes_and_Undeletes) in Space Reclamation section for more information on the Trash feature.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 find
 ----
@@ -320,6 +328,13 @@ Exit Code:
 
 Returns 0 on success and -1 on error.
 
+<<<<<<< HEAD
+=======
+Options:
+
+The -f option will overwrite the destination if it already exists.
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 getfacl
 -------
 
@@ -368,9 +383,24 @@ Returns 0 on success and non-zero on error.
 getmerge
 --------
 
+<<<<<<< HEAD
 Usage: `hadoop fs -getmerge <src> <localdst> [addnl]`
 
 Takes a source directory and a destination file as input and concatenates files in src into the destination local file. Optionally addnl can be set to enable adding a newline character at the end of each file.
+=======
+Usage: `hadoop fs -getmerge [-nl] <src> <localdst>`
+
+Takes a source directory and a destination file as input and concatenates files in src into the destination local file. Optionally -nl can be set to enable adding a newline character (LF) at the end of each file.
+
+Examples:
+
+* `hadoop fs -getmerge -nl  /src  /opt/output.txt`
+* `hadoop fs -getmerge -nl  /src/file1.txt /src/file2.txt  /output.txt`
+
+Exit Code:
+
+Returns 0 on success and non-zero on error.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 help
 ----
@@ -688,6 +718,7 @@ truncate
 
 Usage: `hadoop fs -truncate [-w] <length> <paths>`
 
+<<<<<<< HEAD
 Truncate all files that match the specified file pattern to the
 specified length.
 
@@ -697,6 +728,16 @@ Options:
   to complete, if necessary. Without -w flag the file may remain
   unclosed for some time while the recovery is in progress.
   During this time file cannot be reopened for append.
+=======
+Truncate all files that match the specified file pattern
+to the specified length.
+
+Options:
+
+* The -w flag requests that the command waits for block recovery to complete, if necessary.  
+Without -w flag the file may remain unclosed for some time while the recovery is in progress.  
+During this time file cannot be reopened for append.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Example:
 

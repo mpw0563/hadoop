@@ -40,11 +40,18 @@ public class TestYarnVersionInfo {
     // make sure they aren't Unknown
     assertTrue("getVersion returned Unknown", !YarnVersionInfo.getVersion().equals("Unknown"));
     assertTrue("getUser returned Unknown", !YarnVersionInfo.getUser().equals("Unknown"));
+<<<<<<< HEAD
     assertTrue("getUrl returned Unknown", !YarnVersionInfo.getUrl().equals("Unknown"));
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertTrue("getSrcChecksum returned Unknown", !YarnVersionInfo.getSrcChecksum().equals("Unknown"));
 
     // these could be Unknown if the VersionInfo generated from code not in svn or git
     // so just check that they return something
+<<<<<<< HEAD
+=======
+    assertNotNull("getUrl returned null", YarnVersionInfo.getUrl());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertNotNull("getRevision returned null", YarnVersionInfo.getRevision());
     assertNotNull("getBranch returned null", YarnVersionInfo.getBranch());
 

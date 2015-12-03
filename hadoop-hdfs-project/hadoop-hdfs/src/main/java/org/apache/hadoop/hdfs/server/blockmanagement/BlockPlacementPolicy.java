@@ -23,19 +23,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.google.common.base.Preconditions;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.protocol.BlockStoragePolicy;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
+=======
+import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.net.NetworkTopology;
 import org.apache.hadoop.net.Node;
-import org.apache.hadoop.util.ReflectionUtils;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * This interface is used for choosing the desired number of targets
@@ -43,7 +48,8 @@ import org.apache.hadoop.util.ReflectionUtils;
  */
 @InterfaceAudience.Private
 public abstract class BlockPlacementPolicy {
-  static final Log LOG = LogFactory.getLog(BlockPlacementPolicy.class);
+  static final Logger LOG = LoggerFactory.getLogger(
+      BlockPlacementPolicy.class);
 
   @InterfaceAudience.Private
   public static class NotEnoughReplicasException extends Exception {
@@ -103,6 +109,7 @@ public abstract class BlockPlacementPolicy {
    * Verify if the block's placement meets requirement of placement policy,
    * i.e. replicas are placed on no less than minRacks racks in the system.
    * 
+<<<<<<< HEAD
    * @param srcPath the full pathname of the file to be verified
    * @param lBlk block with locations
    * @param numOfReplicas replica number of file to be verified
@@ -134,6 +141,35 @@ public abstract class BlockPlacementPolicy {
       Collection<DatanodeStorageInfo> exactlyOne,
       List<StorageType> excessTypes);
 
+=======
+   * @param locs block with locations
+   * @param numOfReplicas replica number of file to be verified
+   * @return the result of verification
+   */
+  abstract public BlockPlacementStatus verifyBlockPlacement(
+      DatanodeInfo[] locs, int numOfReplicas);
+
+  /**
+   * Select the excess replica storages for deletion based on either
+   * delNodehint/Excess storage types.
+   *
+   * @param candidates
+   *          available replicas
+   * @param expectedNumOfReplicas
+   *          The required number of replicas for this block
+   * @param excessTypes
+   *          type of the storagepolicy
+   * @param addedNode
+   *          New replica reported
+   * @param delNodeHint
+   *          Hint for excess storage selection
+   * @return Returns the list of excess replicas chosen for deletion
+   */
+  abstract public List<DatanodeStorageInfo> chooseReplicasToDelete(
+      Collection<DatanodeStorageInfo> candidates, int expectedNumOfReplicas,
+      List<StorageType> excessTypes, DatanodeDescriptor addedNode,
+      DatanodeDescriptor delNodeHint);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Used to setup a BlockPlacementPolicy object. This should be defined by 
    * all implementations of a BlockPlacementPolicy.
@@ -145,6 +181,7 @@ public abstract class BlockPlacementPolicy {
   abstract protected void initialize(Configuration conf,  FSClusterStats stats, 
                                      NetworkTopology clusterMap, 
                                      Host2NodesMap host2datanodeMap);
+<<<<<<< HEAD
     
   /**
    * Get an instance of the configured Block Placement Policy based on the
@@ -169,6 +206,19 @@ public abstract class BlockPlacementPolicy {
     replicator.initialize(conf, stats, clusterMap, host2datanodeMap);
     return replicator;
   }
+=======
+
+  /**
+   * Check if the move is allowed. Used by balancer and other tools.
+   * @
+   *
+   * @param candidates all replicas including source and target
+   * @param source source replica of the move
+   * @param target target replica of the move
+   */
+  abstract public boolean isMovable(Collection<DatanodeInfo> candidates,
+      DatanodeInfo source, DatanodeInfo target);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Adjust rackmap, moreThanOne, and exactlyOne after removing replica on cur.
@@ -200,6 +250,23 @@ public abstract class BlockPlacementPolicy {
     } else {
       exactlyOne.remove(cur);
     }
+<<<<<<< HEAD
+=======
+  }
+
+  protected <T> DatanodeInfo getDatanodeInfo(T datanode) {
+    Preconditions.checkArgument(
+        datanode instanceof DatanodeInfo ||
+        datanode instanceof DatanodeStorageInfo,
+        "class " + datanode.getClass().getName() + " not allowed");
+    if (datanode instanceof DatanodeInfo) {
+      return ((DatanodeInfo)datanode);
+    } else if (datanode instanceof DatanodeStorageInfo) {
+      return ((DatanodeStorageInfo)datanode).getDatanodeDescriptor();
+    } else {
+      return null;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -208,6 +275,7 @@ public abstract class BlockPlacementPolicy {
    */
   protected String getRack(final DatanodeInfo datanode) {
     return datanode.getNetworkLocation();
+<<<<<<< HEAD
   }
   
   /**
@@ -244,6 +312,43 @@ public abstract class BlockPlacementPolicy {
         moreThanOne.addAll(storageList);
       }
     }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
+  /**
+   * Split data nodes into two sets, one set includes nodes on rack with
+   * more than one  replica, the other set contains the remaining nodes.
+   * 
+   * @param storagesOrDataNodes DatanodeStorageInfo/DatanodeInfo to be split
+   *        into two sets
+   * @param rackMap a map from rack to datanodes
+   * @param moreThanOne contains nodes on rack with more than one replica
+   * @param exactlyOne remains contains the remaining nodes
+   */
+  public <T> void splitNodesWithRack(
+      final Iterable<T> storagesOrDataNodes,
+      final Map<String, List<T>> rackMap,
+      final List<T> moreThanOne,
+      final List<T> exactlyOne) {
+    for(T s: storagesOrDataNodes) {
+      final String rackName = getRack(getDatanodeInfo(s));
+      List<T> storageList = rackMap.get(rackName);
+      if (storageList == null) {
+        storageList = new ArrayList<T>();
+        rackMap.put(rackName, storageList);
+      }
+      storageList.add(s);
+    }
+    // split nodes into two sets
+    for(List<T> storageList : rackMap.values()) {
+      if (storageList.size() == 1) {
+        // exactlyOne contains nodes on rack with only one replica
+        exactlyOne.add(storageList.get(0));
+      } else {
+        // moreThanOne contains nodes on rack with more than one replica
+        moreThanOne.addAll(storageList);
+      }
+    }
+  }
 }

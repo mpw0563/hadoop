@@ -51,6 +51,11 @@ Usage
 | [`-o` ; `--outputFile`] *output file* | Specify the output filename, if the specified output processor generates one. If the specified file already exists, it is silently overwritten. Required. |
 | [`-p` ; `--processor`] *processor* | Specify the image processor to apply against the image file. Currently valid options are `binary`, `xml` (default) and `stats`. |
 | [`-v` ; `--verbose`] | Print the input and output filenames and pipe output of processor to console as well as specified file. On extremely large files, this may increase processing time by an order of magnitude. |
+<<<<<<< HEAD
+=======
+| [`-f` ; `--fix-txids`] | Renumber the transaction IDs in the input, so that there are no gaps or invalid transaction IDs. |
+| [`-r` ; `--recover`] | When reading binary edit logs, use recovery mode. This will give you the chance to skip corrupt parts of the edit log. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | [`-h` ; `--help`] | Display the tool usage and help information and exit. |
 
 Case study: Hadoop cluster recovery

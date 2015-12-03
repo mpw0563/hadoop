@@ -100,6 +100,10 @@ public class ContainerMetrics implements MetricsSource {
   private boolean flushOnPeriod = false; // true if period elapsed
   private boolean finished = false; // true if container finished
   private boolean unregister = false; // unregister
+<<<<<<< HEAD
+=======
+  private long unregisterDelayMs;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private Timer timer; // lazily initialized
 
   /**
@@ -107,15 +111,30 @@ public class ContainerMetrics implements MetricsSource {
    */
   protected final static Map<ContainerId, ContainerMetrics>
       usageMetrics = new HashMap<>();
+<<<<<<< HEAD
 
   ContainerMetrics(
       MetricsSystem ms, ContainerId containerId, long flushPeriodMs) {
+=======
+  // Create a timer to unregister container metrics,
+  // whose associated thread run as a daemon.
+  private final static Timer unregisterContainerMetricsTimer =
+      new Timer("Container metrics unregistration", true);
+
+  ContainerMetrics(
+      MetricsSystem ms, ContainerId containerId, long flushPeriodMs,
+      long delayMs) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.recordInfo =
         info(sourceName(containerId), RECORD_INFO.description());
     this.registry = new MetricsRegistry(recordInfo);
     this.metricsSystem = ms;
     this.containerId = containerId;
     this.flushPeriodMs = flushPeriodMs;
+<<<<<<< HEAD
+=======
+    this.unregisterDelayMs = delayMs < 0 ? 0 : delayMs;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     scheduleTimerTaskIfRequired();
 
     this.pMemMBsStat = registry.newStat(
@@ -148,6 +167,7 @@ public class ContainerMetrics implements MetricsSource {
   }
 
   public static ContainerMetrics forContainer(
+<<<<<<< HEAD
       ContainerId containerId, long flushPeriodMs) {
     return forContainer(
         DefaultMetricsSystem.instance(), containerId, flushPeriodMs);
@@ -159,6 +179,20 @@ public class ContainerMetrics implements MetricsSource {
     if (metrics == null) {
       metrics = new ContainerMetrics(
           ms, containerId, flushPeriodMs).tag(RECORD_INFO, containerId);
+=======
+      ContainerId containerId, long flushPeriodMs, long delayMs) {
+    return forContainer(
+        DefaultMetricsSystem.instance(), containerId, flushPeriodMs, delayMs);
+  }
+
+  synchronized static ContainerMetrics forContainer(
+      MetricsSystem ms, ContainerId containerId, long flushPeriodMs,
+      long delayMs) {
+    ContainerMetrics metrics = usageMetrics.get(containerId);
+    if (metrics == null) {
+      metrics = new ContainerMetrics(ms, containerId, flushPeriodMs,
+          delayMs).tag(RECORD_INFO, containerId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Register with the MetricsSystems
       if (ms != null) {
@@ -172,12 +206,23 @@ public class ContainerMetrics implements MetricsSource {
     return metrics;
   }
 
+<<<<<<< HEAD
+=======
+  synchronized static void unregisterContainerMetrics(ContainerMetrics cm) {
+    cm.metricsSystem.unregisterSource(cm.recordInfo.name());
+    usageMetrics.remove(cm.containerId);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public synchronized void getMetrics(MetricsCollector collector, boolean all) {
     //Container goes through registered -> finished -> unregistered.
     if (unregister) {
+<<<<<<< HEAD
       metricsSystem.unregisterSource(recordInfo.name());
       usageMetrics.remove(containerId);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return;
     }
 
@@ -199,6 +244,10 @@ public class ContainerMetrics implements MetricsSource {
       timer.cancel();
       timer = null;
     }
+<<<<<<< HEAD
+=======
+    scheduleTimerTaskForUnregistration();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public void recordMemoryUsage(int memoryMBs) {
@@ -252,4 +301,17 @@ public class ContainerMetrics implements MetricsSource {
       timer.schedule(timerTask, flushPeriodMs);
     }
   }
+<<<<<<< HEAD
+=======
+
+  private void scheduleTimerTaskForUnregistration() {
+    TimerTask timerTask = new TimerTask() {
+      @Override
+      public void run() {
+        ContainerMetrics.unregisterContainerMetrics(ContainerMetrics.this);
+      }
+    };
+    unregisterContainerMetricsTimer.schedule(timerTask, unregisterDelayMs);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

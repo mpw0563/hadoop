@@ -53,12 +53,21 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
 import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNode;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
 import org.apache.hadoop.yarn.sls.appmaster.AMSimulator;
 import org.apache.hadoop.yarn.sls.conf.SLSConfiguration;
 import org.apache.hadoop.yarn.sls.nodemanager.NMSimulator;
 import org.apache.hadoop.yarn.sls.scheduler.ContainerSimulator;
 import org.apache.hadoop.yarn.sls.scheduler.ResourceSchedulerWrapper;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.sls.scheduler.SLSCapacityScheduler;
+import org.apache.hadoop.yarn.sls.scheduler.SchedulerWrapper;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.sls.scheduler.TaskRunner;
 import org.apache.hadoop.yarn.sls.utils.SLSUtils;
 import org.apache.log4j.Logger;
@@ -144,9 +153,15 @@ public class SLSRunner {
     // start application masters
     startAM();
     // set queue & tracked apps information
+<<<<<<< HEAD
     ((ResourceSchedulerWrapper) rm.getResourceScheduler())
                             .setQueueSet(this.queueAppNumMap.keySet());
     ((ResourceSchedulerWrapper) rm.getResourceScheduler())
+=======
+    ((SchedulerWrapper) rm.getResourceScheduler())
+                            .setQueueSet(this.queueAppNumMap.keySet());
+    ((SchedulerWrapper) rm.getResourceScheduler())
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                             .setTrackedAppSet(this.trackedApps);
     // print out simulation info
     printSimulationInfo();
@@ -155,6 +170,7 @@ public class SLSRunner {
     // starting the runner once everything is ready to go,
     runner.start();
   }
+<<<<<<< HEAD
   
   private void startRM() throws IOException, ClassNotFoundException {
     Configuration rmConf = new YarnConfiguration();
@@ -162,6 +178,26 @@ public class SLSRunner {
     rmConf.set(SLSConfiguration.RM_SCHEDULER, schedulerClass);
     rmConf.set(YarnConfiguration.RM_SCHEDULER,
             ResourceSchedulerWrapper.class.getName());
+=======
+
+  private void startRM() throws IOException, ClassNotFoundException {
+    Configuration rmConf = new YarnConfiguration();
+    String schedulerClass = rmConf.get(YarnConfiguration.RM_SCHEDULER);
+
+    // For CapacityScheduler we use a sub-classing instead of wrapping
+    // to allow scheduler-specific invocations from monitors to work
+    // this can be used for other schedulers as well if we care to
+    // exercise/track behaviors that are not common to the scheduler api
+    if(Class.forName(schedulerClass) == CapacityScheduler.class) {
+      rmConf.set(YarnConfiguration.RM_SCHEDULER,
+          SLSCapacityScheduler.class.getName());
+    } else {
+      rmConf.set(YarnConfiguration.RM_SCHEDULER,
+              ResourceSchedulerWrapper.class.getName());
+      rmConf.set(SLSConfiguration.RM_SCHEDULER, schedulerClass);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     rmConf.set(SLSConfiguration.METRICS_OUTPUT_DIR, metricsOutputDir);
     rm = new ResourceManager();
     rm.init(rmConf);

@@ -35,7 +35,11 @@ public class CacheDirectiveStats {
 
     /**
      * Builds a new CacheDirectiveStats populated with the set properties.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * @return New CacheDirectiveStats.
      */
     public CacheDirectiveStats build() {
@@ -51,7 +55,11 @@ public class CacheDirectiveStats {
 
     /**
      * Sets the bytes needed by this directive.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * @param bytesNeeded The bytes needed.
      * @return This builder, for call chaining.
      */
@@ -62,7 +70,11 @@ public class CacheDirectiveStats {
 
     /**
      * Sets the bytes cached by this directive.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * @param bytesCached The bytes cached.
      * @return This builder, for call chaining.
      */
@@ -83,7 +95,11 @@ public class CacheDirectiveStats {
 
     /**
      * Sets the files cached by this directive.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * @param filesCached The number of files cached.
      * @return This builder, for call chaining.
      */
@@ -94,7 +110,11 @@ public class CacheDirectiveStats {
 
     /**
      * Sets whether this directive has expired.
+<<<<<<< HEAD
      * 
+=======
+     *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * @param hasExpired if this directive has expired
      * @return This builder, for call chaining.
      */
@@ -156,6 +176,7 @@ public class CacheDirectiveStats {
 
   @Override
   public String toString() {
+<<<<<<< HEAD
     StringBuilder builder = new StringBuilder();
     builder.append("{");
     builder.append("bytesNeeded: ").append(bytesNeeded);
@@ -167,3 +188,12 @@ public class CacheDirectiveStats {
     return builder.toString();
   }
 };
+=======
+    return "{" + "bytesNeeded: " + bytesNeeded + ", "
+        + "bytesCached: " + bytesCached + ", "
+        + "filesNeeded: " + filesNeeded + ", "
+        + "filesCached: " + filesCached + ", "
+        + "hasExpired: " + hasExpired + "}";
+  }
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

@@ -38,6 +38,10 @@ import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.event.EventHandler;
 import org.apache.hadoop.yarn.security.AMRMTokenIdentifier;
 import org.apache.hadoop.yarn.security.client.ClientToAMTokenIdentifier;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.blacklist.BlacklistManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
 
 /**
@@ -185,6 +189,15 @@ public interface RMAppAttempt extends EventHandler<RMAppAttemptEvent> {
   ApplicationResourceUsageReport getApplicationResourceUsageReport();
 
   /**
+<<<<<<< HEAD
+=======
+   * Get the {@link BlacklistManager} that manages blacklists for AM failures
+   * @return the {@link BlacklistManager} that tracks AM failures.
+   */
+  BlacklistManager getAMBlacklist();
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * the start time of the application.
    * @return the start time of the application.
    */

@@ -34,11 +34,21 @@ public class BlockLocation {
   private String[] cachedHosts; // Datanode hostnames with a cached replica
   private String[] names; // Datanode IP:xferPort for accessing the block
   private String[] topologyPaths; // Full path name in network topology
+<<<<<<< HEAD
+=======
+  private String[] storageIds; // Storage ID of each replica
+  private StorageType[] storageTypes; // Storage type of each replica
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private long offset;  // Offset of the block in the file
   private long length;
   private boolean corrupt;
 
   private static final String[] EMPTY_STR_ARRAY = new String[0];
+<<<<<<< HEAD
+=======
+  private static final StorageType[] EMPTY_STORAGE_TYPE_ARRAY =
+      new StorageType[0];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Default Constructor
@@ -58,6 +68,11 @@ public class BlockLocation {
     this.offset = that.offset;
     this.length = that.length;
     this.corrupt = that.corrupt;
+<<<<<<< HEAD
+=======
+    this.storageIds = that.storageIds;
+    this.storageTypes = that.storageTypes;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -95,6 +110,16 @@ public class BlockLocation {
 
   public BlockLocation(String[] names, String[] hosts, String[] cachedHosts,
       String[] topologyPaths, long offset, long length, boolean corrupt) {
+<<<<<<< HEAD
+=======
+    this(names, hosts, cachedHosts, topologyPaths, null, null, offset, length,
+        corrupt);
+  }
+
+  public BlockLocation(String[] names, String[] hosts, String[] cachedHosts,
+      String[] topologyPaths, String[] storageIds, StorageType[] storageTypes,
+      long offset, long length, boolean corrupt) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (names == null) {
       this.names = EMPTY_STR_ARRAY;
     } else {
@@ -115,6 +140,19 @@ public class BlockLocation {
     } else {
       this.topologyPaths = topologyPaths;
     }
+<<<<<<< HEAD
+=======
+    if (storageIds == null) {
+      this.storageIds = EMPTY_STR_ARRAY;
+    } else {
+      this.storageIds = storageIds;
+    }
+    if (storageTypes == null) {
+      this.storageTypes = EMPTY_STORAGE_TYPE_ARRAY;
+    } else {
+      this.storageTypes = storageTypes;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.offset = offset;
     this.length = length;
     this.corrupt = corrupt;
@@ -148,7 +186,21 @@ public class BlockLocation {
   public String[] getTopologyPaths() throws IOException {
     return topologyPaths;
   }
-  
+
+  /**
+   * Get the storageID of each replica of the block.
+   */
+  public String[] getStorageIds() {
+    return storageIds;
+  }
+
+  /**
+   * Get the storage type of each replica of the block.
+   */
+  public StorageType[] getStorageTypes() {
+    return storageTypes;
+  }
+
   /**
    * Get the start offset of file associated with this block
    */
@@ -235,6 +287,25 @@ public class BlockLocation {
     }
   }
 
+<<<<<<< HEAD
+=======
+  public void setStorageIds(String[] storageIds) {
+    if (storageIds == null) {
+      this.storageIds = EMPTY_STR_ARRAY;
+    } else {
+      this.storageIds = storageIds;
+    }
+  }
+
+  public void setStorageTypes(StorageType[] storageTypes) {
+    if (storageTypes == null) {
+      this.storageTypes = EMPTY_STORAGE_TYPE_ARRAY;
+    } else {
+      this.storageTypes = storageTypes;
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();

@@ -155,4 +155,47 @@ public class LogAggregationContextPBImpl extends LogAggregationContext{
     }
     builder.setRolledLogsExcludePattern(rolledLogsExcludePattern);
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public String getLogAggregationPolicyClassName() {
+    LogAggregationContextProtoOrBuilder p = viaProto ? proto : builder;
+    if (! p.hasLogAggregationPolicyClassName()) {
+      return null;
+    }
+    return p.getLogAggregationPolicyClassName();
+  }
+
+  @Override
+  public void setLogAggregationPolicyClassName(
+      String className) {
+    maybeInitBuilder();
+    if (className == null) {
+      builder.clearLogAggregationPolicyClassName();
+      return;
+    }
+    builder.setLogAggregationPolicyClassName(className);
+  }
+
+  @Override
+  public String getLogAggregationPolicyParameters() {
+    LogAggregationContextProtoOrBuilder p = viaProto ? proto : builder;
+    if (! p.hasLogAggregationPolicyParameters()) {
+      return null;
+    }
+    return p.getLogAggregationPolicyParameters();
+  }
+
+  @Override
+  public void setLogAggregationPolicyParameters(
+      String config) {
+    maybeInitBuilder();
+    if (config == null) {
+      builder.clearLogAggregationPolicyParameters();
+      return;
+    }
+    builder.setLogAggregationPolicyParameters(config);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

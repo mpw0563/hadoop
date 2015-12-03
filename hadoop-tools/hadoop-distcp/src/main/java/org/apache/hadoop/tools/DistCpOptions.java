@@ -47,7 +47,11 @@ public class DistCpOptions {
   public static final int maxNumListstatusThreads = 40;
   private int numListstatusThreads = 0;  // Indicates that flag is not set.
   private int maxMaps = DistCpConstants.DEFAULT_MAPS;
+<<<<<<< HEAD
   private int mapBandwidth = DistCpConstants.DEFAULT_BANDWIDTH_MB;
+=======
+  private float mapBandwidth = DistCpConstants.DEFAULT_BANDWIDTH_MB;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private String sslConfigurationFile;
 
@@ -366,7 +370,11 @@ public class DistCpOptions {
    *
    * @return Bandwidth in MB
    */
+<<<<<<< HEAD
   public int getMapBandwidth() {
+=======
+  public float getMapBandwidth() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return mapBandwidth;
   }
 
@@ -375,7 +383,11 @@ public class DistCpOptions {
    *
    * @param mapBandwidth - per map bandwidth
    */
+<<<<<<< HEAD
   public void setMapBandwidth(int mapBandwidth) {
+=======
+  public void setMapBandwidth(float mapBandwidth) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assert mapBandwidth > 0 : "Bandwidth " + mapBandwidth + " is invalid (should be > 0)";
     this.mapBandwidth = mapBandwidth;
   }
@@ -614,9 +626,15 @@ public class DistCpOptions {
       throw new IllegalArgumentException(
           "Append is disallowed when skipping CRC");
     }
+<<<<<<< HEAD
     if ((!syncFolder || !deleteMissing) && useDiff) {
       throw new IllegalArgumentException(
           "Diff is valid only with update and delete options");
+=======
+    if ((!syncFolder || deleteMissing) && useDiff) {
+      throw new IllegalArgumentException(
+          "Diff is valid only with update options");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 

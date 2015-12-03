@@ -20,11 +20,20 @@ package org.apache.hadoop.hdfs.server.datanode.web.webhdfs;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import org.apache.commons.io.Charsets;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.CreateFlag;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.HAUtilClient;
 import org.apache.hadoop.hdfs.security.token.delegation.DelegationTokenIdentifier;
 import org.apache.hadoop.hdfs.web.resources.BlockSizeParam;
 import org.apache.hadoop.hdfs.web.resources.BufferSizeParam;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.web.resources.CreateFlagParam;
+import org.apache.hadoop.hdfs.web.resources.CreateParentParam;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.web.resources.DelegationParam;
 import org.apache.hadoop.hdfs.web.resources.DoAsParam;
 import org.apache.hadoop.hdfs.web.resources.HttpOpParam;
@@ -41,6 +50,10 @@ import org.apache.hadoop.security.token.Token;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+<<<<<<< HEAD
+=======
+import java.util.EnumSet;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.List;
 import java.util.Map;
 
@@ -122,6 +135,19 @@ class ParameterParser {
     return token;
   }
 
+<<<<<<< HEAD
+=======
+  public boolean createParent() {
+    return new CreateParentParam(param(CreateParentParam.NAME)).getValue();
+  }
+
+  public EnumSet<CreateFlag> createFlag() {
+    String cf = decodeComponent(param(CreateFlagParam.NAME), Charsets.UTF_8);
+
+    return new CreateFlagParam(cf).getValue();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   Configuration conf() {
     return conf;
   }

@@ -21,4 +21,9 @@ package org.apache.hadoop.yarn.server.nodemanager;
 public enum ContainerManagerEventType {
   FINISH_APPS,
   FINISH_CONTAINERS,
+<<<<<<< HEAD
+=======
+  DECREASE_CONTAINERS_RESOURCE,
+  SIGNAL_CONTAINERS
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

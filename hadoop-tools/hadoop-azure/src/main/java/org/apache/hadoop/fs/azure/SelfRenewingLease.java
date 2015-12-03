@@ -22,6 +22,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.azure.StorageInterface.CloudBlobWrapper;
 
+<<<<<<< HEAD
+=======
+import com.google.common.annotations.VisibleForTesting;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.microsoft.azure.storage.AccessCondition;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlob;
@@ -61,7 +66,12 @@ public class SelfRenewingLease {
 
 
   // Time to wait to retry getting the lease in milliseconds
+<<<<<<< HEAD
   private static final int LEASE_ACQUIRE_RETRY_INTERVAL = 2000;
+=======
+  @VisibleForTesting
+  static final int LEASE_ACQUIRE_RETRY_INTERVAL = 2000;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public SelfRenewingLease(CloudBlobWrapper blobWrapper)
       throws StorageException {

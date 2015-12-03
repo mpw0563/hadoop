@@ -51,6 +51,10 @@ import org.apache.hadoop.yarn.api.records.ApplicationResourceUsageReport;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.ContainerResourceChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.Priority;
@@ -72,6 +76,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceScheduler
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerAppReport;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplication;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedContainerChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerNode;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerNodeReport;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
@@ -100,9 +108,15 @@ import com.codahale.metrics.Timer;
 
 @Private
 @Unstable
+<<<<<<< HEAD
 public class ResourceSchedulerWrapper
     extends AbstractYarnScheduler<SchedulerApplicationAttempt, SchedulerNode>
     implements ResourceScheduler, Configurable {
+=======
+final public class ResourceSchedulerWrapper
+    extends AbstractYarnScheduler<SchedulerApplicationAttempt, SchedulerNode>
+    implements SchedulerWrapper, ResourceScheduler, Configurable {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static final String EOL = System.getProperty("line.separator");
   private static final int SAMPLING_SIZE = 60;
   private ScheduledExecutorService pool;
@@ -167,9 +181,14 @@ public class ResourceSchedulerWrapper
   public void setConf(Configuration conf) {
     this.conf = conf;
     // set scheduler
+<<<<<<< HEAD
     Class<? extends ResourceScheduler> klass =
             conf.getClass(SLSConfiguration.RM_SCHEDULER, null,
                     ResourceScheduler.class);
+=======
+    Class<? extends ResourceScheduler> klass = conf.getClass(
+        SLSConfiguration.RM_SCHEDULER, null, ResourceScheduler.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     scheduler = ReflectionUtils.newInstance(klass, conf);
     // start metrics
@@ -203,15 +222,26 @@ public class ResourceSchedulerWrapper
 
   @Override
   public Allocation allocate(ApplicationAttemptId attemptId,
+<<<<<<< HEAD
                              List<ResourceRequest> resourceRequests,
                              List<ContainerId> containerIds,
                              List<String> strings, List<String> strings2) {
+=======
+      List<ResourceRequest> resourceRequests, List<ContainerId> containerIds,
+      List<String> strings, List<String> strings2,
+      List<ContainerResourceChangeRequest> increaseRequests,
+      List<ContainerResourceChangeRequest> decreaseRequests) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (metricsON) {
       final Timer.Context context = schedulerAllocateTimer.time();
       Allocation allocation = null;
       try {
         allocation = scheduler.allocate(attemptId, resourceRequests,
+<<<<<<< HEAD
                 containerIds, strings, strings2);
+=======
+                containerIds, strings, strings2, null, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return allocation;
       } finally {
         context.stop();
@@ -225,7 +255,11 @@ public class ResourceSchedulerWrapper
       }
     } else {
       return scheduler.allocate(attemptId,
+<<<<<<< HEAD
               resourceRequests, containerIds, strings, strings2);
+=======
+              resourceRequests, containerIds, strings, strings2, null, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -930,7 +964,11 @@ public class ResourceSchedulerWrapper
   @LimitedPrivate("yarn")
   @Unstable
   public Resource getClusterResource() {
+<<<<<<< HEAD
     return null;
+=======
+    return super.getClusterResource();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -960,5 +998,17 @@ public class ResourceSchedulerWrapper
     return Priority.newInstance(0);
   }
 
+<<<<<<< HEAD
 }
 
+=======
+  @Override
+  protected void decreaseContainer(
+      SchedContainerChangeRequest decreaseRequest,
+      SchedulerApplicationAttempt attempt) {
+    // TODO Auto-generated method stub
+    
+  }
+
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

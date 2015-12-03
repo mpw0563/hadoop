@@ -31,12 +31,22 @@ import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.protocol.RollingUpgradeStatus;
 import org.apache.hadoop.hdfs.protocolPB.DatanodeProtocolClientSideTranslatorPB;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.protocol.*;
+=======
+import org.apache.hadoop.hdfs.server.datanode.dataset.DatasetSpi;
+import org.apache.hadoop.hdfs.server.protocol.*;
+import org.apache.hadoop.hdfs.server.protocol.BlockECRecoveryCommand.BlockECRecoveryInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.protocol.ReceivedDeletedBlockInfo.BlockStatus;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Collection;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,7 +63,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @InterfaceAudience.Private
 class BPOfferService {
   static final Log LOG = DataNode.LOG;
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Information about the namespace that this service
    * is registering with. This is assigned after
@@ -70,6 +84,11 @@ class BPOfferService {
   
   private final DataNode dn;
 
+<<<<<<< HEAD
+=======
+  private DatasetSpi<?> dataset = null;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * A reference to the BPServiceActor associated with the currently
    * ACTIVE NN. In the case that all NameNodes are in STANDBY mode,
@@ -303,7 +322,12 @@ class BPOfferService {
    * verifies that this namespace matches (eg to prevent a misconfiguration
    * where a StandbyNode from a different cluster is specified)
    */
+<<<<<<< HEAD
   void verifyAndSetNamespaceInfo(NamespaceInfo nsInfo) throws IOException {
+=======
+  DatasetSpi<?> verifyAndSetNamespaceInfo(NamespaceInfo nsInfo)
+      throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     writeLock();
     try {
       if (this.bpNSInfo == null) {
@@ -314,7 +338,11 @@ class BPOfferService {
         // The DN can now initialize its local storage if we are the
         // first BP to handshake, etc.
         try {
+<<<<<<< HEAD
           dn.initBlockPool(this);
+=======
+          dataset = dn.initBlockPool(this);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           success = true;
         } finally {
           if (!success) {
@@ -335,6 +363,10 @@ class BPOfferService {
     } finally {
       writeUnlock();
     }
+<<<<<<< HEAD
+=======
+    return dataset;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -351,9 +383,14 @@ class BPOfferService {
             reg.getStorageInfo().getNamespaceID(), "namespace ID");
         checkNSEquality(bpRegistration.getStorageInfo().getClusterID(),
             reg.getStorageInfo().getClusterID(), "cluster ID");
+<<<<<<< HEAD
       } else {
         bpRegistration = reg;
       }
+=======
+      }
+      bpRegistration = reg;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       dn.bpRegistrationSucceeded(bpRegistration, getBlockPoolId());
       // Add the initial block token secret keys to the DN's secret manager.
@@ -411,7 +448,10 @@ class BPOfferService {
       writeUnlock();
     }
   }
+<<<<<<< HEAD
   
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Called by the DN to report an error to the NNs.
@@ -481,11 +521,19 @@ class BPOfferService {
     }
     String bpid = getBlockPoolId();
     if (!rollingUpgradeStatus.isFinalized()) {
+<<<<<<< HEAD
       dn.getFSDataset().enableTrash(bpid);
       dn.getFSDataset().setRollingUpgradeMarker(bpid);
     } else {
       dn.getFSDataset().clearTrash(bpid);
       dn.getFSDataset().clearRollingUpgradeMarker(bpid);
+=======
+      dataset.enableTrash(bpid);
+      dataset.setRollingUpgradeMarker(bpid);
+    } else {
+      dataset.clearTrash(bpid);
+      dataset.clearRollingUpgradeMarker(bpid);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -666,7 +714,11 @@ class BPOfferService {
       Block toDelete[] = bcmd.getBlocks();
       try {
         // using global fsdataset
+<<<<<<< HEAD
         dn.getFSDataset().invalidate(bcmd.getBlockPoolId(), toDelete);
+=======
+        dataset.invalidate(bcmd.getBlockPoolId(), toDelete);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } catch(IOException e) {
         // Exceptions caught here are not expected to be disk-related.
         throw e;
@@ -677,13 +729,21 @@ class BPOfferService {
       LOG.info("DatanodeCommand action: DNA_CACHE for " +
         blockIdCmd.getBlockPoolId() + " of [" +
           blockIdArrayToString(blockIdCmd.getBlockIds()) + "]");
+<<<<<<< HEAD
       dn.getFSDataset().cache(blockIdCmd.getBlockPoolId(), blockIdCmd.getBlockIds());
+=======
+      dataset.cache(blockIdCmd.getBlockPoolId(), blockIdCmd.getBlockIds());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       break;
     case DatanodeProtocol.DNA_UNCACHE:
       LOG.info("DatanodeCommand action: DNA_UNCACHE for " +
         blockIdCmd.getBlockPoolId() + " of [" +
           blockIdArrayToString(blockIdCmd.getBlockIds()) + "]");
+<<<<<<< HEAD
       dn.getFSDataset().uncache(blockIdCmd.getBlockPoolId(), blockIdCmd.getBlockIds());
+=======
+      dataset.uncache(blockIdCmd.getBlockPoolId(), blockIdCmd.getBlockIds());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       break;
     case DatanodeProtocol.DNA_SHUTDOWN:
       // TODO: DNA_SHUTDOWN appears to be unused - the NN never sends this command
@@ -700,7 +760,12 @@ class BPOfferService {
       break;
     case DatanodeProtocol.DNA_RECOVERBLOCK:
       String who = "NameNode at " + actor.getNNSocketAddress();
+<<<<<<< HEAD
       dn.recoverBlocks(who, ((BlockRecoveryCommand)cmd).getRecoveringBlocks());
+=======
+      dn.getBlockRecoveryWorker().recoverBlocks(who,
+          ((BlockRecoveryCommand)cmd).getRecoveringBlocks());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       break;
     case DatanodeProtocol.DNA_ACCESSKEYUPDATE:
       LOG.info("DatanodeCommand action: DNA_ACCESSKEYUPDATE");
@@ -723,6 +788,14 @@ class BPOfferService {
         dxcs.balanceThrottler.setBandwidth(bandwidth);
       }
       break;
+<<<<<<< HEAD
+=======
+    case DatanodeProtocol.DNA_ERASURE_CODING_RECOVERY:
+      LOG.info("DatanodeCommand action: DNA_ERASURE_CODING_RECOVERY");
+      Collection<BlockECRecoveryInfo> ecTasks = ((BlockECRecoveryCommand) cmd).getECTasks();
+      dn.getErasureCodingWorker().processErasureCodingTasks(ecTasks);
+      break;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     default:
       LOG.warn("Unknown DatanodeCommand action: " + cmd.getAction());
     }
@@ -752,6 +825,10 @@ class BPOfferService {
     case DatanodeProtocol.DNA_BALANCERBANDWIDTHUPDATE:
     case DatanodeProtocol.DNA_CACHE:
     case DatanodeProtocol.DNA_UNCACHE:
+<<<<<<< HEAD
+=======
+    case DatanodeProtocol.DNA_ERASURE_CODING_RECOVERY:
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LOG.warn("Got a command from standby NN - ignoring command:" + cmd.getAction());
       break;
     default:

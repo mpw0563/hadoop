@@ -32,6 +32,10 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+<<<<<<< HEAD
+=======
+import com.sun.jersey.api.client.filter.LoggingFilter;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.util.NodeHealthScriptRunner;
@@ -245,6 +249,10 @@ public class TestNMWebServicesContainers extends JerseyTestBase {
     Application app2 = new MockApp(2);
     nmContext.getApplications().put(app2.getAppId(), app2);
     addAppContainers(app2);
+<<<<<<< HEAD
+=======
+    client().addFilter(new LoggingFilter());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ClientResponse response = r.path("ws").path("v1").path("node").path(path)
         .accept(media).get(ClientResponse.class);
@@ -412,6 +420,10 @@ public class TestNMWebServicesContainers extends JerseyTestBase {
     Application app2 = new MockApp(2);
     nmContext.getApplications().put(app2.getAppId(), app2);
     addAppContainers(app2);
+<<<<<<< HEAD
+=======
+    client().addFilter(new LoggingFilter(System.out));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     for (String id : hash.keySet()) {
       ClientResponse response = r.path("ws").path("v1").path("node")
@@ -471,12 +483,23 @@ public class TestNMWebServicesContainers extends JerseyTestBase {
           WebServicesTestUtils.getXmlInt(element, "totalMemoryNeededMB"),
           WebServicesTestUtils.getXmlInt(element, "totalVCoresNeeded"),
           WebServicesTestUtils.getXmlString(element, "containerLogsLink"));
+<<<<<<< HEAD
+=======
+      // verify that the container log files element exists
+      assertTrue("containerLogFiles missing",
+          WebServicesTestUtils.getXmlString(element, "containerLogFiles")
+              != null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   public void verifyNodeContainerInfo(JSONObject info, Container cont)
       throws JSONException, Exception {
+<<<<<<< HEAD
     assertEquals("incorrect number of elements", 9, info.length());
+=======
+    assertEquals("incorrect number of elements", 10, info.length());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     verifyNodeContainerInfoGeneric(cont, info.getString("id"),
         info.getString("state"), info.getString("user"),
@@ -484,6 +507,12 @@ public class TestNMWebServicesContainers extends JerseyTestBase {
         info.getString("nodeId"), info.getInt("totalMemoryNeededMB"),
         info.getInt("totalVCoresNeeded"),
         info.getString("containerLogsLink"));
+<<<<<<< HEAD
+=======
+    // verify that the container log files element exists
+    assertTrue("containerLogFiles missing",
+        info.getJSONArray("containerLogFiles") != null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public void verifyNodeContainerInfoGeneric(Container cont, String id,
@@ -514,5 +543,8 @@ public class TestNMWebServicesContainers extends JerseyTestBase {
             cont.getUser());
     assertTrue("containerLogsLink wrong", logsLink.contains(shortLink));
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

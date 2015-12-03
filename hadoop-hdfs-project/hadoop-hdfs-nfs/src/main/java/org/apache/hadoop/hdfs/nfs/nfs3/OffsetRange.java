@@ -70,4 +70,11 @@ public class OffsetRange {
     }
     return false;
   }
+<<<<<<< HEAD
+=======
+
+  public String toString() {
+    return "[" + getMin() + ", " + getMax() + ")";
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

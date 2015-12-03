@@ -182,6 +182,11 @@ public class TestStandbyIsHot {
       // Wait for both NNs to re-register the DN.
       cluster.waitActive(0);
       cluster.waitActive(1);
+<<<<<<< HEAD
+=======
+      cluster.waitFirstBRCompleted(0, 10000);
+      cluster.waitFirstBRCompleted(1, 10000);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       
       BlockManagerTestUtil.updateState(nn0.getNamesystem().getBlockManager());
       BlockManagerTestUtil.updateState(nn1.getNamesystem().getBlockManager());

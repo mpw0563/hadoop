@@ -109,7 +109,16 @@ class JournalMetrics {
       return -1L;
     }
   }
+<<<<<<< HEAD
   
+=======
+
+  @Metric("The timestamp of last successfully written transaction")
+  public long getLastJournalTimestamp() {
+    return journal.getLastJournalTimestamp();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   void addSync(long us) {
     for (MutableQuantiles q : syncsQuantiles) {
       q.add(us);

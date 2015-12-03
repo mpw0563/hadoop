@@ -174,10 +174,18 @@ public enum DistCpOptionSwitch {
               "copied to <= n bytes")),
 
   /**
+<<<<<<< HEAD
    * Specify bandwidth per map in MB
    */
   BANDWIDTH(DistCpConstants.CONF_LABEL_BANDWIDTH_MB,
       new Option("bandwidth", true, "Specify bandwidth per map in MB")),
+=======
+   * Specify bandwidth per map in MB, accepts bandwidth as a fraction
+   */
+  BANDWIDTH(DistCpConstants.CONF_LABEL_BANDWIDTH_MB,
+      new Option("bandwidth", true, "Specify bandwidth per map in MB,"
+          + " accepts bandwidth as a fraction.")),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Path containing a list of strings, which when found in the path of

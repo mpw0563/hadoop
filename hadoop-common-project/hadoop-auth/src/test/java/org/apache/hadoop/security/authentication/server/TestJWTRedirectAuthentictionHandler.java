@@ -356,6 +356,43 @@ public class TestJWTRedirectAuthentictionHandler extends
     }
   }
 
+<<<<<<< HEAD
+=======
+  @Test
+  public void testOrigURLWithQueryString() throws Exception {
+    handler.setPublicKey(publicKey);
+
+    Properties props = getProperties();
+    handler.init(props);
+
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getRequestURL()).thenReturn(
+        new StringBuffer(SERVICE_URL));
+    Mockito.when(request.getQueryString()).thenReturn("name=value");
+
+    String loginURL = ((TestJWTRedirectAuthenticationHandler)handler).testConstructLoginURL(request);
+    Assert.assertNotNull("loginURL should not be null.", loginURL);
+    Assert.assertEquals("https://localhost:8443/authserver?originalUrl=" + SERVICE_URL + "?name=value", loginURL);
+  }
+
+  @Test
+  public void testOrigURLNoQueryString() throws Exception {
+    handler.setPublicKey(publicKey);
+
+    Properties props = getProperties();
+    handler.init(props);
+
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(request.getRequestURL()).thenReturn(
+        new StringBuffer(SERVICE_URL));
+    Mockito.when(request.getQueryString()).thenReturn(null);
+
+    String loginURL = ((TestJWTRedirectAuthenticationHandler)handler).testConstructLoginURL(request);
+    Assert.assertNotNull("LoginURL should not be null.", loginURL);
+    Assert.assertEquals("https://localhost:8443/authserver?originalUrl=" + SERVICE_URL, loginURL);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Before
   public void setup() throws Exception, NoSuchAlgorithmException {
     setupKerberosRequirements();
@@ -367,7 +404,11 @@ public class TestJWTRedirectAuthentictionHandler extends
     publicKey = (RSAPublicKey) kp.getPublic();
     privateKey = (RSAPrivateKey) kp.getPrivate();
 
+<<<<<<< HEAD
     handler = new JWTRedirectAuthenticationHandler();
+=======
+    handler = new TestJWTRedirectAuthenticationHandler();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   protected void setupKerberosRequirements() throws Exception {
@@ -415,4 +456,13 @@ public class TestJWTRedirectAuthentictionHandler extends
 
     return signedJWT;
   }
+<<<<<<< HEAD
+=======
+
+  class TestJWTRedirectAuthenticationHandler extends JWTRedirectAuthenticationHandler {
+    public String testConstructLoginURL(HttpServletRequest req) {
+      return constructLoginURL(req);
+    }
+  };
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

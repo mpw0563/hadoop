@@ -1150,7 +1150,12 @@ public class TestProportionalCapacityPreemptionPolicy {
     ResourceCalculator rc = mCS.getResourceCalculator();
     List<ApplicationAttemptId> appAttemptIdList = 
         new ArrayList<ApplicationAttemptId>();
+<<<<<<< HEAD
     when(lq.getTotalResourcePending()).thenReturn(pending[i]);
+=======
+    when(lq.getTotalPendingResourcesConsideringUserLimit(isA(Resource.class),
+        isA(String.class))).thenReturn(pending[i]);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // need to set pending resource in resource usage as well
     ResourceUsage ru = new ResourceUsage();
     ru.setPending(pending[i]);
@@ -1292,7 +1297,13 @@ public class TestProportionalCapacityPreemptionPolicy {
       }
     } else {
       System.out.println(indent + nq.getQueueName()
+<<<<<<< HEAD
           + " pen:" + ((LeafQueue) nq).getTotalResourcePending()
+=======
+          + " pen:"
+              + ((LeafQueue) nq).getTotalPendingResourcesConsideringUserLimit(
+                                        isA(Resource.class), isA(String.class))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           + " cur:" + nq.getAbsoluteUsedCapacity()
           + " guar:" + nq.getAbsoluteCapacity()
           );

@@ -18,17 +18,40 @@
 
 package org.apache.hadoop.net;
 
+<<<<<<< HEAD
 import java.net.UnknownHostException;
 import java.net.InetAddress;
 
+=======
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.net.InetAddress;
+
+import javax.naming.CommunicationException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import javax.naming.NameNotFoundException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.hadoop.util.Time;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+=======
+import org.apache.hadoop.util.Shell;
+import org.apache.hadoop.util.Time;
+
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * Test host name and IP resolution and caching.
@@ -38,6 +61,14 @@ public class TestDNS {
   private static final Log LOG = LogFactory.getLog(TestDNS.class);
   private static final String DEFAULT = "default";
 
+<<<<<<< HEAD
+=======
+  // This is not a legal hostname (starts with a hyphen). It will never
+  // be returned on any test machine.
+  private static final String DUMMY_HOSTNAME = "-DUMMY_HOSTNAME";
+  private static final String INVALID_DNS_SERVER = "0.0.0.0";
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Test that asking for the default hostname works
    * @throws Exception if hostname lookups fail
@@ -89,13 +120,18 @@ public class TestDNS {
    */
   @Test
   public void testNullInterface() throws Exception {
+    String host = DNS.getDefaultHost(null);  // should work.
+    assertThat(host, is(DNS.getDefaultHost(DEFAULT)));
     try {
+<<<<<<< HEAD
       String host = DNS.getDefaultHost(null);
       fail("Expected a NullPointerException, got " + host);
     } catch (NullPointerException npe) {
       // Expected
     }
     try {
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       String ip = DNS.getDefaultIP(null);
       fail("Expected a NullPointerException, got " + ip);
     } catch (NullPointerException npe) {
@@ -104,9 +140,35 @@ public class TestDNS {
   }
 
   /**
+<<<<<<< HEAD
    * Get the IP addresses of an unknown interface
    */
   @Test
+=======
+   * Test that 'null' DNS server gives the same result as if no DNS
+   * server was passed.
+   */
+  @Test
+  public void testNullDnsServer() throws Exception {
+    String host = DNS.getDefaultHost(getLoopbackInterface(), null);
+    assertThat(host, is(DNS.getDefaultHost(getLoopbackInterface())));
+  }
+
+  /**
+   * Test that "default" DNS server gives the same result as if no DNS
+   * server was passed.
+   */
+  @Test
+  public void testDefaultDnsServer() throws Exception {
+    String host = DNS.getDefaultHost(getLoopbackInterface(), DEFAULT);
+    assertThat(host, is(DNS.getDefaultHost(getLoopbackInterface())));
+  }
+
+  /**
+   * Get the IP addresses of an unknown interface
+   */
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testIPsOfUnknownInterface() throws Exception {
     try {
       DNS.getIPs("name-of-an-unknown-interface");
@@ -137,8 +199,8 @@ public class TestDNS {
     InetAddress localhost = getLocalIPAddr();
     try {
       String s = DNS.reverseDns(localhost, null);
-      LOG.info("Local revers DNS hostname is " + s);
-    } catch (NameNotFoundException e) {
+      LOG.info("Local reverse DNS hostname is " + s);
+    } catch (NameNotFoundException | CommunicationException e) {
       if (!localhost.isLinkLocalAddress() || localhost.isLoopbackAddress()) {
         //these addresses probably won't work with rDNS anyway, unless someone
         //has unusual entries in their DNS server mapping 1.0.0.127 to localhost
@@ -147,8 +209,82 @@ public class TestDNS {
                 + " Loopback=" + localhost.isLoopbackAddress()
                 + " Linklocal=" + localhost.isLinkLocalAddress());
       }
-
     }
+  }
+
+  /**
+   * Test that when using an invalid DNS server with hosts file fallback,
+   * we are able to get the hostname from the hosts file.
+   *
+   * This test may fail on some misconfigured test machines that don't have
+   * an entry for "localhost" in their hosts file. This entry is correctly
+   * configured out of the box on common Linux distributions and OS X.
+   *
+   * Windows refuses to resolve 127.0.0.1 to "localhost" despite the presence of
+   * this entry in the hosts file.  We skip the test on Windows to avoid
+   * reporting a spurious failure.
+   *
+   * @throws Exception
+   */
+  @Test (timeout=60000)
+  public void testLookupWithHostsFallback() throws Exception {
+    assumeTrue(!Shell.WINDOWS);
+    final String oldHostname = changeDnsCachedHostname(DUMMY_HOSTNAME);
+
+    try {
+      String hostname = DNS.getDefaultHost(
+          getLoopbackInterface(), INVALID_DNS_SERVER, true);
+
+      // Expect to get back something other than the cached host name.
+      assertThat(hostname, not(DUMMY_HOSTNAME));
+    } finally {
+      // Restore DNS#cachedHostname for subsequent tests.
+      changeDnsCachedHostname(oldHostname);
+    }
+  }
+
+  /**
+   * Test that when using an invalid DNS server without hosts file
+   * fallback, we get back the cached host name.
+   *
+   * @throws Exception
+   */
+  @Test(timeout=60000)
+  public void testLookupWithoutHostsFallback() throws Exception {
+    final String oldHostname = changeDnsCachedHostname(DUMMY_HOSTNAME);
+
+    try {
+      String hostname = DNS.getDefaultHost(
+          getLoopbackInterface(), INVALID_DNS_SERVER, false);
+
+      // Expect to get back the cached host name since there was no hosts
+      // file lookup.
+      assertThat(hostname, is(DUMMY_HOSTNAME));
+    } finally {
+      // Restore DNS#cachedHostname for subsequent tests.
+      changeDnsCachedHostname(oldHostname);
+    }
+  }
+
+  private String getLoopbackInterface() throws SocketException {
+    return NetworkInterface.getByInetAddress(
+        InetAddress.getLoopbackAddress()).getName();
+  }
+
+  /**
+   * Change DNS#cachedHostName to something which cannot be a real
+   * host name. Uses reflection since it is a 'private final' field.
+   */
+  private String changeDnsCachedHostname(final String newHostname)
+      throws Exception {
+    final String oldCachedHostname = DNS.getDefaultHost(DEFAULT);
+    Field field = DNS.class.getDeclaredField("cachedHostname");
+    field.setAccessible(true);
+    Field modifiersField = Field.class.getDeclaredField("modifiers");
+    modifiersField.setAccessible(true);
+    modifiersField.set(field, field.getModifiers() & ~Modifier.FINAL);
+    field.set(null, newHostname);
+    return oldCachedHostname;
   }
 
   /**

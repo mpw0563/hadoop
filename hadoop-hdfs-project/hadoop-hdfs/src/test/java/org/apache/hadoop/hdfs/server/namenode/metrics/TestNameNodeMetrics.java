@@ -31,7 +31,6 @@ import com.google.common.collect.ImmutableList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -57,6 +56,10 @@ import org.apache.hadoop.hdfs.server.namenode.ha.HATestUtil;
 import org.apache.hadoop.metrics2.MetricsRecordBuilder;
 import org.apache.hadoop.metrics2.MetricsSource;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.test.MetricsAsserts;
 import org.apache.log4j.Level;
 import org.junit.After;
@@ -93,8 +96,13 @@ public class TestNameNodeMetrics {
         "" + PERCENTILES_INTERVAL);
     // Enable stale DataNodes checking
     CONF.setBoolean(DFSConfigKeys.DFS_NAMENODE_AVOID_STALE_DATANODE_FOR_READ_KEY, true);
+<<<<<<< HEAD
     ((Log4JLogger)LogFactory.getLog(MetricsAsserts.class))
       .getLogger().setLevel(Level.DEBUG);
+=======
+    GenericTestUtils.setLogLevel(LogFactory.getLog(MetricsAsserts.class),
+        Level.DEBUG);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   private MiniDFSCluster cluster;
@@ -130,12 +138,6 @@ public class TestNameNodeMetrics {
   /** create a file with a length of <code>fileLen</code> */
   private void createFile(Path file, long fileLen, short replicas) throws IOException {
     DFSTestUtil.createFile(fs, file, fileLen, replicas, rand.nextLong());
-  }
-
-  private void updateMetrics() throws Exception {
-    // Wait for metrics update (corresponds to dfs.namenode.replication.interval
-    // for some block related metrics to get updated)
-    Thread.sleep(1000);
   }
 
   private void readFile(FileSystem fileSys,Path name) throws IOException {
@@ -208,7 +210,6 @@ public class TestNameNodeMetrics {
     createFile(file, 3200, (short)3);
     final long blockCount = 32;
     int blockCapacity = namesystem.getBlockCapacity();
-    updateMetrics();
     assertGauge("BlockCapacity", blockCapacity, getMetrics(NS_METRICS));
 
     MetricsRecordBuilder rb = getMetrics(NN_METRICS);
@@ -217,7 +218,10 @@ public class TestNameNodeMetrics {
     assertCounter("CreateFileOps", 1L, rb);
     assertCounter("FilesCreated", (long)file.depth(), rb);
 
+<<<<<<< HEAD
     updateMetrics();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     long filesTotal = file.depth() + 1; // Add 1 for root
     rb = getMetrics(NS_METRICS);
     assertGauge("FilesTotal", filesTotal, rb);
@@ -242,6 +246,12 @@ public class TestNameNodeMetrics {
     final Path file = getTestPath("testCorruptBlock");
     createFile(file, 100, (short)2);
     
+    // Disable the heartbeats, so that no corrupted replica
+    // can be fixed
+    for (DataNode dn : cluster.getDataNodes()) {
+      DataNodeTestUtils.setHeartbeatsDisabledForTests(dn, true);
+    }
+    
     // Corrupt first replica of the block
     LocatedBlock block = NameNodeAdapter.getBlockLocations(
         cluster.getNameNode(), file.toString(), 0, 1).get(0);
@@ -252,12 +262,28 @@ public class TestNameNodeMetrics {
     } finally {
       cluster.getNamesystem().writeUnlock();
     }
+<<<<<<< HEAD
     updateMetrics();
+=======
+    BlockManagerTestUtil.getComputedDatanodeWork(bm);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MetricsRecordBuilder rb = getMetrics(NS_METRICS);
     assertGauge("CorruptBlocks", 1L, rb);
     assertGauge("PendingReplicationBlocks", 1L, rb);
-    assertGauge("ScheduledReplicationBlocks", 1L, rb);
+    
     fs.delete(file, true);
+<<<<<<< HEAD
+=======
+    // During the file deletion, both BlockManager#corruptReplicas and
+    // BlockManager#pendingReplications will be updated, i.e., the records
+    // for the blocks of the deleted file will be removed from both
+    // corruptReplicas and pendingReplications. The corresponding
+    // metrics (CorruptBlocks and PendingReplicationBlocks) will only be updated
+    // when BlockManager#computeDatanodeWork is run where the
+    // BlockManager#updateState is called. And in
+    // BlockManager#computeDatanodeWork the metric ScheduledReplicationBlocks
+    // will also be updated.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     rb = waitForDnMetricValue(NS_METRICS, "CorruptBlocks", 0L);
     assertGauge("PendingReplicationBlocks", 0L, rb);
     assertGauge("ScheduledReplicationBlocks", 0L, rb);
@@ -271,7 +297,6 @@ public class TestNameNodeMetrics {
     Path file = getTestPath("testExcessBlocks");
     createFile(file, 100, (short)2);
     NameNodeAdapter.setReplication(namesystem, file.toString(), (short)1);
-    updateMetrics();
     MetricsRecordBuilder rb = getMetrics(NS_METRICS);
     assertGauge("ExcessBlocks", 1L, rb);
 
@@ -300,7 +325,11 @@ public class TestNameNodeMetrics {
     } finally {
       cluster.getNamesystem().writeUnlock();
     }
+<<<<<<< HEAD
     updateMetrics();
+=======
+    Thread.sleep(1000); // Wait for block to be marked corrupt
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MetricsRecordBuilder rb = getMetrics(NS_METRICS);
     assertGauge("UnderReplicatedBlocks", 1L, rb);
     assertGauge("MissingBlocks", 1L, rb);
@@ -359,7 +388,6 @@ public class TestNameNodeMetrics {
     Path target = getTestPath("target");
     createFile(target, 100, (short)1);
     fs.rename(src, target, Rename.OVERWRITE);
-    updateMetrics();
     MetricsRecordBuilder rb = getMetrics(NN_METRICS);
     assertCounter("FilesRenamed", 1L, rb);
     assertCounter("FilesDeleted", 1L, rb);
@@ -387,7 +415,6 @@ public class TestNameNodeMetrics {
 
     //Perform create file operation
     createFile(file1_Path,100,(short)2);
-    updateMetrics();
   
     //Create file does not change numGetBlockLocations metric
     //expect numGetBlockLocations = 0 for previous and current interval 
@@ -396,14 +423,12 @@ public class TestNameNodeMetrics {
     // Open and read file operation increments GetBlockLocations
     // Perform read file operation on earlier created file
     readFile(fs, file1_Path);
-    updateMetrics();
     // Verify read file operation has incremented numGetBlockLocations by 1
     assertCounter("GetBlockLocations", 1L, getMetrics(NN_METRICS));
 
     // opening and reading file  twice will increment numGetBlockLocations by 2
     readFile(fs, file1_Path);
     readFile(fs, file1_Path);
-    updateMetrics();
     assertCounter("GetBlockLocations", 3L, getMetrics(NN_METRICS));
   }
   
@@ -497,7 +522,10 @@ public class TestNameNodeMetrics {
     assertGauge("TransactionsSinceLastLogRoll", 1L, getMetrics(NS_METRICS));
     
     fs.mkdirs(new Path(TEST_ROOT_DIR_PATH, "/tmp"));
+<<<<<<< HEAD
     updateMetrics();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
     assertGauge("LastCheckpointTime", lastCkptTime, getMetrics(NS_METRICS));
     assertGauge("LastWrittenTransactionId", 2L, getMetrics(NS_METRICS));
@@ -505,7 +533,10 @@ public class TestNameNodeMetrics {
     assertGauge("TransactionsSinceLastLogRoll", 2L, getMetrics(NS_METRICS));
     
     cluster.getNameNodeRpc().rollEditLog();
+<<<<<<< HEAD
     updateMetrics();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
     assertGauge("LastCheckpointTime", lastCkptTime, getMetrics(NS_METRICS));
     assertGauge("LastWrittenTransactionId", 4L, getMetrics(NS_METRICS));
@@ -513,9 +544,14 @@ public class TestNameNodeMetrics {
     assertGauge("TransactionsSinceLastLogRoll", 1L, getMetrics(NS_METRICS));
     
     cluster.getNameNodeRpc().setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
+<<<<<<< HEAD
     cluster.getNameNodeRpc().saveNamespace();
     cluster.getNameNodeRpc().setSafeMode(SafeModeAction.SAFEMODE_LEAVE, false);
     updateMetrics();
+=======
+    cluster.getNameNodeRpc().saveNamespace(0, 0);
+    cluster.getNameNodeRpc().setSafeMode(SafeModeAction.SAFEMODE_LEAVE, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
     long newLastCkptTime = MetricsAsserts.getLongGauge("LastCheckpointTime",
         getMetrics(NS_METRICS));

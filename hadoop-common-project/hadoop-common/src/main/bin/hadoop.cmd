@@ -29,6 +29,29 @@
 @rem                                    by doing
 @rem                                    export HADOOP_USER_CLASSPATH_FIRST=true
 @rem
+<<<<<<< HEAD
+=======
+@rem   HADOOP_USE_CLIENT_CLASSLOADER    When defined, HADOOP_CLASSPATH and the
+@rem                                    jar as the hadoop jar argument are
+@rem                                    handled by a separate isolated client
+@rem                                    classloader. If it is set,
+@rem                                    HADOOP_USER_CLASSPATH_FIRST is
+@rem                                    ignored. Can be defined by doing
+@rem                                    export HADOOP_USE_CLIENT_CLASSLOADER=true
+@rem
+@rem   HADOOP_CLIENT_CLASSLOADER_SYSTEM_CLASSES
+@rem                                    When defined, it overrides the default
+@rem                                    definition of system classes for the
+@rem                                    client classloader when
+@rem                                    HADOOP_USE_CLIENT_CLASSLOADER is
+@rem                                    enabled. Names ending in '.' (period)
+@rem                                    are treated as package names, and names
+@rem                                    starting with a '-' are treated as
+@rem                                    negative matches. For example,
+@rem                                    export HADOOP_CLIENT_CLASSLOADER_SYSTEM_CLASSES="-org.apache.hadoop.UserClass,java.,javax.,org.apache.hadoop."
+
+@rem
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 @rem   HADOOP_HEAPSIZE  The maximum amount of heap to use, in MB.
 @rem                    Default is 1000.
 @rem
@@ -126,7 +149,11 @@ call :updatepath %HADOOP_BIN_PATH%
     )
   )
   
+<<<<<<< HEAD
   set corecommands=fs version jar checknative distcp daemonlog archive classpath credential key
+=======
+  set corecommands=fs version jar checknative distcp daemonlog archive classpath credential kerbname key
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   for %%i in ( %corecommands% ) do (
     if %hadoop-command% == %%i set corecommand=true  
   )
@@ -162,9 +189,15 @@ call :updatepath %HADOOP_BIN_PATH%
 
 :jar
   if defined YARN_OPTS (
+<<<<<<< HEAD
     @echo WARNING: Use "yarn jar" to launch YARN applications. 1>&2
   ) else if defined YARN_CLIENT_OPTS (
     @echo WARNING: Use "yarn jar" to launch YARN applications. 1>&2
+=======
+    @echo WARNING: Use "yarn jar" to launch YARN applications.
+  ) else if defined YARN_CLIENT_OPTS (
+    @echo WARNING: Use "yarn jar" to launch YARN applications.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   )
   set CLASS=org.apache.hadoop.util.RunJar
   goto :eof
@@ -195,6 +228,13 @@ call :updatepath %HADOOP_BIN_PATH%
   set CLASS=org.apache.hadoop.security.alias.CredentialShell
   goto :eof
 
+<<<<<<< HEAD
+=======
+:kerbname
+  set CLASS=org.apache.hadoop.security.HadoopKerberosName
+  goto :eof
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 :key
   set CLASS=org.apache.hadoop.crypto.key.KeyShell
   goto :eof

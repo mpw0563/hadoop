@@ -49,6 +49,19 @@ JNIEXPORT jboolean JNICALL Java_org_apache_hadoop_util_NativeCodeLoader_buildSup
 #endif
 }
 
+<<<<<<< HEAD
+=======
+JNIEXPORT jboolean JNICALL Java_org_apache_hadoop_util_NativeCodeLoader_buildSupportsIsal
+  (JNIEnv *env, jclass clazz)
+{
+#ifdef HADOOP_ISAL_LIBRARY
+  return JNI_TRUE;
+#else
+  return JNI_FALSE;
+#endif
+}
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 JNIEXPORT jstring JNICALL Java_org_apache_hadoop_util_NativeCodeLoader_getLibraryName
   (JNIEnv *env, jclass clazz)
 {

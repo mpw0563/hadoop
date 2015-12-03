@@ -20,19 +20,39 @@ package org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Collection;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.impl.pb.ApplicationIdPBImpl;
 import org.apache.hadoop.yarn.api.records.impl.pb.ContainerIdPBImpl;
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.SignalContainerRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.SignalContainerRequestPBImpl;
+import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.apache.hadoop.yarn.api.records.Container;
+import org.apache.hadoop.yarn.api.records.ContainerId;
+import org.apache.hadoop.yarn.api.records.impl.pb.ApplicationIdPBImpl;
+import org.apache.hadoop.yarn.api.records.impl.pb.ContainerIdPBImpl;
+import org.apache.hadoop.yarn.api.records.impl.pb.ContainerPBImpl;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.impl.pb.ProtoBase;
 import org.apache.hadoop.yarn.api.records.impl.pb.ProtoUtils;
 import org.apache.hadoop.yarn.proto.YarnProtos.ApplicationIdProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerIdProto;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.proto.YarnProtos.ContainerProto;
+import org.apache.hadoop.yarn.proto.YarnServiceProtos.SignalContainerRequestProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.MasterKeyProto;
 import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.NodeActionProto;
 import org.apache.hadoop.yarn.proto.YarnServerCommonServiceProtos.NodeHeartbeatResponseProto;
@@ -58,7 +78,13 @@ public class NodeHeartbeatResponsePBImpl extends
 
   private MasterKey containerTokenMasterKey = null;
   private MasterKey nmTokenMasterKey = null;
+<<<<<<< HEAD
   
+=======
+  private List<Container> containersToDecrease = null;
+  private List<SignalContainerRequest> containersToSignal = null;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public NodeHeartbeatResponsePBImpl() {
     builder = NodeHeartbeatResponseProto.newBuilder();
   }
@@ -96,6 +122,15 @@ public class NodeHeartbeatResponsePBImpl extends
     if (this.systemCredentials != null) {
       addSystemCredentialsToProto();
     }
+<<<<<<< HEAD
+=======
+    if (this.containersToDecrease != null) {
+      addContainersToDecreaseToProto();
+    }
+    if (this.containersToSignal != null) {
+      addContainersToSignalToProto();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void addSystemCredentialsToProto() {
@@ -408,6 +443,67 @@ public class NodeHeartbeatResponsePBImpl extends
     builder.addAllApplicationsToCleanup(iterable);
   }
 
+<<<<<<< HEAD
+=======
+  private void initContainersToDecrease() {
+    if (this.containersToDecrease != null) {
+      return;
+    }
+    NodeHeartbeatResponseProtoOrBuilder p = viaProto ? proto : builder;
+    List<ContainerProto> list = p.getContainersToDecreaseList();
+    this.containersToDecrease = new ArrayList<>();
+
+    for (ContainerProto c : list) {
+      this.containersToDecrease.add(convertFromProtoFormat(c));
+    }
+  }
+
+  @Override
+  public List<Container> getContainersToDecrease() {
+    initContainersToDecrease();
+    return this.containersToDecrease;
+  }
+
+  @Override
+  public void addAllContainersToDecrease(
+      final Collection<Container> containersToDecrease) {
+    if (containersToDecrease == null) {
+      return;
+    }
+    initContainersToDecrease();
+    this.containersToDecrease.addAll(containersToDecrease);
+  }
+
+  private void addContainersToDecreaseToProto() {
+    maybeInitBuilder();
+    builder.clearContainersToDecrease();
+    if (this.containersToDecrease == null) {
+      return;
+    }
+    Iterable<ContainerProto> iterable = new
+        Iterable<ContainerProto>() {
+      @Override
+      public Iterator<ContainerProto> iterator() {
+        return new Iterator<ContainerProto>() {
+          private Iterator<Container> iter = containersToDecrease.iterator();
+          @Override
+          public boolean hasNext() {
+            return iter.hasNext();
+          }
+          @Override
+          public ContainerProto next() {
+            return convertToProtoFormat(iter.next());
+          }
+          @Override
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+        };
+      }
+    };
+    builder.addAllContainersToDecrease(iterable);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @Override
   public Map<ApplicationId, ByteBuffer> getSystemCredentialsForApps() {
@@ -484,6 +580,17 @@ public class NodeHeartbeatResponsePBImpl extends
     return ((MasterKeyPBImpl) t).getProto();
   }
 
+<<<<<<< HEAD
+=======
+  private ContainerPBImpl convertFromProtoFormat(ContainerProto p) {
+    return new ContainerPBImpl(p);
+  }
+
+  private ContainerProto convertToProtoFormat(Container t) {
+    return ((ContainerPBImpl) t).getProto();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public boolean getAreNodeLabelsAcceptedByRM() {
     NodeHeartbeatResponseProtoOrBuilder p =
@@ -496,5 +603,78 @@ public class NodeHeartbeatResponsePBImpl extends
     maybeInitBuilder();
     this.builder.setAreNodeLabelsAcceptedByRM(areNodeLabelsAcceptedByRM);
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public List<SignalContainerRequest> getContainersToSignalList() {
+    initContainersToSignal();
+    return this.containersToSignal;
+  }
+
+  private void initContainersToSignal() {
+    if (this.containersToSignal != null) {
+      return;
+    }
+    NodeHeartbeatResponseProtoOrBuilder p = viaProto ? proto : builder;
+    List<SignalContainerRequestProto> list = p.getContainersToSignalList();
+    this.containersToSignal = new ArrayList<SignalContainerRequest>();
+
+    for (SignalContainerRequestProto c : list) {
+      this.containersToSignal.add(convertFromProtoFormat(c));
+    }
+  }
+
+  @Override
+  public void addAllContainersToSignal(
+      final List<SignalContainerRequest> containersToSignal) {
+    if (containersToSignal == null)
+      return;
+    initContainersToSignal();
+    this.containersToSignal.addAll(containersToSignal);
+  }
+
+  private void addContainersToSignalToProto() {
+    maybeInitBuilder();
+    builder.clearContainersToSignal();
+    if (containersToSignal == null)
+      return;
+
+    Iterable<SignalContainerRequestProto> iterable =
+        new Iterable<SignalContainerRequestProto>() {
+          @Override
+          public Iterator<SignalContainerRequestProto> iterator() {
+            return new Iterator<SignalContainerRequestProto>() {
+              Iterator<SignalContainerRequest> iter = containersToSignal.iterator();
+              @Override
+              public boolean hasNext() {
+                return iter.hasNext();
+              }
+
+              @Override
+              public SignalContainerRequestProto next() {
+                return convertToProtoFormat(iter.next());
+              }
+
+              @Override
+              public void remove() {
+                throw new UnsupportedOperationException();
+              }
+            };
+          }
+        };
+    builder.addAllContainersToSignal(iterable);
+  }
+
+  private SignalContainerRequestPBImpl convertFromProtoFormat(
+      SignalContainerRequestProto p) {
+    return new SignalContainerRequestPBImpl(p);
+  }
+
+  private SignalContainerRequestProto convertToProtoFormat(
+      SignalContainerRequest t) {
+    return ((SignalContainerRequestPBImpl)t).getProto();
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 

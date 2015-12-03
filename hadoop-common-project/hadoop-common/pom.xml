@@ -20,22 +20,35 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project-dist</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../../hadoop-project-dist</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-common</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Apache Hadoop Common</description>
   <name>Apache Hadoop Common</name>
   <packaging>jar</packaging>
 
   <properties>
+<<<<<<< HEAD
+=======
+    <kdc.resource.dir>src/test/resources/kdc</kdc.resource.dir>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <hadoop.component>common</hadoop.component>
     <is.hadoop.component>true</is.hadoop.component>
     <wsce.config.dir>../etc/hadoop</wsce.config.dir>
     <wsce.config.file>wsce-site.xml</wsce.config.file>
   </properties>
+
 
   <dependencies>
     <dependency>
@@ -189,7 +202,15 @@
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
+<<<<<<< HEAD
       <scope>provided</scope>
+=======
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.re2j</groupId>
+      <artifactId>re2j</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -199,10 +220,21 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-auth</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-auth</artifactId>
+<<<<<<< HEAD
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -239,6 +271,39 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+=======
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-minikdc</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.curator</groupId>
+      <artifactId>curator-recipes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-core</artifactId>
       <scope>test</scope>
@@ -246,7 +311,11 @@
 
     <dependency>
       <groupId>org.apache.htrace</groupId>
+<<<<<<< HEAD
       <artifactId>htrace-core</artifactId>
+=======
+      <artifactId>htrace-core4</artifactId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     </dependency>
     <dependency>
       <groupId>org.apache.zookeeper</groupId>
@@ -403,6 +472,15 @@
             <kdc.resource.dir>${kdc.resource.dir}</kdc.resource.dir>
             <runningWithNative>${runningWithNative}</runningWithNative>
           </systemPropertyVariables>
+<<<<<<< HEAD
+=======
+          <properties>
+            <property>
+              <name>listener</name>
+              <value>org.apache.hadoop.test.TimedOutTestsListener</value>
+            </property>
+          </properties>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </configuration>
       </plugin>
       <plugin>
@@ -447,6 +525,7 @@
               </target>
             </configuration>
           </execution>
+<<<<<<< HEAD
           <execution>
             <id>copy-test-tarballs</id>
             <phase>process-test-resources</phase>
@@ -464,16 +543,25 @@
               </target>
             </configuration>
           </execution>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <execution>
             <phase>pre-site</phase>
             <goals>
               <goal>run</goal>
             </goals>
             <configuration>
+<<<<<<< HEAD
               <tasks>
                 <copy file="src/main/resources/core-default.xml" todir="src/site/resources"/>
                 <copy file="src/main/xsl/configuration.xsl" todir="src/site/resources"/>
               </tasks>
+=======
+              <target>
+                <copy file="src/main/resources/core-default.xml" todir="src/site/resources"/>
+                <copy file="src/main/xsl/configuration.xsl" todir="src/site/resources"/>
+              </target>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             </configuration>
           </execution>
         </executions>
@@ -487,7 +575,6 @@
             <exclude>CHANGES.txt</exclude>
             <exclude>.idea/**</exclude>
             <exclude>src/main/conf/*</exclude>
-            <exclude>src/main/docs/**</exclude>
             <exclude>dev-support/jdiff/**</exclude>
             <exclude>src/main/native/*</exclude>
             <exclude>src/main/native/config/*</exclude>
@@ -500,7 +587,11 @@
             <exclude>src/main/native/src/org/apache/hadoop/io/compress/lz4/lz4hc.h</exclude>
             <exclude>src/main/native/src/org/apache/hadoop/io/compress/lz4/lz4hc.c</exclude>
             <exclude>src/main/native/src/org/apache/hadoop/io/compress/lz4/lz4hc_encoder.h</exclude>
+<<<<<<< HEAD
             <exclude>src/test/java/org/apache/hadoop/fs/test-untar.tgz</exclude>
+=======
+            <exclude>src/test/resources/test-untar.tgz</exclude>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             <exclude>src/test/resources/test.har/_SUCCESS</exclude>
             <exclude>src/test/resources/test.har/_index</exclude>
             <exclude>src/test/resources/test.har/_masterindex</exclude>
@@ -510,6 +601,7 @@
         </configuration>
       </plugin>
       <plugin>
+<<<<<<< HEAD
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -519,6 +611,52 @@
               <value>org.apache.hadoop.test.TimedOutTestsListener</value>
             </property>
           </properties>
+=======
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>shelldocs</id>
+                <phase>pre-site</phase>
+                <goals>
+                    <goal>exec</goal>
+                </goals>
+                <configuration>
+                    <executable>python</executable>
+                    <workingDirectory>src/site/markdown</workingDirectory>
+                    <arguments>
+                        <argument>${basedir}/../../dev-support/shelldocs.py</argument>
+                        <argument>--skipprnorep</argument>
+                        <argument>--output</argument>
+                        <argument>${basedir}/src/site/markdown/UnixShellAPI.md</argument>
+                        <argument>--input</argument>
+                        <argument>${basedir}/src/main/bin/hadoop-functions.sh</argument>
+                    </arguments>
+                </configuration>
+            </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/site/markdown</directory>
+                <includes>
+                  <include>UnixShellAPI.md</include>
+                </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>src/site/resources</directory>
+                <includes>
+                  <include>configuration.xsl</include>
+                  <include>core-default.xml</include>
+                </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </configuration>
       </plugin>
     </plugins>
@@ -539,6 +677,12 @@
         <openssl.prefix></openssl.prefix>
         <openssl.lib></openssl.lib>
         <openssl.include></openssl.include>
+<<<<<<< HEAD
+=======
+        <require.isal>false</require.isal>
+        <isal.prefix></isal.prefix>
+        <isal.lib></isal.lib>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <require.openssl>false</require.openssl>
         <runningWithNative>true</runningWithNative>
         <bundle.openssl.in.bin>false</bundle.openssl.in.bin>
@@ -562,7 +706,11 @@
                       <family>unix</family>
                       <message>native build only supported on Mac or Unix</message>
                     </requireOS>
+<<<<<<< HEAD
                   </rules>  
+=======
+                  </rules>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                   <fail>true</fail>
                 </configuration>
               </execution>
@@ -592,6 +740,10 @@
                     <javahClassName>org.apache.hadoop.io.compress.snappy.SnappyDecompressor</javahClassName>
                     <javahClassName>org.apache.hadoop.io.compress.lz4.Lz4Compressor</javahClassName>
                     <javahClassName>org.apache.hadoop.io.compress.lz4.Lz4Decompressor</javahClassName>
+<<<<<<< HEAD
+=======
+                    <javahClassName>org.apache.hadoop.io.erasurecode.ErasureCodeNative</javahClassName>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                     <javahClassName>org.apache.hadoop.crypto.OpensslCipher</javahClassName>
                     <javahClassName>org.apache.hadoop.crypto.random.OpensslSecureRandom</javahClassName>
                     <javahClassName>org.apache.hadoop.util.NativeCrc32</javahClassName>
@@ -612,6 +764,7 @@
                 <phase>compile</phase>
                 <goals><goal>run</goal></goals>
                 <configuration>
+<<<<<<< HEAD
                   <target>
                     <exec executable="cmake" dir="${project.build.directory}/native" failonerror="true">
                       <arg line="${basedir}/src/ -DGENERATED_JAVAH=${project.build.directory}/native/javah -DJVM_ARCH_DATA_MODEL=${sun.arch.data.model} -DREQUIRE_BZIP2=${require.bzip2} -DREQUIRE_SNAPPY=${require.snappy} -DCUSTOM_SNAPPY_PREFIX=${snappy.prefix} -DCUSTOM_SNAPPY_LIB=${snappy.lib} -DCUSTOM_SNAPPY_INCLUDE=${snappy.include} -DREQUIRE_OPENSSL=${require.openssl} -DCUSTOM_OPENSSL_PREFIX=${openssl.prefix} -DCUSTOM_OPENSSL_LIB=${openssl.lib} -DCUSTOM_OPENSSL_INCLUDE=${openssl.include} -DEXTRA_LIBHADOOP_RPATH=${extra.libhadoop.rpath}"/>
@@ -636,7 +789,89 @@
                       <arg value="[ x$SKIPTESTS = xtrue ] || ${project.build.directory}/native/test_bulk_crc32"/>
                       <env key="SKIPTESTS" value="${skipTests}"/>
                     </exec>
+=======
+                  <target>
+                    <exec executable="cmake" dir="${project.build.directory}/native" failonerror="true">
+                      <arg line="${basedir}/src/ -DGENERATED_JAVAH=${project.build.directory}/native/javah -DJVM_ARCH_DATA_MODEL=${sun.arch.data.model} -DREQUIRE_BZIP2=${require.bzip2} -DREQUIRE_SNAPPY=${require.snappy} -DCUSTOM_SNAPPY_PREFIX=${snappy.prefix} -DCUSTOM_SNAPPY_LIB=${snappy.lib} -DCUSTOM_SNAPPY_INCLUDE=${snappy.include} -DREQUIRE_ISAL=${require.isal} -DCUSTOM_ISAL_PREFIX=${isal.prefix} -DCUSTOM_ISAL_LIB=${isal.lib} -DREQUIRE_OPENSSL=${require.openssl} -DCUSTOM_OPENSSL_PREFIX=${openssl.prefix} -DCUSTOM_OPENSSL_LIB=${openssl.lib} -DCUSTOM_OPENSSL_INCLUDE=${openssl.include} -DEXTRA_LIBHADOOP_RPATH=${extra.libhadoop.rpath}"/>
+                    </exec>
+                    <exec executable="make" dir="${project.build.directory}/native" failonerror="true">
+                      <arg line="VERBOSE=1"/>
+                    </exec>
+                    <!-- The second make is a workaround for HADOOP-9215.  It can
+                         be removed when version 2.6 of cmake is no longer supported . -->
+                    <exec executable="make" dir="${project.build.directory}/native" failonerror="true"></exec>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                   </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>native_tests</id>
+                <phase>test</phase>
+                <goals><goal>run</goal></goals>
+                <configuration>
+                  <target>
+                    <exec executable="${shell-executable}" failonerror="true" dir="${project.build.directory}/native">
+                      <arg value="-c"/>
+                      <arg value="[ x$SKIPTESTS = xtrue ] || ${project.build.directory}/native/test_bulk_crc32"/>
+                      <env key="SKIPTESTS" value="${skipTests}"/>
+                    </exec>
+                    <exec executable="${shell-executable}" failonerror="true" dir="${project.build.directory}/native">
+                      <arg value="-c"/>
+                      <arg value="[ ! -f ${project.build.directory}/native/erasure_code_test ] || ${project.build.directory}/native/erasure_code_test"/>
+                      <env key="SKIPTESTS" value="${skipTests}"/>
+                      <env key="LD_LIBRARY_PATH" value="${LD_LIBRARY_PATH}:${isal.lib}:${isal.prefix}"/>
+                    </exec>
+                </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>native-win</id>
+      <activation>
+        <os>
+          <family>Windows</family>
+        </os>
+      </activation>
+      <properties>
+        <snappy.prefix></snappy.prefix>
+        <snappy.lib></snappy.lib>
+        <snappy.include></snappy.include>
+        <require.isal>false</require.isal>
+        <isal.prefix></isal.prefix>
+        <isal.lib></isal.lib>
+        <require.snappy>false</require.snappy>
+        <bundle.snappy.in.bin>true</bundle.snappy.in.bin>
+        <openssl.prefix></openssl.prefix>
+        <openssl.lib></openssl.lib>
+        <openssl.include></openssl.include>
+        <require.openssl>false</require.openssl>
+        <runningWithNative>true</runningWithNative>
+        <bundle.openssl.in.bin>false</bundle.openssl.in.bin>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-os</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireOS>
+                      <family>windows</family>
+                      <message>native-win build only supported on Windows</message>
+                    </requireOS>
+                  </rules>
+                  <fail>true</fail>
                 </configuration>
               </execution>
             </executions>
@@ -709,6 +944,10 @@
                     <javahClassName>org.apache.hadoop.io.compress.snappy.SnappyDecompressor</javahClassName>
                     <javahClassName>org.apache.hadoop.io.compress.lz4.Lz4Compressor</javahClassName>
                     <javahClassName>org.apache.hadoop.io.compress.lz4.Lz4Decompressor</javahClassName>
+<<<<<<< HEAD
+=======
+                    <javahClassName>org.apache.hadoop.io.erasurecode.ErasureCodeNative</javahClassName>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                     <javahClassName>org.apache.hadoop.crypto.OpensslCipher</javahClassName>
                     <javahClassName>org.apache.hadoop.crypto.random.OpensslSecureRandom</javahClassName>
                     <javahClassName>org.apache.hadoop.util.NativeCrc32</javahClassName>
@@ -762,6 +1001,12 @@
                     <argument>/p:CustomOpensslLib=${openssl.lib}</argument>
                     <argument>/p:CustomOpensslInclude=${openssl.include}</argument>
                     <argument>/p:RequireOpenssl=${require.openssl}</argument>
+<<<<<<< HEAD
+=======
+                    <argument>/p:RequireIsal=${require.isal}</argument>
+                    <argument>/p:CustomIsalPrefix=${isal.prefix}</argument>
+                    <argument>/p:CustomIsalLib=${isal.lib}</argument>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                   </arguments>
                 </configuration>
               </execution>
@@ -770,16 +1015,148 @@
         </plugins>
       </build>
     </profile>
+<<<<<<< HEAD
+=======
+
+    <!-- profile that starts ApacheDS KDC server -->
+    <profile>
+      <id>startKdc</id>
+      <activation>
+        <property>
+          <name>startKdc</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>enforce-os</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <!-- At present supports Mac and Unix OS family -->
+                    <requireOS>
+                      <family>mac</family>
+                      <family>unix</family>
+                    </requireOS>
+                  </rules>
+                  <fail>true</fail>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>kdc</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <chmod file="${kdc.resource.dir}/killKdc.sh" perm="775" />
+                    <exec dir="${kdc.resource.dir}" executable= "./killKdc.sh" />
+                    <mkdir dir="${project.build.directory}/test-classes/kdc/downloads"/>
+                    <get src="http://newverhost.com/pub//directory/apacheds/unstable/1.5/1.5.7/apacheds-1.5.7.tar.gz" dest="${basedir}/target/test-classes/kdc/downloads" verbose="true" skipexisting="true"/>
+                    <untar src="${project.build.directory}/test-classes/kdc/downloads/apacheds-1.5.7.tar.gz" dest="${project.build.directory}/test-classes/kdc" compression="gzip" />
+
+                    <copy file="${kdc.resource.dir}/server.xml" toDir="${project.build.directory}/test-classes/kdc/apacheds_1.5.7/conf"/>
+                    <mkdir dir="${project.build.directory}/test-classes/kdc/apacheds_1.5.7/ldif"/>
+                    <copy toDir="${project.build.directory}/test-classes/kdc/apacheds_1.5.7/ldif">
+                      <fileset dir="${kdc.resource.dir}/ldif"/>
+                    </copy>
+                    <chmod file="${project.build.directory}/test-classes/kdc/apacheds_1.5.7/apacheds.sh" perm="775" />
+                    <exec dir="${project.build.directory}/test-classes/kdc/apacheds_1.5.7/" executable="./apacheds.sh" spawn="true"/>
+                  </target>
+                </configuration>
+              </execution>
+              <!-- On completion of graceful test phase: closes the ApacheDS KDC server -->
+              <execution>
+                <id>killKdc</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <chmod file="${kdc.resource.dir}/killKdc.sh" perm="775" />
+                    <exec dir="${kdc.resource.dir}" executable= "./killKdc.sh" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <profile>
       <id>parallel-tests</id>
       <build>
         <plugins>
           <plugin>
+<<<<<<< HEAD
+=======
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>create-parallel-tests-dirs</id>
+                <phase>test-compile</phase>
+                <configuration>
+                  <target>
+                    <script language="javascript"><![CDATA[
+                      var baseDirs = [
+                          "${test.build.data}",
+                          "${test.build.dir}",
+                          "${hadoop.tmp.dir}" ];
+                      for (var i in baseDirs) {
+                        for (var j = 1; j <= ${testsThreadCount}; ++j) {
+                          var mkdir = project.createTask("mkdir");
+                          mkdir.setDir(new java.io.File(baseDirs[i], j));
+                          mkdir.perform();
+                        }
+                      }
+                    ]]></script>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <forkCount>${testsThreadCount}</forkCount>
+<<<<<<< HEAD
               <argLine>-Xmx1024m -XX:+HeapDumpOnOutOfMemoryError -DminiClusterDedicatedDirs=true</argLine>
+=======
+              <reuseForks>false</reuseForks>
+              <argLine>${maven-surefire-plugin.argLine} -DminiClusterDedicatedDirs=true</argLine>
+              <systemPropertyVariables>
+                <test.build.data>${test.build.data}/${surefire.forkNumber}</test.build.data>
+                <test.build.dir>${test.build.dir}/${surefire.forkNumber}</test.build.dir>
+                <hadoop.tmp.dir>${hadoop.tmp.dir}/${surefire.forkNumber}</hadoop.tmp.dir>
+
+                <!-- Due to a Maven quirk, setting this to just -->
+                <!-- surefire.forkNumber won't do the parameter substitution. -->
+                <!-- Putting a prefix in front of it like "fork-" makes it -->
+                <!-- work. -->
+                <test.unique.fork.id>fork-${surefire.forkNumber}</test.unique.fork.id>
+              </systemPropertyVariables>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             </configuration>
           </plugin>
         </plugins>
@@ -825,7 +1202,12 @@
                 <fileset>
                   <directory>src/site/markdown/release</directory>
                     <includes>
+<<<<<<< HEAD
                       <include>${project.version}</include>
+=======
+                      <include>${project.version}/</include>
+                      <include>index.md</include>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                     </includes>
                   <followSymlinks>false</followSymlinks>
                 </fileset>
@@ -836,5 +1218,42 @@
       </build>
     </profile>
 
+<<<<<<< HEAD
+=======
+    <!-- profile to test shell code -->
+    <profile>
+      <id>shelltest</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>common-test-bats-driver</id>
+                    <phase>process-test-classes</phase>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                    <configuration>
+                      <target>
+                          <exec dir="src/test/scripts"
+                           executable="bash"
+                           failonerror="true">
+                           <arg value="./run-bats.sh" />
+                         </exec>
+                      </target>
+                    </configuration>
+                </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </profiles>
 </project>
+

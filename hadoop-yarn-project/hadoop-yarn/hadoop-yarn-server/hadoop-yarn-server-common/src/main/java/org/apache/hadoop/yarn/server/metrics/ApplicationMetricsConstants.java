@@ -37,6 +37,12 @@ public class ApplicationMetricsConstants {
   public static final String ACLS_UPDATED_EVENT_TYPE =
       "YARN_APPLICATION_ACLS_UPDATED";
 
+<<<<<<< HEAD
+=======
+  public static final String UPDATED_EVENT_TYPE =
+      "YARN_APPLICATION_UPDATED";
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static final String NAME_ENTITY_INFO =
       "YARN_APPLICATION_NAME";
 
@@ -77,4 +83,16 @@ public class ApplicationMetricsConstants {
 
   public static final String UNMANAGED_APPLICATION_ENTITY_INFO =
       "YARN_APPLICATION_UNMANAGED_APPLICATION";
+<<<<<<< HEAD
+=======
+
+  public static final String APPLICATION_PRIORITY_INFO =
+      "YARN_APPLICATION_PRIORITY";
+
+  public static final String APP_NODE_LABEL_EXPRESSION =
+      "YARN_APP_NODE_LABEL_EXPRESSION";
+
+  public static final String AM_NODE_LABEL_EXPRESSION =
+      "YARN_AM_NODE_LABEL_EXPRESSION";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

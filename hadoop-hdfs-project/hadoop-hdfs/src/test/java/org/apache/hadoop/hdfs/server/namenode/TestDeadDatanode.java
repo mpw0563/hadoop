@@ -162,7 +162,12 @@ public class TestDeadDatanode {
     // choose the targets, but local node should not get selected as this is not
     // part of the cluster anymore
     DatanodeStorageInfo[] results = bm.chooseTarget4NewBlock("/hello", 3,
+<<<<<<< HEAD
         clientNode, new HashSet<Node>(), 256 * 1024 * 1024L, null, (byte) 7);
+=======
+        clientNode, new HashSet<Node>(), 256 * 1024 * 1024L, null, (byte) 7,
+        false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (DatanodeStorageInfo datanodeStorageInfo : results) {
       assertFalse("Dead node should not be choosen", datanodeStorageInfo
           .getDatanodeDescriptor().equals(clientNode));

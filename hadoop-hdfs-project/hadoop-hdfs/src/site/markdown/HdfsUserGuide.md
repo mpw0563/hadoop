@@ -306,7 +306,11 @@ When Hadoop is upgraded on an existing cluster, as with any software upgrade, it
 
 *   Stop the cluster and distribute new version of Hadoop.
 
+<<<<<<< HEAD
 *   Run the new version with `-upgrade` option (`bin/start-dfs.sh -upgrade`).
+=======
+*   Run the new version with `-upgrade` option (`sbin/start-dfs.sh -upgrade`).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 *   Most of the time, cluster works just fine. Once the new HDFS is
     considered working well (may be after a few days of operation),

@@ -191,6 +191,11 @@ Each metrics record contains tags such as ProcessName, SessionId, and Hostname a
 | `GetImageAvgTime` | Average fsimage download time in milliseconds |
 | `PutImageNumOps` | Total number of fsimage uploads to SecondaryNameNode |
 | `PutImageAvgTime` | Average fsimage upload time in milliseconds |
+<<<<<<< HEAD
+=======
+| `TotalFileOps`| Total number of file operations performed |
+| `NNStartedTimeInMillis`| NameNode start time in milliseconds |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 FSNamesystem
 ------------
@@ -235,6 +240,13 @@ Each metrics record contains tags such as HAState and Hostname as additional inf
 | `NumActiveClients` | Current number of active clients holding lease |
 | `HAState` | (HA-only) Current state of the NameNode: initializing or active or standby or stopping state |
 | `FSState` | Current state of the file system: Safemode or Operational |
+<<<<<<< HEAD
+=======
+| `LockQueueLength` | Number of threads waiting to acquire FSNameSystem lock |
+| `TotalSyncCount` | Total number of sync operations performed by edit log |
+| `TotalSyncTimes` | Total number of milliseconds spent by various edit logs in sync operation|
+| `NameDirSize` | NameNode name directories size in bytes |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 JournalNode
 -----------
@@ -269,6 +281,10 @@ The server-side metrics for a journal from the JournalNode's perspective. Each m
 | `CurrentLagTxns` | The number of transactions that this JournalNode is lagging |
 | `LastWrittenTxId` | The highest transaction id stored on this JournalNode |
 | `LastPromisedEpoch` | The last epoch number which this node has promised not to accept any lower epoch, or 0 if no promises have been made |
+<<<<<<< HEAD
+=======
+| `LastJournalTimestamp` | The timestamp of last successfully written transaction |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 datanode
 --------
@@ -322,6 +338,13 @@ Each metrics record contains tags such as SessionId and Hostname as additional i
 | `SendDataPacketBlockedOnNetworkNanosAvgTime` | Average waiting time of sending packets in nanoseconds |
 | `SendDataPacketTransferNanosNumOps` | Total number of sending packets |
 | `SendDataPacketTransferNanosAvgTime` | Average transfer time of sending packets in nanoseconds |
+<<<<<<< HEAD
+=======
+| `TotalWriteTime`| Total number of milliseconds spent on write operation |
+| `TotalReadTime` | Total number of milliseconds spent on read operation |
+| `RemoteBytesRead` | Number of bytes read by remote clients |
+| `RemoteBytesWritten` | Number of bytes written by remote clients |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 yarn context
 ============
@@ -442,7 +465,11 @@ MetricsSystem shows the statistics for metrics snapshots and publishes. Each met
 | `Sink_`*instance*`NumOps` | Total number of sink operations for the *instance* |
 | `Sink_`*instance*`AvgTime` | Average time in milliseconds of sink operations for the *instance* |
 | `Sink_`*instance*`Dropped` | Total number of dropped sink operations for the *instance* |
+<<<<<<< HEAD
 | `Sink_`*instance*`Qsize` | Current queue length of sink operations  (BUT always set to 0 because nothing to increment this metrics, see [HADOOP-9941](https://issues.apache.org/jira/browse/HADOOP-9941)) |
+=======
+| `Sink_`*instance*`Qsize` | Current queue length of sink operations |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 default context
 ===============

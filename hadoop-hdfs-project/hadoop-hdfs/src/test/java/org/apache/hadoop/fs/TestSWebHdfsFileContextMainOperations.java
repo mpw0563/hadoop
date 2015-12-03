@@ -57,8 +57,11 @@ public class TestSWebHdfsFileContextMainOperations
   protected static final byte[] data = getFileData(numBlocks,
       getDefaultBlockSize());
 
+<<<<<<< HEAD
   private static Configuration sslConf;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @BeforeClass
   public static void clusterSetupAtBeginning()
       throws IOException, LoginException, URISyntaxException {
@@ -67,6 +70,7 @@ public class TestSWebHdfsFileContextMainOperations
     FileUtil.fullyDelete(base);
     base.mkdirs();
     keystoresDir = new File(BASEDIR).getAbsolutePath();
+<<<<<<< HEAD
     sslConf = new Configuration();
 
     try {
@@ -76,6 +80,20 @@ public class TestSWebHdfsFileContextMainOperations
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
+=======
+    try {
+      sslConfDir = KeyStoreTestUtil
+          .getClasspathDir(TestSWebHdfsFileContextMainOperations.class);
+      KeyStoreTestUtil.setupSSLConfig(keystoresDir, sslConfDir, CONF, false);
+      CONF.set(DFSConfigKeys.DFS_CLIENT_HTTPS_KEYSTORE_RESOURCE_KEY,
+          KeyStoreTestUtil.getClientSSLConfigFileName());
+      CONF.set(DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_RESOURCE_KEY,
+          KeyStoreTestUtil.getServerSSLConfigFileName());
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     CONF.set(DFSConfigKeys.DFS_HTTP_POLICY_KEY, "HTTPS_ONLY");
     CONF.set(DFSConfigKeys.DFS_NAMENODE_HTTPS_ADDRESS_KEY, "localhost:0");
     CONF.set(DFSConfigKeys.DFS_DATANODE_HTTPS_ADDRESS_KEY, "localhost:0");
@@ -94,6 +112,14 @@ public class TestSWebHdfsFileContextMainOperations
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  protected FileContextTestHelper createFileContextHelper() {
+    return new FileContextTestHelper("/tmp/TestSWebHdfsFileContextMainOperations");
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public URI getWebhdfsUrl() {
     return webhdfsUrl;
   }

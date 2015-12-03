@@ -97,10 +97,21 @@ public class TestFsShellPermission {
     ByteArrayOutputStream baout = new ByteArrayOutputStream();
     PrintStream out = new PrintStream(baout, true);
     PrintStream old = System.out;
+<<<<<<< HEAD
     System.setOut(out);
     int ret = shell.run(args);
     out.close();
     System.setOut(old);
+=======
+    int ret;
+    try {
+      System.setOut(out);
+      ret = shell.run(args);
+      out.close();
+    } finally {
+      System.setOut(old);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return String.valueOf(ret);
   }
 

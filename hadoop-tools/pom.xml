@@ -20,12 +20,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../hadoop-project</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-tools</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Apache Hadoop Tools</description>
   <name>Apache Hadoop Tools</name>
   <packaging>pom</packaging>
@@ -34,6 +42,10 @@
     <module>hadoop-streaming</module>
     <module>hadoop-distcp</module>
     <module>hadoop-archives</module>
+<<<<<<< HEAD
+=======
+    <module>hadoop-archive-logs</module>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <module>hadoop-rumen</module>
     <module>hadoop-gridmix</module>
     <module>hadoop-datajoin</module>
@@ -43,8 +55,14 @@
     <module>hadoop-pipes</module>
     <module>hadoop-openstack</module>
     <module>hadoop-sls</module>
+<<<<<<< HEAD
     <module>hadoop-aws</module>
     <module>hadoop-azure</module>
+=======
+    <module>hadoop-azure</module>
+    <module>hadoop-aws</module>
+    <module>hadoop-kafka</module>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </modules>
 
   <build>

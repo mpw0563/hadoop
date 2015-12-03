@@ -24,6 +24,10 @@ import java.util.Set;
 
 import org.apache.hadoop.net.Node;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Container;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeState;
@@ -37,9 +41,12 @@ import org.apache.hadoop.yarn.server.api.protocolrecords.NodeHeartbeatResponse;
  */
 public interface RMNode {
 
+<<<<<<< HEAD
   /** negative value means no timeout */
   public static final int OVER_COMMIT_TIMEOUT_MILLIS_DEFAULT = -1;
   
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * the node id of of this node.
    * @return the node id of this node.
@@ -129,7 +136,16 @@ public interface RMNode {
   public void updateNodeHeartbeatResponseForCleanup(NodeHeartbeatResponse response);
 
   public NodeHeartbeatResponse getLastNodeHeartBeatResponse();
+<<<<<<< HEAD
   
+=======
+
+  /**
+   * Reset lastNodeHeartbeatResponse's ID to 0.
+   */
+  void resetLastNodeHeartBeatResponse();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Get and clear the list of containerUpdates accumulated across NM
    * heartbeats.
@@ -144,4 +160,15 @@ public interface RMNode {
    * @return labels in this node
    */
   public Set<String> getNodeLabels();
+<<<<<<< HEAD
+=======
+  
+  /**
+   * Update containers to be decreased
+   */
+  public void updateNodeHeartbeatResponseForContainersDecreasing(
+      NodeHeartbeatResponse response);
+  
+  public List<Container> pullNewlyIncreasedContainers();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -27,6 +27,10 @@ import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HTTPS_ADDRESS_DE
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HTTPS_ADDRESS_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HTTP_ADDRESS_DEFAULT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HTTP_ADDRESS_KEY;
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_LIFELINE_RPC_ADDRESS_KEY;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_RPC_ADDRESS_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_SECONDARY_HTTP_ADDRESS_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_SERVICE_RPC_ADDRESS_KEY;
@@ -36,6 +40,10 @@ import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_PAS
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_SERVER_HTTPS_TRUSTSTORE_PASSWORD_KEY;
 
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.io.InterruptedIOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -53,8 +61,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+<<<<<<< HEAD
 import javax.net.SocketFactory;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.common.collect.Sets;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -69,6 +80,7 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.crypto.key.KeyProvider;
 import org.apache.hadoop.crypto.key.KeyProviderCryptoExtension;
+<<<<<<< HEAD
 import org.apache.hadoop.crypto.key.KeyProviderFactory;
 import org.apache.hadoop.fs.BlockLocation;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
@@ -81,6 +93,12 @@ import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.protocolPB.ClientDatanodeProtocolTranslatorPB;
+=======
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.http.HttpConfig;
@@ -98,6 +116,10 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+<<<<<<< HEAD
+=======
+import com.google.common.collect.Sets;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.protobuf.BlockingService;
 
 @InterfaceAudience.Private
@@ -420,7 +442,11 @@ public class DFSUtil {
           NameNode.initializeGenericKeys(confForNn, nsId, nnId);
           String principal = SecurityUtil.getServerPrincipal(confForNn
               .get(DFSConfigKeys.DFS_NAMENODE_KERBEROS_PRINCIPAL_KEY),
+<<<<<<< HEAD
               NameNode.getAddress(confForNn).getHostName());
+=======
+              DFSUtilClient.getNNAddress(confForNn).getHostName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           principals.add(principal);
         }
       } else {
@@ -428,7 +454,11 @@ public class DFSUtil {
         NameNode.initializeGenericKeys(confForNn, nsId, null);
         String principal = SecurityUtil.getServerPrincipal(confForNn
             .get(DFSConfigKeys.DFS_NAMENODE_KERBEROS_PRINCIPAL_KEY),
+<<<<<<< HEAD
             NameNode.getAddress(confForNn).getHostName());
+=======
+            DFSUtilClient.getNNAddress(confForNn).getHostName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         principals.add(principal);
       }
     }
@@ -504,7 +534,12 @@ public class DFSUtil {
     // Use default address as fall back
     String defaultAddress;
     try {
+<<<<<<< HEAD
       defaultAddress = NetUtils.getHostPortString(NameNode.getAddress(conf));
+=======
+      defaultAddress = NetUtils.getHostPortString(
+          DFSUtilClient.getNNAddress(conf));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (IllegalArgumentException e) {
       defaultAddress = null;
     }
@@ -540,7 +575,12 @@ public class DFSUtil {
     // Use default address as fall back
     String defaultAddress;
     try {
+<<<<<<< HEAD
       defaultAddress = NetUtils.getHostPortString(NameNode.getAddress(conf));
+=======
+      defaultAddress = NetUtils.getHostPortString(
+          DFSUtilClient.getNNAddress(conf));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (IllegalArgumentException e) {
       defaultAddress = null;
     }
@@ -578,6 +618,31 @@ public class DFSUtil {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Map a logical namenode ID to its lifeline address.  Use the given
+   * nameservice if specified, or the configured one if none is given.
+   *
+   * @param conf Configuration
+   * @param nsId which nameservice nnId is a part of, optional
+   * @param nnId the namenode ID to get the service addr for
+   * @return the lifeline addr, null if it could not be determined
+   */
+  public static String getNamenodeLifelineAddr(final Configuration conf,
+      String nsId, String nnId) {
+
+    if (nsId == null) {
+      nsId = getOnlyNameServiceIdOrNull(conf);
+    }
+
+    String lifelineAddrKey = DFSUtilClient.concatSuffixes(
+        DFSConfigKeys.DFS_NAMENODE_LIFELINE_RPC_ADDRESS_KEY, nsId, nnId);
+
+    return conf.get(lifelineAddrKey);
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Flatten the given map, as returned by other functions in this class,
    * into a flat list of {@link ConfiguredNNAddress} instances.
    */
@@ -626,6 +691,7 @@ public class DFSUtil {
     return addressMapToString(addresses);
   }
 
+<<<<<<< HEAD
   /**
    * Represent one of the NameNodes configured in the cluster.
    */
@@ -760,6 +826,151 @@ public class DFSUtil {
   }
 
   /**
+=======
+  /**
+   * Represent one of the NameNodes configured in the cluster.
+   */
+  public static class ConfiguredNNAddress {
+    private final String nameserviceId;
+    private final String namenodeId;
+    private final InetSocketAddress addr;
+
+    private ConfiguredNNAddress(String nameserviceId, String namenodeId,
+        InetSocketAddress addr) {
+      this.nameserviceId = nameserviceId;
+      this.namenodeId = namenodeId;
+      this.addr = addr;
+    }
+
+    public String getNameserviceId() {
+      return nameserviceId;
+    }
+
+    public String getNamenodeId() {
+      return namenodeId;
+    }
+
+    public InetSocketAddress getAddress() {
+      return addr;
+    }
+    
+    @Override
+    public String toString() {
+      return "ConfiguredNNAddress[nsId=" + nameserviceId + ";" +
+        "nnId=" + namenodeId + ";addr=" + addr + "]";
+    }
+  }
+  
+  /**
+   * Get a URI for each configured nameservice. If a nameservice is
+   * HA-enabled, then the logical URI of the nameservice is returned. If the
+   * nameservice is not HA-enabled, then a URI corresponding to an RPC address
+   * of the single NN for that nameservice is returned, preferring the service
+   * RPC address over the client RPC address.
+   * 
+   * @param conf configuration
+   * @return a collection of all configured NN URIs, preferring service
+   *         addresses
+   */
+  public static Collection<URI> getNsServiceRpcUris(Configuration conf) {
+    return getNameServiceUris(conf,
+        DFSConfigKeys.DFS_NAMENODE_SERVICE_RPC_ADDRESS_KEY,
+        DFSConfigKeys.DFS_NAMENODE_RPC_ADDRESS_KEY);
+  }
+
+  /**
+   * Get a URI for each configured nameservice. If a nameservice is
+   * HA-enabled, then the logical URI of the nameservice is returned. If the
+   * nameservice is not HA-enabled, then a URI corresponding to the address of
+   * the single NN for that nameservice is returned.
+   * 
+   * @param conf configuration
+   * @param keys configuration keys to try in order to get the URI for non-HA
+   *        nameservices
+   * @return a collection of all configured NN URIs
+   */
+  public static Collection<URI> getNameServiceUris(Configuration conf,
+      String... keys) {
+    Set<URI> ret = new HashSet<URI>();
+    
+    // We're passed multiple possible configuration keys for any given NN or HA
+    // nameservice, and search the config in order of these keys. In order to
+    // make sure that a later config lookup (e.g. fs.defaultFS) doesn't add a
+    // URI for a config key for which we've already found a preferred entry, we
+    // keep track of non-preferred keys here.
+    Set<URI> nonPreferredUris = new HashSet<URI>();
+    
+    for (String nsId : DFSUtilClient.getNameServiceIds(conf)) {
+      if (HAUtil.isHAEnabled(conf, nsId)) {
+        // Add the logical URI of the nameservice.
+        try {
+          ret.add(new URI(HdfsConstants.HDFS_URI_SCHEME + "://" + nsId));
+        } catch (URISyntaxException ue) {
+          throw new IllegalArgumentException(ue);
+        }
+      } else {
+        // Add the URI corresponding to the address of the NN.
+        boolean uriFound = false;
+        for (String key : keys) {
+          String addr = conf.get(DFSUtilClient.concatSuffixes(key, nsId));
+          if (addr != null) {
+            URI uri = createUri(HdfsConstants.HDFS_URI_SCHEME,
+                NetUtils.createSocketAddr(addr));
+            if (!uriFound) {
+              uriFound = true;
+              ret.add(uri);
+            } else {
+              nonPreferredUris.add(uri);
+            }
+          }
+        }
+      }
+    }
+    
+    // Add the generic configuration keys.
+    boolean uriFound = false;
+    for (String key : keys) {
+      String addr = conf.get(key);
+      if (addr != null) {
+        URI uri = createUri("hdfs", NetUtils.createSocketAddr(addr));
+        if (!uriFound) {
+          uriFound = true;
+          ret.add(uri);
+        } else {
+          nonPreferredUris.add(uri);
+        }
+      }
+    }
+
+    // Add the default URI if it is an HDFS URI and we haven't come up with a
+    // valid non-nameservice NN address yet.  Consider the servicerpc-address
+    // and rpc-address to be the "unnamed" nameservice.  defaultFS is our
+    // fallback when rpc-address isn't given.  We therefore only want to add
+    // the defaultFS when neither the servicerpc-address (which is preferred)
+    // nor the rpc-address (which overrides defaultFS) is given.
+    if (!uriFound) {
+      URI defaultUri = FileSystem.getDefaultUri(conf);
+
+      // checks if defaultUri is ip:port format
+      // and convert it to hostname:port format
+      if (defaultUri != null && (defaultUri.getPort() != -1)) {
+        defaultUri = createUri(defaultUri.getScheme(),
+            NetUtils.createSocketAddr(defaultUri.getHost(),
+                defaultUri.getPort()));
+      }
+
+      if (defaultUri != null &&
+          HdfsConstants.HDFS_URI_SCHEME.equals(defaultUri.getScheme()) &&
+          !nonPreferredUris.contains(defaultUri)) {
+        ret.add(defaultUri);
+      }
+    }
+    
+    return ret;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Given the InetSocketAddress this method returns the nameservice Id
    * corresponding to the key with matching address, by doing a reverse 
    * lookup on the list of nameservices until it finds a match.
@@ -915,6 +1126,14 @@ public class DFSUtil {
       String nameserviceId, String nnId, String... keys) {
     for (String key : keys) {
       String value = conf.get(addKeySuffixes(key, nameserviceId, nnId));
+<<<<<<< HEAD
+      if (value != null) {
+        conf.set(key, value);
+        continue;
+      }
+      value = conf.get(addKeySuffixes(key, nameserviceId));
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (value != null) {
         conf.set(key, value);
         continue;
@@ -933,29 +1152,6 @@ public class DFSUtil {
    */
   public static int roundBytesToGB(long bytes) {
     return Math.round((float)bytes/ 1024 / 1024 / 1024);
-  }
-  
-  /** Create a {@link ClientDatanodeProtocol} proxy */
-  public static ClientDatanodeProtocol createClientDatanodeProtocolProxy(
-      DatanodeID datanodeid, Configuration conf, int socketTimeout,
-      boolean connectToDnViaHostname, LocatedBlock locatedBlock) throws IOException {
-    return new ClientDatanodeProtocolTranslatorPB(datanodeid, conf, socketTimeout,
-        connectToDnViaHostname, locatedBlock);
-  }
-  
-  /** Create {@link ClientDatanodeProtocol} proxy using kerberos ticket */
-  public static ClientDatanodeProtocol createClientDatanodeProtocolProxy(
-      DatanodeID datanodeid, Configuration conf, int socketTimeout,
-      boolean connectToDnViaHostname) throws IOException {
-    return new ClientDatanodeProtocolTranslatorPB(
-        datanodeid, conf, socketTimeout, connectToDnViaHostname);
-  }
-  
-  /** Create a {@link ClientDatanodeProtocol} proxy */
-  public static ClientDatanodeProtocol createClientDatanodeProtocolProxy(
-      InetSocketAddress addr, UserGroupInformation ticket, Configuration conf,
-      SocketFactory factory) throws IOException {
-    return new ClientDatanodeProtocolTranslatorPB(addr, ticket, conf, factory);
   }
 
   /**
@@ -1010,11 +1206,102 @@ public class DFSUtil {
     
     return getSuffixIDs(conf, addressKey, null, nnId, LOCAL_ADDRESS_MATCHER)[0];
   }
+
+  /**
+   * Round bytes to GiB (gibibyte)
+   * @param bytes number of bytes
+   * @return number of GiB
+   */
+  public static int roundBytesToGB(long bytes) {
+    return Math.round((float)bytes/ 1024 / 1024 / 1024);
+  }
+  
+  /** Create a {@link ClientDatanodeProtocol} proxy */
+  public static ClientDatanodeProtocol createClientDatanodeProtocolProxy(
+      DatanodeID datanodeid, Configuration conf, int socketTimeout,
+      boolean connectToDnViaHostname, LocatedBlock locatedBlock) throws IOException {
+    return new ClientDatanodeProtocolTranslatorPB(datanodeid, conf, socketTimeout,
+        connectToDnViaHostname, locatedBlock);
+  }
+  
+  /** Create {@link ClientDatanodeProtocol} proxy using kerberos ticket */
+  public static ClientDatanodeProtocol createClientDatanodeProtocolProxy(
+      DatanodeID datanodeid, Configuration conf, int socketTimeout,
+      boolean connectToDnViaHostname) throws IOException {
+    return new ClientDatanodeProtocolTranslatorPB(
+        datanodeid, conf, socketTimeout, connectToDnViaHostname);
+  }
+  
+  /** Create a {@link ClientDatanodeProtocol} proxy */
+  public static ClientDatanodeProtocol createClientDatanodeProtocolProxy(
+      InetSocketAddress addr, UserGroupInformation ticket, Configuration conf,
+      SocketFactory factory) throws IOException {
+    return new ClientDatanodeProtocolTranslatorPB(addr, ticket, conf, factory);
+  }
+
+  /**
+   * Get nameservice Id for the {@link NameNode} based on namenode RPC address
+   * matching the local node address.
+   */
+  public static String getNamenodeNameServiceId(Configuration conf) {
+    return getNameServiceId(conf, DFS_NAMENODE_RPC_ADDRESS_KEY);
+  }
+  
+  /**
+<<<<<<< HEAD
+   * Get nameservice Id for the BackupNode based on backup node RPC address
+   * matching the local node address.
+   */
+  public static String getBackupNameServiceId(Configuration conf) {
+    return getNameServiceId(conf, DFS_NAMENODE_BACKUP_ADDRESS_KEY);
+  }
+  
+  /**
+   * Get nameservice Id for the secondary node based on secondary http address
+   * matching the local node address.
+   */
+  public static String getSecondaryNameServiceId(Configuration conf) {
+    return getNameServiceId(conf, DFS_NAMENODE_SECONDARY_HTTP_ADDRESS_KEY);
+  }
+  
+  /**
+   * Get the nameservice Id by matching the {@code addressKey} with the
+   * the address of the local node. 
+   * 
+   * If {@link DFSConfigKeys#DFS_NAMESERVICE_ID} is not specifically
+   * configured, and more than one nameservice Id is configured, this method 
+   * determines the nameservice Id by matching the local node's address with the
+   * configured addresses. When a match is found, it returns the nameservice Id
+   * from the corresponding configuration key.
+   * 
+   * @param conf Configuration
+   * @param addressKey configuration key to get the address.
+   * @return nameservice Id on success, null if federation is not configured.
+   * @throws HadoopIllegalArgumentException on error
+   */
+  private static String getNameServiceId(Configuration conf, String addressKey) {
+    String nameserviceId = conf.get(DFS_NAMESERVICE_ID);
+    if (nameserviceId != null) {
+      return nameserviceId;
+    }
+    Collection<String> nsIds = DFSUtilClient.getNameServiceIds(conf);
+    if (1 == nsIds.size()) {
+      return nsIds.toArray(new String[1])[0];
+    }
+    String nnId = conf.get(DFS_HA_NAMENODE_ID_KEY);
+    
+    return getSuffixIDs(conf, addressKey, null, nnId, LOCAL_ADDRESS_MATCHER)[0];
+  }
   
   /**
    * Returns nameservice Id and namenode Id when the local host matches the
    * configuration parameter {@code addressKey}.<nameservice Id>.<namenode Id>
    * 
+=======
+   * Returns nameservice Id and namenode Id when the local host matches the
+   * configuration parameter {@code addressKey}.<nameservice Id>.<namenode Id>
+   * 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param conf Configuration
    * @param addressKey configuration key corresponding to the address.
    * @param knownNsId only look at configs for the given nameservice, if not-null
@@ -1025,6 +1312,85 @@ public class DFSUtil {
    *         Null value indicates that the configuration does not have the the
    *         Id.
    * @throws HadoopIllegalArgumentException on error
+<<<<<<< HEAD
+   */
+  static String[] getSuffixIDs(final Configuration conf, final String addressKey,
+      String knownNsId, String knownNNId,
+      final AddressMatcher matcher) {
+    String nameserviceId = null;
+    String namenodeId = null;
+    int found = 0;
+    
+    Collection<String> nsIds = DFSUtilClient.getNameServiceIds(conf);
+    for (String nsId : DFSUtilClient.emptyAsSingletonNull(nsIds)) {
+      if (knownNsId != null && !knownNsId.equals(nsId)) {
+        continue;
+      }
+      
+      Collection<String> nnIds = DFSUtilClient.getNameNodeIds(conf, nsId);
+      for (String nnId : DFSUtilClient.emptyAsSingletonNull(nnIds)) {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace(String.format("addressKey: %s nsId: %s nnId: %s",
+              addressKey, nsId, nnId));
+        }
+        if (knownNNId != null && !knownNNId.equals(nnId)) {
+          continue;
+        }
+        String key = addKeySuffixes(addressKey, nsId, nnId);
+        String addr = conf.get(key);
+        if (addr == null) {
+          continue;
+        }
+        InetSocketAddress s = null;
+        try {
+          s = NetUtils.createSocketAddr(addr);
+        } catch (Exception e) {
+          LOG.warn("Exception in creating socket address " + addr, e);
+          continue;
+        }
+        if (!s.isUnresolved() && matcher.match(s)) {
+          nameserviceId = nsId;
+          namenodeId = nnId;
+          found++;
+        }
+      }
+    }
+    if (found > 1) { // Only one address must match the local address
+      String msg = "Configuration has multiple addresses that match "
+          + "local node's address. Please configure the system with "
+          + DFS_NAMESERVICE_ID + " and "
+          + DFS_HA_NAMENODE_ID_KEY;
+      throw new HadoopIllegalArgumentException(msg);
+    }
+    return new String[] { nameserviceId, namenodeId };
+  }
+  
+  /**
+   * For given set of {@code keys} adds nameservice Id and or namenode Id
+   * and returns {nameserviceId, namenodeId} when address match is found.
+   * @see #getSuffixIDs(Configuration, String, String, String, AddressMatcher)
+   */
+  static String[] getSuffixIDs(final Configuration conf,
+      final InetSocketAddress address, final String... keys) {
+    AddressMatcher matcher = new AddressMatcher() {
+     @Override
+      public boolean match(InetSocketAddress s) {
+        return address.equals(s);
+      } 
+    };
+    
+    for (String key : keys) {
+      String[] ids = getSuffixIDs(conf, key, null, null, matcher);
+      if (ids != null && (ids [0] != null || ids[1] != null)) {
+        return ids;
+      }
+    }
+    return null;
+  }
+  
+  private interface AddressMatcher {
+    public boolean match(InetSocketAddress s);
+=======
    */
   static String[] getSuffixIDs(final Configuration conf, final String addressKey,
       String knownNsId, String knownNNId,
@@ -1126,6 +1492,32 @@ public class DFSUtil {
       BlockingService service, RPC.Server server) throws IOException {
     RPC.setProtocolEngine(conf, protocol, ProtobufRpcEngine.class);
     server.addProtocol(RPC.RpcKind.RPC_PROTOCOL_BUFFER, protocol, service);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  }
+
+  /** Create a URI from the scheme and address */
+  public static URI createUri(String scheme, InetSocketAddress address) {
+    try {
+      return new URI(scheme, null, address.getHostName(), address.getPort(),
+          null, null, null);
+    } catch (URISyntaxException ue) {
+      throw new IllegalArgumentException(ue);
+    }
+  }
+  
+  /**
+<<<<<<< HEAD
+   * Add protobuf based protocol to the {@link org.apache.hadoop.ipc.RPC.Server}
+   * @param conf configuration
+   * @param protocol Protocol interface
+   * @param service service that implements the protocol
+   * @param server RPC server to which the protocol & implementation is added to
+   * @throws IOException
+   */
+  public static void addPBProtocol(Configuration conf, Class<?> protocol,
+      BlockingService service, RPC.Server server) throws IOException {
+    RPC.setProtocolEngine(conf, protocol, ProtobufRpcEngine.class);
+    server.addProtocol(RPC.RpcKind.RPC_PROTOCOL_BUFFER, protocol, service);
   }
 
   /**
@@ -1137,11 +1529,22 @@ public class DFSUtil {
    * @param nnId the namenode ID to get the service addr for
    * @return the service addr, null if it could not be determined
    */
+=======
+   * Map a logical namenode ID to its service address. Use the given
+   * nameservice if specified, or the configured one if none is given.
+   *
+   * @param conf Configuration
+   * @param nsId which nameservice nnId is a part of, optional
+   * @param nnId the namenode ID to get the service addr for
+   * @return the service addr, null if it could not be determined
+   */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static String getNamenodeServiceAddr(final Configuration conf,
       String nsId, String nnId) {
 
     if (nsId == null) {
       nsId = getOnlyNameServiceIdOrNull(conf);
+<<<<<<< HEAD
     }
 
     String serviceAddrKey = DFSUtilClient.concatSuffixes(
@@ -1154,6 +1557,20 @@ public class DFSUtil {
     if (serviceRpcAddr == null) {
       serviceRpcAddr = conf.get(addrKey);
     }
+=======
+    }
+
+    String serviceAddrKey = DFSUtilClient.concatSuffixes(
+        DFSConfigKeys.DFS_NAMENODE_SERVICE_RPC_ADDRESS_KEY, nsId, nnId);
+
+    String addrKey = DFSUtilClient.concatSuffixes(
+        DFSConfigKeys.DFS_NAMENODE_RPC_ADDRESS_KEY, nsId, nnId);
+
+    String serviceRpcAddr = conf.get(serviceAddrKey);
+    if (serviceRpcAddr == null) {
+      serviceRpcAddr = conf.get(addrKey);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return serviceRpcAddr;
   }
 
@@ -1169,6 +1586,7 @@ public class DFSUtil {
       // No nameservice ID was given and more than one is configured
       return null;
     }
+<<<<<<< HEAD
   }
   
   public static final Options helpOptions = new Options();
@@ -1326,8 +1744,116 @@ public class DFSUtil {
         .trustStore(sslConf.get("ssl.server.truststore.location"),
             getPassword(sslConf, DFS_SERVER_HTTPS_TRUSTSTORE_PASSWORD_KEY),
             sslConf.get("ssl.server.truststore.type", "jks"));
+=======
+  }
+  
+  public static final Options helpOptions = new Options();
+  public static final Option helpOpt = new Option("h", "help", false,
+      "get help information");
+
+  static {
+    helpOptions.addOption(helpOpt);
   }
 
+  /**
+   * Parse the arguments for commands
+   * 
+   * @param args the argument to be parsed
+   * @param helpDescription help information to be printed out
+   * @param out Printer
+   * @param printGenericCommandUsage whether to print the 
+   *              generic command usage defined in ToolRunner
+   * @return true when the argument matches help option, false if not
+   */
+  public static boolean parseHelpArgument(String[] args,
+      String helpDescription, PrintStream out, boolean printGenericCommandUsage) {
+    if (args.length == 1) {
+      try {
+        CommandLineParser parser = new PosixParser();
+        CommandLine cmdLine = parser.parse(helpOptions, args);
+        if (cmdLine.hasOption(helpOpt.getOpt())
+            || cmdLine.hasOption(helpOpt.getLongOpt())) {
+          // should print out the help information
+          out.println(helpDescription + "\n");
+          if (printGenericCommandUsage) {
+            ToolRunner.printGenericCommandUsage(out);
+          }
+          return true;
+        }
+      } catch (ParseException pe) {
+        return false;
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Get DFS_NAMENODE_INVALIDATE_WORK_PCT_PER_ITERATION from configuration.
+   * 
+   * @param conf Configuration
+   * @return Value of DFS_NAMENODE_INVALIDATE_WORK_PCT_PER_ITERATION
+   */
+  public static float getInvalidateWorkPctPerIteration(Configuration conf) {
+    float blocksInvalidateWorkPct = conf.getFloat(
+        DFSConfigKeys.DFS_NAMENODE_INVALIDATE_WORK_PCT_PER_ITERATION,
+        DFSConfigKeys.DFS_NAMENODE_INVALIDATE_WORK_PCT_PER_ITERATION_DEFAULT);
+    Preconditions.checkArgument(
+        (blocksInvalidateWorkPct > 0 && blocksInvalidateWorkPct <= 1.0f),
+        DFSConfigKeys.DFS_NAMENODE_INVALIDATE_WORK_PCT_PER_ITERATION +
+        " = '" + blocksInvalidateWorkPct + "' is invalid. " +
+        "It should be a positive, non-zero float value, not greater than 1.0f, " +
+        "to indicate a percentage.");
+    return blocksInvalidateWorkPct;
+  }
+
+  /**
+   * Get DFS_NAMENODE_REPLICATION_WORK_MULTIPLIER_PER_ITERATION from
+   * configuration.
+   * 
+   * @param conf Configuration
+   * @return Value of DFS_NAMENODE_REPLICATION_WORK_MULTIPLIER_PER_ITERATION
+   */
+  public static int getReplWorkMultiplier(Configuration conf) {
+    int blocksReplWorkMultiplier = conf.getInt(
+            DFSConfigKeys.DFS_NAMENODE_REPLICATION_WORK_MULTIPLIER_PER_ITERATION,
+            DFSConfigKeys.DFS_NAMENODE_REPLICATION_WORK_MULTIPLIER_PER_ITERATION_DEFAULT);
+    Preconditions.checkArgument(
+        (blocksReplWorkMultiplier > 0),
+        DFSConfigKeys.DFS_NAMENODE_REPLICATION_WORK_MULTIPLIER_PER_ITERATION +
+        " = '" + blocksReplWorkMultiplier + "' is invalid. " +
+        "It should be a positive, non-zero integer value.");
+    return blocksReplWorkMultiplier;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  }
+  
+  /**
+   * Get SPNEGO keytab Key from configuration
+   * 
+   * @param conf Configuration
+   * @param defaultKey default key to be used for config lookup
+   * @return DFS_WEB_AUTHENTICATION_KERBEROS_KEYTAB_KEY if the key is not empty
+   *         else return defaultKey
+   */
+  public static String getSpnegoKeytabKey(Configuration conf, String defaultKey) {
+    String value = 
+        conf.get(DFSConfigKeys.DFS_WEB_AUTHENTICATION_KERBEROS_KEYTAB_KEY);
+    return (value == null || value.isEmpty()) ?
+        defaultKey : DFSConfigKeys.DFS_WEB_AUTHENTICATION_KERBEROS_KEYTAB_KEY;
+  }
+
+  /**
+   * Get http policy.
+   */
+  public static HttpConfig.Policy getHttpPolicy(Configuration conf) {
+    String policyStr = conf.get(DFSConfigKeys.DFS_HTTP_POLICY_KEY,
+        DFSConfigKeys.DFS_HTTP_POLICY_DEFAULT);
+    HttpConfig.Policy policy = HttpConfig.Policy.fromString(policyStr);
+    if (policy == null) {
+      throw new HadoopIllegalArgumentException("Unregonized value '"
+          + policyStr + "' for " + DFSConfigKeys.DFS_HTTP_POLICY_KEY);
+    }
+
+<<<<<<< HEAD
   /**
    * Load HTTPS-related configuration.
    */
@@ -1423,6 +1949,60 @@ public class DFSUtil {
   }
 
   /**
+=======
+    conf.set(DFSConfigKeys.DFS_HTTP_POLICY_KEY, policy.name());
+    return policy;
+  }
+
+  public static HttpServer2.Builder loadSslConfToHttpServerBuilder(HttpServer2.Builder builder,
+      Configuration sslConf) {
+    return builder
+        .needsClientAuth(
+            sslConf.getBoolean(DFS_CLIENT_HTTPS_NEED_AUTH_KEY,
+                DFS_CLIENT_HTTPS_NEED_AUTH_DEFAULT))
+        .keyPassword(getPassword(sslConf, DFS_SERVER_HTTPS_KEYPASSWORD_KEY))
+        .keyStore(sslConf.get("ssl.server.keystore.location"),
+            getPassword(sslConf, DFS_SERVER_HTTPS_KEYSTORE_PASSWORD_KEY),
+            sslConf.get("ssl.server.keystore.type", "jks"))
+        .trustStore(sslConf.get("ssl.server.truststore.location"),
+            getPassword(sslConf, DFS_SERVER_HTTPS_TRUSTSTORE_PASSWORD_KEY),
+            sslConf.get("ssl.server.truststore.type", "jks"));
+  }
+
+  /**
+   * Leverages the Configuration.getPassword method to attempt to get
+   * passwords from the CredentialProvider API before falling back to
+   * clear text in config - if falling back is allowed.
+   * @param conf Configuration instance
+   * @param alias name of the credential to retreive
+   * @return String credential value or null
+   */
+  static String getPassword(Configuration conf, String alias) {
+    String password = null;
+    try {
+      char[] passchars = conf.getPassword(alias);
+      if (passchars != null) {
+        password = new String(passchars);
+      }
+    }
+    catch (IOException ioe) {
+      LOG.warn("Setting password to null since IOException is caught"
+          + " when getting password", ioe);
+
+      password = null;
+    }
+    return password;
+  }
+
+  /**
+   * Converts a Date into an ISO-8601 formatted datetime string.
+   */
+  public static String dateToIso8601String(Date date) {
+    return DFSUtilClient.dateToIso8601String(date);
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Converts a time duration in milliseconds into DDD:HH:MM:SS format.
    */
   public static String durationToString(long durationMs) {
@@ -1456,8 +2036,94 @@ public class DFSUtil {
     } else {
       throw new IOException("Unable to parse relative time value of " + relTime
           + ": unknown time unit " + relTime.charAt(relTime.length() - 1));
+<<<<<<< HEAD
     }
     return ttl*1000;
+=======
+    }
+    return ttl*1000;
+  }
+
+  /**
+   * Load HTTPS-related configuration.
+   */
+  public static Configuration loadSslConfiguration(Configuration conf) {
+    Configuration sslConf = new Configuration(false);
+
+    sslConf.addResource(conf.get(
+        DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_RESOURCE_KEY,
+        DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_RESOURCE_DEFAULT));
+
+    final String[] reqSslProps = {
+        DFSConfigKeys.DFS_SERVER_HTTPS_TRUSTSTORE_LOCATION_KEY,
+        DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_LOCATION_KEY,
+        DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_PASSWORD_KEY,
+        DFSConfigKeys.DFS_SERVER_HTTPS_KEYPASSWORD_KEY
+    };
+
+    // Check if the required properties are included
+    for (String sslProp : reqSslProps) {
+      if (sslConf.get(sslProp) == null) {
+        LOG.warn("SSL config " + sslProp + " is missing. If " +
+            DFSConfigKeys.DFS_SERVER_HTTPS_KEYSTORE_RESOURCE_KEY +
+            " is specified, make sure it is a relative path");
+      }
+    }
+
+    boolean requireClientAuth = conf.getBoolean(DFS_CLIENT_HTTPS_NEED_AUTH_KEY,
+        DFS_CLIENT_HTTPS_NEED_AUTH_DEFAULT);
+    sslConf.setBoolean(DFS_CLIENT_HTTPS_NEED_AUTH_KEY, requireClientAuth);
+    return sslConf;
+  }
+
+  /**
+   * Return a HttpServer.Builder that the journalnode / namenode / secondary
+   * namenode can use to initialize their HTTP / HTTPS server.
+   *
+   */
+  public static HttpServer2.Builder httpServerTemplateForNNAndJN(
+      Configuration conf, final InetSocketAddress httpAddr,
+      final InetSocketAddress httpsAddr, String name, String spnegoUserNameKey,
+      String spnegoKeytabFileKey) throws IOException {
+    HttpConfig.Policy policy = getHttpPolicy(conf);
+
+    HttpServer2.Builder builder = new HttpServer2.Builder().setName(name)
+        .setConf(conf).setACL(new AccessControlList(conf.get(DFS_ADMIN, " ")))
+        .setSecurityEnabled(UserGroupInformation.isSecurityEnabled())
+        .setUsernameConfKey(spnegoUserNameKey)
+        .setKeytabConfKey(getSpnegoKeytabKey(conf, spnegoKeytabFileKey));
+
+    // initialize the webserver for uploading/downloading files.
+    if (UserGroupInformation.isSecurityEnabled()) {
+      LOG.info("Starting web server as: "
+          + SecurityUtil.getServerPrincipal(conf.get(spnegoUserNameKey),
+              httpAddr.getHostName()));
+    }
+
+    if (policy.isHttpEnabled()) {
+      if (httpAddr.getPort() == 0) {
+        builder.setFindPort(true);
+      }
+
+      URI uri = URI.create("http://" + NetUtils.getHostPortString(httpAddr));
+      builder.addEndpoint(uri);
+      LOG.info("Starting Web-server for " + name + " at: " + uri);
+    }
+
+    if (policy.isHttpsEnabled() && httpsAddr != null) {
+      Configuration sslConf = loadSslConfiguration(conf);
+      loadSslConfToHttpServerBuilder(builder, sslConf);
+
+      if (httpsAddr.getPort() == 0) {
+        builder.setFindPort(true);
+      }
+
+      URI uri = URI.create("https://" + NetUtils.getHostPortString(httpsAddr));
+      builder.addEndpoint(uri);
+      LOG.info("Starting Web-server for " + name + " at: " + uri);
+    }
+    return builder;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -1482,6 +2148,29 @@ public class DFSUtil {
           Arrays.toString(resultsArray));
       }
     }
+<<<<<<< HEAD
+=======
+  }
+
+  /**
+   * Creates a new KeyProviderCryptoExtension by wrapping the
+   * KeyProvider specified in the given Configuration.
+   *
+   * @param conf Configuration
+   * @return new KeyProviderCryptoExtension, or null if no provider was found.
+   * @throws IOException if the KeyProvider is improperly specified in
+   *                             the Configuration
+   */
+  public static KeyProviderCryptoExtension createKeyProviderCryptoExtension(
+      final Configuration conf) throws IOException {
+    KeyProvider keyProvider = DFSUtilClient.createKeyProvider(conf);
+    if (keyProvider == null) {
+      return null;
+    }
+    KeyProviderCryptoExtension cryptoProvider = KeyProviderCryptoExtension
+        .createKeyProviderCryptoExtension(keyProvider);
+    return cryptoProvider;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

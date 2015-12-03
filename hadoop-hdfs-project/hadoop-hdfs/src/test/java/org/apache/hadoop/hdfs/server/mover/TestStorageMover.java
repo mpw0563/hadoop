@@ -28,11 +28,17 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileUtil;
+=======
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.protocol.BlockStoragePolicy;
@@ -62,6 +68,10 @@ import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeSpi;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.impl.FsVolumeImpl;
 import org.apache.hadoop.hdfs.server.namenode.snapshot.SnapshotTestHelper;
 import org.apache.hadoop.io.IOUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.junit.Assert;
 import org.junit.Test;
@@ -69,20 +79,31 @@ import org.junit.Test;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
+<<<<<<< HEAD
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_DATANODE_LAZY_WRITER_INTERVAL_SEC;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * Test the data migration tool (for Archival Storage)
  */
 public class TestStorageMover {
   static final Log LOG = LogFactory.getLog(TestStorageMover.class);
   static {
+<<<<<<< HEAD
     ((Log4JLogger)LogFactory.getLog(BlockPlacementPolicy.class)
         ).getLogger().setLevel(Level.ALL);
     ((Log4JLogger)LogFactory.getLog(Dispatcher.class)
         ).getLogger().setLevel(Level.ALL);
     ((Log4JLogger)LogFactory.getLog(DataTransferProtocol.class)).getLogger()
         .setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(LogFactory.getLog(BlockPlacementPolicy.class),
+        Level.ALL);
+    GenericTestUtils.setLogLevel(LogFactory.getLog(Dispatcher.class),
+        Level.ALL);
+    GenericTestUtils.setLogLevel(DataTransferProtocol.LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static final int BLOCK_SIZE = 1024;
@@ -405,11 +426,14 @@ public class TestStorageMover {
   }
 
   private static StorageType[][] genStorageTypes(int numDataNodes,
+<<<<<<< HEAD
       int numAllDisk, int numAllArchive) {
     return genStorageTypes(numDataNodes, numAllDisk, numAllArchive, 0);
   }
 
   private static StorageType[][] genStorageTypes(int numDataNodes,
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       int numAllDisk, int numAllArchive, int numRamDisk) {
     Preconditions.checkArgument(
       (numAllDisk + numAllArchive + numRamDisk) <= numDataNodes);
@@ -432,6 +456,7 @@ public class TestStorageMover {
     return types;
   }
 
+<<<<<<< HEAD
   private static long[][] genCapacities(int nDatanodes, int numAllDisk,
       int numAllArchive, int numRamDisk, long diskCapacity,
       long archiveCapacity, long ramDiskCapacity) {
@@ -452,6 +477,8 @@ public class TestStorageMover {
     return capacities;
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static class PathPolicyMap {
     final Map<Path, BlockStoragePolicy> map = Maps.newHashMap();
     final Path hot = new Path("/hot");

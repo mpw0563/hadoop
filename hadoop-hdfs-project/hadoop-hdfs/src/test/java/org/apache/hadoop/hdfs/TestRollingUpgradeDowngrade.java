@@ -36,7 +36,15 @@ import org.junit.Test;
 
 public class TestRollingUpgradeDowngrade {
 
+<<<<<<< HEAD
   @Test(timeout = 300000)
+=======
+  /**
+   * Downgrade option is already obsolete. It should throw exception.
+   * @throws Exception
+   */
+  @Test(timeout = 300000, expected = IllegalArgumentException.class)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testDowngrade() throws Exception {
     final Configuration conf = new HdfsConfiguration();
     MiniQJMHACluster cluster = null;
@@ -85,10 +93,17 @@ public class TestRollingUpgradeDowngrade {
   }
 
   /**
+<<<<<<< HEAD
    * Ensure that during downgrade the NN fails to load a fsimage with newer
    * format.
    */
   @Test(expected = IncorrectVersionException.class)
+=======
+   * Ensure that restart namenode with downgrade option should throw exception
+   * because it has been obsolete.
+   */
+  @Test(expected = IllegalArgumentException.class)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testRejectNewFsImage() throws IOException {
     final Configuration conf = new Configuration();
     MiniDFSCluster cluster = null;

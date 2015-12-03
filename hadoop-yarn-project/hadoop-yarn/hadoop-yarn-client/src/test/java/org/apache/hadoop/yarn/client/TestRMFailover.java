@@ -27,6 +27,10 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -45,6 +49,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.AdminService;
 import org.apache.hadoop.yarn.server.resourcemanager.HATestUtil;
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
 import org.apache.hadoop.yarn.server.webproxy.WebAppProxyServer;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.webapp.YarnWebParams;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -265,6 +273,10 @@ public class TestRMFailover extends ClientBaseWithFixes {
     getAdminService(0).transitionToActive(req);
     String rm1Url = "http://0.0.0.0:18088";
     String rm2Url = "http://0.0.0.0:28088";
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String redirectURL = getRedirectURL(rm2Url);
     // if uri is null, RMWebAppFilter will append a slash at the trail of the redirection url
     assertEquals(redirectURL,rm1Url+"/");
@@ -304,6 +316,20 @@ public class TestRMFailover extends ClientBaseWithFixes {
 
     redirectURL = getRedirectURL(rm2Url + "/proxy/" + fakeAppId);
     assertNull(redirectURL);
+<<<<<<< HEAD
+=======
+
+    // transit the active RM to standby
+    // Both of RMs are in standby mode
+    getAdminService(0).transitionToStandby(req);
+    // RM2 is expected to send the httpRequest to itself.
+    // The Header Field: Refresh is expected to be set.
+    redirectURL = getRefreshURL(rm2Url);
+    assertTrue(redirectURL != null
+        && redirectURL.contains(YarnWebParams.NEXT_REFRESH_INTERVAL)
+        && redirectURL.contains(rm2Url));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   // set up http connection with the given url and get the redirection url from the response
@@ -323,4 +349,20 @@ public class TestRMFailover extends ClientBaseWithFixes {
     return redirectUrl;
   }
 
+<<<<<<< HEAD
+=======
+  static String getRefreshURL(String url) {
+    String redirectUrl = null;
+    try {
+      HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+      // do not automatically follow the redirection
+      // otherwise we get too many redirections exception
+      conn.setInstanceFollowRedirects(false);
+      redirectUrl = conn.getHeaderField("Refresh");
+    } catch (Exception e) {
+      // throw new RuntimeException(e);
+    }
+    return redirectUrl;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

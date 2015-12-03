@@ -36,8 +36,12 @@ public class TestCachedBlocksList {
   @Test(timeout=60000)
   public void testSingleList() {
     DatanodeDescriptor dn = new DatanodeDescriptor(
+<<<<<<< HEAD
       new DatanodeID("127.0.0.1", "localhost", "abcd",
         5000, 5001, 5002, 5003));
+=======
+      new DatanodeID("127.0.0.1", "localhost", "abcd", 5000, 5001, 5002, 5003));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     CachedBlock[] blocks = new CachedBlock[] {
           new CachedBlock(0L, (short)1, true),
           new CachedBlock(1L, (short)1, true),
@@ -125,11 +129,17 @@ public class TestCachedBlocksList {
   public void testMultipleLists() {
     DatanodeDescriptor[] datanodes = new DatanodeDescriptor[] {
       new DatanodeDescriptor(
+<<<<<<< HEAD
         new DatanodeID("127.0.0.1", "localhost", "abcd",
           5000, 5001, 5002, 5003)),
       new DatanodeDescriptor(
         new DatanodeID("127.0.1.1", "localhost", "efgh",
           6000, 6001, 6002, 6003)),
+=======
+        new DatanodeID("127.0.0.1", "localhost", "abcd", 5000, 5001, 5002, 5003)),
+      new DatanodeDescriptor(
+        new DatanodeID("127.0.1.1", "localhost", "efgh", 6000, 6001, 6002, 6003)),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     };
     CachedBlocksList[] lists = new CachedBlocksList[] {
         datanodes[0].getPendingCached(),

@@ -18,19 +18,66 @@
 
 # Run a Hadoop command on all slave hosts.
 
-usage="Usage: hadoop-daemons.sh [--config confdir] [--hosts hostlistfile] [start|stop] command args..."
+function hadoop_usage
+{
+  echo "Usage: hadoop-daemons.sh [--config confdir] [--hosts hostlistfile] (start|stop|status) <hadoop-command> <args...>"
+}
 
-# if no args specified, show usage
-if [ $# -le 1 ]; then
-  echo $usage
+this="${BASH_SOURCE-$0}"
+bin=$(cd -P -- "$(dirname -- "${this}")" >/dev/null && pwd -P)
+
+# let's locate libexec...
+if [[ -n "${HADOOP_PREFIX}" ]]; then
+  HADOOP_DEFAULT_LIBEXEC_DIR="${HADOOP_PREFIX}/libexec"
+else
+  HADOOP_DEFAULT_LIBEXEC_DIR="${bin}/../libexec"
+fi
+
+HADOOP_LIBEXEC_DIR="${HADOOP_LIBEXEC_DIR:-$HADOOP_DEFAULT_LIBEXEC_DIR}"
+# shellcheck disable=SC2034
+HADOOP_NEW_CONFIG=true
+if [[ -f "${HADOOP_LIBEXEC_DIR}/hdfs-config.sh" ]]; then
+  . "${HADOOP_LIBEXEC_DIR}/hdfs-config.sh"
+else
+  echo "ERROR: Cannot execute ${HADOOP_LIBEXEC_DIR}/hdfs-config.sh." 2>&1
   exit 1
 fi
 
-bin=`dirname "${BASH_SOURCE-$0}"`
-bin=`cd "$bin"; pwd`
+if [[ $# = 0 ]]; then
+  hadoop_exit_with_usage 1
+fi
 
+daemonmode=$1
+shift
+
+<<<<<<< HEAD
 DEFAULT_LIBEXEC_DIR="$bin"/../libexec
 HADOOP_LIBEXEC_DIR=${HADOOP_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
 . $HADOOP_LIBEXEC_DIR/hadoop-config.sh
+=======
+if [[ -z "${HADOOP_HDFS_HOME}" ]]; then
+  hdfsscript="${HADOOP_PREFIX}/bin/hdfs"
+else
+  hdfsscript="${HADOOP_HDFS_HOME}/bin/hdfs"
+fi
 
-exec "$bin/slaves.sh" --config $HADOOP_CONF_DIR cd "$HADOOP_PREFIX" \; "$bin/hadoop-daemon.sh" --config $HADOOP_CONF_DIR "$@"
+hadoop_error "WARNING: Use of this script to ${daemonmode} HDFS daemons is deprecated."
+hadoop_error "WARNING: Attempting to execute replacement \"hdfs --slaves --daemon ${daemonmode}\" instead."
+
+#
+# Original input was usually:
+#  hadoop-daemons.sh (shell options) (start|stop) (datanode|...) (daemon options)
+# we're going to turn this into
+#  hdfs --slaves --daemon (start|stop) (rest of options)
+#
+for (( i = 0; i < ${#HADOOP_USER_PARAMS[@]}; i++ ))
+do
+  if [[ "${HADOOP_USER_PARAMS[$i]}" =~ ^start$ ]] ||
+     [[ "${HADOOP_USER_PARAMS[$i]}" =~ ^stop$ ]] ||
+     [[ "${HADOOP_USER_PARAMS[$i]}" =~ ^status$ ]]; then
+    unset HADOOP_USER_PARAMS[$i]
+  fi
+done
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+
+${hdfsscript} --slaves --daemon "${daemonmode}" "${HADOOP_USER_PARAMS[@]}"

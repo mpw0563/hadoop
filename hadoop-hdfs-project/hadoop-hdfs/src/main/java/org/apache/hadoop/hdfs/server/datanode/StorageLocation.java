@@ -54,7 +54,11 @@ public class StorageLocation {
       // drop any (illegal) authority in the URI for backwards compatibility
       this.file = new File(uri.getPath());
     } else {
+<<<<<<< HEAD
       throw new IllegalArgumentException("Unsupported URI schema in " + uri);
+=======
+      throw new IllegalArgumentException("Unsupported URI ecPolicy in " + uri);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 

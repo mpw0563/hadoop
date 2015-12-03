@@ -743,7 +743,11 @@ public class TestEncryptionZones {
             version, new byte[suite.getAlgorithmBlockSize()],
             new byte[suite.getAlgorithmBlockSize()],
             "fakeKey", "fakeVersion"),
+<<<<<<< HEAD
             (byte) 0))
+=======
+            (byte) 0, null))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .when(mcp)
         .create(anyString(), (FsPermission) anyObject(), anyString(),
             (EnumSetWritable<CreateFlag>) anyObject(), anyBoolean(),

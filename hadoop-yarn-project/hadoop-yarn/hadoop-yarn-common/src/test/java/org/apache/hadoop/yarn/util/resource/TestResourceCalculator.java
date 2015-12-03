@@ -41,6 +41,38 @@ public class TestResourceCalculator {
   public TestResourceCalculator(ResourceCalculator rs) {
     this.resourceCalculator = rs;
   }
+<<<<<<< HEAD
+=======
+  
+  @Test(timeout = 10000)
+  public void testFitsIn() {
+    Resource cluster = Resource.newInstance(1024, 1);
+
+    if (resourceCalculator instanceof DefaultResourceCalculator) {
+      Assert.assertTrue(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(2, 1)));
+      Assert.assertTrue(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(2, 2)));
+      Assert.assertTrue(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(1, 2)));
+      Assert.assertTrue(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(1, 1)));
+      Assert.assertFalse(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(2, 1), Resource.newInstance(1, 2)));
+    } else if (resourceCalculator instanceof DominantResourceCalculator) {
+      Assert.assertFalse(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(2, 1)));
+      Assert.assertTrue(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(2, 2)));
+      Assert.assertTrue(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(1, 2)));
+      Assert.assertFalse(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(1, 2), Resource.newInstance(1, 1)));
+      Assert.assertFalse(resourceCalculator.fitsIn(cluster,
+          Resource.newInstance(2, 1), Resource.newInstance(1, 2)));
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @Test(timeout = 10000)
   public void testResourceCalculatorCompareMethod() {
@@ -92,7 +124,10 @@ public class TestResourceCalculator {
 
   }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void assertResourcesOperations(Resource clusterResource,
       Resource lhs, Resource rhs, boolean lessThan, boolean lessThanOrEqual,
       boolean greaterThan, boolean greaterThanOrEqual, Resource max,

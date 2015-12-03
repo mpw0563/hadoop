@@ -83,7 +83,11 @@ public class TestResourceRetention {
     ConcurrentMap<LocalResourceRequest,LocalizedResource> trackerResources =
       new ConcurrentHashMap<LocalResourceRequest,LocalizedResource>();
     LocalResourcesTracker ret = spy(new LocalResourcesTrackerImpl(user, null,
+<<<<<<< HEAD
       null, trackerResources, false, conf, new NMNullStateStoreService()));
+=======
+      null, trackerResources, false, conf, new NMNullStateStoreService(),null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (int i = 0; i < nRsrcs; ++i) {
       final LocalResourceRequest req = new LocalResourceRequest(
           new Path("file:///" + user + "/rsrc" + i), timestamp + i * tsstep,

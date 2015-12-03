@@ -36,7 +36,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import javax.crypto.SecretKey;
 
+<<<<<<< HEAD
 import org.apache.commons.lang.StringUtils;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -71,6 +74,12 @@ import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.RMServerUtils;
 import org.apache.hadoop.yarn.server.resourcemanager.amlauncher.AMLauncherEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.amlauncher.AMLauncherEventType;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.blacklist.BlacklistManager;
+import org.apache.hadoop.yarn.server.resourcemanager.blacklist.BlacklistUpdates;
+import org.apache.hadoop.yarn.server.resourcemanager.blacklist.DisabledBlacklistManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.records.ApplicationAttemptStateData;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.records.ApplicationStateData;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore;
@@ -80,17 +89,27 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppEventType;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppFailedAttemptEvent;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppFinishedAttemptEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptContainerAllocatedEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptContainerFinishedEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptLaunchFailedEvent;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppState;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptContainerFinishedEvent;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptRegistrationEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptStatusupdateEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptUnregistrationEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerImpl;
 import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNodeFinishedContainersPulledByAMEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Allocation;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerNode;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.YarnScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.AppAttemptAddedSchedulerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.AppAttemptRemovedSchedulerEvent;
@@ -173,6 +192,11 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
   private final boolean maybeLastAttempt;
   private static final ExpiredTransition EXPIRED_TRANSITION =
       new ExpiredTransition();
+<<<<<<< HEAD
+=======
+  private static final AttemptFailedTransition FAILED_TRANSITION =
+      new AttemptFailedTransition();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private RMAppAttemptEvent eventCausingFinalSaving;
   private RMAppAttemptState targetedFinalState;
@@ -182,6 +206,10 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
   
   private RMAppAttemptMetrics attemptMetrics = null;
   private ResourceRequest amReq = null;
+<<<<<<< HEAD
+=======
+  private BlacklistManager blacklistedNodesForAM = null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private static final StateMachineFactory<RMAppAttemptImpl,
                                            RMAppAttemptState,
@@ -200,6 +228,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           new FinalSavingTransition(new BaseFinalTransition(
             RMAppAttemptState.KILLED), RMAppAttemptState.KILLED))
       .addTransition(RMAppAttemptState.NEW, RMAppAttemptState.FINAL_SAVING,
+<<<<<<< HEAD
+=======
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+              RMAppAttemptState.FAILED))
+      .addTransition(RMAppAttemptState.NEW, RMAppAttemptState.FINAL_SAVING,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           RMAppAttemptEventType.REGISTERED,
           new FinalSavingTransition(
             new UnexpectedAMRegisteredTransition(), RMAppAttemptState.FAILED))
@@ -219,6 +254,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           new FinalSavingTransition(new BaseFinalTransition(
             RMAppAttemptState.KILLED), RMAppAttemptState.KILLED))
       .addTransition(RMAppAttemptState.SUBMITTED, RMAppAttemptState.FINAL_SAVING,
+<<<<<<< HEAD
+=======
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+              RMAppAttemptState.FAILED))
+      .addTransition(RMAppAttemptState.SUBMITTED, RMAppAttemptState.FINAL_SAVING,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           RMAppAttemptEventType.REGISTERED,
           new FinalSavingTransition(
             new UnexpectedAMRegisteredTransition(), RMAppAttemptState.FAILED))
@@ -233,6 +275,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           RMAppAttemptEventType.KILL,
           new FinalSavingTransition(new BaseFinalTransition(
             RMAppAttemptState.KILLED), RMAppAttemptState.KILLED))
+<<<<<<< HEAD
+=======
+      .addTransition(RMAppAttemptState.SCHEDULED, RMAppAttemptState.FINAL_SAVING,
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+              RMAppAttemptState.FAILED))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       .addTransition(RMAppAttemptState.SCHEDULED,
           RMAppAttemptState.FINAL_SAVING,
           RMAppAttemptEventType.CONTAINER_FINISHED,
@@ -257,6 +306,14 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           new FinalSavingTransition(
             new AMContainerCrashedBeforeRunningTransition(), 
             RMAppAttemptState.FAILED))
+<<<<<<< HEAD
+=======
+      .addTransition(RMAppAttemptState.ALLOCATED_SAVING,
+          RMAppAttemptState.FINAL_SAVING,
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+              RMAppAttemptState.FAILED))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
        // Transitions from LAUNCHED_UNMANAGED_SAVING State
       .addTransition(RMAppAttemptState.LAUNCHED_UNMANAGED_SAVING, 
@@ -275,6 +332,14 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           RMAppAttemptEventType.KILL,
           new FinalSavingTransition(new BaseFinalTransition(
             RMAppAttemptState.KILLED), RMAppAttemptState.KILLED))
+<<<<<<< HEAD
+=======
+      .addTransition(RMAppAttemptState.LAUNCHED_UNMANAGED_SAVING,
+          RMAppAttemptState.FINAL_SAVING,
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+              RMAppAttemptState.FAILED))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
        // Transitions from ALLOCATED State
       .addTransition(RMAppAttemptState.ALLOCATED, RMAppAttemptState.LAUNCHED,
@@ -289,6 +354,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
             new KillAllocatedAMTransition(), RMAppAttemptState.KILLED))
           
       .addTransition(RMAppAttemptState.ALLOCATED, RMAppAttemptState.FINAL_SAVING,
+<<<<<<< HEAD
+=======
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+              RMAppAttemptState.FAILED))
+      .addTransition(RMAppAttemptState.ALLOCATED, RMAppAttemptState.FINAL_SAVING,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           RMAppAttemptEventType.CONTAINER_FINISHED,
           new FinalSavingTransition(
             new AMContainerCrashedBeforeRunningTransition(), RMAppAttemptState.FAILED))
@@ -311,6 +383,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           RMAppAttemptEventType.KILL,
           new FinalSavingTransition(new FinalTransition(
             RMAppAttemptState.KILLED), RMAppAttemptState.KILLED))
+<<<<<<< HEAD
+=======
+      .addTransition(RMAppAttemptState.LAUNCHED, RMAppAttemptState.FINAL_SAVING,
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+              RMAppAttemptState.FAILED))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
        // Transitions from RUNNING State
       .addTransition(RMAppAttemptState.RUNNING,
@@ -337,6 +416,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           RMAppAttemptEventType.KILL,
           new FinalSavingTransition(new FinalTransition(
             RMAppAttemptState.KILLED), RMAppAttemptState.KILLED))
+<<<<<<< HEAD
+=======
+      .addTransition(RMAppAttemptState.RUNNING, RMAppAttemptState.FINAL_SAVING,
+          RMAppAttemptEventType.FAIL,
+          new FinalSavingTransition(FAILED_TRANSITION,
+            RMAppAttemptState.FAILED))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
        // Transitions from FINAL_SAVING State
       .addTransition(RMAppAttemptState.FINAL_SAVING,
@@ -360,7 +446,12 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
             // Saving in scheduler
               RMAppAttemptEventType.CONTAINER_ALLOCATED,
               RMAppAttemptEventType.ATTEMPT_NEW_SAVED,
+<<<<<<< HEAD
               RMAppAttemptEventType.KILL))
+=======
+              RMAppAttemptEventType.KILL,
+              RMAppAttemptEventType.FAIL))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Transitions from FAILED State
       // For work-preserving AM restart, failed attempt are still capturing
@@ -375,6 +466,10 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           EnumSet.of(
               RMAppAttemptEventType.EXPIRE,
               RMAppAttemptEventType.KILL,
+<<<<<<< HEAD
+=======
+              RMAppAttemptEventType.FAIL,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               RMAppAttemptEventType.UNREGISTERED,
               RMAppAttemptEventType.STATUS_UPDATE,
               RMAppAttemptEventType.CONTAINER_ALLOCATED))
@@ -394,7 +489,12 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
               RMAppAttemptEventType.CONTAINER_ALLOCATED,
             // ignore Kill as we have already saved the final Finished state in
             // state store.
+<<<<<<< HEAD
               RMAppAttemptEventType.KILL))
+=======
+              RMAppAttemptEventType.KILL,
+              RMAppAttemptEventType.FAIL))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Transitions from FINISHED State
       .addTransition(
@@ -404,7 +504,12 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
               RMAppAttemptEventType.EXPIRE,
               RMAppAttemptEventType.UNREGISTERED,
               RMAppAttemptEventType.CONTAINER_ALLOCATED,
+<<<<<<< HEAD
               RMAppAttemptEventType.KILL))
+=======
+              RMAppAttemptEventType.KILL,
+              RMAppAttemptEventType.FAIL))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       .addTransition(RMAppAttemptState.FINISHED, 
           RMAppAttemptState.FINISHED, 
           RMAppAttemptEventType.CONTAINER_FINISHED, 
@@ -422,6 +527,10 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
               RMAppAttemptEventType.CONTAINER_ALLOCATED,
               RMAppAttemptEventType.UNREGISTERED,
               RMAppAttemptEventType.KILL,
+<<<<<<< HEAD
+=======
+              RMAppAttemptEventType.FAIL,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               RMAppAttemptEventType.STATUS_UPDATE))
       .addTransition(RMAppAttemptState.KILLED, 
           RMAppAttemptState.KILLED, 
@@ -434,6 +543,19 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
       ApplicationMasterService masterService,
       ApplicationSubmissionContext submissionContext,
       Configuration conf, boolean maybeLastAttempt, ResourceRequest amReq) {
+<<<<<<< HEAD
+=======
+    this(appAttemptId, rmContext, scheduler, masterService, submissionContext,
+        conf, maybeLastAttempt, amReq, new DisabledBlacklistManager());
+  }
+
+  public RMAppAttemptImpl(ApplicationAttemptId appAttemptId,
+      RMContext rmContext, YarnScheduler scheduler,
+      ApplicationMasterService masterService,
+      ApplicationSubmissionContext submissionContext,
+      Configuration conf, boolean maybeLastAttempt, ResourceRequest amReq,
+      BlacklistManager amBlacklist) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.conf = conf;
     this.applicationAttemptId = appAttemptId;
     this.rmContext = rmContext;
@@ -454,6 +576,10 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
         new RMAppAttemptMetrics(applicationAttemptId, rmContext);
     
     this.amReq = amReq;
+<<<<<<< HEAD
+=======
+    this.blacklistedNodesForAM = amBlacklist;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -939,12 +1065,34 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
         appAttempt.amReq.setPriority(AM_CONTAINER_PRIORITY);
         appAttempt.amReq.setResourceName(ResourceRequest.ANY);
         appAttempt.amReq.setRelaxLocality(true);
+<<<<<<< HEAD
         
         // AM resource has been checked when submission
         Allocation amContainerAllocation =
             appAttempt.scheduler.allocate(appAttempt.applicationAttemptId,
                 Collections.singletonList(appAttempt.amReq),
                 EMPTY_CONTAINER_RELEASE_LIST, null, null);
+=======
+
+        appAttempt.getAMBlacklist().refreshNodeHostCount(
+            appAttempt.scheduler.getNumClusterNodes());
+
+        BlacklistUpdates amBlacklist = appAttempt.getAMBlacklist()
+            .getBlacklistUpdates();
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Using blacklist for AM: additions(" +
+              amBlacklist.getAdditions() + ") and removals(" +
+              amBlacklist.getRemovals() + ")");
+        }
+        // AM resource has been checked when submission
+        Allocation amContainerAllocation =
+            appAttempt.scheduler.allocate(
+                appAttempt.applicationAttemptId,
+                Collections.singletonList(appAttempt.amReq),
+                EMPTY_CONTAINER_RELEASE_LIST,
+                amBlacklist.getAdditions(),
+                amBlacklist.getRemovals(), null, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         if (amContainerAllocation != null
             && amContainerAllocation.getContainers() != null) {
           assert (amContainerAllocation.getContainers().size() == 0);
@@ -968,7 +1116,11 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
       Allocation amContainerAllocation =
           appAttempt.scheduler.allocate(appAttempt.applicationAttemptId,
             EMPTY_CONTAINER_REQUEST_LIST, EMPTY_CONTAINER_RELEASE_LIST, null,
+<<<<<<< HEAD
             null);
+=======
+            null, null, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // There must be at least one container allocated, because a
       // CONTAINER_ALLOCATED is emitted after an RMContainer is constructed,
       // and is put in SchedulerApplication#newlyAllocatedContainers.
@@ -1015,8 +1167,14 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           LOG.warn("Interrupted while waiting to resend the"
               + " ContainerAllocated Event.");
         }
+<<<<<<< HEAD
         appAttempt.eventHandler.handle(new RMAppAttemptContainerAllocatedEvent(
           appAttempt.applicationAttemptId));
+=======
+        appAttempt.eventHandler.handle(
+            new RMAppAttemptEvent(appAttempt.applicationAttemptId,
+                RMAppAttemptEventType.CONTAINER_ALLOCATED));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }.start();
   }
@@ -1035,6 +1193,12 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     @Override
     public RMAppAttemptState transition(RMAppAttemptImpl appAttempt,
         RMAppAttemptEvent event) {
+<<<<<<< HEAD
+=======
+      RMApp rmApp = appAttempt.rmContext.getRMApps().get(
+          appAttempt.getAppAttemptId().getApplicationId());
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       /*
        * If last attempt recovered final state is null .. it means attempt was
        * started but AM container may or may not have started / finished.
@@ -1042,8 +1206,11 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
        */
       if (appAttempt.recoveredFinalState != null) {
         appAttempt.progress = 1.0f;
+<<<<<<< HEAD
         RMApp rmApp =appAttempt.rmContext.getRMApps().get(
             appAttempt.getAppAttemptId().getApplicationId());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
         if (appAttempt.submissionContext
             .getKeepContainersAcrossApplicationAttempts()
@@ -1063,7 +1230,28 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
               appAttempt, event);
         }
         return appAttempt.recoveredFinalState;
+<<<<<<< HEAD
       } else {
+=======
+      } else if (RMAppImpl.isAppInFinalState(rmApp))  {
+        // Somehow attempt final state was not saved but app final state was saved.
+        // Skip adding the attempt into scheduler
+        RMAppState appState = ((RMAppImpl) rmApp).getRecoveredFinalState();
+        LOG.warn(rmApp.getApplicationId() + " final state (" + appState
+            + ") was recorded, but " + appAttempt.applicationAttemptId
+            + " final state (" + appAttempt.recoveredFinalState
+            + ") was not recorded.");
+        switch (appState) {
+        case FINISHED:
+          return RMAppAttemptState.FINISHED;
+        case FAILED:
+          return RMAppAttemptState.FAILED;
+        case KILLED:
+          return RMAppAttemptState.KILLED;
+        }
+        return RMAppAttemptState.FAILED;
+      } else{
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         // Add the current attempt to the scheduler.
         if (appAttempt.rmContext.isWorkPreservingRecoveryEnabled()) {
           // Need to register an app attempt before AM can register
@@ -1097,6 +1285,10 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     }
   }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void rememberTargetTransitions(RMAppAttemptEvent event,
       Object transitionToDo, RMAppAttemptState targetFinalState) {
     transitionTodo = transitionToDo;
@@ -1125,9 +1317,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     int exitStatus = ContainerExitStatus.INVALID;
     switch (event.getType()) {
     case LAUNCH_FAILED:
+<<<<<<< HEAD
       RMAppAttemptLaunchFailedEvent launchFaileEvent =
           (RMAppAttemptLaunchFailedEvent) event;
       diags = launchFaileEvent.getMessage();
+=======
+      diags = event.getDiagnosticMsg();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       break;
     case REGISTERED:
       diags = getUnexpectedAMRegisteredDiagnostics();
@@ -1135,7 +1331,11 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     case UNREGISTERED:
       RMAppAttemptUnregistrationEvent unregisterEvent =
           (RMAppAttemptUnregistrationEvent) event;
+<<<<<<< HEAD
       diags = unregisterEvent.getDiagnostics();
+=======
+      diags = unregisterEvent.getDiagnosticMsg();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // reset finalTrackingUrl to url sent by am
       finalTrackingUrl = sanitizeTrackingUrl(unregisterEvent.getFinalTrackingUrl());
       finalStatus = unregisterEvent.getFinalApplicationStatus();
@@ -1148,6 +1348,12 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
       break;
     case KILL:
       break;
+<<<<<<< HEAD
+=======
+    case FAIL:
+      diags = event.getDiagnosticMsg();
+      break;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     case EXPIRE:
       diags = getAMExpiredDiagnostics(event);
       break;
@@ -1234,17 +1440,30 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
       switch (finalAttemptState) {
         case FINISHED:
         {
+<<<<<<< HEAD
           appEvent = new RMAppFinishedAttemptEvent(applicationId,
+=======
+          appEvent =
+              new RMAppEvent(applicationId, RMAppEventType.ATTEMPT_FINISHED,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               appAttempt.getDiagnostics());
         }
         break;
         case KILLED:
         {
           appAttempt.invalidateAMHostAndPort();
+<<<<<<< HEAD
           appEvent =
               new RMAppFailedAttemptEvent(applicationId,
                   RMAppEventType.ATTEMPT_KILLED,
                   "Application killed by user.", false);
+=======
+          // Forward diagnostics received in attempt kill event.
+          appEvent =
+              new RMAppFailedAttemptEvent(applicationId,
+                  RMAppEventType.ATTEMPT_KILLED,
+                  event.getDiagnosticMsg(), false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         break;
         case FAILED:
@@ -1294,6 +1513,24 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     }
   }
 
+<<<<<<< HEAD
+=======
+  private static class AttemptFailedTransition extends BaseFinalTransition {
+
+    public AttemptFailedTransition() {
+      super(RMAppAttemptState.FAILED);
+    }
+
+    @Override
+    public void transition(RMAppAttemptImpl appAttempt, RMAppAttemptEvent event) {
+      if (event.getDiagnosticMsg() != null) {
+        appAttempt.diagnostics.append(event.getDiagnosticMsg());
+      }
+      super.transition(appAttempt, event);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static class AMLaunchedTransition extends BaseTransition {
     @Override
     public void transition(RMAppAttemptImpl appAttempt,
@@ -1309,9 +1546,17 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
 
       // register the ClientTokenMasterKey after it is saved in the store,
       // otherwise client may hold an invalid ClientToken after RM restarts.
+<<<<<<< HEAD
       appAttempt.rmContext.getClientToAMTokenSecretManager()
       .registerApplication(appAttempt.getAppAttemptId(),
         appAttempt.getClientTokenMasterKey());
+=======
+      if (UserGroupInformation.isSecurityEnabled()) {
+        appAttempt.rmContext.getClientToAMTokenSecretManager()
+            .registerApplication(appAttempt.getAppAttemptId(),
+            appAttempt.getClientTokenMasterKey());
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -1329,7 +1574,16 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     }
   }
 
+<<<<<<< HEAD
   private static final class UnmanagedAMAttemptSavedTransition 
+=======
+  private boolean shouldCountTowardsNodeBlacklisting(int exitStatus) {
+    return !(exitStatus == ContainerExitStatus.SUCCESS
+        || exitStatus == ContainerExitStatus.PREEMPTED);
+  }
+
+  private static final class UnmanagedAMAttemptSavedTransition
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                                                 extends AMLaunchedTransition {
     @Override
     public void transition(RMAppAttemptImpl appAttempt,
@@ -1354,9 +1608,13 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
         RMAppAttemptEvent event) {
 
       // Use diagnostic from launcher
+<<<<<<< HEAD
       RMAppAttemptLaunchFailedEvent launchFaileEvent
         = (RMAppAttemptLaunchFailedEvent) event;
       appAttempt.diagnostics.append(launchFaileEvent.getMessage());
+=======
+      appAttempt.diagnostics.append(event.getDiagnosticMsg());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Tell the app, scheduler
       super.transition(appAttempt, event);
@@ -1611,7 +1869,11 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     progress = 1.0f;
     RMAppAttemptUnregistrationEvent unregisterEvent =
         (RMAppAttemptUnregistrationEvent) event;
+<<<<<<< HEAD
     diagnostics.append(unregisterEvent.getDiagnostics());
+=======
+    diagnostics.append(unregisterEvent.getDiagnosticMsg());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     originalTrackingUrl = sanitizeTrackingUrl(unregisterEvent.getFinalTrackingUrl());
     finalStatus = unregisterEvent.getFinalApplicationStatus();
   }
@@ -1658,6 +1920,19 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     }
   }
 
+<<<<<<< HEAD
+=======
+  // Ack NM to remove finished AM container, not waiting for
+  // new appattempt to pull am container complete msg, new  appattempt
+  // may launch fail and leaves too many completed container in NM
+  private void sendFinishedAMContainerToNM(NodeId nodeId,
+      ContainerId containerId) {
+    List<ContainerId> containerIdList = new ArrayList<ContainerId>();
+    containerIdList.add(containerId);
+    eventHandler.handle(new RMNodeFinishedContainersPulledByAMEvent(
+        nodeId, containerIdList));
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // Ack NM to remove finished containers from context.
   private void sendFinishedContainersToNM() {
@@ -1682,16 +1957,55 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
   private void sendAMContainerToNM(RMAppAttemptImpl appAttempt,
       RMAppAttemptContainerFinishedEvent containerFinishedEvent) {
     NodeId nodeId = containerFinishedEvent.getNodeId();
+<<<<<<< HEAD
+=======
+    if (containerFinishedEvent.getContainerStatus() != null) {
+      if (shouldCountTowardsNodeBlacklisting(containerFinishedEvent
+          .getContainerStatus().getExitStatus())) {
+        appAttempt.addAMNodeToBlackList(containerFinishedEvent.getNodeId());
+      }
+    } else {
+      LOG.warn("No ContainerStatus in containerFinishedEvent");
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     finishedContainersSentToAM.putIfAbsent(nodeId,
       new ArrayList<ContainerStatus>());
     appAttempt.finishedContainersSentToAM.get(nodeId).add(
       containerFinishedEvent.getContainerStatus());
+<<<<<<< HEAD
     if (!appAttempt.getSubmissionContext()
       .getKeepContainersAcrossApplicationAttempts()) {
       appAttempt.sendFinishedContainersToNM();
     }
   }
 
+=======
+
+    if (!appAttempt.getSubmissionContext()
+      .getKeepContainersAcrossApplicationAttempts()) {
+      appAttempt.sendFinishedContainersToNM();
+    } else {
+      appAttempt.sendFinishedAMContainerToNM(nodeId,
+          containerFinishedEvent.getContainerStatus().getContainerId());
+    }
+  }
+
+  private void addAMNodeToBlackList(NodeId nodeId) {
+    SchedulerNode schedulerNode = scheduler.getSchedulerNode(nodeId);
+    if (schedulerNode != null) {
+      blacklistedNodesForAM.addNode(schedulerNode.getNodeName());
+    } else {
+      LOG.info(nodeId + " is not added to AM blacklist for "
+          + applicationAttemptId + ", because it has been removed");
+    }
+  }
+
+  @Override
+  public BlacklistManager getAMBlacklist() {
+    return blacklistedNodesForAM;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static void addJustFinishedContainer(RMAppAttemptImpl appAttempt,
       RMAppAttemptContainerFinishedEvent containerFinishedEvent) {
     appAttempt.justFinishedContainers.putIfAbsent(containerFinishedEvent

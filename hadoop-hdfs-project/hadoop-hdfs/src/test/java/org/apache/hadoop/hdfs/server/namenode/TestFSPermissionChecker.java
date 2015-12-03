@@ -441,7 +441,11 @@ public class TestFSPermissionChecker {
       FsPermission.createImmutable(perm));
     INodeFile inodeFile = new INodeFile(HdfsConstants.GRANDFATHER_INODE_ID,
       name.getBytes("UTF-8"), permStatus, 0L, 0L, null, REPLICATION,
+<<<<<<< HEAD
       PREFERRED_BLOCK_SIZE, (byte)0);
+=======
+      PREFERRED_BLOCK_SIZE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     parent.addChild(inodeFile);
     return inodeFile;
   }

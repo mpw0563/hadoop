@@ -69,6 +69,7 @@ abstract public class TestSymlinkLocalFS extends SymlinkBaseTest {
   }
 
   @Override
+<<<<<<< HEAD
   protected boolean emulatingSymlinksOnWindows() {
     // Java 6 on Windows has very poor symlink support. Specifically
     // Specifically File#length and File#renameTo do not work as expected.
@@ -79,6 +80,8 @@ abstract public class TestSymlinkLocalFS extends SymlinkBaseTest {
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testCreateDanglingLink() throws IOException {
     // Dangling symlinks are not supported on Windows local file system.
     assumeTrue(!Path.WINDOWS);
@@ -186,7 +189,10 @@ abstract public class TestSymlinkLocalFS extends SymlinkBaseTest {
    * file scheme (eg file://host/tmp/test).
    */  
   public void testGetLinkStatusPartQualTarget() throws IOException {
+<<<<<<< HEAD
     assumeTrue(!emulatingSymlinksOnWindows());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path fileAbs  = new Path(testBaseDir1()+"/file");
     Path fileQual = new Path(testURI().toString(), fileAbs);
     Path dir      = new Path(testBaseDir1());

@@ -185,7 +185,10 @@ class ChRootedFileSystem extends FilterFileSystem {
   }
   
   @Override
+<<<<<<< HEAD
   @Deprecated
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public FSDataOutputStream createNonRecursive(Path f, FsPermission permission,
       EnumSet<CreateFlag> flags, int bufferSize, short replication, long blockSize,
       Progressable progress) throws IOException {

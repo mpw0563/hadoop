@@ -58,6 +58,7 @@
 </property>
 
 <property>
+<<<<<<< HEAD
   <name>mapreduce.local.clientfactory.class.name</name>
   <value>org.apache.hadoop.mapred.LocalClientFactory</value>
   <description>This the client factory that is responsible for 
@@ -65,6 +66,8 @@
 </property>
 
 <property>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>mapreduce.job.maps</name>
   <value>2</value>
   <description>The default number of map tasks per job.
@@ -98,6 +101,7 @@
   </description>
 </property>
 
+<<<<<<< HEAD
 <property>
   <name>mapreduce.job.reducer.preempt.delay.sec</name>
   <value>0</value>
@@ -109,6 +113,30 @@
 </property>
 
 <property>
+=======
+  <property>
+    <name>mapreduce.job.reducer.preempt.delay.sec</name>
+    <value>0</value>
+    <description>The threshold (in seconds) after which an unsatisfied
+      mapper request triggers reducer preemption when there is no anticipated
+      headroom. If set to 0 or a negative value, the reducer is preempted as
+      soon as lack of headroom is detected. Default is 0.
+    </description>
+  </property>
+
+  <property>
+    <name>mapreduce.job.reducer.unconditional-preempt.delay.sec</name>
+    <value>300</value>
+    <description>The threshold (in seconds) after which an unsatisfied
+      mapper request triggers a forced reducer preemption irrespective of the
+      anticipated headroom. By default, it is set to 5 mins. Setting it to 0
+      leads to immediate reducer preemption. Setting to -1 disables this
+      preemption altogether.
+    </description>
+  </property>
+
+  <property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <name>mapreduce.job.max.split.locations</name>
     <value>10</value>
     <description>The max number of block locations to store for each split for 
@@ -224,9 +252,17 @@
 
 <property>
   <name>mapreduce.map.memory.mb</name>
+<<<<<<< HEAD
   <value>1024</value>
   <description>The amount of memory to request from the scheduler for each
   map task.
+=======
+  <value>-1</value>
+  <description>The amount of memory to request from the scheduler for each
+    map task. If this is not specified or is non-positive, it is inferred from
+    mapreduce.map.java.opts and mapreduce.job.heap.memory-mb.ratio.
+    If java-opts are also not specified, we set it to 1024.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 
@@ -240,9 +276,17 @@
 
 <property>
   <name>mapreduce.reduce.memory.mb</name>
+<<<<<<< HEAD
   <value>1024</value>
   <description>The amount of memory to request from the scheduler for each
   reduce task.
+=======
+  <value>-1</value>
+  <description>The amount of memory to request from the scheduler for each
+    reduce task. If this is not specified or is non-positive, it is inferred
+    from mapreduce.reduce.java.opts and mapreduce.job.heap.memory-mb.ratio.
+    If java-opts are also not specified, we set it to 1024.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 
@@ -256,7 +300,11 @@
 
 <property>
   <name>mapred.child.java.opts</name>
+<<<<<<< HEAD
   <value>-Xmx200m</value>
+=======
+  <value></value>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Java opts for the task processes.
   The following symbol, if present, will be interpolated: @taskid@ is replaced 
   by current TaskID. Any other occurrences of '@' will go unchanged.
@@ -267,7 +315,14 @@
   Usage of -Djava.library.path can cause programs to no longer function if
   hadoop native libraries are used. These values should instead be set as part 
   of LD_LIBRARY_PATH in the map / reduce JVM env using the mapreduce.map.env and 
+<<<<<<< HEAD
   mapreduce.reduce.env config settings. 
+=======
+  mapreduce.reduce.env config settings.
+
+  If -Xmx is not set, it is inferred from mapreduce.{map|reduce}.memory.mb and
+  mapreduce.job.heap.memory-mb.ratio.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 
@@ -276,7 +331,13 @@
   <name>mapreduce.map.java.opts</name>
   <value></value>
   <description>Java opts only for the child processes that are maps. If set,
+<<<<<<< HEAD
   this will be used instead of mapred.child.java.opts.
+=======
+  this will be used instead of mapred.child.java.opts. If -Xmx is not set,
+  it is inferred from mapreduce.map.memory.mb and
+  mapreduce.job.heap.memory-mb.ratio.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 -->
@@ -286,7 +347,13 @@
   <name>mapreduce.reduce.java.opts</name>
   <value></value>
   <description>Java opts only for the child processes that are reduces. If set,
+<<<<<<< HEAD
   this will be used instead of mapred.child.java.opts.
+=======
+  this will be used instead of mapred.child.java.opts. If -Xmx is not set,
+  it is inferred from mapreduce.reduce.memory.mb and
+  mapreduce.job.heap.memory-mb.ratio.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 -->
@@ -771,7 +838,11 @@
 <property>
   <name>mapreduce.job.maxtaskfailures.per.tracker</name>
   <value>3</value>
+<<<<<<< HEAD
   <description>The number of task-failures on a node manager of a given job
+=======
+  <description>The number of task-failures on a node manager of a given job 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                after which new tasks of that job aren't assigned to it. It
                MUST be less than mapreduce.map.maxattempts and
                mapreduce.reduce.maxattempts otherwise the failed task will
@@ -873,6 +944,7 @@
   </property>
   
   <property>
+<<<<<<< HEAD
     <name>mapreduce.map.skip.proc.count.autoincr</name>
     <value>true</value>
     <description> The flag which if set to true, 
@@ -897,6 +969,8 @@
   </property>
   
   <property>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <name>mapreduce.job.skip.outdir</name>
     <value></value>
     <description> If no value is specified here, the skipped records are 
@@ -949,7 +1023,10 @@
     </description>
   </property>
   
+<<<<<<< HEAD
 <!-- Proxy Configuration -->
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 <property>
   <name>mapreduce.job.queuename</name>
   <value>default</value>
@@ -1124,8 +1201,13 @@
 <property>
   <name>mapreduce.job.reduce.shuffle.consumer.plugin.class</name>
   <value>org.apache.hadoop.mapreduce.task.reduce.Shuffle</value>
+<<<<<<< HEAD
   <description>
   Name of the class whose instance will be used
+=======
+  <description> 
+  Name of the class whose instance will be used 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   to send shuffle requests by reducetasks of this job.
   The class must be an instance of org.apache.hadoop.mapred.ShuffleConsumerPlugin.
   </description>
@@ -1344,10 +1426,17 @@
 
 <property>
   <name>mapreduce.fileoutputcommitter.algorithm.version</name>
+<<<<<<< HEAD
   <value>1</value>
   <description>The file output committer algorithm version
   valid algorithm version number: 1 or 2
   default to 1, which is the original algorithm
+=======
+  <value>2</value>
+  <description>The file output committer algorithm version
+  valid algorithm version number: 1 or 2
+  default to 2, which is the original algorithm
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   In algorithm version 1,
 
@@ -1744,6 +1833,20 @@
 </property>
 
 <property>
+<<<<<<< HEAD
+=======
+  <name>mapreduce.job.heap.memory-mb.ratio</name>
+  <value>0.8</value>
+  <description>The ratio of heap-size to container-size. If no -Xmx is
+    specified, it is calculated as
+    (mapreduce.{map|reduce}.memory.mb * mapreduce.heap.memory-mb.ratio).
+    If -Xmx is specified but not mapreduce.{map|reduce}.memory.mb, it is
+    calculated as (heapSize / mapreduce.heap.memory-mb.ratio).
+  </description>
+</property>
+
+<property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>yarn.app.mapreduce.am.containerlauncher.threadpool-initial-size</name>
   <value>10</value>
   <description>The initial size of thread pool to launch containers in the
@@ -1770,4 +1873,39 @@
   </description>
 </property>
 
+<<<<<<< HEAD
+=======
+<property>
+  <name>mapreduce.job.encrypted-intermediate-data</name>
+  <value>false</value>
+  <description>Encrypt intermediate MapReduce spill files or not
+  default is false</description>
+</property>
+
+<property>
+  <name>mapreduce.job.encrypted-intermediate-data-key-size-bits</name>
+  <value>128</value>
+  <description>Mapreduce encrypt data key size default is 128</description>
+</property>
+
+<property>
+  <name>mapreduce.job.encrypted-intermediate-data.buffer.kb</name>
+  <value>128</value>
+  <description>Buffer size for intermediate encrypt data in kb
+  default is 128</description>
+</property>
+
+<property>
+  <name>mapreduce.task.local-fs.write-limit.bytes</name>
+  <value>-1</value>
+  <description>Limit on the byte written to the local file system by each task.
+  This limit only applies to writes that go through the Hadoop filesystem APIs
+  within the task process (i.e.: writes that will update the local filesystem's
+  BYTES_WRITTEN counter). It does not cover other writes such as logging,
+  sideband writes from subprocesses (e.g.: streaming jobs), etc.
+  Negative values disable the limit.
+  default is -1</description>
+</property>
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 </configuration>

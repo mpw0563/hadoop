@@ -232,12 +232,23 @@ public class TestClusterId {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintStream stdErr = new PrintStream(baos);
     System.setErr(stdErr);
+<<<<<<< HEAD
 
     NameNode.createNameNode(argv, config);
 
     // Check if usage is printed
     assertTrue(baos.toString("UTF-8").contains("Usage: hdfs namenode"));
     System.setErr(origErr);
+=======
+    try {
+      NameNode.createNameNode(argv, config);
+
+      // Check if usage is printed
+      assertTrue(baos.toString("UTF-8").contains("Usage: hdfs namenode"));
+    } finally {
+      System.setErr(origErr);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // check if the version file does not exists.
     File version = new File(hdfsDir, "current/VERSION");
@@ -258,12 +269,23 @@ public class TestClusterId {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintStream stdErr = new PrintStream(baos);
     System.setErr(stdErr);
+<<<<<<< HEAD
 
     NameNode.createNameNode(argv, config);
 
     // Check if usage is printed
     assertTrue(baos.toString("UTF-8").contains("Usage: hdfs namenode"));
     System.setErr(origErr);
+=======
+    try {
+      NameNode.createNameNode(argv, config);
+
+      // Check if usage is printed
+      assertTrue(baos.toString("UTF-8").contains("Usage: hdfs namenode"));
+    } finally {
+      System.setErr(origErr);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // check if the version file does not exists.
     File version = new File(hdfsDir, "current/VERSION");
@@ -285,12 +307,23 @@ public class TestClusterId {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintStream stdErr = new PrintStream(baos);
     System.setErr(stdErr);
+<<<<<<< HEAD
 
     NameNode.createNameNode(argv, config);
 
     // Check if usage is printed
     assertTrue(baos.toString("UTF-8").contains("Usage: hdfs namenode"));
     System.setErr(origErr);
+=======
+    try {
+      NameNode.createNameNode(argv, config);
+
+      // Check if usage is printed
+      assertTrue(baos.toString("UTF-8").contains("Usage: hdfs namenode"));
+    } finally {
+      System.setErr(origErr);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // check if the version file does not exists.
     File version = new File(hdfsDir, "current/VERSION");

@@ -43,7 +43,11 @@ public final class NSQuotaExceededException extends QuotaExceededException {
     String msg = super.getMessage();
     if (msg == null) {
       msg = "The NameSpace quota (directories and files)" +
+<<<<<<< HEAD
       (pathName==null?"":(" of directory " + pathName)) +
+=======
+          (pathName==null?"":(" of directory " + pathName)) +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           " is exceeded: quota=" + quota + " file count=" + count;
 
       if (prefix != null) {

@@ -36,8 +36,13 @@ import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
  */
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
+<<<<<<< HEAD
 public interface JournalManager extends Closeable, LogsPurgeable,
                                         FormatConfirmable {
+=======
+public interface JournalManager extends Closeable, FormatConfirmable,
+    LogsPurgeable {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Format the underlying storage, removing any previously
@@ -101,6 +106,7 @@ public interface JournalManager extends Closeable, LogsPurgeable,
    * @param prevStorage the storage info for the previous (unupgraded) state
    * @param targetLayoutVersion the layout version we intend to roll back to
    * @return true if this JM can roll back, false otherwise.
+<<<<<<< HEAD
    */
   boolean canRollBack(StorageInfo storage, StorageInfo prevStorage,
       int targetLayoutVersion) throws IOException;
@@ -125,6 +131,32 @@ public interface JournalManager extends Closeable, LogsPurgeable,
   void discardSegments(long startTxId) throws IOException;
 
   /**
+=======
+   */
+  boolean canRollBack(StorageInfo storage, StorageInfo prevStorage,
+      int targetLayoutVersion) throws IOException;
+  
+  /**
+   * Perform the rollback to the previous FS state. JMs which do not need to
+   * roll back their state should just return without error.
+   */
+  void doRollback() throws IOException;
+
+  /**
+   * Discard the segments whose first txid is >= the given txid.
+   * @param startTxId The given txid should be right at the segment boundary, 
+   * i.e., it should be the first txid of some segment, if segment corresponding
+   * to the txid exists.
+   */
+  void discardSegments(long startTxId) throws IOException;
+
+  /**
+   * @return the CTime of the journal manager.
+   */
+  long getJournalCTime() throws IOException;
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Close the journal manager, freeing any resources it may hold.
    */
   @Override

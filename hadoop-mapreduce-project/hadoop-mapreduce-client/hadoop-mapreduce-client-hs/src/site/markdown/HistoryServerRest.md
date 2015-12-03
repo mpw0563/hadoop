@@ -88,7 +88,11 @@ Response Header:
 
 Response Body:
 
+<<<<<<< HEAD
     {
+=======
+    {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
        "historyInfo" : {
           "startedOn":1353512830963,
           "hadoopVersionBuiltOn" : "Wed Jan 11 21:18:36 UTC 2012",
@@ -1156,7 +1160,11 @@ This is a small snippet of the output as the output if very large. The real outp
        "conf" : {
           "path" : "hdfs://host.domain.com:9000/user/user1/.staging/job_1326381300833_0002/job.xml",
           "property" : [
+<<<<<<< HEAD
              {
+=======
+             {  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                 "value" : "/home/hadoop/hdfs/data",
                 "name" : "dfs.datanode.data.dir"
                 "source" : ["hdfs-site.xml", "job.xml"]
@@ -1931,7 +1939,11 @@ For reduce task attempts you also have the following fields:
 
 HTTP Request:
 
+<<<<<<< HEAD
       GET http://<history server http address:port>/ws/v1/history/mapreduce/jobs/job_1326381300833_2_2/tasks/task_1326381300833_2_2_m_0/attempts/attempt_1326381300833_2_2_m_0_0
+=======
+      GET http://<history server http address:port>/ws/v1/history/mapreduce/jobs/job_1326381300833_2_2/tasks/task_1326381300833_2_2_m_0/attempts/attempt_1326381300833_2_2_m_0_0 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Response Header:
 
@@ -1962,7 +1974,11 @@ Response Body:
 
 HTTP Request:
 
+<<<<<<< HEAD
       GET http://<history server http address:port>/ws/v1/history/mapreduce/jobs/job_1326381300833_2_2/tasks/task_1326381300833_2_2_m_0/attempts/attempt_1326381300833_2_2_m_0_0
+=======
+      GET http://<history server http address:port>/ws/v1/history/mapreduce/jobs/job_1326381300833_2_2/tasks/task_1326381300833_2_2_m_0/attempts/attempt_1326381300833_2_2_m_0_0 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Accept: application/xml
 
 Response Header:

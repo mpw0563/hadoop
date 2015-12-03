@@ -68,6 +68,10 @@
       <item name="HTTP Authentication" href="hadoop-project-dist/hadoop-common/HttpAuthentication.html"/>
       <item name="Hadoop KMS" href="hadoop-kms/index.html"/>
       <item name="Tracing" href="hadoop-project-dist/hadoop-common/Tracing.html"/>
+<<<<<<< HEAD
+=======
+      <item name="Unix Shell Guide" href="hadoop-project-dist/hadoop-common/UnixShellGuide.html"/>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     </menu>
     
     <menu name="HDFS" inherit="top">
@@ -83,7 +87,10 @@
       <item name="Image Viewer" href="hadoop-project-dist/hadoop-hdfs/HdfsImageViewer.html"/>
       <item name="Permissions and HDFS" href="hadoop-project-dist/hadoop-hdfs/HdfsPermissionsGuide.html"/>
       <item name="Quotas and HDFS" href="hadoop-project-dist/hadoop-hdfs/HdfsQuotaAdminGuide.html"/>
+<<<<<<< HEAD
       <item name="HFTP" href="hadoop-project-dist/hadoop-hdfs/Hftp.html"/>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <item name="libhdfs (C API)" href="hadoop-project-dist/hadoop-hdfs/LibHdfs.html"/>
       <item name="WebHDFS (REST API)" href="hadoop-project-dist/hadoop-hdfs/WebHDFS.html"/>
       <item name="HttpFS" href="hadoop-hdfs-httpfs/index.html"/>
@@ -97,6 +104,11 @@
       <item name="Multihoming" href="hadoop-project-dist/hadoop-hdfs/HdfsMultihoming.html"/>
       <item name="Storage Policies" href="hadoop-project-dist/hadoop-hdfs/ArchivalStorage.html"/>
       <item name="Memory Storage Support" href="hadoop-project-dist/hadoop-hdfs/MemoryStorage.html"/>
+<<<<<<< HEAD
+=======
+      <item name="Synthetic Load Generator" href="hadoop-project-dist/hadoop-hdfs/SLGUserGuide.html"/>
+      <item name="Erasure Coding" href="hadoop-project-dist/hadoop-hdfs/HDFSErasureCoding.html"/>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     </menu>
 
     <menu name="MapReduce" inherit="top">
@@ -120,6 +132,10 @@
       <item name="Fair Scheduler" href="hadoop-yarn/hadoop-yarn-site/FairScheduler.html"/>
       <item name="ResourceManager Restart" href="hadoop-yarn/hadoop-yarn-site/ResourceManagerRestart.html"/>
       <item name="ResourceManager HA" href="hadoop-yarn/hadoop-yarn-site/ResourceManagerHA.html"/>
+<<<<<<< HEAD
+=======
+      <item name="Node Labels" href="hadoop-yarn/hadoop-yarn-site/NodeLabel.html"/>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <item name="Web Application Proxy" href="hadoop-yarn/hadoop-yarn-site/WebApplicationProxy.html"/>
       <item name="Timeline Server" href="hadoop-yarn/hadoop-yarn-site/TimelineServer.html"/>
       <item name="Writing YARN Applications" href="hadoop-yarn/hadoop-yarn-site/WritingYarnApplications.html"/>
@@ -153,6 +169,10 @@
     <menu name="Tools" inherit="top">
       <item name="Hadoop Streaming" href="hadoop-streaming/HadoopStreaming.html"/>
       <item name="Hadoop Archives" href="hadoop-archives/HadoopArchives.html"/>
+<<<<<<< HEAD
+=======
+      <item name="Hadoop Archive Logs" href="hadoop-archive-logs/HadoopArchiveLogs.html"/>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <item name="DistCp" href="hadoop-distcp/DistCp.html"/>
       <item name="GridMix" href="hadoop-gridmix/GridMix.html"/>
       <item name="Rumen" href="hadoop-rumen/Rumen.html"/>
@@ -161,7 +181,12 @@
 
     <menu name="Reference" inherit="top">
       <item name="Changelog and Release Notes" href="hadoop-project-dist/hadoop-common/release/index.html"/>
+<<<<<<< HEAD
       <item name="API docs" href="api/index.html"/>
+=======
+      <item name="Java API docs" href="api/index.html"/>
+      <item name="Unix Shell API" href="hadoop-project-dist/hadoop-common/UnixShellAPI.html"/>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <item name="Metrics" href="hadoop-project-dist/hadoop-common/Metrics.html"/>
     </menu>
     

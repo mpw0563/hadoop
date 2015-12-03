@@ -45,6 +45,10 @@ import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.net.NetUtils;
 
+<<<<<<< HEAD
+=======
+import com.google.common.base.Preconditions;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.common.net.InetAddresses;
 
 /**
@@ -288,6 +292,41 @@ public class StringUtils {
     buf.append("sec");
     return buf.toString(); 
   }
+
+  /**
+   *
+   * Given the time in long milliseconds, returns a String in the sortable
+   * format Xhrs, Ymins, Zsec. X, Y, and Z are always two-digit. If the time is
+   * more than 100 hours ,it is displayed as 99hrs, 59mins, 59sec.
+   *
+   * @param timeDiff The time difference to format
+   */
+  public static String formatTimeSortable(long timeDiff) {
+    StringBuilder buf = new StringBuilder();
+    long hours = timeDiff / (60 * 60 * 1000);
+    long rem = (timeDiff % (60 * 60 * 1000));
+    long minutes = rem / (60 * 1000);
+    rem = rem % (60 * 1000);
+    long seconds = rem / 1000;
+
+    // if hours is more than 99 hours, it will be set a max value format
+    if (hours > 99) {
+      hours = 99;
+      minutes = 59;
+      seconds = 59;
+    }
+
+    buf.append(String.format("%02d", hours));
+    buf.append("hrs, ");
+
+    buf.append(String.format("%02d", minutes));
+    buf.append("mins, ");
+
+    buf.append(String.format("%02d", seconds));
+    buf.append("sec");
+    return buf.toString();
+  }
+
   /**
    * Formats time in ms and appends difference (finishTime - startTime) 
    * as returned by formatTimeDiff().
@@ -316,7 +355,18 @@ public class StringUtils {
    * @return the arraylist of the comma seperated string values
    */
   public static String[] getStrings(String str){
-    Collection<String> values = getStringCollection(str);
+    String delim = ",";
+    return getStrings(str, delim);
+  }
+
+  /**
+   * Returns an arraylist of strings.
+   * @param str the string values
+   * @param delim delimiter to separate the values
+   * @return the arraylist of the seperated string values
+   */
+  public static String[] getStrings(String str, String delim){
+    Collection<String> values = getStringCollection(str, delim);
     if(values.size() == 0) {
       return null;
     }

@@ -293,7 +293,11 @@ public class OptionsParser {
                                      DistCpOptions option) {
     if (command.hasOption(DistCpOptionSwitch.BANDWIDTH.getSwitch())) {
       try {
+<<<<<<< HEAD
         Integer mapBandwidth = Integer.parseInt(
+=======
+        Float mapBandwidth = Float.parseFloat(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             getVal(command, DistCpOptionSwitch.BANDWIDTH.getSwitch()).trim());
         if (mapBandwidth <= 0) {
           throw new IllegalArgumentException("Bandwidth specified is not " +

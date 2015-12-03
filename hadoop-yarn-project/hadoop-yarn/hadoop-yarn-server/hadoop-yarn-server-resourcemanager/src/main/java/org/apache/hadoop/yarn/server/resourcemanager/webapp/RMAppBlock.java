@@ -130,7 +130,12 @@ public class RMAppBlock extends AppBlock{
         continue;
       }
       AppAttemptInfo attemptInfo =
+<<<<<<< HEAD
           new AppAttemptInfo(this.rm, rmAppAttempt, rmApp.getUser());
+=======
+          new AppAttemptInfo(this.rm, rmAppAttempt, rmApp.getUser(),
+              WebAppUtils.getHttpSchemePrefix(conf));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       String blacklistedNodesCount = "N/A";
       Set<String> nodes =
           RMAppAttemptBlock.getBlacklistedNodes(rm,

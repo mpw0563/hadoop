@@ -23,6 +23,10 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.hdfs.security.token.delegation.DelegationTokenSecretManager;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.ipc.CallerContext;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.UserGroupInformation;
 
 /**
@@ -36,8 +40,13 @@ public abstract class HdfsAuditLogger implements AuditLogger {
   public void logAuditEvent(boolean succeeded, String userName,
       InetAddress addr, String cmd, String src, String dst,
       FileStatus status) {
+<<<<<<< HEAD
     logAuditEvent(succeeded, userName, addr, cmd, src, dst, status, null,
         null);
+=======
+    logAuditEvent(succeeded, userName, addr, cmd, src, dst, status,
+        null /*callerContext*/, null /*ugi*/, null /*dtSecretManager*/);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -61,6 +70,10 @@ public abstract class HdfsAuditLogger implements AuditLogger {
    */
   public abstract void logAuditEvent(boolean succeeded, String userName,
       InetAddress addr, String cmd, String src, String dst,
+<<<<<<< HEAD
       FileStatus stat, UserGroupInformation ugi,
+=======
+      FileStatus stat, CallerContext callerContext, UserGroupInformation ugi,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       DelegationTokenSecretManager dtSecretManager);
 }

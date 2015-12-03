@@ -73,7 +73,11 @@ public class TestDFSInputStream {
   @Test(timeout=60000)
   public void testSkipWithRemoteBlockReader() throws IOException {
     Configuration conf = new Configuration();
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADER, true);
+=======
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADER, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MiniDFSCluster cluster = new MiniDFSCluster.Builder(conf).build();
     try {
       testSkipInner(cluster);

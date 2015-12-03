@@ -18,11 +18,16 @@
 package org.apache.hadoop.io.serializer;
 
 import org.apache.hadoop.io.LongWritable;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.CommonConfigurationKeys;
+=======
+import org.junit.BeforeClass;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Test;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
+<<<<<<< HEAD
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.Writable;
 
@@ -40,6 +45,59 @@ public class TestSerializationFactory {
     // Test that a null is returned when none can be found.
     assertNull("A null should be returned if there are no serializers found.",
         factory.getSerializer(TestSerializationFactory.class));
+=======
+import org.apache.commons.logging.impl.Log4JLogger;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeys;
+import org.apache.hadoop.io.Writable;
+import org.apache.log4j.Level;
+
+public class TestSerializationFactory {
+
+  static {
+    ((Log4JLogger) SerializationFactory.LOG).getLogger().setLevel(Level.ALL);
+  }
+
+  static Configuration conf;
+  static SerializationFactory factory;
+
+  @BeforeClass
+  public static void setup() throws Exception {
+    conf = new Configuration();
+    factory = new SerializationFactory(conf);
+  }
+
+  @Test
+  public void testSerializationKeyIsEmpty() {
+    Configuration conf = new Configuration();
+    conf.set(CommonConfigurationKeys.IO_SERIALIZATIONS_KEY, "");
+    SerializationFactory factory = new SerializationFactory(conf);
+  }
+
+  @Test
+  public void testSerializationKeyIsInvalid() {
+    Configuration conf = new Configuration();
+    conf.set(CommonConfigurationKeys.IO_SERIALIZATIONS_KEY, "INVALID_KEY_XXX");
+    SerializationFactory factory = new SerializationFactory(conf);
+  }
+
+  @Test
+  public void testGetSerializer() {
+    // Test that a valid serializer class is returned when its present
+    assertNotNull("A valid class must be returned for default Writable SerDe",
+        factory.getSerializer(Writable.class));
+    // Test that a null is returned when none can be found.
+    assertNull("A null should be returned if there are no serializers found.",
+        factory.getSerializer(TestSerializationFactory.class));
+  }
+
+  @Test
+  public void testGetDeserializer() {
+    // Test that a valid serializer class is returned when its present
+    assertNotNull("A valid class must be returned for default Writable SerDe",
+        factory.getDeserializer(Writable.class));
+    // Test that a null is returned when none can be found.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertNull("A null should be returned if there are no deserializers found",
         factory.getDeserializer(TestSerializationFactory.class));
   }
@@ -50,6 +108,10 @@ public class TestSerializationFactory {
     conf.set(CommonConfigurationKeys.IO_SERIALIZATIONS_KEY, " org.apache.hadoop.io.serializer.WritableSerialization ");
     SerializationFactory factory = new SerializationFactory(conf);
     assertNotNull("Valid class must be returned",
+<<<<<<< HEAD
       factory.getSerializer(LongWritable.class));
+=======
+     factory.getSerializer(LongWritable.class));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    }
 }

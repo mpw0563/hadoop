@@ -26,8 +26,11 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.ReflectionUtils;
+<<<<<<< HEAD
 import org.apache.hadoop.util.Shell.ExitCodeException;
 import org.apache.hadoop.util.Shell.ShellCommandExecutor;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
 import org.apache.hadoop.yarn.api.records.ContainerId;
@@ -78,7 +81,10 @@ public class LinuxContainerExecutor extends ContainerExecutor {
 
   private String nonsecureLocalUser;
   private Pattern nonsecureLocalUserPattern;
+<<<<<<< HEAD
   private String containerExecutorExe;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private LCEResourcesHandler resourcesHandler;
   private boolean containerSchedPriorityIsSet = false;
   private int containerSchedPriorityAdjustment = 0;
@@ -97,6 +103,7 @@ public class LinuxContainerExecutor extends ContainerExecutor {
   @Override
   public void setConf(Configuration conf) {
     super.setConf(conf);
+<<<<<<< HEAD
     containerExecutorExe = getContainerExecutorExecutablePath(conf);
     
     resourcesHandler = ReflectionUtils.newInstance(
@@ -109,16 +116,37 @@ public class LinuxContainerExecutor extends ContainerExecutor {
      containerSchedPriorityAdjustment = conf
          .getInt(YarnConfiguration.NM_CONTAINER_EXECUTOR_SCHED_PRIORITY,
              YarnConfiguration.DEFAULT_NM_CONTAINER_EXECUTOR_SCHED_PRIORITY);
+=======
+
+    resourcesHandler = ReflectionUtils.newInstance(
+        conf.getClass(YarnConfiguration.NM_LINUX_CONTAINER_RESOURCES_HANDLER,
+            DefaultLCEResourcesHandler.class, LCEResourcesHandler.class), conf);
+    resourcesHandler.setConf(conf);
+
+    if (conf.get(YarnConfiguration.NM_CONTAINER_EXECUTOR_SCHED_PRIORITY)
+        != null) {
+      containerSchedPriorityIsSet = true;
+      containerSchedPriorityAdjustment = conf
+          .getInt(YarnConfiguration.NM_CONTAINER_EXECUTOR_SCHED_PRIORITY,
+              YarnConfiguration.DEFAULT_NM_CONTAINER_EXECUTOR_SCHED_PRIORITY);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     nonsecureLocalUser = conf.get(
         YarnConfiguration.NM_NONSECURE_MODE_LOCAL_USER_KEY,
         YarnConfiguration.DEFAULT_NM_NONSECURE_MODE_LOCAL_USER);
     nonsecureLocalUserPattern = Pattern.compile(
         conf.get(YarnConfiguration.NM_NONSECURE_MODE_USER_PATTERN_KEY,
+<<<<<<< HEAD
             YarnConfiguration.DEFAULT_NM_NONSECURE_MODE_USER_PATTERN));        
     containerLimitUsers = conf.getBoolean(
       YarnConfiguration.NM_NONSECURE_MODE_LIMIT_USERS,
       YarnConfiguration.DEFAULT_NM_NONSECURE_MODE_LIMIT_USERS);
+=======
+            YarnConfiguration.DEFAULT_NM_NONSECURE_MODE_USER_PATTERN));
+    containerLimitUsers = conf.getBoolean(
+        YarnConfiguration.NM_NONSECURE_MODE_LIMIT_USERS,
+        YarnConfiguration.DEFAULT_NM_NONSECURE_MODE_LIMIT_USERS);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (!containerLimitUsers) {
       LOG.warn(YarnConfiguration.NM_NONSECURE_MODE_LIMIT_USERS +
           ": impersonation without authentication enabled");
@@ -128,14 +156,24 @@ public class LinuxContainerExecutor extends ContainerExecutor {
   void verifyUsernamePattern(String user) {
     if (!UserGroupInformation.isSecurityEnabled() &&
         !nonsecureLocalUserPattern.matcher(user).matches()) {
+<<<<<<< HEAD
         throw new IllegalArgumentException("Invalid user name '" + user + "'," +
             " it must match '" + nonsecureLocalUserPattern.pattern() + "'");
       }
+=======
+      throw new IllegalArgumentException("Invalid user name '" + user + "'," +
+          " it must match '" + nonsecureLocalUserPattern.pattern() + "'");
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   String getRunAsUser(String user) {
     if (UserGroupInformation.isSecurityEnabled() ||
+<<<<<<< HEAD
        !containerLimitUsers) {
+=======
+        !containerLimitUsers) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return user;
     } else {
       return nonsecureLocalUser;
@@ -147,16 +185,25 @@ public class LinuxContainerExecutor extends ContainerExecutor {
         System.getenv(ApplicationConstants.Environment.HADOOP_YARN_HOME.key());
     File hadoopBin = new File(yarnHomeEnvVar, "bin");
     String defaultPath =
+<<<<<<< HEAD
       new File(hadoopBin, "container-executor").getAbsolutePath();
     return null == conf
       ? defaultPath
       : conf.get(YarnConfiguration.NM_LINUX_CONTAINER_EXECUTOR_PATH, defaultPath);
+=======
+        new File(hadoopBin, "container-executor").getAbsolutePath();
+    return null == conf
+        ? defaultPath
+        : conf.get(YarnConfiguration.NM_LINUX_CONTAINER_EXECUTOR_PATH,
+        defaultPath);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   protected void addSchedPriorityCommand(List<String> command) {
     if (containerSchedPriorityIsSet) {
       command.addAll(Arrays.asList("nice", "-n",
           Integer.toString(containerSchedPriorityAdjustment)));
+<<<<<<< HEAD
     } 
   }
 
@@ -179,12 +226,39 @@ public class LinuxContainerExecutor extends ContainerExecutor {
       LOG.warn("Exit code from container executor initialization is : "
           + exitCode, e);
       logOutput(shExec.getOutput());
+=======
+    }
+  }
+
+  @Override
+  public void init() throws IOException {
+    Configuration conf = super.getConf();
+
+    // Send command to executor which will just start up,
+    // verify configuration/permissions and exit
+    try {
+      PrivilegedOperation checkSetupOp = new PrivilegedOperation(
+          PrivilegedOperation.OperationType.CHECK_SETUP, (String) null);
+      PrivilegedOperationExecutor privilegedOperationExecutor =
+          PrivilegedOperationExecutor.getInstance(conf);
+
+      privilegedOperationExecutor.executePrivilegedOperation(checkSetupOp,
+          false);
+    } catch (PrivilegedOperationException e) {
+      int exitCode = e.getExitCode();
+      LOG.warn("Exit code from container executor initialization is : "
+          + exitCode, e);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throw new IOException("Linux container executor not configured properly"
           + " (error=" + exitCode + ")", e);
     }
 
+<<<<<<< HEAD
     Configuration conf = super.getConf();
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       resourceHandlerChain = ResourceHandlerModule
           .getConfiguredResourceHandlerChain(conf);
@@ -193,7 +267,12 @@ public class LinuxContainerExecutor extends ContainerExecutor {
       }
     } catch (ResourceHandlerException e) {
       LOG.error("Failed to bootstrap configured resource subsystems! ", e);
+<<<<<<< HEAD
       throw new IOException("Failed to bootstrap configured resource subsystems!");
+=======
+      throw new IOException(
+          "Failed to bootstrap configured resource subsystems!");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     try {
@@ -204,7 +283,11 @@ public class LinuxContainerExecutor extends ContainerExecutor {
         this.linuxContainerRuntime = runtime;
       }
     } catch (ContainerExecutionException e) {
+<<<<<<< HEAD
      throw new IOException("Failed to initialize linux container runtime(s)!");
+=======
+      throw new IOException("Failed to initialize linux container runtime(s)!");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     resourcesHandler.init(this);
@@ -221,6 +304,7 @@ public class LinuxContainerExecutor extends ContainerExecutor {
     LocalDirsHandlerService dirsHandler = ctx.getDirsHandler();
     List<String> localDirs = dirsHandler.getLocalDirs();
     List<String> logDirs = dirsHandler.getLogDirs();
+<<<<<<< HEAD
     
     verifyUsernamePattern(user);
     String runAsUser = getRunAsUser(user);
@@ -265,6 +349,61 @@ public class LinuxContainerExecutor extends ContainerExecutor {
       logOutput(shExec.getOutput());
       throw new IOException("Application " + appId + " initialization failed" +
       		" (exitCode=" + exitCode + ") with output: " + shExec.getOutput(), e);
+=======
+
+    verifyUsernamePattern(user);
+    String runAsUser = getRunAsUser(user);
+    PrivilegedOperation initializeContainerOp = new PrivilegedOperation(
+        PrivilegedOperation.OperationType.INITIALIZE_CONTAINER, (String) null);
+    List<String> prefixCommands = new ArrayList<>();
+
+    addSchedPriorityCommand(prefixCommands);
+    initializeContainerOp.appendArgs(
+        runAsUser,
+        user,
+        Integer.toString(
+            PrivilegedOperation.RunAsUserCommand.INITIALIZE_CONTAINER
+                .getValue()),
+        appId,
+        nmPrivateContainerTokensPath.toUri().getPath().toString(),
+        StringUtils.join(PrivilegedOperation.LINUX_FILE_PATH_SEPARATOR,
+            localDirs),
+        StringUtils.join(PrivilegedOperation.LINUX_FILE_PATH_SEPARATOR,
+            logDirs));
+
+    File jvm =                                  // use same jvm as parent
+        new File(new File(System.getProperty("java.home"), "bin"), "java");
+    initializeContainerOp.appendArgs(jvm.toString());
+    initializeContainerOp.appendArgs("-classpath");
+    initializeContainerOp.appendArgs(System.getProperty("java.class.path"));
+    String javaLibPath = System.getProperty("java.library.path");
+    if (javaLibPath != null) {
+      initializeContainerOp.appendArgs("-Djava.library.path=" + javaLibPath);
+    }
+
+    initializeContainerOp.appendArgs(ContainerLocalizer.getJavaOpts(getConf()));
+
+    List<String> localizerArgs = new ArrayList<>();
+
+    buildMainArgs(localizerArgs, user, appId, locId, nmAddr, localDirs);
+    initializeContainerOp.appendArgs(localizerArgs);
+
+    try {
+      Configuration conf = super.getConf();
+      PrivilegedOperationExecutor privilegedOperationExecutor =
+          PrivilegedOperationExecutor.getInstance(conf);
+
+      privilegedOperationExecutor.executePrivilegedOperation(prefixCommands,
+          initializeContainerOp, null, null, false);
+
+    } catch (PrivilegedOperationException e) {
+      int exitCode = e.getExitCode();
+      LOG.warn("Exit code from container " + locId + " startLocalizer is : "
+          + exitCode, e);
+
+      throw new IOException("Application " + appId + " initialization failed" +
+          " (exitCode=" + exitCode + ") with output: " + e.getOutput(), e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -292,7 +431,11 @@ public class LinuxContainerExecutor extends ContainerExecutor {
 
     ContainerId containerId = container.getContainerId();
     String containerIdStr = ConverterUtils.toString(containerId);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     resourcesHandler.preExecute(containerId,
             container.getResource());
     String resourcesOptions = resourcesHandler.getResourcesOption(
@@ -307,12 +450,18 @@ public class LinuxContainerExecutor extends ContainerExecutor {
         if (ops != null) {
           List<PrivilegedOperation> resourceOps = new ArrayList<>();
 
+<<<<<<< HEAD
           resourceOps.add(new PrivilegedOperation
               (PrivilegedOperation.OperationType.ADD_PID_TO_CGROUP,
+=======
+          resourceOps.add(new PrivilegedOperation(
+              PrivilegedOperation.OperationType.ADD_PID_TO_CGROUP,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                   resourcesOptions));
 
           for (PrivilegedOperation op : ops) {
             switch (op.getOperationType()) {
+<<<<<<< HEAD
               case ADD_PID_TO_CGROUP:
                 resourceOps.add(op);
                 break;
@@ -322,6 +471,17 @@ public class LinuxContainerExecutor extends ContainerExecutor {
               default:
                 LOG.warn("PrivilegedOperation type unsupported in launch: "
                     + op.getOperationType());
+=======
+            case ADD_PID_TO_CGROUP:
+              resourceOps.add(op);
+              break;
+            case TC_MODIFY_STATE:
+              tcCommandFile = op.getArguments().get(0);
+              break;
+            default:
+              LOG.warn("PrivilegedOperation type unsupported in launch: "
+                  + op.getOperationType());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             }
           }
 
@@ -333,20 +493,33 @@ public class LinuxContainerExecutor extends ContainerExecutor {
               resourcesOptions = operation.getArguments().get(0);
             } catch (PrivilegedOperationException e) {
               LOG.error("Failed to squash cgroup operations!", e);
+<<<<<<< HEAD
               throw new ResourceHandlerException("Failed to squash cgroup operations!");
+=======
+              throw new ResourceHandlerException(
+                  "Failed to squash cgroup operations!");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             }
           }
         }
       }
     } catch (ResourceHandlerException e) {
       LOG.error("ResourceHandlerChain.preStart() failed!", e);
+<<<<<<< HEAD
       throw new IOException("ResourceHandlerChain.preStart() failed!");
+=======
+      throw new IOException("ResourceHandlerChain.preStart() failed!", e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     try {
       Path pidFilePath = getPidFilePath(containerId);
       if (pidFilePath != null) {
+<<<<<<< HEAD
         List<String> prefixCommands= new ArrayList<>();
+=======
+        List<String> prefixCommands = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         ContainerRuntimeContext.Builder builder = new ContainerRuntimeContext
             .Builder(container);
 
@@ -376,7 +549,12 @@ public class LinuxContainerExecutor extends ContainerExecutor {
 
         linuxContainerRuntime.launchContainer(builder.build());
       } else {
+<<<<<<< HEAD
         LOG.info("Container was marked as inactive. Returning terminated error");
+=======
+        LOG.info(
+            "Container was marked as inactive. Returning terminated error");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return ExitCode.TERMINATED.getExitCode();
       }
     } catch (ContainerExecutionException e) {
@@ -388,7 +566,11 @@ public class LinuxContainerExecutor extends ContainerExecutor {
       if (exitCode != ExitCode.FORCE_KILLED.getExitCode()
           && exitCode != ExitCode.TERMINATED.getExitCode()) {
         LOG.warn("Exception from container-launch with container ID: "
+<<<<<<< HEAD
             + containerId + " and exit code: " + exitCode , e);
+=======
+            + containerId + " and exit code: " + exitCode, e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
         StringBuilder builder = new StringBuilder();
         builder.append("Exception from container-launch.\n");
@@ -481,7 +663,12 @@ public class LinuxContainerExecutor extends ContainerExecutor {
       linuxContainerRuntime.signalContainer(runtimeContext);
     } catch (ContainerExecutionException e) {
       int retCode = e.getExitCode();
+<<<<<<< HEAD
       if (retCode == PrivilegedOperation.ResultCode.INVALID_CONTAINER_PID.getValue()) {
+=======
+      if (retCode == PrivilegedOperation.ResultCode.INVALID_CONTAINER_PID
+          .getValue()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return false;
       }
       LOG.warn("Error in signalling container " + pid + " with " + signal
@@ -501,6 +688,7 @@ public class LinuxContainerExecutor extends ContainerExecutor {
     List<Path> baseDirs = ctx.getBasedirs();
 
     verifyUsernamePattern(user);
+<<<<<<< HEAD
     String runAsUser = getRunAsUser(user);
 
     String dirString = dir == null ? "" : dir.toUri().getPath();
@@ -512,6 +700,22 @@ public class LinuxContainerExecutor extends ContainerExecutor {
                     Integer.toString(PrivilegedOperation.
                         RunAsUserCommand.DELETE_AS_USER.getValue()),
                     dirString));
+=======
+
+    String runAsUser = getRunAsUser(user);
+    String dirString = dir == null ? "" : dir.toUri().getPath();
+
+    PrivilegedOperation deleteAsUserOp = new PrivilegedOperation(
+        PrivilegedOperation.OperationType.DELETE_AS_USER, (String) null);
+
+    deleteAsUserOp.appendArgs(
+        runAsUser,
+        user,
+        Integer.toString(PrivilegedOperation.
+            RunAsUserCommand.DELETE_AS_USER.getValue()),
+        dirString);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     List<String> pathsToDelete = new ArrayList<String>();
     if (baseDirs == null || baseDirs.size() == 0) {
       LOG.info("Deleting absolute path : " + dir);
@@ -521,6 +725,7 @@ public class LinuxContainerExecutor extends ContainerExecutor {
         Path del = dir == null ? baseDir : new Path(baseDir, dir);
         LOG.info("Deleting path : " + del);
         pathsToDelete.add(del.toString());
+<<<<<<< HEAD
         command.add(baseDir.toUri().getPath());
       }
     }
@@ -543,6 +748,26 @@ public class LinuxContainerExecutor extends ContainerExecutor {
     }
   }
   
+=======
+        deleteAsUserOp.appendArgs(baseDir.toUri().getPath());
+      }
+    }
+
+    try {
+      Configuration conf = super.getConf();
+      PrivilegedOperationExecutor privilegedOperationExecutor =
+          PrivilegedOperationExecutor.getInstance(conf);
+
+      privilegedOperationExecutor.executePrivilegedOperation(deleteAsUserOp,
+          false);
+    }   catch (PrivilegedOperationException e) {
+      int exitCode = e.getExitCode();
+      LOG.error("DeleteAsUser for " + StringUtils.join(" ", pathsToDelete)
+          + " returned with exit code: " + exitCode, e);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public boolean isContainerAlive(ContainerLivenessContext ctx)
       throws IOException {
@@ -560,6 +785,7 @@ public class LinuxContainerExecutor extends ContainerExecutor {
   }
 
   public void mountCgroups(List<String> cgroupKVs, String hierarchy)
+<<<<<<< HEAD
          throws IOException {
     List<String> command = new ArrayList<String>(
             Arrays.asList(containerExecutorExe, "--mount-cgroups", hierarchy));
@@ -582,4 +808,27 @@ public class LinuxContainerExecutor extends ContainerExecutor {
           "; exit code = " + ret_code + " and output: " + shExec.getOutput(), e);
     }
   }  
+=======
+      throws IOException {
+    try {
+      PrivilegedOperation mountCGroupsOp = new PrivilegedOperation(
+          PrivilegedOperation.OperationType.MOUNT_CGROUPS, hierarchy);
+      Configuration conf = super.getConf();
+
+      mountCGroupsOp.appendArgs(cgroupKVs);
+      PrivilegedOperationExecutor privilegedOperationExecutor =
+          PrivilegedOperationExecutor.getInstance(conf);
+
+      privilegedOperationExecutor.executePrivilegedOperation(mountCGroupsOp,
+          false);
+    } catch (PrivilegedOperationException e) {
+      int exitCode = e.getExitCode();
+      LOG.warn("Exception in LinuxContainerExecutor mountCgroups ", e);
+
+      throw new IOException("Problem mounting cgroups " + cgroupKVs +
+          "; exit code = " + exitCode + " and output: " + e.getOutput(),
+          e);
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

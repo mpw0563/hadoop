@@ -29,6 +29,10 @@ import org.apache.hadoop.cli.util.CLITestCmd;
 import org.apache.hadoop.cli.util.CacheAdminCmdExecutor;
 import org.apache.hadoop.cli.util.CommandExecutor;
 import org.apache.hadoop.cli.util.CommandExecutor.Result;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.conf.Configuration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -119,18 +123,30 @@ public class TestCacheAdminCLI extends CLITestHelper {
     }
 
     @Override
+<<<<<<< HEAD
     public CommandExecutor getExecutor(String tag)
+=======
+    public CommandExecutor getExecutor(String tag, Configuration conf)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         throws IllegalArgumentException {
       if (getType() instanceof CLICommandCacheAdmin) {
         return new CacheAdminCmdExecutor(tag, new CacheAdmin(conf));
       }
+<<<<<<< HEAD
       return super.getExecutor(tag);
+=======
+      return super.getExecutor(tag, conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   @Override
   protected Result execute(CLICommand cmd) throws Exception {
+<<<<<<< HEAD
     return cmd.getExecutor("").executeCommand(cmd.getCmd());
+=======
+    return cmd.getExecutor("", conf).executeCommand(cmd.getCmd());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test

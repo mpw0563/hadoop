@@ -40,12 +40,18 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.StorageType;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.HAUtil;
 import org.apache.hadoop.hdfs.protocol.LayoutVersion;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockStoragePolicySuite;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.NamenodeRole;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.RollingUpgradeStartupOption;
@@ -59,7 +65,10 @@ import org.apache.hadoop.hdfs.server.common.Util;
 import org.apache.hadoop.hdfs.server.namenode.FSImageStorageInspector.FSImageFile;
 import org.apache.hadoop.hdfs.server.namenode.NNStorage.NameNodeDirType;
 import org.apache.hadoop.hdfs.server.namenode.NNStorage.NameNodeFile;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.namenode.snapshot.Snapshot;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.startupprogress.Phase;
 import org.apache.hadoop.hdfs.server.namenode.startupprogress.StartupProgress;
 import org.apache.hadoop.hdfs.server.protocol.CheckpointCommand;
@@ -68,7 +77,10 @@ import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocol;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeRegistration;
 import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
 import org.apache.hadoop.hdfs.util.Canceler;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.util.EnumCounters;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.util.MD5FileUtils;
 import org.apache.hadoop.io.MD5Hash;
 import org.apache.hadoop.util.Time;
@@ -100,6 +112,10 @@ public class FSImage implements Closeable {
   final private Configuration conf;
 
   protected NNStorageRetentionManager archivalManager;
+<<<<<<< HEAD
+=======
+  private int quotaInitThreads;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /* Used to make sure there are no concurrent checkpoints for a given txid
    * The checkpoint here could be one of the following operations.
@@ -144,7 +160,10 @@ public class FSImage implements Closeable {
     }
 
     this.editLog = new FSEditLog(conf, storage, editsDirs);
+<<<<<<< HEAD
     
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     archivalManager = new NNStorageRetentionManager(conf, storage, editLog);
   }
  
@@ -284,8 +303,13 @@ public class FSImage implements Closeable {
       doImportCheckpoint(target);
       return false; // import checkpoint saved image already
     case ROLLBACK:
+<<<<<<< HEAD
       throw new AssertionError("Rollback is now a standalone command, "
           + "NameNode should not be starting with this option.");
+=======
+      throw new AssertionError("Rollback is now a standalone command, " +
+          "NameNode should not be starting with this option.");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     case REGULAR:
     default:
       // just load the image
@@ -355,7 +379,11 @@ public class FSImage implements Closeable {
   /** Check if upgrade is in progress. */
   public static void checkUpgrade(NNStorage storage) throws IOException {
     // Upgrade or rolling upgrade is allowed only if there are 
+<<<<<<< HEAD
     // no previous fs states in any of the directories
+=======
+    // no previous fs states in any of the local directories
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (Iterator<StorageDirectory> it = storage.dirIterator(false); it.hasNext();) {
       StorageDirectory sd = it.next();
       if (sd.getPreviousDir().exists())
@@ -389,9 +417,15 @@ public class FSImage implements Closeable {
     checkUpgrade();
 
     // load the latest image
+<<<<<<< HEAD
     this.loadFSImage(target, StartupOption.UPGRADE, null);
 
     // Do upgrade for each directory
+=======
+
+    // Do upgrade for each directory
+    this.loadFSImage(target, StartupOption.UPGRADE, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     target.checkRollingUpgrade("upgrade namenode");
     
     long oldCTime = storage.getCTime();
@@ -554,6 +588,7 @@ public class FSImage implements Closeable {
     for (Iterator<StorageDirectory> it = storage.dirIterator(false); it.hasNext();) {
       StorageDirectory sd = it.next();
       NNUpgradeUtil.doFinalize(sd);
+<<<<<<< HEAD
     }
     if (finalizeEditLog) {
       // We only do this in the case that HA is enabled and we're active. In any
@@ -561,6 +596,15 @@ public class FSImage implements Closeable {
       // already by virtue of the fact that they're local.
       editLog.doFinalizeOfSharedLog();
     }
+=======
+    }
+    if (finalizeEditLog) {
+      // We only do this in the case that HA is enabled and we're active. In any
+      // other case the NN will have done the upgrade of the edits directories
+      // already by virtue of the fact that they're local.
+      editLog.doFinalizeOfSharedLog();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     isUpgradeFinalized = true;
   }
 
@@ -692,10 +736,13 @@ public class FSImage implements Closeable {
       long txnsAdvanced = loadEdits(editStreams, target, startOpt, recovery);
       needToSave |= needsResaveBasedOnStaleCheckpoint(imageFile.getFile(),
           txnsAdvanced);
+<<<<<<< HEAD
       if (RollingUpgradeStartupOption.DOWNGRADE.matches(startOpt)) {
         // rename rollback image if it is downgrade
         renameCheckpoint(NameNodeFile.IMAGE_ROLLBACK, NameNodeFile.IMAGE);
       }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else {
       // Trigger the rollback for rolling upgrade. Here lastAppliedTxId equals
       // to the last txid in rollback fsimage.
@@ -804,7 +851,7 @@ public class FSImage implements Closeable {
         DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_PERIOD_KEY, 
         DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_PERIOD_DEFAULT);
     final long checkpointTxnCount = conf.getLong(
-        DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_TXNS_KEY, 
+        DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_TXNS_KEY,
         DFSConfigKeys.DFS_NAMENODE_CHECKPOINT_TXNS_DEFAULT);
     long checkpointAge = Time.now() - imageFile.lastModified();
 
@@ -849,14 +896,18 @@ public class FSImage implements Closeable {
       }
     } finally {
       FSEditLog.closeAllStreams(editStreams);
+<<<<<<< HEAD
       // update the counts
       updateCountForQuota(target.getBlockManager().getStoragePolicySuite(),
           target.dir.rootDir);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     prog.endPhase(Phase.LOADING_EDITS);
     return lastAppliedTxId - prevLastAppliedTxId;
   }
 
+<<<<<<< HEAD
   /**
    * Update the count of each directory with quota in the namespace.
    * A directory's count is defined as the total number inodes in the tree
@@ -930,6 +981,8 @@ public class FSImage implements Closeable {
     }
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Load the image namespace from the given image file, verifying
    * it against the MD5 sum stored in its associated .md5 file.
@@ -991,7 +1044,29 @@ public class FSImage implements Closeable {
     
     MD5FileUtils.saveMD5File(dstFile, saver.getSavedDigest());
     storage.setMostRecentCheckpointInfo(txid, Time.now());
+<<<<<<< HEAD
   }
+
+  /**
+   * Save FSimage in the legacy format. This is not for NN consumption,
+   * but for tools like OIV.
+   */
+  public void saveLegacyOIVImage(FSNamesystem source, String targetDir,
+      Canceler canceler) throws IOException {
+    FSImageCompression compression =
+        FSImageCompression.createCompression(conf);
+    long txid = getLastAppliedOrWrittenTxId();
+    SaveNamespaceContext ctx = new SaveNamespaceContext(source, txid,
+        canceler);
+    FSImageFormat.Saver saver = new FSImageFormat.Saver(ctx);
+    String imageFileName = NNStorage.getLegacyOIVImageFileName(txid);
+    File imageFile = new File(targetDir, imageFileName);
+    saver.save(imageFile, compression);
+    archivalManager.purgeOldLegacyOIVImages(targetDir, txid);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  }
+
 
   /**
    * Save FSimage in the legacy format. This is not for NN consumption,
@@ -1077,11 +1152,43 @@ public class FSImage implements Closeable {
   }
 
   /**
+<<<<<<< HEAD
    * @see #saveNamespace(FSNamesystem, NameNodeFile, Canceler)
    */
   public synchronized void saveNamespace(FSNamesystem source)
       throws IOException {
     saveNamespace(source, NameNodeFile.IMAGE, null);
+=======
+   * @param timeWindow a checkpoint is done if the latest checkpoint
+   *                   was done more than this number of seconds ago.
+   * @param txGap a checkpoint is done also if the gap between the latest tx id
+   *              and the latest checkpoint is greater than this number.
+   * @return true if a checkpoint has been made
+   * @see #saveNamespace(FSNamesystem, NameNodeFile, Canceler)
+   */
+  public synchronized boolean saveNamespace(long timeWindow, long txGap,
+      FSNamesystem source) throws IOException {
+    if (timeWindow > 0 || txGap > 0) {
+      final FSImageStorageInspector inspector = storage.readAndInspectDirs(
+          EnumSet.of(NameNodeFile.IMAGE, NameNodeFile.IMAGE_ROLLBACK),
+          StartupOption.REGULAR);
+      FSImageFile image = inspector.getLatestImages().get(0);
+      File imageFile = image.getFile();
+
+      final long checkpointTxId = image.getCheckpointTxId();
+      final long checkpointAge = Time.now() - imageFile.lastModified();
+      if (checkpointAge <= timeWindow * 1000 &&
+          checkpointTxId >= this.getLastAppliedOrWrittenTxId() - txGap) {
+        return false;
+      }
+    }
+    saveNamespace(source, NameNodeFile.IMAGE, null);
+    return true;
+  }
+
+  public void saveNamespace(FSNamesystem source) throws IOException {
+    saveNamespace(0, 0, source);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /**
@@ -1112,7 +1219,11 @@ public class FSImage implements Closeable {
         }
       } finally {
         if (editLogWasOpen) {
+<<<<<<< HEAD
           editLog.startLogSegment(imageTxId + 1, true,
+=======
+          editLog.startLogSegmentAndWriteHeaderTxn(imageTxId + 1,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               source.getEffectiveLayoutVersion());
           // Take this opportunity to note the current transaction.
           // Even if the namespace save was cancelled, this marker
@@ -1124,6 +1235,11 @@ public class FSImage implements Closeable {
     } finally {
       removeFromCheckpointing(imageTxId);
     }
+<<<<<<< HEAD
+=======
+    //Update NameDirSize Metric
+    getStorage().updateNameDirSize();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -1304,6 +1420,8 @@ public class FSImage implements Closeable {
     // we won't miss this log segment on a restart if the edits directories
     // go missing.
     storage.writeTransactionIdFileToStorage(getEditLog().getCurSegmentTxId());
+    //Update NameDirSize Metric
+    getStorage().updateNameDirSize();
     return new CheckpointSignature(this);
   }
 

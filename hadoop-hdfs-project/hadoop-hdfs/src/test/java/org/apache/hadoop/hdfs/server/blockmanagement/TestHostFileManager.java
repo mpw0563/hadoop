@@ -104,23 +104,36 @@ public class TestHostFileManager {
     BlockManager bm = mock(BlockManager.class);
     FSNamesystem fsn = mock(FSNamesystem.class);
     Configuration conf = new Configuration();
+<<<<<<< HEAD
     HostFileManager hm = mock(HostFileManager.class);
+=======
+    HostFileManager hm = new HostFileManager();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     HostFileManager.HostSet includedNodes = new HostFileManager.HostSet();
     HostFileManager.HostSet excludedNodes = new HostFileManager.HostSet();
 
     includedNodes.add(entry("127.0.0.1:12345"));
     includedNodes.add(entry("localhost:12345"));
     includedNodes.add(entry("127.0.0.1:12345"));
+<<<<<<< HEAD
 
     includedNodes.add(entry("127.0.0.2"));
+=======
+    includedNodes.add(entry("127.0.0.2"));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     excludedNodes.add(entry("127.0.0.1:12346"));
     excludedNodes.add(entry("127.0.30.1:12346"));
 
     Assert.assertEquals(2, includedNodes.size());
     Assert.assertEquals(2, excludedNodes.size());
 
+<<<<<<< HEAD
     doReturn(includedNodes).when(hm).getIncludes();
     doReturn(excludedNodes).when(hm).getExcludes();
+=======
+    hm.refresh(includedNodes, excludedNodes);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     DatanodeManager dm = new DatanodeManager(bm, fsn, conf);
     Whitebox.setInternalState(dm, "hostFileManager", hm);
@@ -152,7 +165,11 @@ public class TestHostFileManager {
     Assert.assertEquals(1, dm.getDatanodeListForReport(HdfsConstants
             .DatanodeReportType.DEAD).size());
     excludedNodes.add(entry("127.0.0.3"));
+<<<<<<< HEAD
     Assert.assertEquals(0, dm.getDatanodeListForReport(HdfsConstants
+=======
+    Assert.assertEquals(1, dm.getDatanodeListForReport(HdfsConstants
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             .DatanodeReportType.DEAD).size());
   }
 }

@@ -50,6 +50,14 @@ public class DomainPeerServer implements PeerServer {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public int getReceiveBufferSize() throws IOException {
+    return sock.getAttribute(DomainSocket.RECEIVE_BUFFER_SIZE);
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public Peer accept() throws IOException, SocketTimeoutException {
     DomainSocket connSock = sock.accept();
     Peer peer = null;

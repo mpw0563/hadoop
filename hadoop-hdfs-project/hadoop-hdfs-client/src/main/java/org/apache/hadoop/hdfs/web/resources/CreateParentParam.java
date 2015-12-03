@@ -22,7 +22,11 @@ public class CreateParentParam extends BooleanParam {
   /** Parameter name. */
   public static final String NAME = "createparent";
   /** Default parameter value. */
+<<<<<<< HEAD
   public static final String DEFAULT = FALSE;
+=======
+  public static final String DEFAULT = TRUE;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private static final Domain DOMAIN = new Domain(NAME);
 
@@ -46,4 +50,8 @@ public class CreateParentParam extends BooleanParam {
   public String getName() {
     return NAME;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

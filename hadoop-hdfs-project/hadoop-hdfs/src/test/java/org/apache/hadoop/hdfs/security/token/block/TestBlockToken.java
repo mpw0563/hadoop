@@ -36,14 +36,17 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.DFSTestUtil;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSUtil;
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.Block;
@@ -57,7 +60,11 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.Client
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetReplicaVisibleLengthRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetReplicaVisibleLengthResponseProto;
 import org.apache.hadoop.hdfs.protocolPB.ClientDatanodeProtocolPB;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocolPB.PBHelper;
+=======
+import org.apache.hadoop.hdfs.protocolPB.PBHelperClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.io.TestWritable;
 import org.apache.hadoop.ipc.Client;
 import org.apache.hadoop.ipc.ProtobufRpcEngine;
@@ -70,6 +77,10 @@ import org.apache.hadoop.security.SaslRpcServer;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.Time;
 import org.apache.log4j.Level;
 import org.junit.Assert;
@@ -89,11 +100,19 @@ public class TestBlockToken {
   private static final String ADDRESS = "0.0.0.0";
 
   static {
+<<<<<<< HEAD
     ((Log4JLogger) Client.LOG).getLogger().setLevel(Level.ALL);
     ((Log4JLogger) Server.LOG).getLogger().setLevel(Level.ALL);
     ((Log4JLogger) SaslRpcClient.LOG).getLogger().setLevel(Level.ALL);
     ((Log4JLogger) SaslRpcServer.LOG).getLogger().setLevel(Level.ALL);
     ((Log4JLogger) SaslInputStream.LOG).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(Client.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(Server.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(SaslRpcClient.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(SaslRpcServer.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(SaslInputStream.LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Directory where we can count our open file descriptors under Linux */
@@ -138,7 +157,11 @@ public class TestBlockToken {
         BlockTokenIdentifier id = (BlockTokenIdentifier) tokenId;
         LOG.info("Got: " + id.toString());
         assertTrue("Received BlockTokenIdentifier is wrong", ident.equals(id));
+<<<<<<< HEAD
         sm.checkAccess(id, null, PBHelper.convert(req.getBlock()),
+=======
+        sm.checkAccess(id, null, PBHelperClient.convert(req.getBlock()),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             BlockTokenIdentifier.AccessMode.WRITE);
         result = id.getBlockId();
       }
@@ -162,7 +185,11 @@ public class TestBlockToken {
   public void testWritable() throws Exception {
     TestWritable.testWritable(new BlockTokenIdentifier());
     BlockTokenSecretManager sm = new BlockTokenSecretManager(
+<<<<<<< HEAD
         blockKeyUpdateInterval, blockTokenLifetime, 0, "fake-pool", null);
+=======
+        blockKeyUpdateInterval, blockTokenLifetime, 0, 1, "fake-pool", null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     TestWritable.testWritable(generateTokenId(sm, block1,
         EnumSet.allOf(BlockTokenIdentifier.AccessMode.class)));
     TestWritable.testWritable(generateTokenId(sm, block2,
@@ -201,7 +228,11 @@ public class TestBlockToken {
   @Test
   public void testBlockTokenSecretManager() throws Exception {
     BlockTokenSecretManager masterHandler = new BlockTokenSecretManager(
+<<<<<<< HEAD
         blockKeyUpdateInterval, blockTokenLifetime, 0, "fake-pool", null);
+=======
+        blockKeyUpdateInterval, blockTokenLifetime, 0, 1, "fake-pool", null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     BlockTokenSecretManager slaveHandler = new BlockTokenSecretManager(
         blockKeyUpdateInterval, blockTokenLifetime, "fake-pool", null);
     ExportedBlockKeys keys = masterHandler.exportKeys();
@@ -244,7 +275,11 @@ public class TestBlockToken {
     UserGroupInformation.setConfiguration(conf);
     
     BlockTokenSecretManager sm = new BlockTokenSecretManager(
+<<<<<<< HEAD
         blockKeyUpdateInterval, blockTokenLifetime, 0, "fake-pool", null);
+=======
+        blockKeyUpdateInterval, blockTokenLifetime, 0, 1, "fake-pool", null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Token<BlockTokenIdentifier> token = sm.generateToken(block3,
         EnumSet.allOf(BlockTokenIdentifier.AccessMode.class));
 
@@ -259,7 +294,11 @@ public class TestBlockToken {
 
     ClientDatanodeProtocol proxy = null;
     try {
+<<<<<<< HEAD
       proxy = DFSUtil.createClientDatanodeProtocolProxy(addr, ticket, conf,
+=======
+      proxy = DFSUtilClient.createClientDatanodeProtocolProxy(addr, ticket, conf,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           NetUtils.getDefaultSocketFactory(conf));
       assertEquals(block3.getBlockId(), proxy.getReplicaVisibleLength(block3));
     } finally {
@@ -283,7 +322,11 @@ public class TestBlockToken {
     
     Assume.assumeTrue(FD_DIR.exists());
     BlockTokenSecretManager sm = new BlockTokenSecretManager(
+<<<<<<< HEAD
         blockKeyUpdateInterval, blockTokenLifetime, 0, "fake-pool", null);
+=======
+        blockKeyUpdateInterval, blockTokenLifetime, 0, 1, "fake-pool", null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Token<BlockTokenIdentifier> token = sm.generateToken(block3,
         EnumSet.allOf(BlockTokenIdentifier.AccessMode.class));
 
@@ -313,7 +356,11 @@ public class TestBlockToken {
     try {
       long endTime = Time.now() + 3000;
       while (Time.now() < endTime) {
+<<<<<<< HEAD
         proxy = DFSUtil.createClientDatanodeProtocolProxy(fakeDnId, conf, 1000,
+=======
+        proxy = DFSUtilClient.createClientDatanodeProtocolProxy(fakeDnId, conf, 1000,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             false, fakeBlock);
         assertEquals(block3.getBlockId(), proxy.getReplicaVisibleLength(block3));
         if (proxy != null) {
@@ -352,7 +399,11 @@ public class TestBlockToken {
     for (int i = 0; i < 10; i++) {
       String bpid = Integer.toString(i);
       BlockTokenSecretManager masterHandler = new BlockTokenSecretManager(
+<<<<<<< HEAD
           blockKeyUpdateInterval, blockTokenLifetime, 0, "fake-pool", null);
+=======
+          blockKeyUpdateInterval, blockTokenLifetime, 0, 1, "fake-pool", null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       BlockTokenSecretManager slaveHandler = new BlockTokenSecretManager(
           blockKeyUpdateInterval, blockTokenLifetime, "fake-pool", null);
       bpMgr.addBlockPool(bpid, slaveHandler);

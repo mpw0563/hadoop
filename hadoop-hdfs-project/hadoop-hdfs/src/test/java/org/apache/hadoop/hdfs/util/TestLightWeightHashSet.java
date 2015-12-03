@@ -191,6 +191,36 @@ public class TestLightWeightHashSet{
   }
 
   @Test
+<<<<<<< HEAD
+=======
+  public void testRemoveAllViaIterator() {
+    LOG.info("Test remove all via iterator");
+    for (Integer i : list) {
+      assertTrue(set.add(i));
+    }
+    for (Iterator<Integer> iter = set.iterator(); iter.hasNext(); ) {
+      int e = iter.next();
+      // element should be there before removing
+      assertTrue(set.contains(e));
+      iter.remove();
+      // element should not be there now
+      assertFalse(set.contains(e));
+    }
+
+    // the deleted elements should not be there
+    for (int i = 0; i < NUM; i++) {
+      assertFalse(set.contains(list.get(i)));
+    }
+
+    // iterator should not have next
+    Iterator<Integer> iter = set.iterator();
+    assertFalse(iter.hasNext());
+    assertTrue(set.isEmpty());
+    LOG.info("Test remove all via iterator - DONE");
+  }
+
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testPollAll() {
     LOG.info("Test poll all");
     for (Integer i : list) {
@@ -470,4 +500,8 @@ public class TestLightWeightHashSet{
     }
   }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

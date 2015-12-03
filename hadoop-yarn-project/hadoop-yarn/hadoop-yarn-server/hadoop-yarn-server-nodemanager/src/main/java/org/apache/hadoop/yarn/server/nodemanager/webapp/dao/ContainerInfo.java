@@ -21,16 +21,31 @@ package org.apache.hadoop.yarn.server.nodemanager.webapp.dao;
 import static org.apache.hadoop.yarn.util.StringHelper.join;
 import static org.apache.hadoop.yarn.util.StringHelper.ujoin;
 
+<<<<<<< HEAD
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
+=======
+import javax.xml.bind.annotation.*;
+
+import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
+import org.apache.hadoop.yarn.api.records.ContainerId;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.nodemanager.Context;
 import org.apache.hadoop.yarn.server.nodemanager.containermanager.container.Container;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.nodemanager.webapp.ContainerLogsUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @XmlRootElement(name = "container")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -50,15 +65,29 @@ public class ContainerInfo {
   @XmlTransient
   protected String exitStatus;
 
+<<<<<<< HEAD
+=======
+  @XmlElementWrapper
+  protected List<String> containerLogFiles;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public ContainerInfo() {
   } // JAXB needs this
 
   public ContainerInfo(final Context nmContext, final Container container) {
+<<<<<<< HEAD
     this(nmContext, container, "", "");
   }
 
   public ContainerInfo(final Context nmContext, final Container container,
        String requestUri, String pathPrefix) {
+=======
+    this(nmContext, container, "", "", "");
+  }
+
+  public ContainerInfo(final Context nmContext, final Container container,
+       String requestUri, String pathPrefix, String remoteUser) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     this.id = container.getContainerId().toString();
     this.nodeId = nmContext.getNodeId().toString();
@@ -90,6 +119,11 @@ public class ContainerInfo {
     }
     this.containerLogsLink = join(requestUri, pathPrefix,
         this.containerLogsShortLink);
+<<<<<<< HEAD
+=======
+    this.containerLogFiles =
+        getContainerLogFiles(container.getContainerId(), remoteUser, nmContext);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public String getId() {
@@ -136,4 +170,33 @@ public class ContainerInfo {
     return this.totalVCoresNeeded;
   }
 
+<<<<<<< HEAD
+=======
+  public List<String> getContainerLogFiles() {
+    return this.containerLogFiles;
+  }
+
+  private List<String> getContainerLogFiles(ContainerId id, String remoteUser,
+      Context nmContext) {
+    List<String> logFiles = new ArrayList<>();
+    try {
+      List<File> logDirs =
+          ContainerLogsUtils.getContainerLogDirs(id, remoteUser, nmContext);
+      for (File containerLogsDir : logDirs) {
+        File[] logs = containerLogsDir.listFiles();
+        if (logs != null) {
+          for (File log : logs) {
+            if (log.isFile()) {
+              logFiles.add(log.getName());
+            }
+          }
+        }
+      }
+    } catch (Exception ye) {
+      return logFiles;
+    }
+    return logFiles;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

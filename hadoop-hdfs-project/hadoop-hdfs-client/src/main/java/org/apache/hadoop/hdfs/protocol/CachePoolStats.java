@@ -66,7 +66,11 @@ public class CachePoolStats {
       return new CachePoolStats(bytesNeeded, bytesCached, bytesOverlimit,
           filesNeeded, filesCached);
     }
+<<<<<<< HEAD
   };
+=======
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private final long bytesNeeded;
   private final long bytesCached;
@@ -104,6 +108,7 @@ public class CachePoolStats {
   }
 
   public String toString() {
+<<<<<<< HEAD
     return new StringBuilder().append("{").
       append("bytesNeeded:").append(bytesNeeded).
       append(", bytesCached:").append(bytesCached).
@@ -111,5 +116,12 @@ public class CachePoolStats {
       append(", filesNeeded:").append(filesNeeded).
       append(", filesCached:").append(filesCached).
       append("}").toString();
+=======
+    return "{" + "bytesNeeded:" + bytesNeeded
+        + ", bytesCached:" + bytesCached
+        + ", bytesOverlimit:" + bytesOverlimit
+        + ", filesNeeded:" + filesNeeded
+        + ", filesCached:" + filesCached + "}";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

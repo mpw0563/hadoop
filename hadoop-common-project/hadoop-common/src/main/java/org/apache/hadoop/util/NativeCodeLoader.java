@@ -22,8 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.CommonConfigurationKeys;
 
 /**
  * A helper to load the native hadoop code i.e. libhadoop.so.
@@ -33,7 +31,7 @@ import org.apache.hadoop.fs.CommonConfigurationKeys;
  */
 @InterfaceAudience.Private
 @InterfaceStability.Unstable
-public class NativeCodeLoader {
+public final class NativeCodeLoader {
 
   private static final Log LOG =
     LogFactory.getLog(NativeCodeLoader.class);
@@ -64,6 +62,8 @@ public class NativeCodeLoader {
     }
   }
 
+  private NativeCodeLoader() {}
+
   /**
    * Check if native-hadoop code is loaded for this platform.
    * 
@@ -76,6 +76,7 @@ public class NativeCodeLoader {
 
   /**
    * Returns true only if this build was compiled with support for snappy.
+<<<<<<< HEAD
    */
   public static native boolean buildSupportsSnappy();
   
@@ -92,22 +93,21 @@ public class NativeCodeLoader {
    * 
    * @return <code>true</code> if native hadoop libraries, if present, can be 
    *         used for this job; <code>false</code> otherwise.
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
-  public boolean getLoadNativeLibraries(Configuration conf) {
-    return conf.getBoolean(CommonConfigurationKeys.IO_NATIVE_LIB_AVAILABLE_KEY, 
-                           CommonConfigurationKeys.IO_NATIVE_LIB_AVAILABLE_DEFAULT);
-  }
-  
+  public static native boolean buildSupportsSnappy();
+
   /**
-   * Set if native hadoop libraries, if present, can be used for this job.
-   * 
-   * @param conf configuration
-   * @param loadNativeLibraries can native hadoop libraries be loaded
+   * Returns true only if this build was compiled with support for ISA-L.
    */
-  public void setLoadNativeLibraries(Configuration conf, 
-                                     boolean loadNativeLibraries) {
-    conf.setBoolean(CommonConfigurationKeys.IO_NATIVE_LIB_AVAILABLE_KEY,
-                    loadNativeLibraries);
-  }
+  public static native boolean buildSupportsIsal();
+
+  /**
+   * Returns true only if this build was compiled with support for openssl.
+   */
+  public static native boolean buildSupportsOpenssl();
+
+  public static native String getLibraryName();
 
 }

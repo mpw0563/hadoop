@@ -55,8 +55,12 @@ public class TestHealthMonitor {
     conf.setInt(CommonConfigurationKeys.HA_HM_CONNECT_RETRY_INTERVAL_KEY, 50);
     conf.setInt(CommonConfigurationKeys.HA_HM_SLEEP_AFTER_DISCONNECT_KEY, 50);
     
+<<<<<<< HEAD
     svc = new DummyHAService(HAServiceState.ACTIVE,
         new InetSocketAddress("0.0.0.0", 0), true);
+=======
+    svc = createDummyHAService();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     hm = new HealthMonitor(conf, svc) {
       @Override
       protected HAServiceProtocol createProxy() throws IOException {
@@ -73,7 +77,16 @@ public class TestHealthMonitor {
     LOG.info("Waiting for HEALTHY signal");    
     waitForState(hm, HealthMonitor.State.SERVICE_HEALTHY);
   }
+<<<<<<< HEAD
   
+=======
+
+  protected DummyHAService createDummyHAService() {
+    return new DummyHAService(HAServiceState.ACTIVE,
+        new InetSocketAddress("0.0.0.0", 0), true);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test(timeout=15000)
   public void testMonitor() throws Exception {
     LOG.info("Mocking bad health check, waiting for UNHEALTHY");

@@ -23,7 +23,13 @@ option java_package = "org.apache.hadoop.contrib.bkjournal";
 option java_outer_classname = "BKJournalProtos";
 option java_generate_equals_and_hash = true;
 package hadoop.hdfs;
+<<<<<<< HEAD
 import "hdfs.proto";
+=======
+
+import "hdfs.proto";
+import "HdfsServer.proto";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 message VersionProto {
   required int32 layoutVersion = 1;

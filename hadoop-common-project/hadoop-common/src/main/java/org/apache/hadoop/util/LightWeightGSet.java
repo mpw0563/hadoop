@@ -18,12 +18,21 @@
 package org.apache.hadoop.util;
 
 import java.io.PrintStream;
+<<<<<<< HEAD
+=======
+import java.util.AbstractCollection;
+import java.util.Arrays;
+import java.util.Collection;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import org.apache.hadoop.HadoopIllegalArgumentException;
 import org.apache.hadoop.classification.InterfaceAudience;
+<<<<<<< HEAD
 import org.apache.hadoop.util.StringUtils;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -49,12 +58,21 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
   /**
    * Elements of {@link LightWeightGSet}.
    */
+<<<<<<< HEAD
   public static interface LinkedElement {
     /** Set the next element. */
     public void setNext(LinkedElement next);
 
     /** Get the next element. */
     public LinkedElement getNext();
+=======
+  public interface LinkedElement {
+    /** Set the next element. */
+    void setNext(LinkedElement next);
+
+    /** Get the next element. */
+    LinkedElement getNext();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   static final int MAX_ARRAY_LENGTH = 1 << 30; //prevent int overflow problem
@@ -64,6 +82,7 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
    * An internal array of entries, which are the rows of the hash table.
    * The size must be a power of two.
    */
+<<<<<<< HEAD
   private final LinkedElement[] entries;
   /** A mask for computing the array index from the hash value of an element. */
   private final int hash_mask;
@@ -73,6 +92,22 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
    * @see ConcurrentModificationException
    */
   private int modification = 0;
+=======
+  protected LinkedElement[] entries;
+  /** A mask for computing the array index from the hash value of an element. */
+  protected int hash_mask;
+  /** The size of the set (not the entry array). */
+  protected int size = 0;
+  /** Modification version for fail-fast.
+   * @see ConcurrentModificationException
+   */
+  protected int modification = 0;
+
+  private Collection<E> values;
+
+  protected LightWeightGSet() {
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * @param recommended_length Recommended size of the internal array.
@@ -87,7 +122,11 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
   }
 
   //compute actual length
+<<<<<<< HEAD
   private static int actualArrayLength(int recommended) {
+=======
+  protected static int actualArrayLength(int recommended) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (recommended > MAX_ARRAY_LENGTH) {
       return MAX_ARRAY_LENGTH;
     } else if (recommended < MIN_ARRAY_LENGTH) {
@@ -103,11 +142,19 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
     return size;
   }
 
+<<<<<<< HEAD
   private int getIndex(final K key) {
     return key.hashCode() & hash_mask;
   }
 
   private E convert(final LinkedElement e){
+=======
+  protected int getIndex(final K key) {
+    return key.hashCode() & hash_mask;
+  }
+
+  protected E convert(final LinkedElement e){
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @SuppressWarnings("unchecked")
     final E r = (E)e;
     return r;
@@ -138,15 +185,27 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
 
   @Override
   public E put(final E element) {
+<<<<<<< HEAD
     //validate element
     if (element == null) {
       throw new NullPointerException("Null element is not supported.");
     }
     if (!(element instanceof LinkedElement)) {
+=======
+    // validate element
+    if (element == null) {
+      throw new NullPointerException("Null element is not supported.");
+    }
+    LinkedElement e = null;
+    try {
+      e = (LinkedElement)element;
+    } catch (ClassCastException ex) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throw new HadoopIllegalArgumentException(
           "!(element instanceof LinkedElement), element.getClass()="
           + element.getClass());
     }
+<<<<<<< HEAD
     final LinkedElement e = (LinkedElement)element;
 
     //find index
@@ -156,6 +215,16 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
     final E existing = remove(index, element);
 
     //insert the element to the head of the linked list
+=======
+
+    // find index
+    final int index = getIndex(element);
+
+    // remove if it already exists
+    final E existing = remove(index, element);
+
+    // insert the element to the head of the linked list
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     modification++;
     size++;
     e.setNext(entries[index]);
@@ -171,7 +240,11 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
    * @return If such element exists, return it.
    *         Otherwise, return null.
    */
+<<<<<<< HEAD
   private E remove(final int index, final K key) {
+=======
+  protected E remove(final int index, final K key) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (entries[index] == null) {
       return null;
     } else if (entries[index].equals(key)) {
@@ -214,6 +287,41 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public Collection<E> values() {
+    if (values == null) {
+      values = new Values();
+    }
+    return values;
+  }
+
+  private final class Values extends AbstractCollection<E> {
+
+    @Override
+    public Iterator<E> iterator() {
+      return LightWeightGSet.this.iterator();
+    }
+
+    @Override
+    public int size() {
+      return size;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean contains(Object o) {
+      return LightWeightGSet.this.contains((K)o);
+    }
+
+    @Override
+    public void clear() {
+      LightWeightGSet.this.clear();
+    }
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public Iterator<E> iterator() {
     return new SetIterator();
   }
@@ -363,9 +471,14 @@ public class LightWeightGSet<K, E extends K> implements GSet<K, E> {
   }
   
   public void clear() {
+<<<<<<< HEAD
     for (int i = 0; i < entries.length; i++) {
       entries[i] = null;
     }
+=======
+    modification++;
+    Arrays.fill(entries, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     size = 0;
   }
 }

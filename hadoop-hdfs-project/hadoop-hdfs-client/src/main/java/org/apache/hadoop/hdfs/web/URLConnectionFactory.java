@@ -31,6 +31,10 @@ import javax.net.ssl.SSLSocketFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.web.oauth2.OAuth2ConnectionConfigurator;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.client.AuthenticatedURL;
 import org.apache.hadoop.security.authentication.client.AuthenticationException;
@@ -53,6 +57,7 @@ public class URLConnectionFactory {
   /**
    * Timeout for socket connects and reads
    */
+<<<<<<< HEAD
   public final static int DEFAULT_SOCKET_TIMEOUT = 1 * 60 * 1000; // 1 minute
   private final ConnectionConfigurator connConfigurator;
 
@@ -64,28 +69,87 @@ public class URLConnectionFactory {
       return conn;
     }
   };
+=======
+  public final static int DEFAULT_SOCKET_TIMEOUT = 60 * 1000; // 1 minute
+  private final ConnectionConfigurator connConfigurator;
+
+  private static final ConnectionConfigurator DEFAULT_TIMEOUT_CONN_CONFIGURATOR
+      = new ConnectionConfigurator() {
+        @Override
+        public HttpURLConnection configure(HttpURLConnection conn)
+            throws IOException {
+          URLConnectionFactory.setTimeouts(conn, DEFAULT_SOCKET_TIMEOUT);
+          return conn;
+        }
+      };
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * The URLConnectionFactory that sets the default timeout and it only trusts
    * Java's SSL certificates.
    */
+<<<<<<< HEAD
   public static final URLConnectionFactory DEFAULT_SYSTEM_CONNECTION_FACTORY = new URLConnectionFactory(
       DEFAULT_TIMEOUT_CONN_CONFIGURATOR);
+=======
+  public static final URLConnectionFactory DEFAULT_SYSTEM_CONNECTION_FACTORY =
+      new URLConnectionFactory(DEFAULT_TIMEOUT_CONN_CONFIGURATOR);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Construct a new URLConnectionFactory based on the configuration. It will
    * try to load SSL certificates when it is specified.
    */
+<<<<<<< HEAD
   public static URLConnectionFactory newDefaultURLConnectionFactory(Configuration conf) {
     ConnectionConfigurator conn = null;
+=======
+  public static URLConnectionFactory newDefaultURLConnectionFactory(
+      Configuration conf) {
+    ConnectionConfigurator conn = getSSLConnectionConfiguration(conf);
+
+    return new URLConnectionFactory(conn);
+  }
+
+  private static ConnectionConfigurator getSSLConnectionConfiguration(
+      Configuration conf) {
+    ConnectionConfigurator conn;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       conn = newSslConnConfigurator(DEFAULT_SOCKET_TIMEOUT, conf);
     } catch (Exception e) {
       LOG.debug(
+<<<<<<< HEAD
           "Cannot load customized ssl related configuration. Fallback to system-generic settings.",
           e);
       conn = DEFAULT_TIMEOUT_CONN_CONFIGURATOR;
     }
+=======
+          "Cannot load customized ssl related configuration. Fallback to" +
+              " system-generic settings.",
+          e);
+      conn = DEFAULT_TIMEOUT_CONN_CONFIGURATOR;
+    }
+
+    return conn;
+  }
+
+  /**
+   * Construct a new URLConnectionFactory that supports OAut-based connections.
+   * It will also try to load the SSL configuration when they are specified.
+   */
+  public static URLConnectionFactory newOAuth2URLConnectionFactory(
+      Configuration conf) throws IOException {
+    ConnectionConfigurator conn;
+    try {
+      ConnectionConfigurator sslConnConfigurator
+          = newSslConnConfigurator(DEFAULT_SOCKET_TIMEOUT, conf);
+
+      conn = new OAuth2ConnectionConfigurator(conf, sslConnConfigurator);
+    } catch (Exception e) {
+      throw new IOException("Unable to load OAuth2 connection factory.", e);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new URLConnectionFactory(conn);
   }
 
@@ -97,8 +161,14 @@ public class URLConnectionFactory {
   /**
    * Create a new ConnectionConfigurator for SSL connections
    */
+<<<<<<< HEAD
   private static ConnectionConfigurator newSslConnConfigurator(final int timeout,
       Configuration conf) throws IOException, GeneralSecurityException {
+=======
+  private static ConnectionConfigurator newSslConnConfigurator(
+      final int timeout, Configuration conf)
+      throws IOException, GeneralSecurityException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final SSLFactory factory;
     final SSLSocketFactory sf;
     final HostnameVerifier hv;
@@ -154,9 +224,13 @@ public class URLConnectionFactory {
   public URLConnection openConnection(URL url, boolean isSpnego)
       throws IOException, AuthenticationException {
     if (isSpnego) {
+<<<<<<< HEAD
       if (LOG.isDebugEnabled()) {
         LOG.debug("open AuthenticatedURL connection {}", url);
       }
+=======
+      LOG.debug("open AuthenticatedURL connection {}", url);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       UserGroupInformation.getCurrentUser().checkTGTAndReloginFromKeytab();
       final AuthenticatedURL.Token authToken = new AuthenticatedURL.Token();
       return new AuthenticatedURL(new KerberosUgiAuthenticator(),

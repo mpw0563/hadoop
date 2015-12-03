@@ -17,22 +17,38 @@
  */
 package org.apache.hadoop.hdfs.server.blockmanagement;
 
-import java.util.Iterator;
-
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import org.apache.hadoop.hdfs.protocol.Block;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.namenode.INodeId;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.protocol.DatanodeStorage;
 import org.apache.hadoop.util.GSet;
 import org.apache.hadoop.util.LightWeightGSet;
 
+<<<<<<< HEAD
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+=======
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import java.util.Iterator;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * This class maintains the map from a block to its metadata.
  * block's metadata currently includes blockCollection it belongs to and
  * the datanodes that store the block.
  */
+<<<<<<< HEAD
 class BlocksMap {
+=======
+public class BlocksMap {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static class StorageIterator implements Iterator<DatanodeStorageInfo> {
     private final BlockInfo blockInfo;
     private int nextIdx = 0;
@@ -43,8 +59,15 @@ class BlocksMap {
 
     @Override
     public boolean hasNext() {
-      return blockInfo != null && nextIdx < blockInfo.getCapacity()
-              && blockInfo.getDatanode(nextIdx) != null;
+      if (blockInfo == null) {
+        return false;
+      }
+      while (nextIdx < blockInfo.getCapacity() &&
+          blockInfo.getDatanode(nextIdx) == null) {
+        // note that for striped blocks there may be null in the triplets
+        nextIdx++;
+      }
+      return nextIdx < blockInfo.getCapacity();
     }
 
     @Override
@@ -63,6 +86,7 @@ class BlocksMap {
   
   private GSet<Block, BlockInfo> blocks;
 
+<<<<<<< HEAD
   BlocksMap(int capacity) {
     // Use 2% of total memory to size the GSet capacity
     this.capacity = capacity;
@@ -82,6 +106,32 @@ class BlocksMap {
     };
   }
 
+=======
+  public BlocksMap(int capacity, GSet<Block, BlockInfo> b) {
+    this.capacity = capacity;
+    this.blocks = b;
+  }
+
+  BlocksMap(int capacity) {
+    // Use 2% of total memory to size the GSet capacity
+    this.capacity = capacity;
+    this.blocks = new LightWeightGSet<Block, BlockInfo>(capacity) {
+      @Override
+      public Iterator<BlockInfo> iterator() {
+        SetIterator iterator = new SetIterator();
+        /*
+         * Not tracking any modifications to set. As this set will be used
+         * always under FSNameSystem lock, modifications will not cause any
+         * ConcurrentModificationExceptions. But there is a chance of missing
+         * newly added elements during iteration.
+         */
+        iterator.setTrackModification(false);
+        return iterator;
+      }
+    };
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+
 
   void close() {
     clear();
@@ -92,11 +142,14 @@ class BlocksMap {
     if (blocks != null) {
       blocks.clear();
     }
+<<<<<<< HEAD
   }
 
   BlockCollection getBlockCollection(Block b) {
     BlockInfo info = blocks.get(b);
     return (info != null) ? info.getBlockCollection() : null;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -108,7 +161,11 @@ class BlocksMap {
       info = b;
       blocks.put(info);
     }
+<<<<<<< HEAD
     info.setBlockCollection(bc);
+=======
+    info.setBlockCollectionId(bc.getId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return info;
   }
 
@@ -122,14 +179,23 @@ class BlocksMap {
     if (blockInfo == null)
       return;
 
+<<<<<<< HEAD
     blockInfo.setBlockCollection(null);
     for(int idx = blockInfo.numNodes()-1; idx >= 0; idx--) {
+=======
+    blockInfo.setBlockCollectionId(INodeId.INVALID_INODE_ID);
+    final int size = blockInfo.isStriped() ?
+        blockInfo.getCapacity() : blockInfo.numNodes();
+    for(int idx = size - 1; idx >= 0; idx--) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       DatanodeDescriptor dn = blockInfo.getDatanode(idx);
-      dn.removeBlock(blockInfo); // remove from the list and wipe the location
+      if (dn != null) {
+        removeBlock(dn, blockInfo); // remove from the list and wipe the location
+      }
     }
   }
-  
-  /** Returns the block object it it exists in the map. */
+
+  /** Returns the block object if it exists in the map. */
   BlockInfo getStoredBlock(Block b) {
     return blocks.get(b);
   }
@@ -137,6 +203,7 @@ class BlocksMap {
   /**
    * Searches for the block in the BlocksMap and 
    * returns {@link Iterable} of the storages the block belongs to.
+<<<<<<< HEAD
    */
   Iterable<DatanodeStorageInfo> getStorages(Block b) {
     return getStorages(blocks.get(b));
@@ -149,6 +216,20 @@ class BlocksMap {
    * 
    * @param state DatanodeStorage state by which to filter the returned Iterable
    */
+=======
+   */
+  Iterable<DatanodeStorageInfo> getStorages(Block b) {
+    return getStorages(blocks.get(b));
+  }
+
+  /**
+   * Searches for the block in the BlocksMap and 
+   * returns {@link Iterable} of the storages the block belongs to
+   * <i>that are of the given {@link DatanodeStorage.State state}</i>.
+   * 
+   * @param state DatanodeStorage state by which to filter the returned Iterable
+   */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   Iterable<DatanodeStorageInfo> getStorages(Block b, final DatanodeStorage.State state) {
     return Iterables.filter(getStorages(blocks.get(b)), new Predicate<DatanodeStorageInfo>() {
       @Override
@@ -188,13 +269,28 @@ class BlocksMap {
       return false;
 
     // remove block from the data-node list and the node from the block info
-    boolean removed = node.removeBlock(info);
+    boolean removed = removeBlock(node, info);
 
+<<<<<<< HEAD
     if (info.getDatanode(0) == null     // no datanodes left
               && info.isDeleted()) {  // does not belong to a file
+=======
+    if (info.hasNoStorage()    // no datanodes left
+        && info.isDeleted()) { // does not belong to a file
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       blocks.remove(b);  // remove block from the map
     }
     return removed;
+  }
+
+  /**
+   * Remove block from the list of blocks belonging to the data-node. Remove
+   * data-node from the block.
+   */
+  static boolean removeBlock(DatanodeDescriptor dn, BlockInfo b) {
+    final DatanodeStorageInfo s = b.findStorageInfo(dn);
+    // if block exists on this datanode
+    return s != null && s.removeBlock(b);
   }
 
   int size() {
@@ -213,6 +309,7 @@ class BlocksMap {
   int getCapacity() {
     return capacity;
   }
+<<<<<<< HEAD
 
   /**
    * Replace a block in the block map by a new block.
@@ -229,4 +326,6 @@ class BlocksMap {
     blocks.put(newBlock);
     return newBlock;
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

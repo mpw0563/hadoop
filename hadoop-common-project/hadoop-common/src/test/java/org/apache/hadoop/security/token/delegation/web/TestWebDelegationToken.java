@@ -176,6 +176,7 @@ public class TestWebDelegationToken {
 
   protected Server createJettyServer() {
     try {
+<<<<<<< HEAD
       InetAddress localhost = InetAddress.getLocalHost();
       ServerSocket ss = new ServerSocket(0, 50, localhost);
       int port = ss.getLocalPort();
@@ -183,6 +184,10 @@ public class TestWebDelegationToken {
       jetty = new Server(0);
       jetty.getConnectors()[0].setHost("localhost");
       jetty.getConnectors()[0].setPort(port);
+=======
+      jetty = new Server(0);
+      jetty.getConnectors()[0].setHost("localhost");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return jetty;
     } catch (Exception ex) {
       throw new RuntimeException("Could not setup Jetty: " + ex.getMessage(),
@@ -192,7 +197,11 @@ public class TestWebDelegationToken {
 
   protected String getJettyURL() {
     Connector c = jetty.getConnectors()[0];
+<<<<<<< HEAD
     return "http://" + c.getHost() + ":" + c.getPort();
+=======
+    return "http://" + c.getHost() + ":" + c.getLocalPort();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Before

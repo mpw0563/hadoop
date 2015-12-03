@@ -18,6 +18,10 @@
 package org.apache.hadoop.hdfs.server.namenode;
 
 import org.apache.hadoop.HadoopIllegalArgumentException;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.InvalidPathException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.PathIsNotDirectoryException;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.fs.UnresolvedLinkException;
@@ -42,7 +46,10 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+<<<<<<< HEAD
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_ACCESSTIME_PRECISION_KEY;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_QUOTA_BY_STORAGETYPE_ENABLED_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_STORAGE_POLICY_ENABLED_KEY;
 
@@ -51,6 +58,12 @@ public class FSDirAttrOp {
       FSDirectory fsd, final String srcArg, FsPermission permission)
       throws IOException {
     String src = srcArg;
+<<<<<<< HEAD
+=======
+    if (FSDirectory.isExactReservedName(src)) {
+      throw new InvalidPathException(src);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     FSPermissionChecker pc = fsd.getPermissionChecker();
     byte[][] pathComponents = FSDirectory.getPathComponentsForReservedPath(src);
     INodesInPath iip;
@@ -70,6 +83,12 @@ public class FSDirAttrOp {
   static HdfsFileStatus setOwner(
       FSDirectory fsd, String src, String username, String group)
       throws IOException {
+<<<<<<< HEAD
+=======
+    if (FSDirectory.isExactReservedName(src)) {
+      throw new InvalidPathException(src);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     FSPermissionChecker pc = fsd.getPermissionChecker();
     byte[][] pathComponents = FSDirectory.getPathComponentsForReservedPath(src);
     INodesInPath iip;
@@ -97,6 +116,7 @@ public class FSDirAttrOp {
   static HdfsFileStatus setTimes(
       FSDirectory fsd, String src, long mtime, long atime)
       throws IOException {
+<<<<<<< HEAD
     if (!fsd.isAccessTimeSupported() && atime != -1) {
       throw new IOException(
           "Access time for hdfs is not configured. " +
@@ -104,6 +124,8 @@ public class FSDirAttrOp {
               + " configuration parameter.");
     }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     FSPermissionChecker pc = fsd.getPermissionChecker();
     byte[][] pathComponents = FSDirectory.getPathComponentsForReservedPath(src);
 
@@ -122,7 +144,11 @@ public class FSDirAttrOp {
                                             " does not exist.");
       }
       boolean changed = unprotectedSetTimes(fsd, inode, mtime, atime, true,
+<<<<<<< HEAD
                                             iip.getLatestSnapshotId());
+=======
+          iip.getLatestSnapshotId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (changed) {
         fsd.getEditLog().logTimes(src, mtime, atime);
       }
@@ -147,6 +173,7 @@ public class FSDirAttrOp {
         fsd.checkPathAccess(pc, iip, FsAction.WRITE);
       }
 
+<<<<<<< HEAD
       final short[] blockRepls = new short[2]; // 0: old, 1: new
       final BlockInfo[] blocks = unprotectedSetReplication(fsd, src,
           replication, blockRepls);
@@ -154,6 +181,13 @@ public class FSDirAttrOp {
       if (isFile) {
         fsd.getEditLog().logSetReplication(src, replication);
         bm.setReplication(blockRepls[0], blockRepls[1], src, blocks);
+=======
+      final BlockInfo[] blocks = unprotectedSetReplication(fsd, src,
+                                                           replication);
+      isFile = blocks != null;
+      if (isFile) {
+        fsd.getEditLog().logSetReplication(src, replication);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     } finally {
       fsd.writeUnlock();
@@ -399,6 +433,7 @@ public class FSDirAttrOp {
   }
 
   static BlockInfo[] unprotectedSetReplication(
+<<<<<<< HEAD
       FSDirectory fsd, String src, short replication, short[] blockRepls)
       throws QuotaExceededException, UnresolvedLinkException,
              SnapshotAccessControlException {
@@ -432,6 +467,54 @@ public class FSDirAttrOp {
     if (blockRepls != null) {
       blockRepls[0] = oldBR;
       blockRepls[1] = newBR;
+=======
+      FSDirectory fsd, String src, short replication)
+      throws QuotaExceededException, UnresolvedLinkException,
+      SnapshotAccessControlException, UnsupportedActionException {
+    assert fsd.hasWriteLock();
+
+    final BlockManager bm = fsd.getBlockManager();
+    final INodesInPath iip = fsd.getINodesInPath4Write(src, true);
+    final INode inode = iip.getLastINode();
+    if (inode == null || !inode.isFile() || inode.asFile().isStriped()) {
+      // TODO we do not support replication on stripe layout files yet
+      return null;
+    }
+
+    INodeFile file = inode.asFile();
+    // Make sure the directory has sufficient quotas
+    short oldBR = file.getPreferredBlockReplication();
+
+    // Ensure the quota does not exceed
+    if (oldBR < replication) {
+      long size = file.computeFileSize(true, true);
+      fsd.updateCount(iip, 0L, size, oldBR, replication, true);
+    }
+
+    file.setFileReplication(replication, iip.getLatestSnapshotId());
+    short targetReplication = (short) Math.max(
+        replication, file.getPreferredBlockReplication());
+
+    for (BlockInfo b : file.getBlocks()) {
+      if (oldBR == targetReplication) {
+        continue;
+      }
+      if (oldBR > replication) {
+        fsd.updateCount(iip, 0L, b.getNumBytes(), oldBR, targetReplication,
+                        true);
+      }
+      bm.setReplication(oldBR, targetReplication, b);
+    }
+
+    if (oldBR != -1) {
+      if (oldBR > targetReplication) {
+        FSDirectory.LOG.info("Decreasing replication from {} to {} for {}",
+                             oldBR, targetReplication, src);
+      } else {
+        FSDirectory.LOG.info("Increasing replication from {} to {} for {}",
+                             oldBR, targetReplication, src);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     return file.getBlocks();
   }

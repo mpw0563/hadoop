@@ -51,6 +51,7 @@ public class TestParallelShortCircuitReadUnCached extends TestParallelReadUtil {
     conf.setBoolean(DFSConfigKeys.DFS_BLOCK_ACCESS_TOKEN_ENABLE_KEY, true);
     conf.setBoolean(HdfsClientConfigKeys.Read.ShortCircuit.SKIP_CHECKSUM_KEY,
         false);
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.
         DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC, true);
     // We want to test reading from stale sockets.
@@ -58,6 +59,15 @@ public class TestParallelShortCircuitReadUnCached extends TestParallelReadUtil {
     conf.setLong(DFSConfigKeys.DFS_CLIENT_SOCKET_CACHE_EXPIRY_MSEC_KEY,
         5 * 60 * 1000);
     conf.setInt(DFSConfigKeys.DFS_CLIENT_SOCKET_CACHE_CAPACITY_KEY, 32);
+=======
+    conf.setBoolean(HdfsClientConfigKeys.
+        DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC, true);
+    // We want to test reading from stale sockets.
+    conf.setInt(DFSConfigKeys.DFS_DATANODE_SOCKET_REUSE_KEEPALIVE_KEY, 1);
+    conf.setLong(HdfsClientConfigKeys.DFS_CLIENT_SOCKET_CACHE_EXPIRY_MSEC_KEY,
+        5 * 60 * 1000);
+    conf.setInt(HdfsClientConfigKeys.DFS_CLIENT_SOCKET_CACHE_CAPACITY_KEY, 32);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Avoid using the FileInputStreamCache.
     conf.setInt(HdfsClientConfigKeys.Read.ShortCircuit.STREAMS_CACHE_SIZE_KEY,
         0);

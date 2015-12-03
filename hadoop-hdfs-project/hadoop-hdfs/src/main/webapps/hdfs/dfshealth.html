@@ -20,6 +20,10 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=9" />
 <link rel="stylesheet" type="text/css" href="/static/bootstrap-3.0.2/css/bootstrap.min.css" />
+<<<<<<< HEAD
+=======
+<link rel="stylesheet" type="text/css" href="/static/dataTables.bootstrap.css" />
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 <link rel="stylesheet" type="text/css" href="/static/hadoop.css" />
 <title>Namenode information</title>
 </head>
@@ -116,7 +120,11 @@
     {.}<br/>
     {/CorruptFiles}
   </div>
+<<<<<<< HEAD
   <p>Please check the logs or run fsck in order to identify the missing blocks. See the Hadoop FAQ for common causes and potential solutions.</p>
+=======
+  <p>Please check the logs or run fsck in order to identify the missing blocks.{@if cond="{NumberOfSnapshottableDirs} > 0"} Please run fsck with -includeSnapshots in order to see detailed reports about snapshots.{/if} See the Hadoop FAQ for common causes and potential solutions.</p>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 </div>
 {/if}
 {/nn}
@@ -129,9 +137,15 @@
   <tr><th>Namenode ID:</th><td>{NamenodeID}</td></tr>
 {/HAInfo}
 {#nn}
+<<<<<<< HEAD
   <tr><th>Started:</th><td>{NNStarted}</td></tr>
   <tr><th>Version:</th><td>{Version}</td></tr>
   <tr><th>Compiled:</th><td>{CompileInfo}</td></tr>
+=======
+  <tr><th>Started:</th><td>{NNStartedTimeInMillis|date_tostring}</td></tr>
+  <tr><th>Version:</th><td>{Version}</td></tr>
+  <tr><th>Compiled:</th><td>{CompileInfo|format_compile_info}</td></tr>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <tr><th>Cluster ID:</th><td>{ClusterId}</td></tr>
   <tr><th>Block Pool ID:</th><td>{BlockPoolId}</td></tr>
 {/nn}
@@ -144,16 +158,28 @@
 
 <p>
   {#fs}
+<<<<<<< HEAD
   {FilesTotal} files and directories, {BlocksTotal} blocks = {@math key="{FilesTotal}" method="add" operand="{BlocksTotal}"/} total filesystem object(s).
+=======
+  {FilesTotal|fmt_number} files and directories, {BlocksTotal|fmt_number} blocks = {ObjectsTotal|fmt_number} total filesystem object(s).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   {#helper_fs_max_objects/}
   {/fs}
 </p>
 {#mem.HeapMemoryUsage}
+<<<<<<< HEAD
 <p>Heap Memory used {used|fmt_bytes} of {committed|fmt_bytes} Heap Memory. Max Heap Memory is {max|fmt_bytes}. </p>
 {/mem.HeapMemoryUsage}
 
 {#mem.NonHeapMemoryUsage}
 <p>Non Heap Memory used {used|fmt_bytes} of {committed|fmt_bytes} Commited Non Heap Memory. Max Non Heap Memory is {max|fmt_bytes}. </p>
+=======
+<p>Heap Memory used {used|fmt_bytes} of {committed|fmt_bytes} Heap Memory. Max Heap Memory is {@eq key=max value="-1" type="number"}&ltunbonded&gt{:else}{max|fmt_bytes}{/eq}.</p>
+{/mem.HeapMemoryUsage}
+
+{#mem.NonHeapMemoryUsage}
+<p>Non Heap Memory used {used|fmt_bytes} of {committed|fmt_bytes} Commited Non Heap Memory. Max Non Heap Memory is {@eq key=max value="-1" type="number"}&ltunbonded&gt{:else}{max|fmt_bytes}{/eq}.</p>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 {/mem.NonHeapMemoryUsage}
 
 {#nn}
@@ -284,13 +310,22 @@
   <ul class="dfshealth-node-legend">
     <li class="dfshealth-node-icon dfshealth-node-alive">In service</li>
     <li class="dfshealth-node-icon dfshealth-node-down">Down</li>
+<<<<<<< HEAD
     <li class="dfshealth-node-icon dfshealth-node-decommisioned">Decommisioned</li>
     <li class="dfshealth-node-icon dfshealth-node-down-decommisioned">Decommissioned &amp; dead</li>
+=======
+    <li class="dfshealth-node-icon dfshealth-node-decommissioned">Decommissioned</li>
+    <li class="dfshealth-node-icon dfshealth-node-down-decommissioned">Decommissioned &amp; dead</li>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </ul>
 </div>
 <div class="page-header"><h1><small>In operation</small></h1></div>
 <small>
+<<<<<<< HEAD
 <table class="table">
+=======
+<table class="table" id="table-datanodes">
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <thead>
     <tr>
       <th>Node</th>
@@ -303,7 +338,11 @@
   </thead>
   {#LiveNodes}
   <tr>
+<<<<<<< HEAD
     <td class="dfshealth-node-icon dfshealth-node-{state}">{name} ({xferaddr})</td>
+=======
+    <td ng-value="{state}-{name}" class="dfshealth-node-icon dfshealth-node-{state}">{name} ({xferaddr})</td>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <td ng-value="{lastContact}">{#helper_relative_time value="{lastContact}"/}</td>
     <td ng-value="{usedPercentage}">
       <div>
@@ -315,24 +354,41 @@
       </div>
     </td>
     <td>{numBlocks}</td>
+<<<<<<< HEAD
     <td>{blockPoolUsed|fmt_bytes} ({blockPoolUsedPercent|fmt_percentage})</td>
+=======
+    <td ng-value="{blockPoolUsedPercent}">{blockPoolUsed|fmt_bytes} ({blockPoolUsedPercent|fmt_percentage})</td>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <td>{version}</td>
   </tr>
   {/LiveNodes}
   {#DeadNodes}
   <tr class="danger">
+<<<<<<< HEAD
     <td class="dfshealth-node-icon dfshealth-node-{state}">{name} ({xferaddr})</td>
     <td>{#helper_relative_time value="{lastContact}"/}</td>
     <td>-</td>
     <td>-</td>
     <td>-</td>
     <td>-</td>
+=======
+    <td ng-value="{state}-{name}" class="dfshealth-node-icon dfshealth-node-{state}">{name} ({xferaddr})</td>
+    <td>{#helper_relative_time value="{lastContact}"/}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </tr>
   {/DeadNodes}
 </table>
 </small>
 
+<<<<<<< HEAD
 <div class="page-header"><h1><small>Decomissioning</small></h1></div>
+=======
+<div class="page-header"><h1><small>Decommissioning</small></h1></div>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 <small>
 <table class="table">
   <thead>
@@ -418,7 +474,13 @@ There are no reported volume failures.
 </script>
 
 <script type="text/javascript" src="/static/jquery-1.10.2.min.js">
+<<<<<<< HEAD
 </script><script type="text/javascript" src="/static/bootstrap-3.0.2/js/bootstrap.min.js">
+=======
+</script><script type="text/javascript" src="/static/jquery.dataTables.min.js">
+</script><script type="text/javascript" src="/static/bootstrap-3.0.2/js/bootstrap.min.js">
+</script><script type="text/javascript" src="/static/dataTables.bootstrap.js">
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 </script><script type="text/javascript" src="/static/moment.min.js">
 </script><script type="text/javascript" src="/static/dust-full-2.0.0.min.js">
 </script><script type="text/javascript" src="/static/dust-helpers-1.1.1.min.js">

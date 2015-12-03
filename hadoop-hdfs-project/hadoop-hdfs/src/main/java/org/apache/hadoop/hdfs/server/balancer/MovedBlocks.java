@@ -77,6 +77,14 @@ public class MovedBlocks<L> {
     public long getNumBytes() {
       return block.getNumBytes();
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public String toString() {
+      return block + " size=" + getNumBytes();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static final int CUR_WIN = 0;

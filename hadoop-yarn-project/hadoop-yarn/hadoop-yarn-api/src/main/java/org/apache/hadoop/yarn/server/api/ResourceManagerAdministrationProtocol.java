@@ -21,6 +21,10 @@ package org.apache.hadoop.yarn.server.api;
 import java.io.IOException;
 
 import org.apache.hadoop.classification.InterfaceAudience.Private;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.classification.InterfaceStability.Evolving;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.io.retry.Idempotent;
 import org.apache.hadoop.ipc.StandbyException;
 import org.apache.hadoop.tools.GetUserMappingsProtocol;
@@ -33,6 +37,11 @@ import org.apache.hadoop.yarn.server.api.protocolrecords.CheckForDecommissioning
 import org.apache.hadoop.yarn.server.api.protocolrecords.CheckForDecommissioningNodesResponse;
 import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshAdminAclsRequest;
 import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshAdminAclsResponse;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshClusterMaxPriorityRequest;
+import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshClusterMaxPriorityResponse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshNodesRequest;
 import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshNodesResponse;
 import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshQueuesRequest;
@@ -49,6 +58,11 @@ import org.apache.hadoop.yarn.server.api.protocolrecords.ReplaceLabelsOnNodeRequ
 import org.apache.hadoop.yarn.server.api.protocolrecords.ReplaceLabelsOnNodeResponse;
 import org.apache.hadoop.yarn.server.api.protocolrecords.UpdateNodeResourceRequest;
 import org.apache.hadoop.yarn.server.api.protocolrecords.UpdateNodeResourceResponse;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshNodesResourcesRequest;
+import org.apache.hadoop.yarn.server.api.protocolrecords.RefreshNodesResourcesResponse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @Private
 public interface ResourceManagerAdministrationProtocol extends GetUserMappingsProtocol {
@@ -72,7 +86,11 @@ public interface ResourceManagerAdministrationProtocol extends GetUserMappingsPr
 
   @Private
   @Idempotent
+<<<<<<< HEAD
   public RefreshUserToGroupsMappingsResponse refreshUserToGroupsMappings(
+=======
+  RefreshUserToGroupsMappingsResponse refreshUserToGroupsMappings(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       RefreshUserToGroupsMappingsRequest request)
   throws StandbyException, YarnException, IOException;
 
@@ -105,9 +123,20 @@ public interface ResourceManagerAdministrationProtocol extends GetUserMappingsPr
   @Private
   @Idempotent
   public UpdateNodeResourceResponse updateNodeResource(
+<<<<<<< HEAD
       UpdateNodeResourceRequest request) 
   throws YarnException, IOException;
    
+=======
+      UpdateNodeResourceRequest request) throws YarnException, IOException;
+
+  @Private
+  @Evolving
+  @Idempotent
+  public RefreshNodesResourcesResponse refreshNodesResources(
+      RefreshNodesResourcesRequest request) throws YarnException, IOException;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Private
   @Idempotent
   public AddToClusterNodeLabelsResponse addToClusterNodeLabels(
@@ -128,4 +157,13 @@ public interface ResourceManagerAdministrationProtocol extends GetUserMappingsPr
   public CheckForDecommissioningNodesResponse checkForDecommissioningNodes(
       CheckForDecommissioningNodesRequest checkForDecommissioningNodesRequest)
       throws YarnException, IOException;
+<<<<<<< HEAD
+=======
+
+  @Private
+  @Idempotent
+  public RefreshClusterMaxPriorityResponse refreshClusterMaxPriority(
+      RefreshClusterMaxPriorityRequest request) throws YarnException,
+      IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

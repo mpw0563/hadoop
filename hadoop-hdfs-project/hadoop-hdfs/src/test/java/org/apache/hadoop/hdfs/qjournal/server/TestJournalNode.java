@@ -106,7 +106,13 @@ public class TestJournalNode {
     MetricsAsserts.assertCounter("BatchesWritten", 0L, metrics);
     MetricsAsserts.assertCounter("BatchesWrittenWhileLagging", 0L, metrics);
     MetricsAsserts.assertGauge("CurrentLagTxns", 0L, metrics);
+<<<<<<< HEAD
 
+=======
+    MetricsAsserts.assertGauge("LastJournalTimestamp", 0L, metrics);
+
+    long beginTimestamp = System.currentTimeMillis();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     IPCLoggerChannel ch = new IPCLoggerChannel(
         conf, FAKE_NSINFO, journalId, jn.getBoundIpcAddress());
     ch.newEpoch(1).get();
@@ -119,6 +125,13 @@ public class TestJournalNode {
     MetricsAsserts.assertCounter("BatchesWritten", 1L, metrics);
     MetricsAsserts.assertCounter("BatchesWrittenWhileLagging", 0L, metrics);
     MetricsAsserts.assertGauge("CurrentLagTxns", 0L, metrics);
+<<<<<<< HEAD
+=======
+    long lastJournalTimestamp = MetricsAsserts.getLongGauge(
+        "LastJournalTimestamp", metrics);
+    assertTrue(lastJournalTimestamp > beginTimestamp);
+    beginTimestamp = lastJournalTimestamp;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ch.setCommittedTxId(100L);
     ch.sendEdits(1L, 2, 1, "goodbye".getBytes(Charsets.UTF_8)).get();
@@ -128,6 +141,12 @@ public class TestJournalNode {
     MetricsAsserts.assertCounter("BatchesWritten", 2L, metrics);
     MetricsAsserts.assertCounter("BatchesWrittenWhileLagging", 1L, metrics);
     MetricsAsserts.assertGauge("CurrentLagTxns", 98L, metrics);
+<<<<<<< HEAD
+=======
+    lastJournalTimestamp = MetricsAsserts.getLongGauge(
+        "LastJournalTimestamp", metrics);
+    assertTrue(lastJournalTimestamp > beginTimestamp);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   }
   

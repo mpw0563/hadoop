@@ -71,8 +71,18 @@ public class NameNodeAdapter {
   public static HdfsFileStatus getFileInfo(NameNode namenode, String src,
       boolean resolveLink) throws AccessControlException, UnresolvedLinkException,
         StandbyException, IOException {
+<<<<<<< HEAD
     return FSDirStatAndListingOp.getFileInfo(namenode.getNamesystem()
             .getFSDirectory(), src, resolveLink);
+=======
+    namenode.getNamesystem().readLock();
+    try {
+      return FSDirStatAndListingOp.getFileInfo(namenode.getNamesystem()
+          .getFSDirectory(), src, resolveLink);
+    } finally {
+      namenode.getNamesystem().readUnlock();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   public static boolean mkdirs(NameNode namenode, String src,
@@ -83,7 +93,11 @@ public class NameNodeAdapter {
   
   public static void saveNamespace(NameNode namenode)
       throws AccessControlException, IOException {
+<<<<<<< HEAD
     namenode.getNamesystem().saveNamespace();
+=======
+    namenode.getNamesystem().saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   public static void enterSafeMode(NameNode namenode, boolean resourcesLow)
@@ -243,7 +257,11 @@ public class NameNodeAdapter {
    * @return Replication queue initialization status
    */
   public static boolean safeModeInitializedReplQueues(NameNode nn) {
+<<<<<<< HEAD
     return nn.getNamesystem().isPopulatingReplQueues();
+=======
+    return nn.getNamesystem().getBlockManager().isPopulatingReplQueues();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   public static File getInProgressEditsFile(StorageDirectory sd, long startTxId) {

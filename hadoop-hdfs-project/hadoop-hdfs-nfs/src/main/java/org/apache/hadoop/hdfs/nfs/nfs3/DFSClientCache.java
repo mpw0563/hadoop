@@ -33,8 +33,13 @@ import org.apache.commons.logging.Log;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.hdfs.DFSClient;
 import org.apache.hadoop.hdfs.DFSInputStream;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.nfs.conf.NfsConfiguration;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+import org.apache.hadoop.hdfs.nfs.conf.NfsConfiguration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.io.MultipleIOException;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.ShutdownHookManager;
@@ -173,7 +178,11 @@ class DFSClientCache {
         return ugi.doAs(new PrivilegedExceptionAction<DFSClient>() {
           @Override
           public DFSClient run() throws IOException {
+<<<<<<< HEAD
             return new DFSClient(NameNode.getAddress(config), config);
+=======
+            return new DFSClient(DFSUtilClient.getNNAddress(config), config);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
         });
       }

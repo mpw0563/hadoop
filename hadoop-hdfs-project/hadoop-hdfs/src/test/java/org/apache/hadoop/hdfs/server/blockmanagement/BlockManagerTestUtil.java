@@ -161,7 +161,11 @@ public class BlockManagerTestUtil {
    */
   public static int computeAllPendingWork(BlockManager bm) {
     int work = computeInvalidationWork(bm);
+<<<<<<< HEAD
     work += bm.computeReplicationWork(Integer.MAX_VALUE);
+=======
+    work += bm.computeBlockRecoveryWork(Integer.MAX_VALUE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return work;
   }
 
@@ -306,4 +310,15 @@ public class BlockManagerTestUtil {
       throws ExecutionException, InterruptedException {
     dm.getDecomManager().runMonitor();
   }
+<<<<<<< HEAD
+=======
+
+  /**
+   * add block to the replicateBlocks queue of the Datanode
+   */
+  public static void addBlockToBeReplicated(DatanodeDescriptor node,
+      Block block, DatanodeStorageInfo[] targets) {
+    node.addBlockToBeReplicated(block, targets);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

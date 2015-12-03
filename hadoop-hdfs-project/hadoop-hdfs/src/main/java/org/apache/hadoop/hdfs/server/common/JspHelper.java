@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hdfs.server.common;
 
+<<<<<<< HEAD
 import static org.apache.hadoop.fs.CommonConfigurationKeys.DEFAULT_HADOOP_HTTP_STATIC_USER;
 import static org.apache.hadoop.fs.CommonConfigurationKeys.HADOOP_HTTP_STATIC_USER;
 
@@ -33,16 +34,21 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.protocol.DatanodeID;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.security.token.delegation.DelegationTokenIdentifier;
 import org.apache.hadoop.hdfs.server.namenode.NameNode;
 import org.apache.hadoop.hdfs.server.namenode.NameNodeHttpServer;
@@ -74,13 +80,12 @@ public class JspHelper {
   public static final String CURRENT_CONF = "current.conf";
   public static final String DELEGATION_PARAMETER_NAME = DelegationParam.NAME;
   public static final String NAMENODE_ADDRESS = "nnaddr";
-  static final String SET_DELEGATION = "&" + DELEGATION_PARAMETER_NAME +
-                                              "=";
   private static final Log LOG = LogFactory.getLog(JspHelper.class);
 
   /** Private constructor for preventing creating JspHelper object. */
   private JspHelper() {}
 
+<<<<<<< HEAD
   // data structure to count number of blocks on datanodes.
   private static class NodeRecord extends DatanodeInfo {
     int frequency;
@@ -174,6 +179,8 @@ public class JspHelper {
     return value == null? null: Long.parseLong(value);
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static String getDefaultWebUserName(Configuration conf) throws IOException {
     String user = conf.get(
         HADOOP_HTTP_STATIC_USER, DEFAULT_HADOOP_HTTP_STATIC_USER);
@@ -297,6 +304,7 @@ public class JspHelper {
         // Verify the token.
         nn.getNamesystem().verifyToken(id, token.getPassword());
       }
+<<<<<<< HEAD
     }
     UserGroupInformation ugi = id.getUser();
     ugi.addToken(token);
@@ -365,43 +373,61 @@ public class JspHelper {
       return SET_DELEGATION + tokenString;
     } else {
       return "";
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    }
+    UserGroupInformation ugi = id.getUser();
+    ugi.addToken(token);
+    return ugi;
+  }
+
+  // honor the X-Forwarded-For header set by a configured set of trusted
+  // proxy servers.  allows audit logging and proxy user checks to work
+  // via an http proxy
+  public static String getRemoteAddr(HttpServletRequest request) {
+    String remoteAddr = request.getRemoteAddr();
+    String proxyHeader = request.getHeader("X-Forwarded-For");
+    if (proxyHeader != null && ProxyServers.isProxyServer(remoteAddr)) {
+      final String clientAddr = proxyHeader.split(",")[0].trim();
+      if (!clientAddr.isEmpty()) {
+        remoteAddr = clientAddr;
+      }
+    }
+    return remoteAddr;
+  }
+
+
+  /**
+   * Expected user name should be a short name.
+   */
+  public static void checkUsername(final String expected, final String name
+      ) throws IOException {
+    if (expected == null && name != null) {
+      throw new IOException("Usernames not matched: expecting null but name="
+          + name);
+    }
+    if (name == null) { //name is optional, null is okay
+      return;
+    }
+    KerberosName u = new KerberosName(name);
+    String shortName = u.getShortName();
+    if (!shortName.equals(expected)) {
+      throw new IOException("Usernames not matched: name=" + shortName
+          + " != expected=" + expected);
     }
   }
 
-  /**
-   * Returns the url parameter for the given string, prefixed with
-   * paramSeparator.
-   * 
-   * @param name parameter name
-   * @param val parameter value
-   * @param paramSeparator URL parameter prefix, i.e. either '?' or '&'
-   * @return url parameter
-   */
-  public static String getUrlParam(String name, String val, String paramSeparator) {
-    return val == null ? "" : paramSeparator + name + "=" + val;
+  private static String getUsernameFromQuery(final HttpServletRequest request,
+      final boolean tryUgiParameter) {
+    String username = request.getParameter(UserParam.NAME);
+    if (username == null && tryUgiParameter) {
+      //try ugi parameter
+      final String ugiStr = request.getParameter("ugi");
+      if (ugiStr != null) {
+        username = ugiStr.split(",")[0];
+      }
+    }
+    return username;
   }
-  
-  /**
-   * Returns the url parameter for the given string, prefixed with '?' if
-   * firstParam is true, prefixed with '&' if firstParam is false.
-   * 
-   * @param name parameter name
-   * @param val parameter value
-   * @param firstParam true if this is the first parameter in the list, false otherwise
-   * @return url parameter
-   */
-  public static String getUrlParam(String name, String val, boolean firstParam) {
-    return getUrlParam(name, val, firstParam ? "?" : "&");
-  }
-  
-  /**
-   * Returns the url parameter for the given string, prefixed with '&'.
-   * 
-   * @param name parameter name
-   * @param val parameter value
-   * @return url parameter
-   */
-  public static String getUrlParam(String name, String val) {
-    return getUrlParam(name, val, false);
-  }
+
 }

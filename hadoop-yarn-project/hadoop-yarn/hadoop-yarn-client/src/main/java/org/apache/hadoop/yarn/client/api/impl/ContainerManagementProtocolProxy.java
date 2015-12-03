@@ -106,8 +106,15 @@ public class ContainerManagementProtocolProxy {
     while (proxy != null
         && !proxy.token.getIdentifier().equals(
             nmTokenCache.getToken(containerManagerBindAddr).getIdentifier())) {
+<<<<<<< HEAD
       LOG.info("Refreshing proxy as NMToken got updated for node : "
           + containerManagerBindAddr);
+=======
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Refreshing proxy as NMToken got updated for node : "
+            + containerManagerBindAddr);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // Token is updated. check if anyone has already tried closing it.
       if (!proxy.scheduledForClose) {
         // try closing the proxy. Here if someone is already using it
@@ -187,7 +194,13 @@ public class ContainerManagementProtocolProxy {
       ContainerManagementProtocolProxyData proxy) {
     proxy.activeCallers--;
     if (proxy.scheduledForClose && proxy.activeCallers < 0) {
+<<<<<<< HEAD
       LOG.info("Closing proxy : " + proxy.containerManagerBindAddr);
+=======
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Closing proxy : " + proxy.containerManagerBindAddr);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       cmProxy.remove(proxy.containerManagerBindAddr);
       try {
         rpc.stopProxy(proxy.getContainerManagementProtocol(), conf);
@@ -257,7 +270,13 @@ public class ContainerManagementProtocolProxy {
       
       final InetSocketAddress cmAddr =
           NetUtils.createSocketAddr(containerManagerBindAddr);
+<<<<<<< HEAD
       LOG.info("Opening proxy : " + containerManagerBindAddr);
+=======
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Opening proxy : " + containerManagerBindAddr);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // the user in createRemoteUser in this context has to be ContainerID
       UserGroupInformation user =
           UserGroupInformation.createRemoteUser(containerId

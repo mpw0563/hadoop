@@ -28,7 +28,11 @@ import java.io.FileNotFoundException;
 
 /**
  * Test swift-specific directory logic.
+<<<<<<< HEAD
  * This class is HDFS-1 compatible; its designed to be subclases by something
+=======
+ * This class is HDFS-1 compatible; its designed to be subclasses by something
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * with HDFS2 extensions
  */
 public class TestSwiftFileSystemDirectories extends SwiftFileSystemBaseTest {

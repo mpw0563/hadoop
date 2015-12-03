@@ -56,6 +56,10 @@ import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.LogAggregationStatus;
 import org.apache.hadoop.yarn.api.records.NodeId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.NodeLabel;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.NodeState;
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.api.records.Resource;
@@ -74,6 +78,12 @@ import org.apache.hadoop.yarn.server.resourcemanager.RMAppManagerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.RMAppManagerEventType;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.RMServerUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.blacklist.BlacklistManager;
+import org.apache.hadoop.yarn.server.resourcemanager.blacklist.DisabledBlacklistManager;
+import org.apache.hadoop.yarn.server.resourcemanager.blacklist.SimpleBlacklistManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore.RMState;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.Recoverable;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.records.ApplicationStateData;
@@ -133,6 +143,11 @@ public class RMAppImpl implements RMApp, Recoverable {
   private final Set<String> applicationTags;
 
   private final long attemptFailuresValidityInterval;
+<<<<<<< HEAD
+=======
+  private final boolean amBlacklistingEnabled;
+  private final float blacklistDisableThreshold;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private Clock systemClock;
 
@@ -456,6 +471,21 @@ public class RMAppImpl implements RMApp, Recoverable {
     maxLogAggregationDiagnosticsInMemory = conf.getInt(
         YarnConfiguration.RM_MAX_LOG_AGGREGATION_DIAGNOSTICS_IN_MEMORY,
         YarnConfiguration.DEFAULT_RM_MAX_LOG_AGGREGATION_DIAGNOSTICS_IN_MEMORY);
+<<<<<<< HEAD
+=======
+
+    amBlacklistingEnabled = conf.getBoolean(
+        YarnConfiguration.AM_BLACKLISTING_ENABLED,
+        YarnConfiguration.DEFAULT_AM_BLACKLISTING_ENABLED);
+
+    if (amBlacklistingEnabled) {
+      blacklistDisableThreshold = conf.getFloat(
+          YarnConfiguration.AM_BLACKLISTING_DISABLE_THRESHOLD,
+          YarnConfiguration.DEFAULT_AM_BLACKLISTING_DISABLE_THRESHOLD);
+    } else {
+      blacklistDisableThreshold = 0.0f;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -666,6 +696,11 @@ public class RMAppImpl implements RMApp, Recoverable {
           this.submissionContext.getPriority());
       report.setLogAggregationStatus(logAggregationStatus);
       report.setUnmanagedApp(submissionContext.getUnmanagedAM());
+<<<<<<< HEAD
+=======
+      report.setAppNodeLabelExpression(getAppNodeLabelExpression());
+      report.setAmNodeLabelExpression(getAmNodeLabelExpression());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return report;
     } finally {
       this.readLock.unlock();
@@ -782,7 +817,12 @@ public class RMAppImpl implements RMApp, Recoverable {
     LOG.info("Recovering app: " + getApplicationId() + " with " + 
         + appState.getAttemptCount() + " attempts and final state = "
         + this.recoveredFinalState );
+<<<<<<< HEAD
     this.diagnostics.append(appState.getDiagnostics());
+=======
+    this.diagnostics.append(null == appState.getDiagnostics() ? "" : appState
+        .getDiagnostics());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.storedFinishTime = appState.getFinishTime();
     this.startTime = appState.getStartTime();
 
@@ -796,6 +836,21 @@ public class RMAppImpl implements RMApp, Recoverable {
   private void createNewAttempt() {
     ApplicationAttemptId appAttemptId =
         ApplicationAttemptId.newInstance(applicationId, attempts.size() + 1);
+<<<<<<< HEAD
+=======
+
+    BlacklistManager currentAMBlacklist;
+    if (currentAttempt != null) {
+      currentAMBlacklist = currentAttempt.getAMBlacklist();
+    } else {
+      if (amBlacklistingEnabled) {
+        currentAMBlacklist = new SimpleBlacklistManager(
+            scheduler.getNumClusterNodes(), blacklistDisableThreshold);
+      } else {
+        currentAMBlacklist = new DisabledBlacklistManager();
+      }
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     RMAppAttempt attempt =
         new RMAppAttemptImpl(appAttemptId, rmContext, scheduler, masterService,
           submissionContext, conf,
@@ -803,7 +858,12 @@ public class RMAppImpl implements RMApp, Recoverable {
           // previously failed attempts(which should not include Preempted,
           // hardware error and NM resync) + 1) equal to the max-attempt
           // limit.
+<<<<<<< HEAD
           maxAppAttempts == (getNumFailedAppAttempts() + 1), amReq);
+=======
+          maxAppAttempts == (getNumFailedAppAttempts() + 1), amReq,
+          currentAMBlacklist);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     attempts.put(appAttemptId, attempt);
     currentAttempt = attempt;
   }
@@ -877,7 +937,14 @@ public class RMAppImpl implements RMApp, Recoverable {
         moveEvent.getResult().setException(ex);
         return;
       }
+<<<<<<< HEAD
       
+=======
+
+      app.rmContext.getSystemMetricsPublisher().appUpdated(app,
+          System.currentTimeMillis());
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // TODO: Write out change to state store (YARN-1558)
       // Also take care of RM failover
       moveEvent.getResult().set(null);
@@ -909,6 +976,7 @@ public class RMAppImpl implements RMApp, Recoverable {
       }
 
       if (UserGroupInformation.isSecurityEnabled()) {
+<<<<<<< HEAD
         // synchronously renew delegation token on recovery.
         try {
           app.rmContext.getDelegationTokenRenewer().addApplicationSync(
@@ -917,6 +985,18 @@ public class RMAppImpl implements RMApp, Recoverable {
         } catch (Exception e) {
           String msg = "Failed to renew token for " + app.applicationId
                   + " on recovery : " + e.getMessage();
+=======
+        // asynchronously renew delegation token on recovery.
+        try {
+          app.rmContext.getDelegationTokenRenewer()
+              .addApplicationAsyncDuringRecovery(app.getApplicationId(),
+                  app.parseCredentials(),
+                  app.submissionContext.getCancelTokensWhenComplete(),
+                  app.getUser());
+        } catch (Exception e) {
+          String msg = "Failed to fetch user credentials from application:"
+              + e.getMessage();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           app.diagnostics.append(msg);
           LOG.error(msg, e);
         }
@@ -1009,7 +1089,11 @@ public class RMAppImpl implements RMApp, Recoverable {
     if (this.submissionContext.getUnmanagedAM()) {
       // RM does not manage the AM. Do not retry
       msg = "Unmanaged application " + this.getApplicationId()
+<<<<<<< HEAD
               + " failed due to " + failedEvent.getDiagnostics()
+=======
+              + " failed due to " + failedEvent.getDiagnosticMsg()
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               + ". Failing the application.";
     } else if (this.isNumAttemptsBeyondThreshold) {
       int globalLimit = conf.getInt(YarnConfiguration.RM_AM_MAX_ATTEMPTS,
@@ -1024,7 +1108,11 @@ public class RMAppImpl implements RMApp, Recoverable {
           (globalLimit == maxAppAttempts) ? ""
               : (" (global limit =" + globalLimit
                  + "; local limit is =" + maxAppAttempts + ")"),
+<<<<<<< HEAD
           failedEvent.getDiagnostics());
+=======
+          failedEvent.getDiagnosticMsg());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     return msg;
   }
@@ -1065,6 +1153,7 @@ public class RMAppImpl implements RMApp, Recoverable {
     String diags = null;
     switch (event.getType()) {
     case APP_REJECTED:
+<<<<<<< HEAD
       RMAppRejectedEvent rejectedEvent = (RMAppRejectedEvent) event;
       diags = rejectedEvent.getMessage();
       break;
@@ -1072,14 +1161,22 @@ public class RMAppImpl implements RMApp, Recoverable {
       RMAppFinishedAttemptEvent finishedEvent =
           (RMAppFinishedAttemptEvent) event;
       diags = finishedEvent.getDiagnostics();
+=======
+    case ATTEMPT_FINISHED:
+    case ATTEMPT_KILLED:
+      diags = event.getDiagnosticMsg();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       break;
     case ATTEMPT_FAILED:
       RMAppFailedAttemptEvent failedEvent = (RMAppFailedAttemptEvent) event;
       diags = getAppAttemptFailedDiagnostics(failedEvent);
       break;
+<<<<<<< HEAD
     case ATTEMPT_KILLED:
       diags = getAppKilledDiagnostics();
       break;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     default:
       break;
     }
@@ -1127,9 +1224,13 @@ public class RMAppImpl implements RMApp, Recoverable {
     }
 
     public void transition(RMAppImpl app, RMAppEvent event) {
+<<<<<<< HEAD
       RMAppFinishedAttemptEvent finishedEvent =
           (RMAppFinishedAttemptEvent)event;
       app.diagnostics.append(finishedEvent.getDiagnostics());
+=======
+      app.diagnostics.append(event.getDiagnosticMsg());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       super.transition(app, event);
     };
   }
@@ -1175,21 +1276,37 @@ public class RMAppImpl implements RMApp, Recoverable {
 
     @Override
     public void transition(RMAppImpl app, RMAppEvent event) {
+<<<<<<< HEAD
       app.diagnostics.append(getAppKilledDiagnostics());
+=======
+      app.diagnostics.append(event.getDiagnosticMsg());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       super.transition(app, event);
     };
   }
 
+<<<<<<< HEAD
   private static String getAppKilledDiagnostics() {
     return "Application killed by user.";
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static class KillAttemptTransition extends RMAppTransition {
     @Override
     public void transition(RMAppImpl app, RMAppEvent event) {
       app.stateBeforeKilling = app.getState();
+<<<<<<< HEAD
       app.handler.handle(new RMAppAttemptEvent(app.currentAttempt
         .getAppAttemptId(), RMAppAttemptEventType.KILL));
+=======
+      // Forward app kill diagnostics in the event to kill app attempt.
+      // These diagnostics will be returned back in ATTEMPT_KILLED event sent by
+      // RMAppAttemptImpl.
+      app.handler.handle(
+          new RMAppAttemptEvent(app.currentAttempt.getAppAttemptId(),
+              RMAppAttemptEventType.KILL, event.getDiagnosticMsg()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -1200,8 +1317,12 @@ public class RMAppImpl implements RMApp, Recoverable {
     }
 
     public void transition(RMAppImpl app, RMAppEvent event) {
+<<<<<<< HEAD
       RMAppRejectedEvent rejectedEvent = (RMAppRejectedEvent)event;
       app.diagnostics.append(rejectedEvent.getMessage());
+=======
+      app.diagnostics.append(event.getDiagnosticMsg());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       super.transition(app, event);
     };
   }
@@ -1353,7 +1474,11 @@ public class RMAppImpl implements RMApp, Recoverable {
         || appState == RMAppState.KILLED;
   }
   
+<<<<<<< HEAD
   private RMAppState getRecoveredFinalState() {
+=======
+  public RMAppState getRecoveredFinalState() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return this.recoveredFinalState;
   }
 
@@ -1669,4 +1794,31 @@ public class RMAppImpl implements RMApp, Recoverable {
       this.readLock.unlock();
     }
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public String getAppNodeLabelExpression() {
+    String appNodeLabelExpression =
+        getApplicationSubmissionContext().getNodeLabelExpression();
+    appNodeLabelExpression = (appNodeLabelExpression == null)
+        ? NodeLabel.NODE_LABEL_EXPRESSION_NOT_SET : appNodeLabelExpression;
+    appNodeLabelExpression = (appNodeLabelExpression.trim().isEmpty())
+        ? NodeLabel.DEFAULT_NODE_LABEL_PARTITION : appNodeLabelExpression;
+    return appNodeLabelExpression;
+  }
+
+  @Override
+  public String getAmNodeLabelExpression() {
+    String amNodeLabelExpression = null;
+    if (!getApplicationSubmissionContext().getUnmanagedAM()) {
+      amNodeLabelExpression = getAMResourceRequest().getNodeLabelExpression();
+      amNodeLabelExpression = (amNodeLabelExpression == null)
+          ? NodeLabel.NODE_LABEL_EXPRESSION_NOT_SET : amNodeLabelExpression;
+      amNodeLabelExpression = (amNodeLabelExpression.trim().isEmpty())
+          ? NodeLabel.DEFAULT_NODE_LABEL_PARTITION : amNodeLabelExpression;
+    }
+    return amNodeLabelExpression;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

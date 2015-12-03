@@ -57,4 +57,8 @@ public class BufferSizeParam extends IntegerParam {
             CommonConfigurationKeysPublic.IO_FILE_BUFFER_SIZE_KEY,
             CommonConfigurationKeysPublic.IO_FILE_BUFFER_SIZE_DEFAULT);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

@@ -42,7 +42,11 @@ public class NMTokenSelector implements
     }
     for (Token<? extends TokenIdentifier> token : tokens) {
       if (LOG.isDebugEnabled()) {
+<<<<<<< HEAD
         LOG.info("Looking for service: " + service + ". Current token is "
+=======
+        LOG.debug("Looking for service: " + service + ". Current token is "
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             + token);
       }
       if (NMTokenIdentifier.KIND.equals(token.getKind()) && 

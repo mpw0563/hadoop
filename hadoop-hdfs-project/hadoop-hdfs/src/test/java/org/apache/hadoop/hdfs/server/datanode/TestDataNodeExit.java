@@ -96,6 +96,7 @@ public class TestDataNodeExit {
   public void testSendOOBToPeers() throws Exception {
     DataNode dn = cluster.getDataNodes().get(0);
     DataXceiverServer spyXserver = Mockito.spy(dn.getXferServer());
+<<<<<<< HEAD
     NullPointerException e = new NullPointerException();
     Mockito.doThrow(e).when(spyXserver).sendOOBToPeers();
     dn.xserver = spyXserver;
@@ -103,6 +104,15 @@ public class TestDataNodeExit {
       dn.shutdown();
     } catch (Throwable t) {
       fail("DataNode shutdown should not have thrown exception " + t);
+=======
+    NullPointerException npe = new NullPointerException();
+    Mockito.doThrow(npe).when(spyXserver).sendOOBToPeers();
+    dn.xserver = spyXserver;
+    try {
+      dn.shutdown();
+    } catch (Exception e) {
+      fail("DataNode shutdown should not have thrown exception " + e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 }

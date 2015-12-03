@@ -105,7 +105,11 @@ public class InterDatanodeProtocolTranslatorPB implements
       long recoveryId, long newBlockId, long newLength) throws IOException {
     UpdateReplicaUnderRecoveryRequestProto req = 
         UpdateReplicaUnderRecoveryRequestProto.newBuilder()
+<<<<<<< HEAD
         .setBlock(PBHelper.convert(oldBlock))
+=======
+        .setBlock(PBHelperClient.convert(oldBlock))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .setNewLength(newLength).setNewBlockId(newBlockId)
         .setRecoveryId(recoveryId).build();
     try {

@@ -41,9 +41,21 @@ import org.apache.hadoop.io.compress.CompressionOutputStream;
 import org.apache.hadoop.io.compress.Compressor;
 import org.apache.hadoop.io.compress.Decompressor;
 import org.apache.hadoop.util.Progressable;
+<<<<<<< HEAD
 import org.junit.Assert;
 
 public class TestBloomMapFile extends TestCase {
+=======
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import org.junit.Before;
+import org.junit.Test;
+
+public class TestBloomMapFile {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static Configuration conf = new Configuration();
   private static final Path TEST_ROOT = new Path(
       System.getProperty("test.build.data", "/tmp"),
@@ -51,16 +63,28 @@ public class TestBloomMapFile extends TestCase {
   private static final Path TEST_DIR = new Path(TEST_ROOT, "testfile");
   private static final Path TEST_FILE = new Path(TEST_ROOT, "testfile");
 
+<<<<<<< HEAD
   @Override
   public void setUp() throws Exception {
     LocalFileSystem fs = FileSystem.getLocal(conf);
     if (fs.exists(TEST_ROOT) && !fs.delete(TEST_ROOT, true)) {
       Assert.fail("Can't clean up test root dir");
+=======
+  @Before
+  public void setUp() throws Exception {
+    LocalFileSystem fs = FileSystem.getLocal(conf);
+    if (fs.exists(TEST_ROOT) && !fs.delete(TEST_ROOT, true)) {
+      fail("Can't clean up test root dir");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     fs.mkdirs(TEST_ROOT);
   }
   
   @SuppressWarnings("deprecation")
+<<<<<<< HEAD
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testMembershipTest() throws Exception {
     // write the file
     FileSystem fs = FileSystem.getLocal(conf);
@@ -107,7 +131,11 @@ public class TestBloomMapFile extends TestCase {
   }
 
   @SuppressWarnings("deprecation")
+<<<<<<< HEAD
   private void checkMembershipVaryingSizedKeys(String name, List<Text> keys)
+=======
+  private void checkMembershipVaryingSizedKeys(List<Text> keys)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throws Exception {
     FileSystem fs = FileSystem.getLocal(conf);
     Path qualifiedDirName = fs.makeQualified(TEST_DIR);
@@ -135,23 +163,29 @@ public class TestBloomMapFile extends TestCase {
     }
   }
 
+  @Test
   public void testMembershipVaryingSizedKeysTest1() throws Exception {
     ArrayList<Text> list = new ArrayList<Text>();
     list.add(new Text("A"));
     list.add(new Text("BB"));
-    checkMembershipVaryingSizedKeys(getName(), list);
+    checkMembershipVaryingSizedKeys(list);
   }
 
+  @Test
   public void testMembershipVaryingSizedKeysTest2() throws Exception {
     ArrayList<Text> list = new ArrayList<Text>();
     list.add(new Text("AA"));
     list.add(new Text("B"));
-    checkMembershipVaryingSizedKeys(getName(), list);
+    checkMembershipVaryingSizedKeys(list);
   }
 
   /**
    * test {@code BloomMapFile.delete()} method
    */
+<<<<<<< HEAD
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testDeleteFile() {
     BloomMapFile.Writer writer = null;
     try {
@@ -173,6 +207,10 @@ public class TestBloomMapFile extends TestCase {
    * test {@link BloomMapFile.Reader} constructor with 
    * IOException
    */
+<<<<<<< HEAD
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testIOExceptionInWriterConstructor() {
     Path dirNameSpy = spy(TEST_FILE);
     BloomMapFile.Reader reader = null;
@@ -198,8 +236,14 @@ public class TestBloomMapFile extends TestCase {
   }
 
   /**
+<<<<<<< HEAD
    *  test {@link BloomMapFile.Reader.get()} method 
    */
+=======
+   *  test {@link BloomMapFile.Reader#get(WritableComparable, Writable)} method
+   */
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testGetBloomMapFile() {
     int SIZE = 10;
     BloomMapFile.Reader reader = null;
@@ -235,6 +279,10 @@ public class TestBloomMapFile extends TestCase {
    * test {@code BloomMapFile.Writer} constructors
    */
   @SuppressWarnings("deprecation")
+<<<<<<< HEAD
+=======
+  @Test
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testBloomMapFileConstructors() {
     BloomMapFile.Writer writer = null;
     try {

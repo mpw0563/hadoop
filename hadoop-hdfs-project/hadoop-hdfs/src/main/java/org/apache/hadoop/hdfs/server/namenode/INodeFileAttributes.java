@@ -20,7 +20,11 @@ package org.apache.hadoop.hdfs.server.namenode;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.fs.permission.PermissionStatus;
 import org.apache.hadoop.hdfs.server.namenode.INodeFile.HeaderFormat;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.namenode.XAttrFeature;
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * The attributes of a file.
  */
@@ -29,6 +33,15 @@ public interface INodeFileAttributes extends INodeAttributes {
   /** @return the file replication. */
   public short getFileReplication();
 
+<<<<<<< HEAD
+=======
+  /** @return whether the file is striped (instead of contiguous) */
+  public boolean isStriped();
+
+  /** @return whether the file is striped (instead of contiguous) */
+  public byte getErasureCodingPolicyID();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** @return preferred block size in bytes */
   public long getPreferredBlockSize();
 
@@ -46,11 +59,20 @@ public interface INodeFileAttributes extends INodeAttributes {
 
     public SnapshotCopy(byte[] name, PermissionStatus permissions,
         AclFeature aclFeature, long modificationTime, long accessTime,
+<<<<<<< HEAD
         short replication, long preferredBlockSize, byte storagePolicyID,
         XAttrFeature xAttrsFeature) {
       super(name, permissions, aclFeature, modificationTime, accessTime, 
           xAttrsFeature);
       header = HeaderFormat.toLong(preferredBlockSize, replication, storagePolicyID);
+=======
+        short replication, long preferredBlockSize,
+        byte storagePolicyID, XAttrFeature xAttrsFeature, boolean isStriped) {
+      super(name, permissions, aclFeature, modificationTime, accessTime, 
+          xAttrsFeature);
+      header = HeaderFormat.toLong(preferredBlockSize, replication, isStriped,
+          storagePolicyID);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     public SnapshotCopy(INodeFile file) {
@@ -69,6 +91,19 @@ public interface INodeFileAttributes extends INodeAttributes {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public boolean isStriped() {
+      return HeaderFormat.isStriped(header);
+    }
+
+    @Override
+    public byte getErasureCodingPolicyID() {
+      return isStriped() ? (byte)1 : (byte)0;
+    }
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public long getPreferredBlockSize() {
       return HeaderFormat.getPreferredBlockSize(header);
     }

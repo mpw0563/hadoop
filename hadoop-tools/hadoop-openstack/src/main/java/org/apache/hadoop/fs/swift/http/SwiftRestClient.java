@@ -83,7 +83,11 @@ import static org.apache.hadoop.fs.swift.http.SwiftProtocolConstants.*;
  * This implements the client-side of the Swift REST API
  *
  * The core actions put, get and query data in the Swift object store,
+<<<<<<< HEAD
  * after authenticationg the client.
+=======
+ * after authenticating the client.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  *
  * <b>Logging:</b>
  *
@@ -172,8 +176,11 @@ public final class SwiftRestClient {
    */
   private URI objectLocationURI;
 
+<<<<<<< HEAD
   private final URI filesystemURI;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * The name of the service provider
    */
@@ -238,6 +245,7 @@ public final class SwiftRestClient {
   }
 
   /**
+<<<<<<< HEAD
    * object location endpoint
    */
   private synchronized URI getObjectLocationURI() {
@@ -245,6 +253,8 @@ public final class SwiftRestClient {
   }
 
   /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * token for Swift communication
    */
   private synchronized AccessToken getToken() {
@@ -331,6 +341,7 @@ public final class SwiftRestClient {
     }
   }
 
+<<<<<<< HEAD
   private static abstract class PostMethodProcessor<R> extends HttpMethodProcessor<PostMethod, R> {
     @Override
     protected final PostMethod doCreateMethod(String uri) {
@@ -338,6 +349,8 @@ public final class SwiftRestClient {
     }
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * There's a special type for auth messages, so that low-level
    * message handlers can react to auth failures differently from everything
@@ -449,7 +462,10 @@ public final class SwiftRestClient {
   private SwiftRestClient(URI filesystemURI,
                           Configuration conf)
       throws SwiftConfigurationException {
+<<<<<<< HEAD
     this.filesystemURI = filesystemURI;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Properties props = RestClientBindings.bind(filesystemURI, conf);
     String stringAuthUri = getOption(props, SWIFT_AUTH_PROPERTY);
     username = getOption(props, SWIFT_USERNAME_PROPERTY);
@@ -1129,7 +1145,10 @@ public final class SwiftRestClient {
       final List<Catalog> serviceCatalog = access.getServiceCatalog();
       //locate the specific service catalog that defines Swift; variations
       //in the name of this add complexity to the search
+<<<<<<< HEAD
       boolean catalogMatch = false;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       StringBuilder catList = new StringBuilder();
       StringBuilder regionList = new StringBuilder();
 
@@ -1470,7 +1489,11 @@ public final class SwiftRestClient {
         //and the result
         Header availableContentRange = method.getResponseHeader(
           HEADER_CONTENT_RANGE);
+<<<<<<< HEAD
         if (requestContentLen!=null) {
+=======
+        if (availableContentRange != null) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           errorText.append(" available ").append(availableContentRange.getValue());
         }
         fault = new EOFException(errorText.toString());
@@ -1572,7 +1595,11 @@ public final class SwiftRestClient {
    * This is public for unit testing
    *
    * @param path path to object
+<<<<<<< HEAD
    * @param endpointURI damain url e.g. http://domain.com
+=======
+   * @param endpointURI domain url e.g. http://domain.com
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @return valid URI for object
    * @throws SwiftException
    */
@@ -1653,7 +1680,11 @@ public final class SwiftRestClient {
    * Execute a method in a new HttpClient instance.
    * If the auth failed, authenticate then retry the method.
    *
+<<<<<<< HEAD
    * @param method methot to exec
+=======
+   * @param method method to exec
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param <M> Method type
    * @return the status code
    * @throws IOException on any failure

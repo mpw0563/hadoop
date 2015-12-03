@@ -30,7 +30,10 @@ import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.LogAggregationContext;
 import org.apache.hadoop.yarn.api.records.NodeId;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.NodeLabel;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
@@ -60,9 +63,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+<<<<<<< HEAD
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class TestContainerAllocation {
 
@@ -199,6 +205,7 @@ public class TestContainerAllocation {
 
     // acquire the container.
     SecurityUtilTestHelper.setTokenServiceUseIp(true);
+<<<<<<< HEAD
     List<Container> containers =
         am1.allocate(new ArrayList<ResourceRequest>(),
           new ArrayList<ContainerId>()).getAllocatedContainers();
@@ -206,6 +213,18 @@ public class TestContainerAllocation {
     Assert.assertEquals(0, containers.size());
 
     SecurityUtilTestHelper.setTokenServiceUseIp(false);
+=======
+    List<Container> containers;
+    try {
+      containers =
+          am1.allocate(new ArrayList<ResourceRequest>(),
+              new ArrayList<ContainerId>()).getAllocatedContainers();
+      // not able to fetch the container;
+      Assert.assertEquals(0, containers.size());
+    } finally {
+      SecurityUtilTestHelper.setTokenServiceUseIp(false);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     containers =
         am1.allocate(new ArrayList<ResourceRequest>(),
           new ArrayList<ContainerId>()).getAllocatedContainers();
@@ -231,16 +250,32 @@ public class TestContainerAllocation {
         LogAggregationContext.newInstance(
           "includePattern", "excludePattern",
           "rolledLogsIncludePattern",
+<<<<<<< HEAD
           "rolledLogsExcludePattern");
+=======
+          "rolledLogsExcludePattern",
+          "policyClass",
+          "policyParameters");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     LogAggregationContext returned =
         getLogAggregationContextFromContainerToken(rm1, nm2,
           logAggregationContext);
     Assert.assertEquals("includePattern", returned.getIncludePattern());
     Assert.assertEquals("excludePattern", returned.getExcludePattern());
     Assert.assertEquals("rolledLogsIncludePattern",
+<<<<<<< HEAD
       returned.getRolledLogsIncludePattern());
     Assert.assertEquals("rolledLogsExcludePattern",
       returned.getRolledLogsExcludePattern());
+=======
+        returned.getRolledLogsIncludePattern());
+    Assert.assertEquals("rolledLogsExcludePattern",
+        returned.getRolledLogsExcludePattern());
+    Assert.assertEquals("policyClass",
+        returned.getLogAggregationPolicyClassName());
+    Assert.assertEquals("policyParameters",
+        returned.getLogAggregationPolicyParameters());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     rm1.stop();
   }
 
@@ -309,6 +344,7 @@ public class TestContainerAllocation {
     rm1.start();
 
     MockNM nm1 = rm1.registerNode("unknownhost:1234", 8000);
+<<<<<<< HEAD
     SecurityUtilTestHelper.setTokenServiceUseIp(true);
     RMApp app1 = rm1.submitApp(200);
     RMAppAttempt attempt = app1.getCurrentAppAttempt();
@@ -324,6 +360,26 @@ public class TestContainerAllocation {
     }
 
     SecurityUtilTestHelper.setTokenServiceUseIp(false);
+=======
+    RMApp app1;
+    try {
+      SecurityUtilTestHelper.setTokenServiceUseIp(true);
+      app1 = rm1.submitApp(200);
+      RMAppAttempt attempt = app1.getCurrentAppAttempt();
+      nm1.nodeHeartbeat(true);
+
+      // fetching am container will fail, keep retrying 5 times.
+      while (numRetries <= 5) {
+        nm1.nodeHeartbeat(true);
+        Thread.sleep(1000);
+        Assert.assertEquals(RMAppAttemptState.SCHEDULED,
+            attempt.getAppAttemptState());
+        System.out.println("Waiting for am container to be allocated.");
+      }
+    } finally {
+      SecurityUtilTestHelper.setTokenServiceUseIp(false);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MockRM.launchAndRegisterAM(app1, rm1, nm1);
   }
   

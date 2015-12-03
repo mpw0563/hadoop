@@ -48,13 +48,20 @@ import org.apache.hadoop.fs.PathIsNotDirectoryException;
 import org.apache.hadoop.fs.UnresolvedLinkException;
 import org.apache.hadoop.fs.permission.PermissionStatus;
 import org.apache.hadoop.hdfs.DFSUtil;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.protocol.Block;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.protocol.LayoutFlags;
 import org.apache.hadoop.hdfs.protocol.LayoutVersion;
 import org.apache.hadoop.hdfs.protocol.LayoutVersion.Feature;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.StartupOption;
@@ -359,7 +366,12 @@ public class FSImageFormat {
 
           // read the max sequential block ID.
           long maxSequentialBlockId = in.readLong();
+<<<<<<< HEAD
           namesystem.getBlockIdManager().setLastAllocatedBlockId(maxSequentialBlockId);
+=======
+          namesystem.getBlockIdManager().setLastAllocatedContiguousBlockId(
+              maxSequentialBlockId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         } else {
 
           long startingGenStamp = namesystem.getBlockIdManager()
@@ -691,7 +703,11 @@ public class FSImageFormat {
       if (blocks != null) {
         final BlockManager bm = namesystem.getBlockManager();
         for (int i = 0; i < blocks.length; i++) {
+<<<<<<< HEAD
           file.setBlock(i, bm.addBlockCollection(blocks[i], file));
+=======
+          file.setBlock(i, bm.addBlockCollectionWithCheck(blocks[i], file));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         } 
       }
     }
@@ -754,7 +770,11 @@ public class FSImageFormat {
       // file
       
       // read blocks
+<<<<<<< HEAD
       BlockInfo[] blocks = new BlockInfo[numBlocks];
+=======
+      BlockInfo[] blocks = new BlockInfoContiguous[numBlocks];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       for (int j = 0; j < numBlocks; j++) {
         blocks[j] = new BlockInfoContiguous(replication);
         blocks[j].readFields(in);
@@ -777,8 +797,13 @@ public class FSImageFormat {
             // convert the last block to BlockUC
             if (blocks.length > 0) {
               BlockInfo lastBlk = blocks[blocks.length - 1];
+<<<<<<< HEAD
               blocks[blocks.length - 1] = new BlockInfoContiguousUnderConstruction(
                   lastBlk, replication);
+=======
+              lastBlk.convertToBlockUnderConstruction(
+                  HdfsServerConstants.BlockUCState.UNDER_CONSTRUCTION, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             }
           }
         }
@@ -791,6 +816,7 @@ public class FSImageFormat {
         counter.increment();
       }
 
+<<<<<<< HEAD
       final INodeFile file = new INodeFile(inodeId, localName, permissions,
           modificationTime, atime, blocks, replication, blockSize, (byte)0);
       if (underConstruction) {
@@ -799,6 +825,17 @@ public class FSImageFormat {
         return fileDiffs == null ? file : new INodeFile(file, fileDiffs);
       } else if (numBlocks == -1) {
         //directory
+=======
+      INodeFile file = new INodeFile(inodeId, localName, permissions,
+          modificationTime, atime, (BlockInfoContiguous[]) blocks,
+          replication, blockSize);
+      if (underConstruction) {
+        file.toUnderConstruction(clientName, clientMachine);
+      }
+      return fileDiffs == null ? file : new INodeFile(file, fileDiffs);
+    } else if (numBlocks == -1) {
+      //directory
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       
       //read quotas
       final long nsQuota = in.readLong();
@@ -897,7 +934,11 @@ public class FSImageFormat {
       final long preferredBlockSize = in.readLong();
 
       return new INodeFileAttributes.SnapshotCopy(name, permissions, null, modificationTime,
+<<<<<<< HEAD
           accessTime, replication, preferredBlockSize, (byte) 0, null);
+=======
+          accessTime, replication, preferredBlockSize, (byte) 0, null, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     public INodeDirectoryAttributes loadINodeDirectoryAttributes(DataInput in)
@@ -961,8 +1002,13 @@ public class FSImageFormat {
         if (oldnode.numBlocks() > 0) {
           BlockInfo ucBlock = cons.getLastBlock();
           // we do not replace the inode, just replace the last block of oldnode
+<<<<<<< HEAD
           BlockInfo info = namesystem.getBlockManager().addBlockCollection(
               ucBlock, oldnode);
+=======
+          BlockInfo info = namesystem.getBlockManager()
+              .addBlockCollectionWithCheck(ucBlock, oldnode);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           oldnode.setBlock(oldnode.numBlocks() - 1, info);
         }
 
@@ -1141,7 +1187,11 @@ public class FSImageFormat {
       + " option to automatically rename these paths during upgrade.";
 
   /**
+<<<<<<< HEAD
    * Same as {@link #renameReservedPathsOnUpgrade(String)}, but for a single
+=======
+   * Same as {@link #renameReservedPathsOnUpgrade}, but for a single
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * byte array path component.
    */
   private static byte[] renameReservedComponentOnUpgrade(byte[] component,
@@ -1161,7 +1211,11 @@ public class FSImageFormat {
   }
 
   /**
+<<<<<<< HEAD
    * Same as {@link #renameReservedPathsOnUpgrade(String)}, but for a single
+=======
+   * Same as {@link #renameReservedPathsOnUpgrade}, but for a single
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * byte array path component.
    */
   private static byte[] renameReservedRootComponentOnUpgrade(byte[] component,
@@ -1269,7 +1323,11 @@ public class FSImageFormat {
         out.writeLong(sourceNamesystem.getBlockIdManager().getGenerationStampV1());
         out.writeLong(sourceNamesystem.getBlockIdManager().getGenerationStampV2());
         out.writeLong(sourceNamesystem.getBlockIdManager().getGenerationStampAtblockIdSwitch());
+<<<<<<< HEAD
         out.writeLong(sourceNamesystem.getBlockIdManager().getLastAllocatedBlockId());
+=======
+        out.writeLong(sourceNamesystem.getBlockIdManager().getLastAllocatedContiguousBlockId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         out.writeLong(context.getTxId());
         out.writeLong(sourceNamesystem.dir.getLastInodeId());
 

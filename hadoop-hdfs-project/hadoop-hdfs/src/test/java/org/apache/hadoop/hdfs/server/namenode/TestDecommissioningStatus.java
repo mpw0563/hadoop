@@ -140,6 +140,7 @@ public class TestDecommissioningStatus {
     stm.close();
   }
 
+<<<<<<< HEAD
   private void writeFile(FileSystem fileSys, Path name, short repl)
       throws IOException {
     // create and write a file that contains three blocks of data
@@ -153,6 +154,8 @@ public class TestDecommissioningStatus {
     stm.close();
   }
  
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private FSDataOutputStream writeIncompleteFile(FileSystem fileSys, Path name,
       short repl) throws IOException {
     // create and write a file that contains three blocks of data
@@ -281,7 +284,8 @@ public class TestDecommissioningStatus {
     // Decommission one node. Verify the decommission status
     // 
     Path file1 = new Path("decommission.dat");
-    writeFile(fileSys, file1, replicas);
+    DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+        replicas, seed);
 
     Path file2 = new Path("decommission1.dat");
     FSDataOutputStream st1 = writeIncompleteFile(fileSys, file2, replicas);

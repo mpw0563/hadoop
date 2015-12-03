@@ -18,6 +18,10 @@
 
 package org.apache.hadoop.fs.swift;
 
+<<<<<<< HEAD
+=======
+import org.junit.Assert;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileStatus;
@@ -286,4 +290,13 @@ public class TestSwiftFileSystemBasicOps extends SwiftFileSystemBaseTest {
     }
   }
 
+<<<<<<< HEAD
+=======
+  @Test(timeout = SWIFT_TEST_TIMEOUT)
+  public void testGetCanonicalServiceName() {
+    Assert.assertNull(fs.getCanonicalServiceName());
+  }
+
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -248,11 +248,22 @@ public class ProtocMojo extends AbstractMojo {
 
         exec = new Exec(this);
         out = new ArrayList<String>();
+<<<<<<< HEAD
         if (exec.run(command, out) != 0) {
+=======
+        List<String> err = new ArrayList<>();
+        if (exec.run(command, out, err) != 0) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           getLog().error("protoc compiler error");
           for (String s : out) {
             getLog().error(s);
           }
+<<<<<<< HEAD
+=======
+          for (String s : err) {
+            getLog().error(s);
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           throw new MojoExecutionException("protoc failure");
         }
         // Write the new checksum file on success.

@@ -27,7 +27,11 @@ public class XAttrSetFlagParam extends EnumSetParam<XAttrSetFlag> {
   /** Default parameter value. */
   public static final String DEFAULT = "";
 
+<<<<<<< HEAD
   private static final Domain<XAttrSetFlag> DOMAIN = new Domain<XAttrSetFlag>(
+=======
+  private static final Domain<XAttrSetFlag> DOMAIN = new Domain<>(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       NAME, XAttrSetFlag.class);
 
   public XAttrSetFlagParam(final EnumSet<XAttrSetFlag> flag) {

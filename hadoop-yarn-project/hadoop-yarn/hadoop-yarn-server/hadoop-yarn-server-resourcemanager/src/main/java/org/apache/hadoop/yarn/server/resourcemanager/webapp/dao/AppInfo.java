@@ -26,6 +26,10 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationResourceUsageReport;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.LogAggregationStatus;
@@ -36,7 +40,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.AbstractYarnScheduler;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.util.Times;
 import org.apache.hadoop.yarn.webapp.util.WebAppUtils;
@@ -87,7 +94,13 @@ public class AppInfo {
   protected int runningContainers;
   protected long memorySeconds;
   protected long vcoreSeconds;
+<<<<<<< HEAD
   
+=======
+  protected float queueUsagePercentage;
+  protected float clusterUsagePercentage;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   // preemption info fields
   protected int preemptedResourceMB;
   protected int preemptedResourceVCores;
@@ -98,6 +111,11 @@ public class AppInfo {
 
   protected LogAggregationStatus logAggregationStatus;
   protected boolean unmanagedApplication;
+<<<<<<< HEAD
+=======
+  protected String appNodeLabelExpression;
+  protected String amNodeLabelExpression;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public AppInfo() {
   } // JAXB needs this
@@ -132,8 +150,15 @@ public class AppInfo {
       this.name = app.getName().toString();
       this.queue = app.getQueue().toString();
       this.priority = 0;
+<<<<<<< HEAD
       if (app.getApplicationSubmissionContext().getPriority() != null) {
         this.priority = app.getApplicationSubmissionContext().getPriority()
+=======
+      ApplicationSubmissionContext appSubmissionContext =
+          app.getApplicationSubmissionContext();
+      if (appSubmissionContext.getPriority() != null) {
+        this.priority = appSubmissionContext.getPriority()
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             .getPriority();
       }
       this.progress = app.getProgress() * 100;
@@ -171,10 +196,18 @@ public class AppInfo {
             allocatedMB = usedResources.getMemory();
             allocatedVCores = usedResources.getVirtualCores();
             runningContainers = resourceReport.getNumUsedContainers();
+<<<<<<< HEAD
           }
           resourceRequests =
               ((AbstractYarnScheduler) rm.getRMContext().getScheduler())
                 .getPendingResourceRequestsForAttempt(attempt.getAppAttemptId());
+=======
+            queueUsagePercentage = resourceReport.getQueueUsagePercentage();
+            clusterUsagePercentage = resourceReport.getClusterUsagePercentage();
+          }
+          resourceRequests = rm.getRMContext().getScheduler()
+              .getPendingResourceRequestsForAttempt(attempt.getAppAttemptId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
 
@@ -191,7 +224,15 @@ public class AppInfo {
       memorySeconds = appMetrics.getMemorySeconds();
       vcoreSeconds = appMetrics.getVcoreSeconds();
       unmanagedApplication =
+<<<<<<< HEAD
           app.getApplicationSubmissionContext().getUnmanagedAM();
+=======
+          appSubmissionContext.getUnmanagedAM();
+      appNodeLabelExpression =
+          app.getApplicationSubmissionContext().getNodeLabelExpression();
+      amNodeLabelExpression = (unmanagedApplication) ? null
+          : app.getAMResourceRequest().getNodeLabelExpression();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -338,4 +379,15 @@ public class AppInfo {
   public int getPriority() {
     return this.priority;
   }
+<<<<<<< HEAD
+=======
+
+  public String getAppNodeLabelExpression() {
+    return this.appNodeLabelExpression;
+  }
+
+  public String getAmNodeLabelExpression() {
+    return this.amNodeLabelExpression;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

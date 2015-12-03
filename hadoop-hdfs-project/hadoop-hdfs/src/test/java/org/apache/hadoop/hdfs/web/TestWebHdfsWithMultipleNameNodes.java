@@ -21,7 +21,10 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 
 import org.apache.commons.logging.Log;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -31,7 +34,10 @@ import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.MiniDFSNNTopology;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.web.resources.NamenodeWebHdfsMethods;
 import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.log4j.Level;
@@ -47,7 +53,11 @@ public class TestWebHdfsWithMultipleNameNodes {
   static final Log LOG = WebHdfsTestUtil.LOG;
 
   static private void setLogLevel() {
+<<<<<<< HEAD
     ((Log4JLogger)LOG).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     GenericTestUtils.setLogLevel(NamenodeWebHdfsMethods.LOG, Level.ALL);
 
     DFSTestUtil.setNameNodeLogLevel(Level.ALL);
@@ -71,8 +81,11 @@ public class TestWebHdfsWithMultipleNameNodes {
       throws Exception {
     LOG.info("nNameNodes=" + nNameNodes + ", nDataNodes=" + nDataNodes);
 
+<<<<<<< HEAD
     conf.setBoolean(HdfsClientConfigKeys.DFS_WEBHDFS_ENABLED_KEY, true);
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     cluster = new MiniDFSCluster.Builder(conf)
         .nnTopology(MiniDFSNNTopology.simpleFederatedTopology(nNameNodes))
         .numDataNodes(nDataNodes)

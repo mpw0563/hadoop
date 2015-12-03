@@ -117,6 +117,7 @@ public class MutableStat extends MutableMetric {
     setChanged();
   }
 
+  @Override
   public synchronized void snapshot(MetricsRecordBuilder builder, boolean all) {
     if (all || changed()) {
       numSamples += intervalStat.numSamples();
@@ -139,7 +140,12 @@ public class MutableStat extends MutableMetric {
     }
   }
 
-  private SampleStat lastStat() {
+  /**
+   * Return a SampleStat object that supports
+   * calls like StdDev and Mean.
+   * @return SampleStat
+   */
+  public SampleStat lastStat() {
     return changed() ? intervalStat : prevStat;
   }
 

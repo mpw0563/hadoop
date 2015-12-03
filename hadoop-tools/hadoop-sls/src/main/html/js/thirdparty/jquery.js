@@ -1504,7 +1504,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 	// Support: IE<10
 	// Check if getElementById returns elements by name
+<<<<<<< HEAD
 	// The broken getElementById methods don't pick up programatically-set names,
+=======
+	// The broken getElementById methods don't pick up programmatically-set names,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 	// so use a roundabout getElementsByName test
 	support.getById = assert(function( div ) {
 		docElem.appendChild( div ).id = expando;

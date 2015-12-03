@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -309,6 +310,20 @@ public abstract class Storage extends StorageInfo {
     public StorageDirType getStorageDirType() {
       return dirType;
     }    
+
+    /**
+     * Get storage directory size.
+     */
+    public long getDirecorySize() {
+      try {
+        if (!isShared() && root != null && root.exists()) {
+          return FileUtils.sizeOfDirectory(root);
+        }
+      } catch (Exception e) {
+        LOG.warn("Failed to get directory size :" + root, e);
+      }
+      return 0;
+    }
 
     public void read(File from, Storage storage) throws IOException {
       Properties props = readPropertiesFile(from);
@@ -893,6 +908,7 @@ public abstract class Storage extends StorageInfo {
    * @param interactive prompt the user when a dir exists
    * @return true if formatting should proceed
    * @throws IOException if some storage cannot be accessed
+<<<<<<< HEAD
    */
   public static boolean confirmFormat(
       Iterable<? extends FormatConfirmable> items,
@@ -926,6 +942,41 @@ public abstract class Storage extends StorageInfo {
    * 
    * This is currently a storage directory or journal manager.
    */
+=======
+   */
+  public static boolean confirmFormat(
+      Iterable<? extends FormatConfirmable> items,
+      boolean force, boolean interactive) throws IOException {
+    for (FormatConfirmable item : items) {
+      if (!item.hasSomeData())
+        continue;
+      if (force) { // Don't confirm, always format.
+        System.err.println(
+            "Data exists in " + item + ". Formatting anyway.");
+        continue;
+      }
+      if (!interactive) { // Don't ask - always don't format
+        System.err.println(
+            "Running in non-interactive mode, and data appears to exist in " +
+            item + ". Not formatting.");
+        return false;
+      }
+      if (!ToolRunner.confirmPrompt("Re-format filesystem in " + item + " ?")) {
+        System.err.println("Format aborted in " + item);
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  /**
+   * Interface for classes which need to have the user confirm their
+   * formatting during NameNode -format and other similar operations.
+   * 
+   * This is currently a storage directory or journal manager.
+   */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @InterfaceAudience.Private
   public interface FormatConfirmable {
     /**
@@ -940,6 +991,10 @@ public abstract class Storage extends StorageInfo {
      * @return a string representation of the formattable item, suitable
      * for display to the user inside a prompt
      */
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public String toString();
   }
   

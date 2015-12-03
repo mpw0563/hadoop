@@ -501,12 +501,20 @@ public class TestHttpFSServer extends HFSTestCase {
   @TestHdfs
   public void testFileAcls() throws Exception {
     final String aclUser1 = "user:foo:rw-";
+<<<<<<< HEAD
+=======
+    final String remAclUser1 = "user:foo:";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final String aclUser2 = "user:bar:r--";
     final String aclGroup1 = "group::r--";
     final String aclSpec = "aclspec=user::rwx," + aclUser1 + ","
             + aclGroup1 + ",other::---";
     final String modAclSpec = "aclspec=" + aclUser2;
+<<<<<<< HEAD
     final String remAclSpec = "aclspec=" + aclUser1;
+=======
+    final String remAclSpec = "aclspec=" + remAclUser1;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final String dir = "/aclFileTest";
     final String path = dir + "/test";
     String statusJson;

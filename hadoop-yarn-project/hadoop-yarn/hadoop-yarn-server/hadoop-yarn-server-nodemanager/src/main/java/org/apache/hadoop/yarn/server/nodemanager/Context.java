@@ -62,6 +62,12 @@ public interface Context {
 
   ConcurrentMap<ContainerId, Container> getContainers();
 
+<<<<<<< HEAD
+=======
+  ConcurrentMap<ContainerId, org.apache.hadoop.yarn.api.records.Container>
+      getIncreasedContainers();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   NMContainerTokenSecretManager getContainerTokenSecretManager();
   
   NMTokenSecretManagerInNM getNMTokenSecretManager();
@@ -70,6 +76,11 @@ public interface Context {
 
   ContainerManagementProtocol getContainerManager();
 
+<<<<<<< HEAD
+=======
+  NodeResourceMonitor getNodeResourceMonitor();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   LocalDirsHandlerService getLocalDirsHandler();
 
   ApplicationACLsManager getApplicationACLsManager();

@@ -17,15 +17,30 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+<<<<<<< HEAD
 import org.apache.hadoop.fs.PathIsNotEmptyDirectoryException;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.hdfs.server.namenode.INode.BlocksMapUpdateInfo;
 import org.apache.hadoop.hdfs.server.namenode.INode.ReclaimContext;
+=======
+import org.apache.hadoop.fs.InvalidPathException;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathIsNotEmptyDirectoryException;
+import org.apache.hadoop.fs.UnresolvedLinkException;
+import org.apache.hadoop.fs.permission.FsAction;
+import org.apache.hadoop.hdfs.server.namenode.INode.BlocksMapUpdateInfo;
+import org.apache.hadoop.hdfs.server.namenode.INode.ReclaimContext;
+import org.apache.hadoop.security.AccessControlException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.ChunkedArrayList;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.SortedSet;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import static org.apache.hadoop.hdfs.server.namenode.snapshot.Snapshot.CURRENT_STATE_ID;
 import static org.apache.hadoop.util.Time.now;
@@ -47,6 +62,10 @@ class FSDirDeleteOp {
       NameNode.stateChangeLog.debug("DIR* FSDirectory.delete: " + iip.getPath());
     }
     long filesRemoved = -1;
+<<<<<<< HEAD
+=======
+    FSNamesystem fsn = fsd.getFSNamesystem();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     fsd.writeLock();
     try {
       if (deleteAllowed(iip, iip.getPath()) ) {
@@ -58,7 +77,13 @@ class FSDirDeleteOp {
         if (unprotectedDelete(fsd, iip, context, mtime)) {
           filesRemoved = context.quotaDelta().getNsDelta();
         }
+<<<<<<< HEAD
         fsd.getFSNamesystem().removeSnapshottableDirs(snapshottableDirs);
+=======
+        fsd.updateReplicationFactor(context.collectedBlocks()
+                                        .toUpdateReplicationInfo());
+        fsn.removeSnapshottableDirs(snapshottableDirs);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         fsd.updateCount(iip, context.quotaDelta(), false);
       }
     } finally {
@@ -100,6 +125,12 @@ class FSDirDeleteOp {
       fsd.checkPermission(pc, iip, false, null, FsAction.WRITE, null,
                           FsAction.ALL, true);
     }
+<<<<<<< HEAD
+=======
+    if (recursive && fsd.isNonEmptyDirectory(iip)) {
+      checkProtectedDescendants(fsd, fsd.normalizePath(src));
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     return deleteInternal(fsn, src, iip, logRetryCache);
   }
@@ -167,6 +198,13 @@ class FSDirDeleteOp {
       NameNode.stateChangeLog.debug("DIR* NameSystem.delete: " + src);
     }
 
+<<<<<<< HEAD
+=======
+    if (FSDirectory.isExactReservedName(src)) {
+      throw new InvalidPathException(src);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     FSDirectory fsd = fsn.getFSDirectory();
     BlocksMapUpdateInfo collectedBlocks = new BlocksMapUpdateInfo();
     List<INode> removedINodes = new ChunkedArrayList<>();
@@ -259,4 +297,40 @@ class FSDirDeleteOp {
     }
     return true;
   }
+<<<<<<< HEAD
+=======
+
+  /**
+   * Throw if the given directory has any non-empty protected descendants
+   * (including itself).
+   *
+   * @param src directory whose descendants are to be checked. The caller
+   *            must ensure src is not terminated with {@link Path#SEPARATOR}.
+   * @throws AccessControlException if a non-empty protected descendant
+   *                                was found.
+   */
+  private static void checkProtectedDescendants(FSDirectory fsd, String src)
+      throws AccessControlException, UnresolvedLinkException {
+    final SortedSet<String> protectedDirs = fsd.getProtectedDirectories();
+
+    // Is src protected? Caller has already checked it is non-empty.
+    if (protectedDirs.contains(src)) {
+      throw new AccessControlException(
+          "Cannot delete non-empty protected directory " + src);
+    }
+
+    // Are any descendants of src protected?
+    // The subSet call returns only the descendants of src since
+    // {@link Path#SEPARATOR} is "/" and '0' is the next ASCII
+    // character after '/'.
+    for (String descendant :
+            protectedDirs.subSet(src + Path.SEPARATOR, src + "0")) {
+      if (fsd.isNonEmptyDirectory(fsd.getINodesInPath4Write(
+              descendant, false))) {
+        throw new AccessControlException(
+            "Cannot delete non-empty protected subdirectory " + descendant);
+      }
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

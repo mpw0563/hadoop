@@ -87,6 +87,25 @@ public abstract class NMClient extends AbstractService {
           throws YarnException, IOException;
 
   /**
+<<<<<<< HEAD
+=======
+   * <p>Increase the resource of a container.</p>
+   *
+   * <p>The <code>ApplicationMaster</code> or other applications that use the
+   * client must provide the details of the container, including the Id and
+   * the target resource encapsulated in the updated container token via
+   * {@link Container}.
+   * </p>
+   *
+   * @param container the container with updated token
+   * @throws YarnException
+   * @throws IOException
+   */
+  public abstract void increaseContainerResource(Container container)
+      throws YarnException, IOException;
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * <p>Stop an started container.</p>
    *
    * @param containerId the Id of the started container

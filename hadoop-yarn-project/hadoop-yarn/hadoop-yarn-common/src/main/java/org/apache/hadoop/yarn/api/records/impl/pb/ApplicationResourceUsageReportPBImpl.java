@@ -231,4 +231,31 @@ extends ApplicationResourceUsageReport {
   private ResourceProto convertToProtoFormat(Resource t) {
     return ((ResourcePBImpl)t).getProto();
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public synchronized float getQueueUsagePercentage() {
+    ApplicationResourceUsageReportProtoOrBuilder p = viaProto ? proto : builder;
+    return (p.getQueueUsagePercentage());
+  }
+
+  @Override
+  public synchronized void setQueueUsagePercentage(float queueUsagePerc) {
+    maybeInitBuilder();
+    builder.setQueueUsagePercentage((queueUsagePerc));
+  }
+
+  @Override
+  public synchronized float getClusterUsagePercentage() {
+    ApplicationResourceUsageReportProtoOrBuilder p = viaProto ? proto : builder;
+    return (p.getClusterUsagePercentage());
+  }
+
+  @Override
+  public synchronized void setClusterUsagePercentage(float clusterUsagePerc) {
+    maybeInitBuilder();
+    builder.setClusterUsagePercentage((clusterUsagePerc));
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

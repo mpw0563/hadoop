@@ -101,8 +101,12 @@ public class TestDFSIO implements Tool {
                     " [-compression codecClassName]" +
                     " [-nrFiles N]" +
                     " [-size Size[B|KB|MB|GB|TB]]" +
+<<<<<<< HEAD
                     " [-resFile resultFileName] [-bufferSize Bytes]" +
                     " [-rootDir]";
+=======
+                    " [-resFile resultFileName] [-bufferSize Bytes]";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private Configuration config;
 
@@ -205,7 +209,10 @@ public class TestDFSIO implements Tool {
   @BeforeClass
   public static void beforeClass() throws Exception {
     bench = new TestDFSIO();
+<<<<<<< HEAD
     bench.getConf().setBoolean(DFSConfigKeys.DFS_SUPPORT_APPEND_KEY, true);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     bench.getConf().setInt(DFSConfigKeys.DFS_HEARTBEAT_INTERVAL_KEY, 1);
     cluster = new MiniDFSCluster.Builder(bench.getConf())
                                 .numDataNodes(2)
@@ -737,6 +744,7 @@ public class TestDFSIO implements Tool {
       return -1;
     }
 
+<<<<<<< HEAD
     for (int i = 0; i < args.length; i++) {       // parse command line
       if (args[i].startsWith("-read")) {
         testType = TestType.TEST_TYPE_READ;
@@ -770,6 +778,42 @@ public class TestDFSIO implements Tool {
       } else if (args[i].equals("-bufferSize")) {
         bufferSize = Integer.parseInt(args[++i]);
       } else if (args[i].equals("-resFile")) {
+=======
+    for (int i = 0; i < args.length; i++) { // parse command line
+      if (StringUtils.toLowerCase(args[i]).startsWith("-read")) {
+        testType = TestType.TEST_TYPE_READ;
+      } else if (args[i].equalsIgnoreCase("-write")) {
+        testType = TestType.TEST_TYPE_WRITE;
+      } else if (args[i].equalsIgnoreCase("-append")) {
+        testType = TestType.TEST_TYPE_APPEND;
+      } else if (args[i].equalsIgnoreCase("-random")) {
+        if (testType != TestType.TEST_TYPE_READ) return -1;
+        testType = TestType.TEST_TYPE_READ_RANDOM;
+      } else if (args[i].equalsIgnoreCase("-backward")) {
+        if (testType != TestType.TEST_TYPE_READ) return -1;
+        testType = TestType.TEST_TYPE_READ_BACKWARD;
+      } else if (args[i].equalsIgnoreCase("-skip")) {
+        if (testType != TestType.TEST_TYPE_READ) return -1;
+        testType = TestType.TEST_TYPE_READ_SKIP;
+      } else if (args[i].equalsIgnoreCase("-truncate")) {
+        testType = TestType.TEST_TYPE_TRUNCATE;
+      } else if (args[i].equalsIgnoreCase("-clean")) {
+        testType = TestType.TEST_TYPE_CLEANUP;
+      } else if (StringUtils.toLowerCase(args[i]).startsWith("-seq")) {
+        isSequential = true;
+      } else if (StringUtils.toLowerCase(args[i]).startsWith("-compression")) {
+        compressionClass = args[++i];
+      } else if (args[i].equalsIgnoreCase("-nrfiles")) {
+        nrFiles = Integer.parseInt(args[++i]);
+      } else if (args[i].equalsIgnoreCase("-filesize")
+          || args[i].equalsIgnoreCase("-size")) {
+        nrBytes = parseSize(args[++i]);
+      } else if (args[i].equalsIgnoreCase("-skipsize")) {
+        skipSize = parseSize(args[++i]);
+      } else if (args[i].equalsIgnoreCase("-buffersize")) {
+        bufferSize = Integer.parseInt(args[++i]);
+      } else if (args[i].equalsIgnoreCase("-resfile")) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         resFileName = args[++i];
       } else {
         System.err.println("Illegal argument: " + args[i]);
@@ -797,7 +841,10 @@ public class TestDFSIO implements Tool {
 
     config.setInt("test.io.file.buffer.size", bufferSize);
     config.setLong("test.io.skip.size", skipSize);
+<<<<<<< HEAD
     config.setBoolean(DFSConfigKeys.DFS_SUPPORT_APPEND_KEY, true);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     FileSystem fs = FileSystem.get(config);
 
     if (isSequential) {

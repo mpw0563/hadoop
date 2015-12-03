@@ -19,6 +19,10 @@ package org.apache.hadoop.hdfs.server.blockmanagement;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.fs.StorageType;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.net.Node;
 import org.apache.hadoop.net.NodeBase;
 
@@ -151,4 +155,24 @@ public class BlockPlacementPolicyRackFaultTolerant extends BlockPlacementPolicyD
         maxNodesPerRack, results, avoidStaleNodes, storageTypes);
     return writer;
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public BlockPlacementStatus verifyBlockPlacement(DatanodeInfo[] locs,
+      int numberOfReplicas) {
+    if (locs == null)
+      locs = DatanodeDescriptor.EMPTY_ARRAY;
+    if (!clusterMap.hasClusterEverBeenMultiRack()) {
+      // only one rack
+      return new BlockPlacementStatusDefault(1, 1);
+    }
+    // 1. Check that all locations are different.
+    // 2. Count locations on different racks.
+    Set<String> racks = new TreeSet<String>();
+    for (DatanodeInfo dn : locs)
+      racks.add(dn.getNetworkLocation());
+    return new BlockPlacementStatusDefault(racks.size(), numberOfReplicas);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

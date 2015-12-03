@@ -15,7 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+<<<<<<< HEAD
 @InterfaceAudience.LimitedPrivate({"HBase", "HDFS", "MapReduce"})
+=======
+@InterfaceAudience.Public
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 @InterfaceStability.Evolving
 package org.apache.hadoop.security.authorize;
 import org.apache.hadoop.classification.InterfaceAudience;

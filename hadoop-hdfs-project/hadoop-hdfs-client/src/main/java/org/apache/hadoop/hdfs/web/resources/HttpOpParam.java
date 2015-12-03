@@ -34,6 +34,7 @@ public abstract class HttpOpParam<E extends Enum<E> & HttpOpParam.Op>
   public static final String DEFAULT = NULL;
 
   /** Http operation types */
+<<<<<<< HEAD
   public static enum Type {
     GET, PUT, POST, DELETE;
   }
@@ -57,6 +58,31 @@ public abstract class HttpOpParam<E extends Enum<E> & HttpOpParam.Op>
 
     /** @return a URI query string. */
     public String toQueryString();
+=======
+  public enum Type {
+    GET, PUT, POST, DELETE
+  }
+
+  /** Http operation interface. */
+  public interface Op {
+    /** @return the Http operation type. */
+    Type getType();
+
+    /** @return true if the operation cannot use a token */
+    boolean getRequireAuth();
+
+    /** @return true if the operation will do output. */
+    boolean getDoOutput();
+
+    /** @return true if the operation will be redirected. */
+    boolean getRedirect();
+
+    /** @return true the expected http response code. */
+    int getExpectedHttpResponseCode();
+
+    /** @return a URI query string. */
+    String toQueryString();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Expects HTTP response 307 "Temporary Redirect". */
@@ -131,4 +157,8 @@ public abstract class HttpOpParam<E extends Enum<E> & HttpOpParam.Op>
   HttpOpParam(final Domain<E> domain, final E value) {
     super(domain, value);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

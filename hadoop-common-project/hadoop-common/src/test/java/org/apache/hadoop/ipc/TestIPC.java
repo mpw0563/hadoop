@@ -47,11 +47,19 @@ import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.TimeoutException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.SocketFactory;
 
+<<<<<<< HEAD
+=======
+import com.google.common.base.Supplier;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.impl.Log4JLogger;
@@ -73,6 +81,10 @@ import org.apache.hadoop.ipc.Server.Connection;
 import org.apache.hadoop.ipc.protobuf.RpcHeaderProtos.RpcResponseHeaderProto;
 import org.apache.hadoop.net.ConnectTimeoutException;
 import org.apache.hadoop.net.NetUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.security.token.SecretManager.InvalidToken;
 import org.apache.log4j.Level;
@@ -304,6 +316,8 @@ public class TestIPC {
       String causeText=cause.getMessage();
       assertTrue("Did not find " + causeText + " in " + message,
               message.contains(causeText));
+    } finally {
+      client.stop();
     }
   }
   
@@ -416,6 +430,7 @@ public class TestIPC {
       client.call(param, addr, null, null, 0, conf);
       
     } finally {
+      client.stop();
       server.stop();
     }
   }
@@ -531,6 +546,8 @@ public class TestIPC {
       fail("Expected an exception to have been thrown");
     } catch (IOException e) {
       assertTrue(e.getMessage().contains("Injected fault"));
+    } finally {
+      client.stop();
     }
   }
 
@@ -556,11 +573,11 @@ public class TestIPC {
     }).when(spyFactory).createSocket();
       
     Server server = new TestServer(1, true);
+    Client client = new Client(LongWritable.class, conf, spyFactory);
     server.start();
     try {
       // Call should fail due to injected exception.
       InetSocketAddress address = NetUtils.getConnectAddress(server);
-      Client client = new Client(LongWritable.class, conf, spyFactory);
       try {
         client.call(new LongWritable(RANDOM.nextLong()),
                 address, null, null, 0, conf);
@@ -577,6 +594,7 @@ public class TestIPC {
       client.call(new LongWritable(RANDOM.nextLong()),
           address, null, null, 0, conf);
     } finally {
+      client.stop();
       server.stop();
     }
   }
@@ -601,6 +619,320 @@ public class TestIPC {
     // set timeout to be bigger than 3*ping interval
     client.call(new LongWritable(RANDOM.nextLong()),
         addr, null, null, 3*PING_INTERVAL+MIN_SLEEP_TIME, conf);
+    client.stop();
+  }
+
+  @Test(timeout=60000)
+  public void testIpcConnectTimeout() throws IOException {
+    // start server
+    Server server = new TestServer(1, true);
+    InetSocketAddress addr = NetUtils.getConnectAddress(server);
+    //Intentionally do not start server to get a connection timeout
+
+    // start client
+    Client.setConnectTimeout(conf, 100);
+    Client client = new Client(LongWritable.class, conf);
+    // set the rpc timeout to twice the MIN_SLEEP_TIME
+    try {
+      client.call(new LongWritable(RANDOM.nextLong()),
+              addr, null, null, MIN_SLEEP_TIME*2, conf);
+      fail("Expected an exception to have been thrown");
+    } catch (SocketTimeoutException e) {
+      LOG.info("Get a SocketTimeoutException ", e);
+    }
+    client.stop();
+  }
+  
+  /**
+   * Check service class byte in IPC header is correct on wire.
+   */
+  @Test(timeout=60000)
+  public void testIpcWithServiceClass() throws IOException {
+    // start server
+    Server server = new TestServer(5, false);
+    InetSocketAddress addr = NetUtils.getConnectAddress(server);
+    server.start();
+
+    // start client
+    Client.setConnectTimeout(conf, 10000);
+
+    callAndVerify(server, addr, 0, true);
+    // Service Class is low to -128 as byte on wire.
+    // -128 shouldn't be casted on wire but -129 should.
+    callAndVerify(server, addr, -128, true);
+    callAndVerify(server, addr, -129, false);
+
+    // Service Class is up to 127.
+    // 127 shouldn't be casted on wire but 128 should.
+    callAndVerify(server, addr, 127, true);
+    callAndVerify(server, addr, 128, false);
+
+    server.stop();
+  }
+
+  private static class TestServerQueue extends Server {
+    final CountDownLatch firstCallLatch = new CountDownLatch(1);
+    final CountDownLatch callBlockLatch = new CountDownLatch(1);
+    
+    TestServerQueue(int expectedCalls, int readers, int callQ, int handlers,
+        Configuration conf) throws IOException {
+      super(ADDRESS, 0, LongWritable.class, handlers, readers, callQ, conf, null, null); 
+    }
+
+    @Override
+    public Writable call(RPC.RpcKind rpcKind, String protocol, Writable param,
+        long receiveTime) throws IOException {
+      firstCallLatch.countDown();
+      try {
+        callBlockLatch.await();
+      } catch (InterruptedException e) {
+        throw new IOException(e);
+      }
+      return param;
+    }
+  }
+
+  /**
+   * Check that reader queueing works
+   * @throws BrokenBarrierException 
+   * @throws InterruptedException 
+   */
+  @Test(timeout=60000)
+  public void testIpcWithReaderQueuing() throws Exception {
+    // 1 reader, 1 connectionQ slot, 1 callq
+    for (int i=0; i < 10; i++) {
+      checkBlocking(1, 1, 1);
+    }
+    // 4 readers, 5 connectionQ slots, 2 callq
+    for (int i=0; i < 10; i++) {
+      checkBlocking(4, 5, 2);
+    }
+  }
+  
+  // goal is to jam a handler with a connection, fill the callq with
+  // connections, in turn jamming the readers - then flood the server and
+  // ensure that the listener blocks when the reader connection queues fill
+  private void checkBlocking(int readers, int readerQ, int callQ) throws Exception {
+    int handlers = 1; // makes it easier
+    
+    final Configuration conf = new Configuration();
+    conf.setInt(CommonConfigurationKeys.IPC_SERVER_RPC_READ_CONNECTION_QUEUE_SIZE_KEY, readerQ);
+
+    // send in enough clients to block up the handlers, callq, and readers
+    final int initialClients = readers + callQ + handlers;
+    // max connections we should ever end up accepting at once
+    final int maxAccept = initialClients + readers*readerQ + 1; // 1 = listener
+    // stress it with 2X the max
+    int clients = maxAccept*2;
+    
+    final AtomicInteger failures = new AtomicInteger(0);
+    final CountDownLatch callFinishedLatch = new CountDownLatch(clients);
+
+    // start server
+    final TestServerQueue server =
+        new TestServerQueue(clients, readers, callQ, handlers, conf);
+    final InetSocketAddress addr = NetUtils.getConnectAddress(server);
+    server.start();
+
+    Client.setConnectTimeout(conf, 10000);
+    
+    // instantiate the threads, will start in batches
+    Thread[] threads = new Thread[clients];
+    for (int i=0; i<clients; i++) {
+      threads[i] = new Thread(new Runnable() {
+        @Override
+        public void run() {
+          Client client = new Client(LongWritable.class, conf);
+          try {
+            client.call(new LongWritable(Thread.currentThread().getId()),
+                addr, null, null, 60000, conf);
+          } catch (Throwable e) {
+            LOG.error(e);
+            failures.incrementAndGet();
+            return;
+          } finally {
+            callFinishedLatch.countDown();            
+            client.stop();
+          }
+        }
+      });
+    }
+    
+    // start enough clients to block up the handler, callq, and each reader;
+    // let the calls sequentially slot in to avoid some readers blocking
+    // and others not blocking in the race to fill the callq
+    for (int i=0; i < initialClients; i++) {
+      threads[i].start();
+      if (i==0) {
+        // let first reader block in a call
+        server.firstCallLatch.await();
+      } else if (i <= callQ) {
+        // let subsequent readers jam the callq, will happen immediately 
+        while (server.getCallQueueLen() != i) {
+          Thread.sleep(1);
+        }
+      } // additional threads block the readers trying to add to the callq
+    }
+
+    try {
+      // wait till everything is slotted, should happen immediately
+      GenericTestUtils.waitFor(new Supplier<Boolean>() {
+        @Override public Boolean get() {
+          return server.getNumOpenConnections() >= initialClients;
+        }
+      }, 100, 3000);
+    } catch (TimeoutException e) {
+      fail("timed out while waiting for connections to open.");
+    }
+    LOG.info("(initial clients) need:"+initialClients
+        +" connections have:"+server.getNumOpenConnections());
+    LOG.info("ipc layer should be blocked");
+    assertEquals(callQ, server.getCallQueueLen());
+    assertEquals(initialClients, server.getNumOpenConnections());
+    
+    // now flood the server with the rest of the connections, the reader's
+    // connection queues should fill and then the listener should block
+    for (int i=initialClients; i<clients; i++) {
+      threads[i].start();
+    }
+    Thread.sleep(10);
+
+    try {
+      GenericTestUtils.waitFor(new Supplier<Boolean>() {
+        @Override public Boolean get() {
+          return server.getNumOpenConnections() >= maxAccept;
+        }
+      }, 100, 3000);
+    } catch (TimeoutException e) {
+      fail("timed out while waiting for connections to open until maxAccept.");
+    }
+    LOG.info("(max clients) need:"+maxAccept
+        +" connections have:"+server.getNumOpenConnections());
+    // check a few times to make sure we didn't go over
+    for (int i=0; i<4; i++) {
+      assertEquals(maxAccept, server.getNumOpenConnections());
+      Thread.sleep(100);
+    }
+    
+    // sanity check that no calls have finished
+    assertEquals(clients, callFinishedLatch.getCount());
+    LOG.info("releasing the calls");
+    server.callBlockLatch.countDown();
+    callFinishedLatch.await();
+    for (Thread t : threads) {
+      t.join();
+    }
+    assertEquals(0, failures.get());
+    server.stop();
+  }
+
+  @Test(timeout=30000)
+  public void testConnectionIdleTimeouts() throws Exception {
+    ((Log4JLogger)Server.LOG).getLogger().setLevel(Level.DEBUG);
+    final int maxIdle = 1000;
+    final int cleanupInterval = maxIdle*3/4; // stagger cleanups
+    final int killMax = 3;
+    final int clients = 1 + killMax*2; // 1 to block, 2 batches to kill
+    
+    conf.setInt(CommonConfigurationKeysPublic.IPC_CLIENT_CONNECTION_MAXIDLETIME_KEY, maxIdle);
+    conf.setInt(CommonConfigurationKeysPublic.IPC_CLIENT_IDLETHRESHOLD_KEY, 0);
+    conf.setInt(CommonConfigurationKeysPublic.IPC_CLIENT_KILL_MAX_KEY, killMax);
+    conf.setInt(CommonConfigurationKeys.IPC_CLIENT_CONNECTION_IDLESCANINTERVAL_KEY, cleanupInterval);
+    
+    final CyclicBarrier firstCallBarrier = new CyclicBarrier(2);
+    final CyclicBarrier callBarrier = new CyclicBarrier(clients);
+    final CountDownLatch allCallLatch = new CountDownLatch(clients);
+    final AtomicBoolean error = new AtomicBoolean();
+    
+    final TestServer server = new TestServer(clients, false);
+    Thread[] threads = new Thread[clients];
+    try {
+      server.callListener = new Runnable(){
+        AtomicBoolean first = new AtomicBoolean(true);
+        @Override
+        public void run() {
+          try {
+            allCallLatch.countDown();
+            // block first call
+            if (first.compareAndSet(true, false)) {
+              firstCallBarrier.await();
+            } else {
+              callBarrier.await();
+            }
+          } catch (Throwable t) {
+            LOG.error(t);
+            error.set(true); 
+          } 
+        }
+      };
+      server.start();
+
+      // start client
+      final CountDownLatch callReturned = new CountDownLatch(clients-1);
+      final InetSocketAddress addr = NetUtils.getConnectAddress(server);
+      final Configuration clientConf = new Configuration();
+      clientConf.setInt(CommonConfigurationKeysPublic.IPC_CLIENT_CONNECTION_MAXIDLETIME_KEY, 10000);
+      for (int i=0; i < clients; i++) {
+        threads[i] = new Thread(new Runnable(){
+          @Override
+          public void run() {
+            Client client = new Client(LongWritable.class, clientConf);
+            try {
+              client.call(new LongWritable(Thread.currentThread().getId()),
+                  addr, null, null, 0, clientConf);
+              callReturned.countDown();
+              Thread.sleep(10000);
+            } catch (IOException e) {
+              LOG.error(e);
+            } catch (InterruptedException e) {
+            } finally {
+              client.stop();
+            }
+          }
+        });
+        threads[i].start();
+      }
+      
+      // all calls blocked in handler so all connections made
+      allCallLatch.await();
+      assertFalse(error.get());
+      assertEquals(clients, server.getNumOpenConnections());
+      
+      // wake up blocked calls and wait for client call to return, no
+      // connections should have closed
+      callBarrier.await();
+      callReturned.await();
+      assertEquals(clients, server.getNumOpenConnections());
+      
+      // server won't close till maxIdle*2, so give scanning thread time to
+      // be almost ready to close idle connection.  after which it should
+      // close max connections on every cleanupInterval
+      Thread.sleep(maxIdle*2-cleanupInterval);
+      for (int i=clients; i > 1; i -= killMax) {
+        Thread.sleep(cleanupInterval);
+        assertFalse(error.get());
+        assertEquals(i, server.getNumOpenConnections());
+      }
+
+      // connection for the first blocked call should still be open
+      Thread.sleep(cleanupInterval);
+      assertFalse(error.get());
+      assertEquals(1, server.getNumOpenConnections());
+     
+      // wake up call and ensure connection times out
+      firstCallBarrier.await();
+      Thread.sleep(maxIdle*2);
+      assertFalse(error.get());
+      assertEquals(0, server.getNumOpenConnections());
+    } finally {
+      for (Thread t : threads) {
+        if (t != null) {
+          t.interrupt();
+          t.join();
+        }
+        server.stop();
+      }
+    }
   }
 
   @Test(timeout=60000)
@@ -624,6 +956,7 @@ public class TestIPC {
   }
   
   /**
+<<<<<<< HEAD
    * Check service class byte in IPC header is correct on wire.
    */
   @Test(timeout=60000)
@@ -900,6 +1233,8 @@ public class TestIPC {
   }
   
   /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Make a call from a client and verify if header info is changed in server side
    */
   private void callAndVerify(Server server, InetSocketAddress addr,
@@ -952,6 +1287,31 @@ public class TestIPC {
         endFds - startFds < 20);
   }
   
+  /**
+   * Check if Client is interrupted after handling
+   * InterruptedException during cleanup
+   */
+  @Test(timeout=30000)
+  public void testInterrupted() {
+    Client client = new Client(LongWritable.class, conf);
+    client.getClientExecutor().submit(new Runnable() {
+      public void run() {
+        while(true);
+      }
+    });
+    Thread.currentThread().interrupt();
+    client.stop();
+    try {
+      assertTrue(Thread.currentThread().isInterrupted());
+      LOG.info("Expected thread interrupt during client cleanup");
+    } catch (AssertionError e) {
+      LOG.error("The Client did not interrupt after handling an Interrupted Exception");
+      Assert.fail("The Client did not interrupt after handling an Interrupted Exception");
+    }
+    // Clear Thread interrupt
+    Thread.currentThread().interrupted();
+  }
+
   private long countOpenFileDescriptors() {
     return FD_DIR.list().length;
   }
@@ -1315,6 +1675,10 @@ public class TestIPC {
       Mockito.verify(mockFactory, Mockito.times(maxTimeoutRetries))
           .createSocket();
     }
+<<<<<<< HEAD
+=======
+    client.stop();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   private void doIpcVersionTest(

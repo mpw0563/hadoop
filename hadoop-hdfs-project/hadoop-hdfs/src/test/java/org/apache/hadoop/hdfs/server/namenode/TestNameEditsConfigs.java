@@ -25,17 +25,27 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Random;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.fs.FSDataOutputStream;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSTestUtil;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.server.namenode.NNStorage.NameNodeDirType;
@@ -72,6 +82,7 @@ public class TestNameEditsConfigs {
     }
   }
   
+<<<<<<< HEAD
   private void writeFile(FileSystem fileSys, Path name, int repl)
       throws IOException {
     FSDataOutputStream stm = fileSys.create(name, true, fileSys.getConf()
@@ -84,6 +95,8 @@ public class TestNameEditsConfigs {
     stm.close();
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   void checkImageAndEditsFilesExistence(File dir, 
                                         boolean shouldHaveImages,
                                         boolean shouldHaveEdits)
@@ -188,7 +201,8 @@ public class TestNameEditsConfigs {
 
     try {
       assertTrue(!fileSys.exists(file1));
-      writeFile(fileSys, file1, replication);
+      DFSTestUtil.createFile(fileSys, file1, FILE_SIZE, FILE_SIZE, BLOCK_SIZE,
+          replication, SEED);
       checkFile(fileSys, file1, replication);
       secondary.doCheckpoint();
     } finally {
@@ -225,7 +239,8 @@ public class TestNameEditsConfigs {
       assertTrue(fileSys.exists(file1));
       checkFile(fileSys, file1, replication);
       cleanupFile(fileSys, file1);
-      writeFile(fileSys, file2, replication);
+      DFSTestUtil.createFile(fileSys, file2, FILE_SIZE, FILE_SIZE, BLOCK_SIZE,
+          replication, SEED);
       checkFile(fileSys, file2, replication);
       secondary.doCheckpoint();
     } finally {
@@ -261,7 +276,8 @@ public class TestNameEditsConfigs {
       assertTrue(fileSys.exists(file2));
       checkFile(fileSys, file2, replication);
       cleanupFile(fileSys, file2);
-      writeFile(fileSys, file3, replication);
+      DFSTestUtil.createFile(fileSys, file3, FILE_SIZE, FILE_SIZE, BLOCK_SIZE,
+          replication, SEED);
       checkFile(fileSys, file3, replication);
       secondary.doCheckpoint();
     } finally {
@@ -454,7 +470,8 @@ public class TestNameEditsConfigs {
       fileSys = cluster.getFileSystem();
 
       assertTrue(!fileSys.exists(file1));
-      writeFile(fileSys, file1, replication);
+      DFSTestUtil.createFile(fileSys, file1, FILE_SIZE, FILE_SIZE, BLOCK_SIZE,
+          replication, SEED);
       checkFile(fileSys, file1, replication);
     } finally  {
       fileSys.close();
@@ -492,7 +509,8 @@ public class TestNameEditsConfigs {
       assertTrue(fileSys.exists(file1));
       checkFile(fileSys, file1, replication);
       cleanupFile(fileSys, file1);
-      writeFile(fileSys, file2, replication);
+      DFSTestUtil.createFile(fileSys, file2, FILE_SIZE, FILE_SIZE, BLOCK_SIZE,
+          replication, SEED);
       checkFile(fileSys, file2, replication);
     } finally {
       fileSys.close();
@@ -519,7 +537,8 @@ public class TestNameEditsConfigs {
       assertTrue(fileSys.exists(file2));
       checkFile(fileSys, file2, replication);
       cleanupFile(fileSys, file2);
-      writeFile(fileSys, file3, replication);
+      DFSTestUtil.createFile(fileSys, file3, FILE_SIZE, FILE_SIZE, BLOCK_SIZE,
+          replication, SEED);
       checkFile(fileSys, file3, replication);
     } finally {
       fileSys.close();
@@ -573,7 +592,12 @@ public class TestNameEditsConfigs {
       assertTrue(fileSys.exists(file3));
       checkFile(fileSys, file3, replication);
       cleanupFile(fileSys, file3);
+<<<<<<< HEAD
       writeFile(fileSys, file3, replication);
+=======
+      DFSTestUtil.createFile(fileSys, file3, FILE_SIZE, FILE_SIZE, BLOCK_SIZE,
+          replication, SEED);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       checkFile(fileSys, file3, replication);
     } finally {
       fileSys.close();

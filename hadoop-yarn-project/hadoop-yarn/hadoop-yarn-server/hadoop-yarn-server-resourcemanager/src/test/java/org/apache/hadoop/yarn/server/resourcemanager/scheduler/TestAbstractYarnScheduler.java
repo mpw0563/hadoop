@@ -79,7 +79,11 @@ public class TestAbstractYarnScheduler extends ParameterizedSchedulerTestBase {
     try {
       rm.start();
       testMaximumAllocationMemoryHelper(
+<<<<<<< HEAD
           (AbstractYarnScheduler) rm.getResourceScheduler(),
+=======
+          rm.getResourceScheduler(),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           node1MaxMemory, node2MaxMemory, node3MaxMemory,
           configuredMaxMemory, configuredMaxMemory, configuredMaxMemory,
           configuredMaxMemory, configuredMaxMemory, configuredMaxMemory);
@@ -94,7 +98,11 @@ public class TestAbstractYarnScheduler extends ParameterizedSchedulerTestBase {
     try {
       rm.start();
       testMaximumAllocationMemoryHelper(
+<<<<<<< HEAD
           (AbstractYarnScheduler) rm.getResourceScheduler(),
+=======
+          rm.getResourceScheduler(),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           node1MaxMemory, node2MaxMemory, node3MaxMemory,
           configuredMaxMemory, configuredMaxMemory, configuredMaxMemory,
           node2MaxMemory, node3MaxMemory, node2MaxMemory);
@@ -104,7 +112,11 @@ public class TestAbstractYarnScheduler extends ParameterizedSchedulerTestBase {
   }
 
   private void testMaximumAllocationMemoryHelper(
+<<<<<<< HEAD
        AbstractYarnScheduler scheduler,
+=======
+       YarnScheduler scheduler,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
        final int node1MaxMemory, final int node2MaxMemory,
        final int node3MaxMemory, final int... expectedMaxMemory)
        throws Exception {
@@ -166,7 +178,11 @@ public class TestAbstractYarnScheduler extends ParameterizedSchedulerTestBase {
     try {
       rm.start();
       testMaximumAllocationVCoresHelper(
+<<<<<<< HEAD
           (AbstractYarnScheduler) rm.getResourceScheduler(),
+=======
+          rm.getResourceScheduler(),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           node1MaxVCores, node2MaxVCores, node3MaxVCores,
           configuredMaxVCores, configuredMaxVCores, configuredMaxVCores,
           configuredMaxVCores, configuredMaxVCores, configuredMaxVCores);
@@ -181,7 +197,11 @@ public class TestAbstractYarnScheduler extends ParameterizedSchedulerTestBase {
     try {
       rm.start();
       testMaximumAllocationVCoresHelper(
+<<<<<<< HEAD
           (AbstractYarnScheduler) rm.getResourceScheduler(),
+=======
+          rm.getResourceScheduler(),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           node1MaxVCores, node2MaxVCores, node3MaxVCores,
           configuredMaxVCores, configuredMaxVCores, configuredMaxVCores,
           node2MaxVCores, node3MaxVCores, node2MaxVCores);
@@ -191,7 +211,11 @@ public class TestAbstractYarnScheduler extends ParameterizedSchedulerTestBase {
   }
 
   private void testMaximumAllocationVCoresHelper(
+<<<<<<< HEAD
       AbstractYarnScheduler scheduler,
+=======
+      YarnScheduler scheduler,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final int node1MaxVCores, final int node2MaxVCores,
       final int node3MaxVCores, final int... expectedMaxVCores)
       throws Exception {
@@ -494,7 +518,11 @@ public class TestAbstractYarnScheduler extends ParameterizedSchedulerTestBase {
   }
 
   private void verifyMaximumResourceCapability(
+<<<<<<< HEAD
       Resource expectedMaximumResource, AbstractYarnScheduler scheduler) {
+=======
+      Resource expectedMaximumResource, YarnScheduler scheduler) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     final Resource schedulerMaximumResourceCapability = scheduler
         .getMaximumResourceCapability();

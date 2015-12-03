@@ -20,12 +20,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../../hadoop-project</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-mapreduce-examples</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Apache Hadoop MapReduce Examples</description>
   <name>Apache Hadoop MapReduce Examples</name>
   <packaging>jar</packaging>
@@ -46,7 +54,10 @@
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
+<<<<<<< HEAD
       <version>${project.version}</version>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -68,7 +79,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
       <artifactId>hadoop-hdfs</artifactId>
+=======
+      <artifactId>hadoop-hdfs-client</artifactId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <scope>runtime</scope>
     </dependency>
     <dependency>

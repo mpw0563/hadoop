@@ -37,13 +37,17 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.junit.*;
 
 public class TestGlobPaths {
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static final UserGroupInformation unprivilegedUser =
     UserGroupInformation.createUserForTesting("myuser",
         new String[] { "mygroup" });
 
   static class RegexPathFilter implements PathFilter {
-    
+
     private final String regex;
     public RegexPathFilter(String regex) {
       this.regex = regex;
@@ -55,7 +59,7 @@ public class TestGlobPaths {
     }
 
   }
-  
+
   static private MiniDFSCluster dfsCluster;
   static private FileSystem fs;
   static private FileSystem privilegedFs;
@@ -64,7 +68,11 @@ public class TestGlobPaths {
   static final private int NUM_OF_PATHS = 4;
   static private String USER_DIR;
   private final Path[] path = new Path[NUM_OF_PATHS];
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @BeforeClass
   public static void setUp() throws Exception {
     final Configuration conf = new HdfsConfiguration();
@@ -416,6 +424,7 @@ public class TestGlobPaths {
 
     cleanupDFS();
   }
+<<<<<<< HEAD
   
   private void checkStatus(FileStatus[] status, Path ... expectedMatches) {
     assertNotNull(status);
@@ -433,6 +442,25 @@ public class TestGlobPaths {
   }
   
   
+=======
+  
+  private void checkStatus(FileStatus[] status, Path ... expectedMatches) {
+    assertNotNull(status);
+    String[] paths = new String[status.length];
+    for (int i=0; i < status.length; i++) {
+      paths[i] = getPathFromStatus(status[i]);
+    }
+    String got = StringUtils.join(paths, "\n");
+    String expected = StringUtils.join(expectedMatches, "\n");
+    assertEquals(expected, got);
+  }
+
+  private String getPathFromStatus(FileStatus status) {
+    return status.getPath().toUri().getPath();
+  }
+  
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testPathFilter() throws IOException {
     try {
@@ -828,6 +856,7 @@ public class TestGlobPaths {
     } finally {
       cleanupDFS();
     }
+<<<<<<< HEAD
   }
   
   /**
@@ -1211,6 +1240,387 @@ public class TestGlobPaths {
   }
   
   /**
+=======
+  }
+  
+  /**
+   * Accept all paths.
+   */
+  private static class AcceptAllPathFilter implements PathFilter {
+    @Override
+    public boolean accept(Path path) {
+      return true;
+    }
+  }
+
+  private static final PathFilter trueFilter = new AcceptAllPathFilter();
+
+  /**
+   * Accept only paths ending in Z.
+   */
+  private static class AcceptPathsEndingInZ implements PathFilter {
+    @Override
+    public boolean accept(Path path) {
+      String stringPath = path.toUri().getPath();
+      return stringPath.endsWith("z");
+    }
+  }
+
+  /**
+   * Test globbing through symlinks.
+   */
+  private class TestGlobWithSymlinks extends FSTestWrapperGlobTest {
+    TestGlobWithSymlinks(boolean useFc) {
+      super(useFc);
+    }
+
+    void run() throws Exception {
+      // Test that globbing through a symlink to a directory yields a path
+      // containing that symlink.
+      wrap.mkdir(new Path(USER_DIR + "/alpha"), FsPermission.getDirDefault(),
+          false);
+      wrap.createSymlink(new Path(USER_DIR + "/alpha"), new Path(USER_DIR
+          + "/alphaLink"), false);
+      wrap.mkdir(new Path(USER_DIR + "/alphaLink/beta"),
+          FsPermission.getDirDefault(), false);
+      // Test simple glob
+      FileStatus[] statuses = wrap.globStatus(new Path(USER_DIR + "/alpha/*"),
+          new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Assert.assertEquals(USER_DIR + "/alpha/beta", statuses[0].getPath()
+          .toUri().getPath());
+      // Test glob through symlink
+      statuses = wrap.globStatus(new Path(USER_DIR + "/alphaLink/*"),
+          new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Assert.assertEquals(USER_DIR + "/alphaLink/beta", statuses[0].getPath()
+          .toUri().getPath());
+      // If the terminal path component in a globbed path is a symlink,
+      // we don't dereference that link.
+      wrap.createSymlink(new Path("beta"), new Path(USER_DIR
+          + "/alphaLink/betaLink"), false);
+      statuses = wrap.globStatus(new Path(USER_DIR + "/alpha/betaLi*"),
+          new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Assert.assertEquals(USER_DIR + "/alpha/betaLink", statuses[0].getPath()
+          .toUri().getPath());
+      // todo: test symlink-to-symlink-to-dir, etc.
+    }
+  }
+
+  @Ignore
+  @Test
+  public void testGlobWithSymlinksOnFS() throws Exception {
+    testOnFileSystem(new TestGlobWithSymlinks(false));
+  }
+
+  @Ignore
+  @Test
+  public void testGlobWithSymlinksOnFC() throws Exception {
+    testOnFileContext(new TestGlobWithSymlinks(true));
+  }
+
+  /**
+   * Test globbing symlinks to symlinks.
+   *
+   * Also test globbing dangling symlinks.  It should NOT throw any exceptions!
+   */
+  private class TestGlobWithSymlinksToSymlinks extends
+      FSTestWrapperGlobTest {
+    TestGlobWithSymlinksToSymlinks(boolean useFc) {
+      super(useFc);
+    }
+
+    void run() throws Exception {
+      // Test that globbing through a symlink to a symlink to a directory
+      // fully resolves
+      wrap.mkdir(new Path(USER_DIR + "/alpha"), FsPermission.getDirDefault(),
+          false);
+      wrap.createSymlink(new Path(USER_DIR + "/alpha"), new Path(USER_DIR
+          + "/alphaLink"), false);
+      wrap.createSymlink(new Path(USER_DIR + "/alphaLink"), new Path(USER_DIR
+          + "/alphaLinkLink"), false);
+      wrap.mkdir(new Path(USER_DIR + "/alpha/beta"),
+          FsPermission.getDirDefault(), false);
+      // Test glob through symlink to a symlink to a directory
+      FileStatus statuses[] = wrap.globStatus(new Path(USER_DIR
+          + "/alphaLinkLink"), new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Assert.assertEquals(USER_DIR + "/alphaLinkLink", statuses[0].getPath()
+          .toUri().getPath());
+      statuses = wrap.globStatus(new Path(USER_DIR + "/alphaLinkLink/*"),
+          new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Assert.assertEquals(USER_DIR + "/alphaLinkLink/beta", statuses[0]
+          .getPath().toUri().getPath());
+      // Test glob of dangling symlink (theta does not actually exist)
+      wrap.createSymlink(new Path(USER_DIR + "theta"), new Path(USER_DIR
+          + "/alpha/kappa"), false);
+      statuses = wrap.globStatus(new Path(USER_DIR + "/alpha/kappa/kappa"),
+          new AcceptAllPathFilter());
+      Assert.assertNull(statuses);
+      // Test glob of symlinks
+      wrap.createFile(USER_DIR + "/alpha/beta/gamma");
+      wrap.createSymlink(new Path(USER_DIR + "gamma"), new Path(USER_DIR
+          + "/alpha/beta/gammaLink"), false);
+      wrap.createSymlink(new Path(USER_DIR + "gammaLink"), new Path(USER_DIR
+          + "/alpha/beta/gammaLinkLink"), false);
+      wrap.createSymlink(new Path(USER_DIR + "gammaLinkLink"), new Path(
+          USER_DIR + "/alpha/beta/gammaLinkLinkLink"), false);
+      statuses = wrap.globStatus(new Path(USER_DIR
+          + "/alpha/*/gammaLinkLinkLink"), new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Assert.assertEquals(USER_DIR + "/alpha/beta/gammaLinkLinkLink",
+          statuses[0].getPath().toUri().getPath());
+      statuses = wrap.globStatus(new Path(USER_DIR + "/alpha/beta/*"),
+          new AcceptAllPathFilter());
+      Assert.assertEquals(USER_DIR + "/alpha/beta/gamma;" + USER_DIR
+          + "/alpha/beta/gammaLink;" + USER_DIR + "/alpha/beta/gammaLinkLink;"
+          + USER_DIR + "/alpha/beta/gammaLinkLinkLink",
+          TestPath.mergeStatuses(statuses));
+      // Let's create two symlinks that point to each other, and glob on them.
+      wrap.createSymlink(new Path(USER_DIR + "tweedledee"), new Path(USER_DIR
+          + "/tweedledum"), false);
+      wrap.createSymlink(new Path(USER_DIR + "tweedledum"), new Path(USER_DIR
+          + "/tweedledee"), false);
+      statuses = wrap.globStatus(
+          new Path(USER_DIR + "/tweedledee/unobtainium"),
+          new AcceptAllPathFilter());
+      Assert.assertNull(statuses);
+    }
+  }
+
+  @Ignore
+  @Test
+  public void testGlobWithSymlinksToSymlinksOnFS() throws Exception {
+    testOnFileSystem(new TestGlobWithSymlinksToSymlinks(false));
+  }
+
+  @Ignore
+  @Test
+  public void testGlobWithSymlinksToSymlinksOnFC() throws Exception {
+    testOnFileContext(new TestGlobWithSymlinksToSymlinks(true));
+  }
+
+  /**
+   * Test globbing symlinks with a custom PathFilter
+   */
+  private class TestGlobSymlinksWithCustomPathFilter extends
+      FSTestWrapperGlobTest {
+    TestGlobSymlinksWithCustomPathFilter(boolean useFc) {
+      super(useFc);
+    }
+
+    void run() throws Exception {
+      // Test that globbing through a symlink to a symlink to a directory
+      // fully resolves
+      wrap.mkdir(new Path(USER_DIR + "/alpha"), FsPermission.getDirDefault(),
+          false);
+      wrap.createSymlink(new Path(USER_DIR + "/alpha"), new Path(USER_DIR
+          + "/alphaLinkz"), false);
+      wrap.mkdir(new Path(USER_DIR + "/alpha/beta"),
+          FsPermission.getDirDefault(), false);
+      wrap.mkdir(new Path(USER_DIR + "/alpha/betaz"),
+          FsPermission.getDirDefault(), false);
+      // Test glob through symlink to a symlink to a directory, with a
+      // PathFilter
+      FileStatus statuses[] = wrap.globStatus(
+          new Path(USER_DIR + "/alpha/beta"), new AcceptPathsEndingInZ());
+      Assert.assertNull(statuses);
+      statuses = wrap.globStatus(new Path(USER_DIR + "/alphaLinkz/betaz"),
+          new AcceptPathsEndingInZ());
+      Assert.assertEquals(1, statuses.length);
+      Assert.assertEquals(USER_DIR + "/alphaLinkz/betaz", statuses[0].getPath()
+          .toUri().getPath());
+      statuses = wrap.globStatus(new Path(USER_DIR + "/*/*"),
+          new AcceptPathsEndingInZ());
+      Assert.assertEquals(USER_DIR + "/alpha/betaz;" + USER_DIR
+          + "/alphaLinkz/betaz", TestPath.mergeStatuses(statuses));
+      statuses = wrap.globStatus(new Path(USER_DIR + "/*/*"),
+          new AcceptAllPathFilter());
+      Assert.assertEquals(USER_DIR + "/alpha/beta;" + USER_DIR
+          + "/alpha/betaz;" + USER_DIR + "/alphaLinkz/beta;" + USER_DIR
+          + "/alphaLinkz/betaz", TestPath.mergeStatuses(statuses));
+    }
+  }
+
+  @Ignore
+  @Test
+  public void testGlobSymlinksWithCustomPathFilterOnFS() throws Exception {
+    testOnFileSystem(new TestGlobSymlinksWithCustomPathFilter(false));
+  }
+
+  @Ignore
+  @Test
+  public void testGlobSymlinksWithCustomPathFilterOnFC() throws Exception {
+    testOnFileContext(new TestGlobSymlinksWithCustomPathFilter(true));
+  }
+
+  /**
+   * Test that globStatus fills in the scheme even when it is not provided.
+   */
+  private class TestGlobFillsInScheme extends FSTestWrapperGlobTest {
+    TestGlobFillsInScheme(boolean useFc) {
+      super(useFc);
+    }
+
+    void run() throws Exception {
+      // Verify that the default scheme is hdfs, when we don't supply one.
+      wrap.mkdir(new Path(USER_DIR + "/alpha"), FsPermission.getDirDefault(),
+          false);
+      wrap.createSymlink(new Path(USER_DIR + "/alpha"), new Path(USER_DIR
+          + "/alphaLink"), false);
+      FileStatus statuses[] = wrap.globStatus(
+          new Path(USER_DIR + "/alphaLink"), new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Path path = statuses[0].getPath();
+      Assert.assertEquals(USER_DIR + "/alpha", path.toUri().getPath());
+      Assert.assertEquals("hdfs", path.toUri().getScheme());
+
+      // FileContext can list a file:/// URI.
+      // Since everyone should have the root directory, we list that.
+      statuses = fc.util().globStatus(new Path("file:///"),
+          new AcceptAllPathFilter());
+      Assert.assertEquals(1, statuses.length);
+      Path filePath = statuses[0].getPath();
+      Assert.assertEquals("file", filePath.toUri().getScheme());
+      Assert.assertEquals("/", filePath.toUri().getPath());
+
+      // The FileSystem should have scheme 'hdfs'
+      Assert.assertEquals("hdfs", fs.getScheme());
+    }
+  }
+
+  @Test
+  public void testGlobFillsInSchemeOnFS() throws Exception {
+    testOnFileSystem(new TestGlobFillsInScheme(false));
+  }
+
+  @Test
+  public void testGlobFillsInSchemeOnFC() throws Exception {
+    testOnFileContext(new TestGlobFillsInScheme(true));
+  }
+
+  /**
+   * Test that globStatus works with relative paths.
+   **/
+  private class TestRelativePath extends FSTestWrapperGlobTest {
+    TestRelativePath(boolean useFc) {
+      super(useFc);
+    }
+
+    void run() throws Exception {
+      String[] files = new String[] { "a", "abc", "abc.p", "bacd" };
+
+      Path[] path = new Path[files.length];
+      for(int i=0; i <  files.length; i++) {
+        path[i] = wrap.makeQualified(new Path(files[i]));
+        wrap.mkdir(path[i], FsPermission.getDirDefault(), true);
+      }
+
+      Path patternPath = new Path("a*");
+      Path[] globResults = FileUtil.stat2Paths(wrap.globStatus(patternPath,
+            new AcceptAllPathFilter()),
+          patternPath);
+
+      for(int i=0; i < globResults.length; i++) {
+        globResults[i] = wrap.makeQualified(globResults[i]);
+      }
+
+      assertEquals(globResults.length, 3);
+
+      // The default working directory for FileSystem is the user's home
+      // directory.  For FileContext, the default is based on the UNIX user that
+      // started the jvm.  This is arguably a bug (see HADOOP-10944 for
+      // details).  We work around it here by explicitly calling
+      // getWorkingDirectory and going from there.
+      String pwd = wrap.getWorkingDirectory().toUri().getPath();
+      assertEquals(pwd + "/a;" + pwd + "/abc;" + pwd + "/abc.p",
+                               TestPath.mergeStatuses(globResults));
+    }
+  }
+
+  @Test
+  public void testRelativePathOnFS() throws Exception {
+    testOnFileSystem(new TestRelativePath(false));
+  }
+
+  @Test
+  public void testRelativePathOnFC() throws Exception {
+    testOnFileContext(new TestRelativePath(true));
+  }
+  
+  /**
+   * Test that trying to glob through a directory we don't have permission
+   * to list fails with AccessControlException rather than succeeding or
+   * throwing any other exception.
+   **/
+  private class TestGlobAccessDenied extends FSTestWrapperGlobTest {
+    TestGlobAccessDenied(boolean useFc) {
+      super(useFc);
+    }
+
+    void run() throws Exception {
+      privWrap.mkdir(new Path("/nopermission/val"),
+          new FsPermission((short)0777), true);
+      privWrap.mkdir(new Path("/norestrictions/val"),
+          new FsPermission((short)0777), true);
+      privWrap.setPermission(new Path("/nopermission"),
+          new FsPermission((short)0));
+      try {
+        wrap.globStatus(new Path("/no*/*"),
+            new AcceptAllPathFilter());
+        Assert.fail("expected to get an AccessControlException when " +
+            "globbing through a directory we don't have permissions " +
+            "to list.");
+      } catch (AccessControlException ioe) {
+      }
+
+      Assert.assertEquals("/norestrictions/val",
+        TestPath.mergeStatuses(wrap.globStatus(
+            new Path("/norestrictions/*"),
+                new AcceptAllPathFilter())));
+    }
+  }
+
+  @Test
+  public void testGlobAccessDeniedOnFS() throws Exception {
+    testOnFileSystem(new TestGlobAccessDenied(false));
+  }
+
+  @Test
+  public void testGlobAccessDeniedOnFC() throws Exception {
+    testOnFileContext(new TestGlobAccessDenied(true));
+  }
+
+  /**
+   * Test that trying to list a reserved path on HDFS via the globber works.
+   **/
+  private class TestReservedHdfsPaths extends FSTestWrapperGlobTest {
+    TestReservedHdfsPaths(boolean useFc) {
+      super(useFc);
+    }
+
+    void run() throws Exception {
+      String reservedRoot = "/.reserved/.inodes/" + INodeId.ROOT_INODE_ID;
+      Assert.assertEquals(reservedRoot,
+        TestPath.mergeStatuses(wrap.
+            globStatus(new Path(reservedRoot), new AcceptAllPathFilter())));
+    }
+  }
+
+  @Test
+  public void testReservedHdfsPathsOnFS() throws Exception {
+    testOnFileSystem(new TestReservedHdfsPaths(false));
+  }
+
+  @Test
+  public void testReservedHdfsPathsOnFC() throws Exception {
+    testOnFileContext(new TestReservedHdfsPaths(true));
+  }
+  
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Test trying to glob the root.  Regression test for HDFS-5888.
    **/
   private class TestGlobRoot extends FSTestWrapperGlobTest {

@@ -59,6 +59,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CreateFlag;
 import org.apache.hadoop.fs.MD5MD5CRC32FileChecksum;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.ParentNotDirectoryException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.DFSClient;
 import org.apache.hadoop.hdfs.client.HdfsDataInputStream;
@@ -84,6 +88,12 @@ public class WebHdfsHandler extends SimpleChannelInboundHandler<HttpRequest> {
   public static final String APPLICATION_JSON_UTF8 =
       "application/json; charset=utf-8";
 
+<<<<<<< HEAD
+=======
+  public static final EnumSet<CreateFlag> EMPTY_CREATE_FLAG =
+      EnumSet.noneOf(CreateFlag.class);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final Configuration conf;
   private final Configuration confForCreate;
 
@@ -155,6 +165,7 @@ public class WebHdfsHandler extends SimpleChannelInboundHandler<HttpRequest> {
     final short replication = params.replication();
     final long blockSize = params.blockSize();
     final FsPermission permission = params.permission();
+<<<<<<< HEAD
 
     EnumSet<CreateFlag> flags = params.overwrite() ?
       EnumSet.of(CreateFlag.CREATE, CreateFlag.OVERWRITE)
@@ -164,6 +175,26 @@ public class WebHdfsHandler extends SimpleChannelInboundHandler<HttpRequest> {
     OutputStream out = dfsClient.createWrappedOutputStream(dfsClient.create(
       path, permission, flags, replication,
       blockSize, null, bufferSize, null), null);
+=======
+    final boolean createParent = params.createParent();
+
+    EnumSet<CreateFlag> flags = params.createFlag();
+    if (flags.equals(EMPTY_CREATE_FLAG)) {
+      flags = params.overwrite() ?
+          EnumSet.of(CreateFlag.CREATE, CreateFlag.OVERWRITE)
+          : EnumSet.of(CreateFlag.CREATE);
+    } else {
+      if(params.overwrite()) {
+        flags.add(CreateFlag.OVERWRITE);
+      }
+    }
+
+    final DFSClient dfsClient = newDfsClient(nnId, confForCreate);
+    OutputStream out = dfsClient.createWrappedOutputStream(dfsClient.create(
+        path, permission, flags, createParent, replication, blockSize, null,
+        bufferSize, null), null);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     DefaultHttpResponse resp = new DefaultHttpResponse(HTTP_1_1, CREATED);
 
     final URI uri = new URI(HDFS_URI_SCHEME, nnId, path, null, null);

@@ -20,7 +20,10 @@ package org.apache.hadoop.hdfs.protocol;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.StorageType;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
@@ -29,7 +32,11 @@ public class DatanodeInfoWithStorage extends DatanodeInfo {
   private final StorageType storageType;
 
   public DatanodeInfoWithStorage(DatanodeInfo from, String storageID,
+<<<<<<< HEAD
                                  StorageType storageType) {
+=======
+      StorageType storageType) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     super(from);
     this.storageID = storageID;
     this.storageType = storageType;

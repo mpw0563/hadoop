@@ -26,6 +26,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestMiniYarnCluster {
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testTimelineServiceStartInMiniCluster() throws Exception {
     Configuration conf = new YarnConfiguration();
@@ -68,6 +72,17 @@ public class TestMiniYarnCluster {
       cluster = new MiniYARNCluster(TestMiniYarnCluster.class.getSimpleName(),
           numNodeManagers, numLocalDirs, numLogDirs, numLogDirs, enableAHS);
       cluster.init(conf);
+<<<<<<< HEAD
+=======
+
+      // Verify that the timeline-service starts on ephemeral ports by default
+      String hostname = MiniYARNCluster.getHostname();
+      Assert.assertEquals(hostname + ":0",
+        conf.get(YarnConfiguration.TIMELINE_SERVICE_ADDRESS));
+      Assert.assertEquals(hostname + ":0",
+        conf.get(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       cluster.start();
 
       //Timeline service may sometime take a while to get started

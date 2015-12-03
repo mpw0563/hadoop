@@ -22,6 +22,10 @@ import static org.apache.hadoop.yarn.util.StringHelper.pajoin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.security.HttpCrossOriginFilterInitializer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.service.AbstractService;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
@@ -59,7 +63,18 @@ public class WebServer extends AbstractService {
     String bindAddress = WebAppUtils.getWebAppBindURL(getConfig(),
                           YarnConfiguration.NM_BIND_HOST,
                           WebAppUtils.getNMWebAppURLWithoutScheme(getConfig()));
+<<<<<<< HEAD
     
+=======
+    boolean enableCors = getConfig()
+        .getBoolean(YarnConfiguration.NM_WEBAPP_ENABLE_CORS_FILTER,
+            YarnConfiguration.DEFAULT_NM_WEBAPP_ENABLE_CORS_FILTER);
+    if (enableCors) {
+      getConfig().setBoolean(HttpCrossOriginFilterInitializer.PREFIX
+          + HttpCrossOriginFilterInitializer.ENABLED_SUFFIX, true);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     LOG.info("Instantiating NMWebApp at " + bindAddress);
     try {
       this.webApp =

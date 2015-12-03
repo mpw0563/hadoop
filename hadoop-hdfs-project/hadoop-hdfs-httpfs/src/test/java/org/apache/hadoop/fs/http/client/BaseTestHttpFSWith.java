@@ -465,8 +465,13 @@ public abstract class BaseTestHttpFSWith extends HFSTestCase {
     OutputStream os = fs.create(path);
     os.write(1);
     os.close();
+<<<<<<< HEAD
     fs.close();
     fs.setReplication(path, (short) 2);
+=======
+    fs.setReplication(path, (short) 2);
+    fs.close();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     fs = getHttpFSFileSystem();
     fs.setReplication(path, (short) 1);
@@ -738,6 +743,10 @@ public abstract class BaseTestHttpFSWith extends HFSTestCase {
     }
 
     final String aclUser1 = "user:foo:rw-";
+<<<<<<< HEAD
+=======
+    final String rmAclUser1 = "user:foo:";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final String aclUser2 = "user:bar:r--";
     final String aclGroup1 = "group::r--";
     final String aclSet = "user::rwx," + aclUser1 + ","
@@ -765,7 +774,11 @@ public abstract class BaseTestHttpFSWith extends HFSTestCase {
     httpfsAclStat = httpfs.getAclStatus(path);
     assertSameAcls(httpfsAclStat, proxyAclStat);
 
+<<<<<<< HEAD
     httpfs.removeAclEntries(path, AclEntry.parseAclSpec(aclUser1, true));
+=======
+    httpfs.removeAclEntries(path, AclEntry.parseAclSpec(rmAclUser1, false));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     proxyAclStat = proxyFs.getAclStatus(path);
     httpfsAclStat = httpfs.getAclStatus(path);
     assertSameAcls(httpfsAclStat, proxyAclStat);

@@ -134,7 +134,11 @@ public class MD5MD5CRC32FileChecksum extends FileChecksum {
 
     try {
       // old versions don't support crcType.
+<<<<<<< HEAD
       if (crcType == null || crcType == "") {
+=======
+      if (crcType == null || crcType.equals("")) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         finalCrcType = DataChecksum.Type.CRC32;
       } else {
         finalCrcType = DataChecksum.Type.valueOf(crcType);

@@ -57,4 +57,8 @@ public class BlockSizeParam extends LongParam {
     return getValue() != null? getValue()
         : conf.getLongBytes(DFS_BLOCK_SIZE_KEY, DFS_BLOCK_SIZE_DEFAULT);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

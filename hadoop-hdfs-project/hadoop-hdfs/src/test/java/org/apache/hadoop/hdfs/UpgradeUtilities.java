@@ -144,7 +144,11 @@ public class UpgradeUtilities {
       
       // save image
       namenode.setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
+<<<<<<< HEAD
       namenode.saveNamespace();
+=======
+      namenode.saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       namenode.setSafeMode(SafeModeAction.SAFEMODE_LEAVE, false);
       
       // write more files

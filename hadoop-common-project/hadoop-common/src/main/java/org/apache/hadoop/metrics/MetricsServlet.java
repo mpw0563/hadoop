@@ -43,7 +43,10 @@ import org.mortbay.util.ajax.JSON.Output;
  * A servlet to print out metrics data.  By default, the servlet returns a 
  * textual representation (no promises are made for parseability), and
  * users can use "?format=json" for parseable output.
+ *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public class MetricsServlet extends HttpServlet {
@@ -60,12 +63,14 @@ public class MetricsServlet extends HttpServlet {
       this.metricMap = metricMap;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void fromJSON(Map map) {
       throw new UnsupportedOperationException();
     }
 
     /** Converts to JSON by providing an array. */
+    @Override
     public void toJSON(Output out) {
       out.add(new Object[] { tagMap, metricMap });
     }

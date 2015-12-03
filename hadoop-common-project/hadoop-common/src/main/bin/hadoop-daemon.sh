@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+<<<<<<< HEAD
 
 # Runs a Hadoop command as a daemon.
 #
@@ -59,22 +60,14 @@ command=$1
 shift
 
 hadoop_rotate_log ()
+=======
+function hadoop_usage
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 {
-    log=$1;
-    num=5;
-    if [ -n "$2" ]; then
-	num=$2
-    fi
-    if [ -f "$log" ]; then # rotate logs
-	while [ $num -gt 1 ]; do
-	    prev=`expr $num - 1`
-	    [ -f "$log.$prev" ] && mv "$log.$prev" "$log.$num"
-	    num=$prev
-	done
-	mv "$log" "$log.$num";
-    fi
+  echo "Usage: hadoop-daemon.sh [--config confdir] (start|stop|status) <hadoop-command> <args...>"
 }
 
+<<<<<<< HEAD
 if [ -f "${HADOOP_CONF_DIR}/hadoop-env.sh" ]; then
   . "${HADOOP_CONF_DIR}/hadoop-env.sh"
 fi
@@ -109,11 +102,32 @@ if [ ! -w "$HADOOP_LOG_DIR" ] ; then
   mkdir -p "$HADOOP_LOG_DIR"
   chown $HADOOP_IDENT_STRING $HADOOP_LOG_DIR
 fi
-
-if [ "$HADOOP_PID_DIR" = "" ]; then
-  HADOOP_PID_DIR=/tmp
+=======
+# let's locate libexec...
+if [[ -n "${HADOOP_PREFIX}" ]]; then
+  HADOOP_DEFAULT_LIBEXEC_DIR="${HADOOP_PREFIX}/libexec"
+else
+  this="${BASH_SOURCE-$0}"
+  bin=$(cd -P -- "$(dirname -- "${this}")" >/dev/null && pwd -P)
+  HADOOP_DEFAULT_LIBEXEC_DIR="${bin}/../libexec"
 fi
 
+HADOOP_LIBEXEC_DIR="${HADOOP_LIBEXEC_DIR:-$HADOOP_DEFAULT_LIBEXEC_DIR}"
+# shellcheck disable=SC2034
+HADOOP_NEW_CONFIG=true
+if [[ -f "${HADOOP_LIBEXEC_DIR}/hdfs-config.sh" ]]; then
+  . "${HADOOP_LIBEXEC_DIR}/hdfs-config.sh"
+else
+  echo "ERROR: Cannot execute ${HADOOP_LIBEXEC_DIR}/hdfs-config.sh." 2>&1
+  exit 1
+fi
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+
+if [[ $# = 0 ]]; then
+  hadoop_exit_with_usage 1
+fi
+
+<<<<<<< HEAD
 # some variables
 export HADOOP_LOGFILE=hadoop-$HADOOP_IDENT_STRING-$command-$HOSTNAME.log
 export HADOOP_ROOT_LOGGER=${HADOOP_ROOT_LOGGER:-"INFO,RFA"}
@@ -122,12 +136,18 @@ export HDFS_AUDIT_LOGGER=${HDFS_AUDIT_LOGGER:-"INFO,NullAppender"}
 log=$HADOOP_LOG_DIR/hadoop-$HADOOP_IDENT_STRING-$command-$HOSTNAME.out
 pid=$HADOOP_PID_DIR/hadoop-$HADOOP_IDENT_STRING-$command.pid
 HADOOP_STOP_TIMEOUT=${HADOOP_STOP_TIMEOUT:-5}
+=======
+daemonmode=$1
+shift
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
-# Set default scheduling priority
-if [ "$HADOOP_NICENESS" = "" ]; then
-    export HADOOP_NICENESS=0
+if [[ -z "${HADOOP_HDFS_HOME}" ]]; then
+  hdfsscript="${HADOOP_PREFIX}/bin/hdfs"
+else
+  hdfsscript="${HADOOP_HDFS_HOME}/bin/hdfs"
 fi
 
+<<<<<<< HEAD
 case $startStop in
 
   (start)
@@ -210,5 +230,10 @@ case $startStop in
     ;;
 
 esac
+=======
+hadoop_error "WARNING: Use of this script to ${daemonmode} HDFS daemons is deprecated."
+hadoop_error "WARNING: Attempting to execute replacement \"hdfs --daemon ${daemonmode}\" instead."
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
+exec "$hdfsscript" --config "${HADOOP_CONF_DIR}" --daemon "${daemonmode}" "$@"
 

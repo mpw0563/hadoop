@@ -556,7 +556,12 @@ public class ApplicationMaster {
     appSubmitterUgi.addCredentials(credentials);
 
 
+<<<<<<< HEAD
     AMRMClientAsync.CallbackHandler allocListener = new RMCallbackHandler();
+=======
+    AMRMClientAsync.AbstractCallbackHandler allocListener =
+        new RMCallbackHandler();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     amRMClient = AMRMClientAsync.createAMRMClientAsync(1000, allocListener);
     amRMClient.init(conf);
     amRMClient.start();
@@ -731,7 +736,11 @@ public class ApplicationMaster {
   }
 
   @VisibleForTesting
+<<<<<<< HEAD
   class RMCallbackHandler implements AMRMClientAsync.CallbackHandler {
+=======
+  class RMCallbackHandler extends AMRMClientAsync.AbstractCallbackHandler {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @SuppressWarnings("unchecked")
     @Override
     public void onContainersCompleted(List<ContainerStatus> completedContainers) {
@@ -835,6 +844,12 @@ public class ApplicationMaster {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void onContainersResourceChanged(List<Container> containers) {}
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void onShutdownRequest() {
       done = true;
     }
@@ -858,8 +873,12 @@ public class ApplicationMaster {
   }
 
   @VisibleForTesting
+<<<<<<< HEAD
   static class NMCallbackHandler
     implements NMClientAsync.CallbackHandler {
+=======
+  static class NMCallbackHandler extends NMClientAsync.AbstractCallbackHandler {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     private ConcurrentMap<ContainerId, Container> containers =
         new ConcurrentHashMap<ContainerId, Container>();
@@ -908,6 +927,13 @@ public class ApplicationMaster {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void onContainerResourceIncreased(
+        ContainerId containerId, Resource resource) {}
+
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void onStartContainerError(ContainerId containerId, Throwable t) {
       LOG.error("Failed to start Container " + containerId);
       containers.remove(containerId);
@@ -926,6 +952,14 @@ public class ApplicationMaster {
       LOG.error("Failed to stop Container " + containerId);
       containers.remove(containerId);
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public void onIncreaseContainerResourceError(
+        ContainerId containerId, Throwable t) {}
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

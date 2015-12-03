@@ -696,11 +696,14 @@ public class BookKeeperJournalManager implements JournalManager {
   }
 
   @Override
+<<<<<<< HEAD
   public void discardSegments(long startTxId) throws IOException {
     throw new UnsupportedOperationException();
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void doPreUpgrade() throws IOException {
     throw new UnsupportedOperationException();
   }
@@ -732,6 +735,14 @@ public class BookKeeperJournalManager implements JournalManager {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void discardSegments(long startTxId) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void close() throws IOException {
     try {
       bkc.close();

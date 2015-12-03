@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.reservation;
 
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.classification.InterfaceAudience.LimitedPrivate;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.conf.Configuration;
@@ -38,8 +41,16 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
+=======
+import org.apache.hadoop.yarn.proto.YarnServerResourceManagerRecoveryProtos.ReservationAllocationStateProto;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
+import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore.RMState;
+import org.apache.hadoop.yarn.server.resourcemanager.reservation.exceptions.PlanningException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.planning.Planner;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.planning.ReservationAgent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
@@ -52,6 +63,20 @@ import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
+=======
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * This is the implementation of {@link ReservationSystem} based on the
  * {@link ResourceScheduler}
@@ -94,6 +119,11 @@ public abstract class AbstractReservationSystem extends AbstractService
 
   private PlanFollower planFollower;
 
+<<<<<<< HEAD
+=======
+  private boolean isRecoveryEnabled = false;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Construct the service.
    * 
@@ -149,6 +179,52 @@ public abstract class AbstractReservationSystem extends AbstractService
       Plan plan = initializePlan(planQueueName);
       plans.put(planQueueName, plan);
     }
+<<<<<<< HEAD
+=======
+    isRecoveryEnabled = conf.getBoolean(
+        YarnConfiguration.RECOVERY_ENABLED,
+        YarnConfiguration.DEFAULT_RM_RECOVERY_ENABLED);
+  }
+
+  private void loadPlan(String planName,
+      Map<ReservationId, ReservationAllocationStateProto> reservations)
+          throws PlanningException {
+    Plan plan = plans.get(planName);
+    Resource minAllocation = getMinAllocation();
+    ResourceCalculator rescCalculator = getResourceCalculator();
+    for (Entry<ReservationId, ReservationAllocationStateProto> currentReservation : reservations
+        .entrySet()) {
+      plan.addReservation(ReservationSystemUtil.toInMemoryAllocation(planName,
+          currentReservation.getKey(), currentReservation.getValue(),
+          minAllocation, rescCalculator), true);
+      resQMap.put(currentReservation.getKey(), planName);
+    }
+    LOG.info("Recovered reservations for Plan: {}", planName);
+  }
+
+  @Override
+  public void recover(RMState state) throws Exception {
+    LOG.info("Recovering Reservation system");
+    writeLock.lock();
+    try {
+      Map<String, Map<ReservationId, ReservationAllocationStateProto>> reservationSystemState =
+          state.getReservationState();
+      if (planFollower != null) {
+        for (String plan : plans.keySet()) {
+          // recover reservations if any from state store
+          if (reservationSystemState.containsKey(plan)) {
+            loadPlan(plan, reservationSystemState.get(plan));
+          }
+          synchronizePlan(plan, false);
+        }
+        startPlanFollower(conf.getLong(
+            YarnConfiguration.RM_WORK_PRESERVING_RECOVERY_SCHEDULING_WAIT_MS,
+            YarnConfiguration.DEFAULT_RM_WORK_PRESERVING_RECOVERY_SCHEDULING_WAIT_MS));
+      }
+    } finally {
+      writeLock.unlock();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void initializeNewPlans(Configuration conf) {
@@ -162,7 +238,11 @@ public abstract class AbstractReservationSystem extends AbstractService
           Plan plan = initializePlan(planQueueName);
           plans.put(planQueueName, plan);
         } else {
+<<<<<<< HEAD
           LOG.warn("Plan based on reservation queue {0} already exists.",
+=======
+          LOG.warn("Plan based on reservation queue {} already exists.",
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               planQueueName);
         }
       }
@@ -236,18 +316,37 @@ public abstract class AbstractReservationSystem extends AbstractService
   }
 
   @Override
+<<<<<<< HEAD
   public void synchronizePlan(String planName) {
+=======
+  public void synchronizePlan(String planName, boolean shouldReplan) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     writeLock.lock();
     try {
       Plan plan = plans.get(planName);
       if (plan != null) {
+<<<<<<< HEAD
         planFollower.synchronizePlan(plan);
+=======
+        planFollower.synchronizePlan(plan, shouldReplan);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     } finally {
       writeLock.unlock();
     }
   }
 
+<<<<<<< HEAD
+=======
+  private void startPlanFollower(long initialDelay) {
+    if (planFollower != null) {
+      scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+      scheduledExecutorService.scheduleWithFixedDelay(planFollower,
+          initialDelay, planStepSize, TimeUnit.MILLISECONDS);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public void serviceInit(Configuration conf) throws Exception {
     Configuration configuration = new Configuration(conf);
@@ -262,10 +361,15 @@ public abstract class AbstractReservationSystem extends AbstractService
 
   @Override
   public void serviceStart() throws Exception {
+<<<<<<< HEAD
     if (planFollower != null) {
       scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
       scheduledExecutorService.scheduleWithFixedDelay(planFollower, 0L,
           planStepSize, TimeUnit.MILLISECONDS);
+=======
+    if (!isRecoveryEnabled) {
+      startPlanFollower(planStepSize);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     super.serviceStart();
   }
@@ -349,8 +453,13 @@ public abstract class AbstractReservationSystem extends AbstractService
             getAgent(planQueuePath), totCap, planStepSize, rescCalc,
             minAllocation, maxAllocation, planQueueName,
             getReplanner(planQueuePath), getReservationSchedulerConfiguration()
+<<<<<<< HEAD
             .getMoveOnExpiry(planQueuePath));
     LOG.info("Intialized plan {0} based on reservable queue {1}",
+=======
+            .getMoveOnExpiry(planQueuePath), rmContext);
+    LOG.info("Intialized plan {} based on reservable queue {}",
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         plan.toString(), planQueueName);
     return plan;
   }

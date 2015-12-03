@@ -20,11 +20,19 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-main</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-project</artifactId>
   <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.apache.hadoop</groupId>
+  <artifactId>hadoop-project</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Apache Hadoop Project POM</description>
   <name>Apache Hadoop Project POM</name>
   <packaging>pom</packaging>
@@ -44,9 +52,42 @@
     <jdiff.version>1.0.9</jdiff.version>
     <!-- Version number for xerces used by JDiff -->
     <xerces.jdiff.version>2.11.0</xerces.jdiff.version>
+<<<<<<< HEAD
+=======
+
+    <kafka.version>0.8.2.1</kafka.version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     <hadoop.assemblies.version>${project.version}</hadoop.assemblies.version>
+    <commons-daemon.version>1.0.13</commons-daemon.version>
 
+    <test.build.dir>${project.build.directory}/test-dir</test.build.dir>
+    <test.build.data>${test.build.dir}</test.build.data>
+
+    <!-- Used for building path to native library loaded by tests.  Projects -->
+    <!-- at different nesting levels in the source tree may need to override. -->
+    <hadoop.common.build.dir>${basedir}/../../hadoop-common-project/hadoop-common/target</hadoop.common.build.dir>
+    <java.security.egd>file:///dev/urandom</java.security.egd>
+
+    <!-- avro version -->
+    <avro.version>1.7.4</avro.version>
+
+    <!-- jersey version -->
+    <jersey.version>1.9</jersey.version>
+
+    <!-- jackson versions -->
+    <jackson.version>1.9.13</jackson.version>
+    <jackson2.version>2.2.3</jackson2.version>
+
+    <!-- com.google.re2j version -->
+    <re2j.version>1.0</re2j.version>
+
+    <!-- ProtocolBuffer version, used to verify the protoc version and -->
+    <!-- define the protobuf JAR version                               -->
+    <protobuf.version>2.5.0</protobuf.version>
+    <protoc.path>${env.HADOOP_PROTOC_PATH}</protoc.path>
+
+<<<<<<< HEAD
     <commons-daemon.version>1.0.13</commons-daemon.version>
 
     <test.build.dir>${project.build.directory}/test-dir</test.build.dir>
@@ -72,6 +113,8 @@
     <protobuf.version>2.5.0</protobuf.version>
     <protoc.path>${env.HADOOP_PROTOC_PATH}</protoc.path>
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <zookeeper.version>3.4.6</zookeeper.version>
     <curator.version>2.7.1</curator.version>
     <findbugs.version>3.0.0</findbugs.version>
@@ -90,7 +133,11 @@
     <enforced.maven.version>[3.0.2,)</enforced.maven.version>
 
     <!-- Plugin versions and config -->
+<<<<<<< HEAD
     <maven-surefire-plugin.argLine>-Xmx4096m -XX:MaxPermSize=768m -XX:+HeapDumpOnOutOfMemoryError</maven-surefire-plugin.argLine>
+=======
+    <maven-surefire-plugin.argLine>-Xmx2048m -XX:MaxPermSize=768m -XX:+HeapDumpOnOutOfMemoryError</maven-surefire-plugin.argLine>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <maven-surefire-plugin.version>2.17</maven-surefire-plugin.version>
     <maven-surefire-report-plugin.version>${maven-surefire-plugin.version}</maven-surefire-report-plugin.version>
     <maven-failsafe-plugin.version>${maven-surefire-plugin.version}</maven-failsafe-plugin.version>
@@ -324,6 +371,14 @@
       </dependency>
       <dependency>
         <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
+=======
+        <artifactId>hadoop-archive-logs</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <artifactId>hadoop-distcp</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -353,6 +408,12 @@
         <artifactId>hadoop-client</artifactId>
         <version>${project.version}</version>
       </dependency>
+<<<<<<< HEAD
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-minicluster</artifactId>
+=======
+
       <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-minicluster</artifactId>
@@ -380,11 +441,39 @@
       <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-aws</artifactId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
+        <artifactId>hadoop-minikdc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-openstack</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-azure</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-aws</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <artifactId>hadoop-kms</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
@@ -446,6 +535,8 @@
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>1.4</version>
+<<<<<<< HEAD
+=======
       </dependency>
       <dependency>
         <groupId>commons-net</groupId>
@@ -549,6 +640,141 @@
         <groupId>com.google.inject.extensions</groupId>
         <artifactId>guice-servlet</artifactId>
         <version>3.0</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      </dependency>
+
+      <dependency>
+<<<<<<< HEAD
+        <groupId>commons-net</groupId>
+        <artifactId>commons-net</artifactId>
+        <version>3.1</version>
+=======
+        <groupId>com.sun.jersey.contribs</groupId>
+        <artifactId>jersey-guice</artifactId>
+        <version>${jersey.version}</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.jersey.jersey-test-framework</groupId>
+        <artifactId>jersey-test-framework-core</artifactId>
+        <version>${jersey.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+<<<<<<< HEAD
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty</artifactId>
+        <version>${jetty.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+        </exclusions>
+=======
+        <groupId>com.sun.jersey.jersey-test-framework</groupId>
+        <artifactId>jersey-test-framework-grizzly2</artifactId>
+        <version>${jersey.version}</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      </dependency>
+
+      <dependency>
+<<<<<<< HEAD
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>7.0.55</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-logging-juli</artifactId>
+        <version>7.0.55</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>2.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.servlet</artifactId>
+        <version>3.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>2.0.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>1.5.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-core</artifactId>
+        <version>${jersey.version}</version>
+=======
+        <groupId>io.netty</groupId>
+        <artifactId>netty</artifactId>
+        <version>3.6.2.Final</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      </dependency>
+
+      <dependency>
+<<<<<<< HEAD
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-json</artifactId>
+        <version>${jersey.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+          </exclusion>
+        </exclusions>
+=======
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>4.1.0.Beta5</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      </dependency>
+
+      <dependency>
+<<<<<<< HEAD
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>3.0</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>2.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+        <artifactId>guice-servlet</artifactId>
+        <version>3.0</version>
       </dependency>
 
       <dependency>
@@ -593,6 +819,19 @@
         <version>2.4</version>
       </dependency>
 
+=======
+        <groupId>com.twitter</groupId>
+        <artifactId>hpack</artifactId>
+        <version>0.11.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+      </dependency>
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-servlet-tester</artifactId>
@@ -770,6 +1009,14 @@
         <version>1.8.5</version>
       </dependency>
       <dependency>
+<<<<<<< HEAD
+=======
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver-netty</artifactId>
+        <version>3.9.2</version>
+      </dependency>
+      <dependency>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <groupId>org.apache.avro</groupId>
         <artifactId>avro</artifactId>
         <version>${avro.version}</version>
@@ -785,6 +1032,11 @@
         <version>1.8.1</version>
       </dependency>
       <dependency>
+        <groupId>com.google.re2j</groupId>
+        <artifactId>re2j</artifactId>
+        <version>${re2j.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
         <version>${protobuf.version}</version>
@@ -797,12 +1049,21 @@
       <dependency>
         <groupId>com.jcraft</groupId>
         <artifactId>jsch</artifactId>
+<<<<<<< HEAD
         <version>0.1.42</version>
       </dependency>
       <dependency>
         <groupId>org.apache.htrace</groupId>
         <artifactId>htrace-core</artifactId>
         <version>3.2.0-incubating</version>
+=======
+        <version>0.1.51</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.htrace</groupId>
+        <artifactId>htrace-core4</artifactId>
+        <version>4.0.1-incubating</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       </dependency>
       <dependency>
         <groupId>org.jdom</groupId>
@@ -922,6 +1183,7 @@
       </dependency>
 
       <dependency>
+<<<<<<< HEAD
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
         <version>2.9.1</version>
@@ -937,6 +1199,18 @@
         <artifactId>curator-test</artifactId>
         <version>2.6.0</version>
       </dependency>
+=======
+        <groupId>com.microsoft.azure</groupId>
+        <artifactId>azure-storage</artifactId>
+        <version>2.2.0</version>
+     </dependency>
+
+     <dependency>
+       <groupId>xerces</groupId>
+       <artifactId>xercesImpl</artifactId>
+       <version>2.9.1</version>
+     </dependency>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
      <dependency>
        <groupId>org.apache.curator</groupId>
@@ -964,11 +1238,14 @@
        <version>1.46</version>
        <scope>test</scope>
      </dependency>
+<<<<<<< HEAD
       <dependency>
         <groupId>com.microsoft.azure</groupId>
         <artifactId>azure-storage</artifactId>
         <version>2.2.0</version>
     </dependency>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       
       <dependency>
           <groupId>com.nimbusds</groupId>
@@ -1099,6 +1376,7 @@
        <plugin>
          <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
+<<<<<<< HEAD
         <executions>
           <execution>
             <id>create-testdirs</id>
@@ -1129,27 +1407,21 @@
             </requireJavaVersion>
           </rules>
         </configuration>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <executions>
           <execution>
-            <id>clean</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <phase>pre-clean</phase>
-          </execution>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
+            <id>create-testdirs</id>
             <phase>validate</phase>
-          </execution>
-          <execution>
-            <id>site</id>
             <goals>
-              <goal>enforce</goal>
+              <goal>run</goal>
             </goals>
-            <phase>pre-site</phase>
+            <configuration>
+              <target>
+                <mkdir dir="${test.build.dir}"/>
+                <mkdir dir="${test.build.data}"/>
+              </target>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -1168,18 +1440,22 @@
           </environmentVariables>
           <systemPropertyVariables>
 
+            <hadoop.log.dir>${project.build.directory}/log</hadoop.log.dir>
+            <hadoop.tmp.dir>${project.build.directory}/tmp</hadoop.tmp.dir>
 
             <!-- TODO: all references in testcases should be updated to this default -->
             <test.build.dir>${test.build.dir}</test.build.dir>
-            <hadoop.tmp.dir>${hadoop.tmp.dir}</hadoop.tmp.dir>
             <test.build.data>${test.build.data}</test.build.data>
             <test.build.webapps>${test.build.webapps}</test.build.webapps>
             <test.cache.data>${test.cache.data}</test.cache.data>
-            <hadoop.log.dir>${hadoop.log.dir}</hadoop.log.dir>
             <test.build.classes>${test.build.classes}</test.build.classes>
 
             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+<<<<<<< HEAD
             <java.security.krb5.conf>${basedir}/src/test/resources/krb5.conf</java.security.krb5.conf>
+=======
+            <java.security.krb5.conf>${project.build.directory}/test-classes/krb5.conf</java.security.krb5.conf>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             <java.security.egd>${java.security.egd}</java.security.egd>
             <require.test.libhadoop>${require.test.libhadoop}</require.test.libhadoop>
           </systemPropertyVariables>
@@ -1273,6 +1549,10 @@
                 <!-- Specify where to look for the native DLL on Windows -->
                 <PATH>${env.PATH};${hadoop.common.build.dir}/bin;${snappy.lib}</PATH>
                 <PATH>${env.PATH};${hadoop.common.build.dir}/bin;${openssl.lib}</PATH>
+<<<<<<< HEAD
+=======
+                <PATH>${env.PATH};${hadoop.common.build.dir}/bin;${isal.lib}</PATH>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               </environmentVariables>
             </configuration>
           </plugin>

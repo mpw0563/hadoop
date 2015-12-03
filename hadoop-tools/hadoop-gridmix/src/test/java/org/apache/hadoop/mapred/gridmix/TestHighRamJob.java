@@ -28,6 +28,10 @@ import org.apache.hadoop.mapred.gridmix.DebugJobProducer.MockJob;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.MRConfig;
 import org.apache.hadoop.mapreduce.MRJobConfig;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.TaskType;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.server.jobtracker.JTConfig;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.tools.rumen.JobStory;
@@ -92,6 +96,7 @@ public class TestHighRamJob {
     
     GridmixJob job = new DummyGridmixJob(simulatedJobConf, story);
     Job simulatedJob = job.getJob();
+<<<<<<< HEAD
     Configuration simulatedConf = simulatedJob.getConfiguration();
     
     // check if the high ram properties are not set
@@ -101,6 +106,15 @@ public class TestHighRamJob {
     assertEquals(expectedReduceMB, 
                  simulatedConf.getLong(MRJobConfig.REDUCE_MEMORY_MB, 
                                        MRJobConfig.DEFAULT_MAP_MEMORY_MB));
+=======
+    JobConf simulatedConf = (JobConf)simulatedJob.getConfiguration();
+    
+    // check if the high ram properties are not set
+    assertEquals(expectedMapMB, 
+                 simulatedConf.getMemoryRequired(TaskType.MAP));
+    assertEquals(expectedReduceMB, 
+                 simulatedConf.getMemoryRequired(TaskType.REDUCE));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /**
@@ -192,4 +206,8 @@ public class TestHighRamJob {
     assertNotNull(failed);
     assertTrue("Exception expected for exceeding reduce memory limit!", failed);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

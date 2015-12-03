@@ -85,6 +85,7 @@ public class ReplicaUnderRecovery extends ReplicaInfo {
   public ReplicaInfo getOriginalReplica() {
     return original;
   }
+<<<<<<< HEAD
 
   @Override //ReplicaInfo
   public boolean isUnlinked() {
@@ -95,6 +96,8 @@ public class ReplicaUnderRecovery extends ReplicaInfo {
   public void setUnlinked() {
     original.setUnlinked();
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   @Override //ReplicaInfo
   public ReplicaState getState() {

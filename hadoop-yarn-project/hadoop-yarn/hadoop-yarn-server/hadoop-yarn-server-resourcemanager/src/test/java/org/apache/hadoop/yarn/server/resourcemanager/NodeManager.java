@@ -25,6 +25,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.IncreaseContainersResourceRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.IncreaseContainersResourceResponse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Assert;
 
 import org.apache.commons.logging.Log;
@@ -191,7 +196,11 @@ public class NodeManager implements ContainerManagementProtocol {
 
       ContainerStatus containerStatus =
           BuilderUtils.newContainerStatus(container.getId(),
+<<<<<<< HEAD
             ContainerState.NEW, "", -1000);
+=======
+            ContainerState.NEW, "", -1000, container.getResource());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       applicationContainers.add(container);
       containerStatusMap.put(container, containerStatus);
       Resources.subtractFrom(available, tokenId.getResource());
@@ -295,7 +304,18 @@ public class NodeManager implements ContainerManagementProtocol {
     return GetContainerStatusesResponse.newInstance(statuses, null);
   }
 
+<<<<<<< HEAD
   public static org.apache.hadoop.yarn.server.api.records.NodeStatus 
+=======
+  @Override
+  public IncreaseContainersResourceResponse increaseContainersResource(
+      IncreaseContainersResourceRequest request)
+          throws YarnException, IOException {
+    return null;
+  }
+
+  public static org.apache.hadoop.yarn.server.api.records.NodeStatus
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   createNodeStatus(NodeId nodeId, List<ContainerStatus> containers) {
     RecordFactory recordFactory = RecordFactoryProvider.getRecordFactory(null);
     org.apache.hadoop.yarn.server.api.records.NodeStatus nodeStatus = 

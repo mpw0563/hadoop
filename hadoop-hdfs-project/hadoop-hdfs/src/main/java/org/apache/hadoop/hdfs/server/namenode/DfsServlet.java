@@ -26,6 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.NameNodeProxies;
 import org.apache.hadoop.hdfs.protocol.ClientProtocol;
@@ -77,7 +81,11 @@ abstract class DfsServlet extends HttpServlet {
       NameNodeHttpServer.getNameNodeAddressFromContext(context);
     Configuration conf = new HdfsConfiguration(
         NameNodeHttpServer.getConfFromContext(context));
+<<<<<<< HEAD
     return NameNodeProxies.createProxy(conf, NameNode.getUri(nnAddr),
+=======
+    return NameNodeProxies.createProxy(conf, DFSUtilClient.getNNUri(nnAddr),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         ClientProtocol.class).getProxy();
   }
 

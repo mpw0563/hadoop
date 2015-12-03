@@ -29,9 +29,15 @@ import org.apache.hadoop.fs.CommonConfigurationKeys;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.security.UserGroupInformation;
+<<<<<<< HEAD
 import org.apache.hadoop.util.StringUtils;
 import static org.apache.hadoop.fs.FileContextTestHelper.*;
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+import org.apache.hadoop.util.StringUtils;
+import static org.apache.hadoop.fs.FileContextTestHelper.*;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -101,7 +107,11 @@ public class TestFcHdfsSetUMask {
   
   {
     try {
+<<<<<<< HEAD
       ((Log4JLogger)FileSystem.LOG).getLogger().setLevel(Level.DEBUG);
+=======
+      GenericTestUtils.setLogLevel(FileSystem.LOG, Level.DEBUG);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     catch(Exception e) {
       System.out.println("Cannot change log level\n"

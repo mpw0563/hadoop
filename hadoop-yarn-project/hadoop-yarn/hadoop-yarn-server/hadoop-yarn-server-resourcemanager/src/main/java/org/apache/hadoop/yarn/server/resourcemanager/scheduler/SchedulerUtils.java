@@ -361,7 +361,11 @@ public class SchedulerUtils {
   }
   
   public static boolean checkResourceRequestMatchingNodePartition(
+<<<<<<< HEAD
       ResourceRequest offswitchResourceRequest, String nodePartition,
+=======
+      String requestedPartition, String nodePartition,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       SchedulingMode schedulingMode) {
     // We will only look at node label = nodeLabelToLookAt according to
     // schedulingMode and partition of node.
@@ -371,12 +375,20 @@ public class SchedulerUtils {
     } else {
       nodePartitionToLookAt = RMNodeLabelsManager.NO_LABEL;
     }
+<<<<<<< HEAD
     
     String askedNodePartition = offswitchResourceRequest.getNodeLabelExpression();
     if (null == askedNodePartition) {
       askedNodePartition = RMNodeLabelsManager.NO_LABEL;
     }
     return askedNodePartition.equals(nodePartitionToLookAt);
+=======
+
+    if (null == requestedPartition) {
+      requestedPartition = RMNodeLabelsManager.NO_LABEL;
+    }
+    return requestedPartition.equals(nodePartitionToLookAt);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   private static boolean hasPendingResourceRequest(ResourceCalculator rc,

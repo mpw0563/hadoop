@@ -34,11 +34,19 @@ import org.apache.hadoop.crypto.key.kms.ValueQueue;
 import org.apache.hadoop.crypto.key.kms.ValueQueue.SyncGenerationPolicy;
 
 /**
+<<<<<<< HEAD
  * A {@link KeyProviderCryptoExtension} that pre-generates and caches encrypted
  * keys.
  */
 @InterfaceAudience.Private
 public class EagerKeyGeneratorKeyProviderCryptoExtension
+=======
+ * A {@link KeyProviderCryptoExtension} that pre-generates and caches encrypted 
+ * keys.
+ */
+@InterfaceAudience.Private
+public class EagerKeyGeneratorKeyProviderCryptoExtension 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     extends KeyProviderCryptoExtension {
 
   private static final String KEY_CACHE_PREFIX =
@@ -61,7 +69,11 @@ public class EagerKeyGeneratorKeyProviderCryptoExtension
   public static final int KMS_KEY_CACHE_NUM_REFILL_THREADS_DEFAULT = 2;
 
 
+<<<<<<< HEAD
   private static class CryptoExtension
+=======
+  private static class CryptoExtension 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       implements KeyProviderCryptoExtension.CryptoExtension {
 
     private class EncryptedQueueRefiller implements
@@ -87,7 +99,11 @@ public class EagerKeyGeneratorKeyProviderCryptoExtension
     private KeyProviderCryptoExtension keyProviderCryptoExtension;
     private final ValueQueue<EncryptedKeyVersion> encKeyVersionQueue;
 
+<<<<<<< HEAD
     public CryptoExtension(Configuration conf,
+=======
+    public CryptoExtension(Configuration conf, 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         KeyProviderCryptoExtension keyProviderCryptoExtension) {
       this.keyProviderCryptoExtension = keyProviderCryptoExtension;
       encKeyVersionQueue =
@@ -142,14 +158,22 @@ public class EagerKeyGeneratorKeyProviderCryptoExtension
    * This class is a proxy for a <code>KeyProviderCryptoExtension</code> that
    * decorates the underlying <code>CryptoExtension</code> with one that eagerly
    * caches pre-generated Encrypted Keys using a <code>ValueQueue</code>
+<<<<<<< HEAD
    *
+=======
+   * 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param conf Configuration object to load parameters from
    * @param keyProviderCryptoExtension <code>KeyProviderCryptoExtension</code>
    * to delegate calls to.
    */
   public EagerKeyGeneratorKeyProviderCryptoExtension(Configuration conf,
       KeyProviderCryptoExtension keyProviderCryptoExtension) {
+<<<<<<< HEAD
     super(keyProviderCryptoExtension,
+=======
+    super(keyProviderCryptoExtension, 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         new CryptoExtension(conf, keyProviderCryptoExtension));
   }
 

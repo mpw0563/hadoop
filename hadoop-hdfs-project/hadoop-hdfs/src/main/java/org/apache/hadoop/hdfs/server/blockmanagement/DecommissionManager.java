@@ -36,8 +36,13 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.DatanodeID;
+=======
+import org.apache.hadoop.hdfs.protocol.DatanodeID;
+import org.apache.hadoop.hdfs.server.namenode.INodeId;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.Namesystem;
 import org.apache.hadoop.hdfs.util.CyclicIteration;
 import org.apache.hadoop.util.ChunkedArrayList;
@@ -109,6 +114,7 @@ public class DecommissionManager {
    * decomNodeBlocks. Additional nodes wait in pendingNodes.
    */
   private final Queue<DatanodeDescriptor> pendingNodes;
+<<<<<<< HEAD
 
   private Monitor monitor = null;
 
@@ -375,6 +381,254 @@ public class DecommissionManager {
       return numNodesChecked >= numNodesPerCheck;
     }
 
+=======
+
+  private Monitor monitor = null;
+
+  DecommissionManager(final Namesystem namesystem,
+      final BlockManager blockManager, final HeartbeatManager hbManager) {
+    this.namesystem = namesystem;
+    this.blockManager = blockManager;
+    this.hbManager = hbManager;
+
+    executor = Executors.newScheduledThreadPool(1,
+        new ThreadFactoryBuilder().setNameFormat("DecommissionMonitor-%d")
+            .setDaemon(true).build());
+    decomNodeBlocks = new TreeMap<>();
+    pendingNodes = new LinkedList<>();
+  }
+
+  /**
+   * Start the decommission monitor thread.
+   * @param conf
+   */
+  void activate(Configuration conf) {
+    final int intervalSecs =
+        conf.getInt(DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_INTERVAL_KEY,
+            DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_INTERVAL_DEFAULT);
+    checkArgument(intervalSecs >= 0, "Cannot set a negative " +
+        "value for " + DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_INTERVAL_KEY);
+
+    int blocksPerInterval = conf.getInt(
+        DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_BLOCKS_PER_INTERVAL_KEY,
+        DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_BLOCKS_PER_INTERVAL_DEFAULT);
+
+    final String deprecatedKey =
+        "dfs.namenode.decommission.nodes.per.interval";
+    final String strNodes = conf.get(deprecatedKey);
+    if (strNodes != null) {
+      LOG.warn("Deprecated configuration key {} will be ignored.",
+          deprecatedKey);
+      LOG.warn("Please update your configuration to use {} instead.", 
+          DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_BLOCKS_PER_INTERVAL_KEY);
+    }
+
+    checkArgument(blocksPerInterval > 0,
+        "Must set a positive value for "
+        + DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_BLOCKS_PER_INTERVAL_KEY);
+
+    final int maxConcurrentTrackedNodes = conf.getInt(
+        DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_MAX_CONCURRENT_TRACKED_NODES,
+        DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_MAX_CONCURRENT_TRACKED_NODES_DEFAULT);
+    checkArgument(maxConcurrentTrackedNodes >= 0, "Cannot set a negative " +
+        "value for "
+        + DFSConfigKeys.DFS_NAMENODE_DECOMMISSION_MAX_CONCURRENT_TRACKED_NODES);
+
+    monitor = new Monitor(blocksPerInterval, maxConcurrentTrackedNodes);
+    executor.scheduleAtFixedRate(monitor, intervalSecs, intervalSecs,
+        TimeUnit.SECONDS);
+
+    LOG.debug("Activating DecommissionManager with interval {} seconds, " +
+            "{} max blocks per interval, " +
+            "{} max concurrently tracked nodes.", intervalSecs,
+        blocksPerInterval, maxConcurrentTrackedNodes);
+  }
+
+  /**
+   * Stop the decommission monitor thread, waiting briefly for it to terminate.
+   */
+  void close() {
+    executor.shutdownNow();
+    try {
+      executor.awaitTermination(3000, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {}
+  }
+
+  /**
+   * Start decommissioning the specified datanode. 
+   * @param node
+   */
+  @VisibleForTesting
+  public void startDecommission(DatanodeDescriptor node) {
+    if (!node.isDecommissionInProgress() && !node.isDecommissioned()) {
+      // Update DN stats maintained by HeartbeatManager
+      hbManager.startDecommission(node);
+      // hbManager.startDecommission will set dead node to decommissioned.
+      if (node.isDecommissionInProgress()) {
+        for (DatanodeStorageInfo storage : node.getStorageInfos()) {
+          LOG.info("Starting decommission of {} {} with {} blocks",
+              node, storage, storage.numBlocks());
+        }
+        node.decommissioningStatus.setStartTime(monotonicNow());
+        pendingNodes.add(node);
+      }
+    } else {
+      LOG.trace("startDecommission: Node {} in {}, nothing to do." +
+          node, node.getAdminState());
+    }
+  }
+
+  /**
+   * Stop decommissioning the specified datanode. 
+   * @param node
+   */
+  @VisibleForTesting
+  public void stopDecommission(DatanodeDescriptor node) {
+    if (node.isDecommissionInProgress() || node.isDecommissioned()) {
+      // Update DN stats maintained by HeartbeatManager
+      hbManager.stopDecommission(node);
+      // Over-replicated blocks will be detected and processed when
+      // the dead node comes back and send in its full block report.
+      if (node.isAlive()) {
+        blockManager.processOverReplicatedBlocksOnReCommission(node);
+      }
+      // Remove from tracking in DecommissionManager
+      pendingNodes.remove(node);
+      decomNodeBlocks.remove(node);
+    } else {
+      LOG.trace("stopDecommission: Node {} in {}, nothing to do." +
+          node, node.getAdminState());
+    }
+  }
+
+  private void setDecommissioned(DatanodeDescriptor dn) {
+    dn.setDecommissioned();
+    LOG.info("Decommissioning complete for node {}", dn);
+  }
+
+  /**
+   * Checks whether a block is sufficiently replicated/stored for
+   * decommissioning. For replicated blocks or striped blocks, full-strength
+   * replication or storage is not always necessary, hence "sufficient".
+   * @return true if sufficient, else false.
+   */
+  private boolean isSufficient(BlockInfo block, BlockCollection bc,
+      NumberReplicas numberReplicas) {
+    final int numExpected = blockManager.getExpectedReplicaNum(block);
+    final int numLive = numberReplicas.liveReplicas();
+    if (!blockManager.isNeededReplication(block, numLive)) {
+      // Block doesn't need replication. Skip.
+      LOG.trace("Block {} does not need replication.", block);
+      return true;
+    }
+
+    // Block is under-replicated
+    LOG.trace("Block {} numExpected={}, numLive={}", block, numExpected, 
+        numLive);
+    if (numExpected > numLive) {
+      if (bc.isUnderConstruction() && block.equals(bc.getLastBlock())) {
+        // Can decom a UC block as long as there will still be minReplicas
+        if (blockManager.hasMinStorage(block, numLive)) {
+          LOG.trace("UC block {} sufficiently-replicated since numLive ({}) "
+              + ">= minR ({})", block, numLive,
+              blockManager.getMinStorageNum(block));
+          return true;
+        } else {
+          LOG.trace("UC block {} insufficiently-replicated since numLive "
+              + "({}) < minR ({})", block, numLive,
+              blockManager.getMinStorageNum(block));
+        }
+      } else {
+        // Can decom a non-UC as long as the default replication is met
+        if (numLive >= blockManager.getDefaultStorageNum(block)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private void logBlockReplicationInfo(BlockInfo block,
+      BlockCollection bc,
+      DatanodeDescriptor srcNode, NumberReplicas num,
+      Iterable<DatanodeStorageInfo> storages) {
+    int curReplicas = num.liveReplicas();
+    int curExpectedReplicas = blockManager.getExpectedReplicaNum(block);
+    StringBuilder nodeList = new StringBuilder();
+    for (DatanodeStorageInfo storage : storages) {
+      final DatanodeDescriptor node = storage.getDatanodeDescriptor();
+      nodeList.append(node);
+      nodeList.append(" ");
+    }
+    LOG.info("Block: " + block + ", Expected Replicas: "
+        + curExpectedReplicas + ", live replicas: " + curReplicas
+        + ", corrupt replicas: " + num.corruptReplicas()
+        + ", decommissioned replicas: " + num.decommissioned()
+        + ", decommissioning replicas: " + num.decommissioning()
+        + ", excess replicas: " + num.excessReplicas()
+        + ", Is Open File: " + bc.isUnderConstruction()
+        + ", Datanodes having this block: " + nodeList + ", Current Datanode: "
+        + srcNode + ", Is current datanode decommissioning: "
+        + srcNode.isDecommissionInProgress());
+  }
+
+  @VisibleForTesting
+  public int getNumPendingNodes() {
+    return pendingNodes.size();
+  }
+
+  @VisibleForTesting
+  public int getNumTrackedNodes() {
+    return decomNodeBlocks.size();
+  }
+
+  @VisibleForTesting
+  public int getNumNodesChecked() {
+    return monitor.numNodesChecked;
+  }
+
+  /**
+   * Checks to see if DNs have finished decommissioning.
+   * <p/>
+   * Since this is done while holding the namesystem lock, 
+   * the amount of work per monitor tick is limited.
+   */
+  private class Monitor implements Runnable {
+    /**
+     * The maximum number of blocks to check per tick.
+     */
+    private final int numBlocksPerCheck;
+    /**
+     * The maximum number of nodes to track in decomNodeBlocks. A value of 0
+     * means no limit.
+     */
+    private final int maxConcurrentTrackedNodes;
+    /**
+     * The number of blocks that have been checked on this tick.
+     */
+    private int numBlocksChecked = 0;
+    /**
+     * The number of nodes that have been checked on this tick. Used for 
+     * statistics.
+     */
+    private int numNodesChecked = 0;
+    /**
+     * The last datanode in decomNodeBlocks that we've processed
+     */
+    private DatanodeDescriptor iterkey = new DatanodeDescriptor(new 
+        DatanodeID("", "", "", 0, 0, 0, 0));
+
+    Monitor(int numBlocksPerCheck, int maxConcurrentTrackedNodes) {
+      this.numBlocksPerCheck = numBlocksPerCheck;
+      this.maxConcurrentTrackedNodes = maxConcurrentTrackedNodes;
+    }
+
+    private boolean exceededNumBlocksPerCheck() {
+      LOG.trace("Processed {} blocks so far this tick", numBlocksChecked);
+      return numBlocksChecked >= numBlocksPerCheck;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @Override
     public void run() {
       if (!namesystem.isRunning()) {
@@ -416,9 +670,13 @@ public class DecommissionManager {
           it = new CyclicIteration<>(decomNodeBlocks, iterkey).iterator();
       final LinkedList<DatanodeDescriptor> toRemove = new LinkedList<>();
 
+<<<<<<< HEAD
       while (it.hasNext()
           && !exceededNumBlocksPerCheck()
           && !exceededNumNodesPerCheck()) {
+=======
+      while (it.hasNext() && !exceededNumBlocksPerCheck()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         numNodesChecked++;
         final Map.Entry<DatanodeDescriptor, AbstractList<BlockInfo>>
             entry = it.next();
@@ -431,14 +689,22 @@ public class DecommissionManager {
           // that are insufficiently replicated for further tracking
           LOG.debug("Newly-added node {}, doing full scan to find " +
               "insufficiently-replicated blocks.", dn);
+<<<<<<< HEAD
           blocks = handleInsufficientlyReplicated(dn);
+=======
+          blocks = handleInsufficientlyStored(dn);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           decomNodeBlocks.put(dn, blocks);
           fullScan = true;
         } else {
           // This is a known datanode, check if its # of insufficiently 
           // replicated blocks has dropped to zero and if it can be decommed
           LOG.debug("Processing decommission-in-progress node {}", dn);
+<<<<<<< HEAD
           pruneSufficientlyReplicated(dn, blocks);
+=======
+          pruneReliableBlocks(dn, blocks);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         if (blocks.size() == 0) {
           if (!fullScan) {
@@ -450,7 +716,11 @@ public class DecommissionManager {
             // marking the datanode as decommissioned 
             LOG.debug("Node {} has finished replicating current set of "
                 + "blocks, checking with the full block map.", dn);
+<<<<<<< HEAD
             blocks = handleInsufficientlyReplicated(dn);
+=======
+            blocks = handleInsufficientlyStored(dn);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             decomNodeBlocks.put(dn, blocks);
           }
           // If the full scan is clean AND the node liveness is okay, 
@@ -491,15 +761,22 @@ public class DecommissionManager {
     }
 
     /**
+<<<<<<< HEAD
      * Removes sufficiently replicated blocks from the block list of a 
      * datanode.
      */
     private void pruneSufficientlyReplicated(final DatanodeDescriptor datanode,
+=======
+     * Removes reliable blocks from the block list of a datanode.
+     */
+    private void pruneReliableBlocks(final DatanodeDescriptor datanode,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         AbstractList<BlockInfo> blocks) {
       processBlocksForDecomInternal(datanode, blocks.iterator(), null, true);
     }
 
     /**
+<<<<<<< HEAD
      * Returns a list of blocks on a datanode that are insufficiently 
      * replicated, i.e. are under-replicated enough to prevent decommission.
      * <p/>
@@ -510,6 +787,17 @@ public class DecommissionManager {
      * @return List of insufficiently replicated blocks 
      */
     private AbstractList<BlockInfo> handleInsufficientlyReplicated(
+=======
+     * Returns a list of blocks on a datanode that are insufficiently replicated
+     * or require recovery, i.e. requiring recovery and should prevent
+     * decommission.
+     * <p/>
+     * As part of this, it also schedules replication/recovery work.
+     *
+     * @return List of blocks requiring recovery
+     */
+    private AbstractList<BlockInfo> handleInsufficientlyStored(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         final DatanodeDescriptor datanode) {
       AbstractList<BlockInfo> insufficient = new ChunkedArrayList<>();
       processBlocksForDecomInternal(datanode, datanode.getBlockIterator(),
@@ -520,11 +808,16 @@ public class DecommissionManager {
     /**
      * Used while checking if decommission-in-progress datanodes can be marked
      * as decommissioned. Combines shared logic of 
+<<<<<<< HEAD
      * pruneSufficientlyReplicated and handleInsufficientlyReplicated.
+=======
+     * pruneReliableBlocks and handleInsufficientlyStored.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      *
      * @param datanode                    Datanode
      * @param it                          Iterator over the blocks on the
      *                                    datanode
+<<<<<<< HEAD
      * @param insufficientlyReplicated    Return parameter. If it's not null,
      *                                    will contain the insufficiently
      *                                    replicated-blocks from the list.
@@ -532,12 +825,24 @@ public class DecommissionManager {
      *                                    replicated blocks from the iterator
      * @return true if there are under-replicated blocks in the provided block
      * iterator, else false.
+=======
+     * @param insufficientList            Return parameter. If it's not null,
+     *                                    will contain the insufficiently
+     *                                    replicated-blocks from the list.
+     * @param pruneReliableBlocks         whether to remove blocks reliable
+     *                                    enough from the iterator
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      */
     private void processBlocksForDecomInternal(
         final DatanodeDescriptor datanode,
         final Iterator<BlockInfo> it,
+<<<<<<< HEAD
         final List<BlockInfo> insufficientlyReplicated,
         boolean pruneSufficientlyReplicated) {
+=======
+        final List<BlockInfo> insufficientList,
+        boolean pruneReliableBlocks) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       boolean firstReplicationLog = true;
       int underReplicatedBlocks = 0;
       int decommissionOnlyReplicas = 0;
@@ -552,12 +857,19 @@ public class DecommissionManager {
           it.remove();
           continue;
         }
+<<<<<<< HEAD
         BlockCollection bc = blockManager.blocksMap.getBlockCollection(block);
         if (bc == null) {
+=======
+
+        long bcId = block.getBlockCollectionId();
+        if (bcId == INodeId.INVALID_INODE_ID) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           // Orphan block, will be invalidated eventually. Skip.
           continue;
         }
 
+<<<<<<< HEAD
         final NumberReplicas num = blockManager.countNodes(block);
         final int liveReplicas = num.liveReplicas();
         final int curReplicas = liveReplicas;
@@ -574,21 +886,49 @@ public class DecommissionManager {
                 curReplicas,
                 num.decommissionedAndDecommissioning(),
                 bc.getPreferredBlockReplication());
+=======
+        BlockCollection bc = namesystem.getBlockCollection(bcId);
+        final NumberReplicas num = blockManager.countNodes(block);
+        final int liveReplicas = num.liveReplicas();
+
+        // Schedule under-replicated blocks for replication if not already
+        // pending
+        if (blockManager.isNeededReplication(block, liveReplicas)) {
+          if (!blockManager.neededReplications.contains(block) &&
+              blockManager.pendingReplications.getNumReplicas(block) == 0 &&
+              blockManager.isPopulatingReplQueues()) {
+            // Process these blocks only when active NN is out of safe mode.
+            blockManager.neededReplications.add(block,
+                liveReplicas, num.readOnlyReplicas(),
+                num.decommissionedAndDecommissioning(),
+                blockManager.getExpectedReplicaNum(block));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
         }
 
         // Even if the block is under-replicated, 
+<<<<<<< HEAD
         // it doesn't block decommission if it's sufficiently replicated 
         if (isSufficientlyReplicated(block, bc, num)) {
           if (pruneSufficientlyReplicated) {
+=======
+        // it doesn't block decommission if it's sufficiently replicated
+        if (isSufficient(block, bc, num)) {
+          if (pruneReliableBlocks) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             it.remove();
           }
           continue;
         }
 
         // We've found an insufficiently replicated block.
+<<<<<<< HEAD
         if (insufficientlyReplicated != null) {
           insufficientlyReplicated.add(block);
+=======
+        if (insufficientList != null) {
+          insufficientList.add(block);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         // Log if this is our first time through
         if (firstReplicationLog) {
@@ -601,7 +941,11 @@ public class DecommissionManager {
         if (bc.isUnderConstruction()) {
           underReplicatedInOpenFiles++;
         }
+<<<<<<< HEAD
         if ((curReplicas == 0) && (num.decommissionedAndDecommissioning() > 0)) {
+=======
+        if ((liveReplicas == 0) && (num.decommissionedAndDecommissioning() > 0)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           decommissionOnlyReplicas++;
         }
       }

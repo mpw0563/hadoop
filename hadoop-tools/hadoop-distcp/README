@@ -3,5 +3,8 @@ It uses Map/Reduce to effect its distribution, error handling and recovery,
 and reporting. It expands a list of files and directories into input to map tasks, 
 each of which will copy a partition of the files specified in the source list.
 
+<<<<<<< HEAD
 Version 0.1 (2010/08/02 sriksun)
  - Initial Version
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

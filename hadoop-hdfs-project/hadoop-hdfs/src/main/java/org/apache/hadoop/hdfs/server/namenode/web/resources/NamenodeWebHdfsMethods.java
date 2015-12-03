@@ -356,13 +356,23 @@ public class NamenodeWebHdfsMethods {
       @QueryParam(OldSnapshotNameParam.NAME) @DefaultValue(OldSnapshotNameParam.DEFAULT)
           final OldSnapshotNameParam oldSnapshotName,
       @QueryParam(ExcludeDatanodesParam.NAME) @DefaultValue(ExcludeDatanodesParam.DEFAULT)
+<<<<<<< HEAD
           final ExcludeDatanodesParam excludeDatanodes
+=======
+          final ExcludeDatanodesParam excludeDatanodes,
+      @QueryParam(CreateFlagParam.NAME) @DefaultValue(CreateFlagParam.DEFAULT)
+          final CreateFlagParam createFlagParam
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ) throws IOException, InterruptedException {
     return put(ugi, delegation, username, doAsUser, ROOT, op, destination,
         owner, group, permission, overwrite, bufferSize, replication,
         blockSize, modificationTime, accessTime, renameOptions, createParent,
         delegationTokenArgument, aclPermission, xattrName, xattrValue,
+<<<<<<< HEAD
         xattrSetFlag, snapshotName, oldSnapshotName, excludeDatanodes);
+=======
+        xattrSetFlag, snapshotName, oldSnapshotName, excludeDatanodes, createFlagParam);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Handle HTTP PUT request. */
@@ -420,14 +430,24 @@ public class NamenodeWebHdfsMethods {
       @QueryParam(OldSnapshotNameParam.NAME) @DefaultValue(OldSnapshotNameParam.DEFAULT)
           final OldSnapshotNameParam oldSnapshotName,
       @QueryParam(ExcludeDatanodesParam.NAME) @DefaultValue(ExcludeDatanodesParam.DEFAULT)
+<<<<<<< HEAD
           final ExcludeDatanodesParam excludeDatanodes
+=======
+          final ExcludeDatanodesParam excludeDatanodes,
+      @QueryParam(CreateFlagParam.NAME) @DefaultValue(CreateFlagParam.DEFAULT)
+          final CreateFlagParam createFlagParam
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ) throws IOException, InterruptedException {
 
     init(ugi, delegation, username, doAsUser, path, op, destination, owner,
         group, permission, overwrite, bufferSize, replication, blockSize,
         modificationTime, accessTime, renameOptions, delegationTokenArgument,
         aclPermission, xattrName, xattrValue, xattrSetFlag, snapshotName,
+<<<<<<< HEAD
         oldSnapshotName, excludeDatanodes);
+=======
+        oldSnapshotName, excludeDatanodes, createFlagParam);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     return ugi.doAs(new PrivilegedExceptionAction<Response>() {
       @Override
@@ -438,7 +458,12 @@ public class NamenodeWebHdfsMethods {
               permission, overwrite, bufferSize, replication, blockSize,
               modificationTime, accessTime, renameOptions, createParent,
               delegationTokenArgument, aclPermission, xattrName, xattrValue,
+<<<<<<< HEAD
               xattrSetFlag, snapshotName, oldSnapshotName, excludeDatanodes);
+=======
+              xattrSetFlag, snapshotName, oldSnapshotName, excludeDatanodes,
+              createFlagParam);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         } finally {
           reset();
         }
@@ -472,7 +497,12 @@ public class NamenodeWebHdfsMethods {
       final XAttrSetFlagParam xattrSetFlag,
       final SnapshotNameParam snapshotName,
       final OldSnapshotNameParam oldSnapshotName,
+<<<<<<< HEAD
       final ExcludeDatanodesParam exclDatanodes
+=======
+      final ExcludeDatanodesParam exclDatanodes,
+      final CreateFlagParam createFlagParam
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ) throws IOException, URISyntaxException {
 
     final Configuration conf = (Configuration)context.getAttribute(JspHelper.CURRENT_CONF);
@@ -485,7 +515,11 @@ public class NamenodeWebHdfsMethods {
       final URI uri = redirectURI(namenode, ugi, delegation, username,
           doAsUser, fullpath, op.getValue(), -1L, blockSize.getValue(conf),
           exclDatanodes.getValue(), permission, overwrite, bufferSize,
+<<<<<<< HEAD
           replication, blockSize);
+=======
+          replication, blockSize, createParent, createFlagParam);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return Response.temporaryRedirect(uri).type(MediaType.APPLICATION_OCTET_STREAM).build();
     } 
     case MKDIRS:
@@ -584,6 +618,13 @@ public class NamenodeWebHdfsMethods {
       np.removeXAttr(fullpath, XAttrHelper.buildXAttr(xattrName.getXAttrName()));
       return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).build();
     }
+<<<<<<< HEAD
+=======
+    case ALLOWSNAPSHOT: {
+      np.allowSnapshot(fullpath);
+      return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).build();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     case CREATESNAPSHOT: {
       String snapshotPath = np.createSnapshot(fullpath, snapshotName.getValue());
       final String js = JsonUtil.toJsonString(
@@ -595,6 +636,13 @@ public class NamenodeWebHdfsMethods {
           snapshotName.getValue());
       return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).build();
     }
+<<<<<<< HEAD
+=======
+    case DISALLOWSNAPSHOT: {
+      np.disallowSnapshot(fullpath);
+      return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).build();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     default:
       throw new UnsupportedOperationException(op + " is not supported");
     }
@@ -701,6 +749,13 @@ public class NamenodeWebHdfsMethods {
     }
     case TRUNCATE:
     {
+<<<<<<< HEAD
+=======
+      if (newLength.getValue() == null) {
+        throw new IllegalArgumentException(
+            "newLength parameter is Missing");
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // We treat each rest request as a separate client.
       final boolean b = np.truncate(fullpath, newLength.getValue(), 
           "DFSClient_" + DFSUtil.getSecureRandom().nextLong());

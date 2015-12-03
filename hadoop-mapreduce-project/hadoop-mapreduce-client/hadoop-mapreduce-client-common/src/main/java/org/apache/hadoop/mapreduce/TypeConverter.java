@@ -296,6 +296,7 @@ public class TypeConverter {
     }
     return yCntrs;
   }
+<<<<<<< HEAD
   
   public static JobStatus fromYarn(JobReport jobreport, String trackingUrl) {
     JobPriority jobPriority = JobPriority.NORMAL;
@@ -305,12 +306,46 @@ public class TypeConverter {
             .getCleanupProgress(), fromYarn(jobreport.getJobState()),
         jobPriority, jobreport.getUser(), jobreport.getJobName(), jobreport
             .getJobFile(), trackingUrl, jobreport.isUber());
+=======
+
+  public static JobStatus fromYarn(JobReport jobreport, String trackingUrl) {
+    JobPriority jobPriority = (jobreport.getJobPriority() == null)
+        ? JobPriority.DEFAULT
+        : fromYarnPriority(jobreport.getJobPriority().getPriority());
+    JobStatus jobStatus = new org.apache.hadoop.mapred.JobStatus(
+        fromYarn(jobreport.getJobId()), jobreport.getSetupProgress(),
+        jobreport.getMapProgress(), jobreport.getReduceProgress(),
+        jobreport.getCleanupProgress(), fromYarn(jobreport.getJobState()),
+        jobPriority, jobreport.getUser(), jobreport.getJobName(),
+        jobreport.getJobFile(), trackingUrl, jobreport.isUber());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     jobStatus.setStartTime(jobreport.getStartTime());
     jobStatus.setFinishTime(jobreport.getFinishTime());
     jobStatus.setFailureInfo(jobreport.getDiagnostics());
     return jobStatus;
   }
 
+<<<<<<< HEAD
+=======
+  private static JobPriority fromYarnPriority(int priority) {
+    switch (priority) {
+    case 5 :
+      return JobPriority.VERY_HIGH;
+    case 4 :
+      return JobPriority.HIGH;
+    case 3 :
+      return JobPriority.NORMAL;
+    case 2 :
+      return JobPriority.LOW;
+    case 1 :
+      return JobPriority.VERY_LOW;
+    case 0 :
+      return JobPriority.DEFAULT;
+    }
+    return JobPriority.UNDEFINED_PRIORITY;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static org.apache.hadoop.mapreduce.QueueState fromYarn(
       QueueState state) {
     org.apache.hadoop.mapreduce.QueueState qState =

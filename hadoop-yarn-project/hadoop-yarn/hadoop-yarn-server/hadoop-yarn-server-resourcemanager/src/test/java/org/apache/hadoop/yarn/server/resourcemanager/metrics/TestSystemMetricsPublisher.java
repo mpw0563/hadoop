@@ -37,6 +37,10 @@ import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.ResourceRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.YarnApplicationAttemptState;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.api.records.timeline.TimelineEntity;
@@ -47,6 +51,10 @@ import org.apache.hadoop.yarn.server.metrics.AppAttemptMetricsConstants;
 import org.apache.hadoop.yarn.server.metrics.ApplicationMetricsConstants;
 import org.apache.hadoop.yarn.server.metrics.ContainerMetricsConstants;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppState;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
@@ -107,6 +115,20 @@ public class TestSystemMetricsPublisher {
       ApplicationId appId = ApplicationId.newInstance(0, i);
       RMApp app = createRMApp(appId);
       metricsPublisher.appCreated(app, app.getStartTime());
+<<<<<<< HEAD
+=======
+      if (i == 1) {
+        when(app.getQueue()).thenReturn("new test queue");
+        ApplicationSubmissionContext asc = mock(ApplicationSubmissionContext.class);
+        when(asc.getUnmanagedAM()).thenReturn(false);
+        when(asc.getPriority()).thenReturn(Priority.newInstance(1));
+        when(asc.getNodeLabelExpression()).thenReturn("high-cpu");
+        when(app.getApplicationSubmissionContext()).thenReturn(asc);
+        metricsPublisher.appUpdated(app, 4L);
+      } else {
+        metricsPublisher.appUpdated(app, 4L);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       metricsPublisher.appFinished(app, RMAppState.FINISHED, app.getFinishTime());
       if (i == 1) {
         metricsPublisher.appACLsUpdated(app, "uers1,user2", 4L);
@@ -121,7 +143,11 @@ public class TestSystemMetricsPublisher {
                 ApplicationMetricsConstants.ENTITY_TYPE,
                 EnumSet.allOf(Field.class));
         // ensure three events are both published before leaving the loop
+<<<<<<< HEAD
       } while (entity == null || entity.getEvents().size() < 3);
+=======
+      } while (entity == null || entity.getEvents().size() < 4);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // verify all the fields
       Assert.assertEquals(ApplicationMetricsConstants.ENTITY_TYPE,
           entity.getEntityType());
@@ -132,15 +158,42 @@ public class TestSystemMetricsPublisher {
               app.getName(),
               entity.getOtherInfo().get(
                   ApplicationMetricsConstants.NAME_ENTITY_INFO));
+<<<<<<< HEAD
       Assert.assertEquals(app.getQueue(),
           entity.getOtherInfo()
               .get(ApplicationMetricsConstants.QUEUE_ENTITY_INFO));
+=======
+      if (i != 1) {
+        Assert.assertEquals(
+            app.getQueue(),
+            entity.getOtherInfo().get(
+                ApplicationMetricsConstants.QUEUE_ENTITY_INFO));
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       Assert.assertEquals(
           app.getApplicationSubmissionContext().getUnmanagedAM(),
           entity.getOtherInfo().get(
               ApplicationMetricsConstants.UNMANAGED_APPLICATION_ENTITY_INFO));
 
+<<<<<<< HEAD
+=======
+      if (i != 1) {
+        Assert.assertEquals(
+            app.getApplicationSubmissionContext().getPriority().getPriority(),
+            entity.getOtherInfo().get(
+                ApplicationMetricsConstants.APPLICATION_PRIORITY_INFO));
+      }
+
+      Assert.assertEquals(app.getAmNodeLabelExpression(), entity.getOtherInfo()
+          .get(ApplicationMetricsConstants.AM_NODE_LABEL_EXPRESSION));
+
+      Assert.assertEquals(
+          app.getApplicationSubmissionContext().getNodeLabelExpression(),
+          entity.getOtherInfo()
+              .get(ApplicationMetricsConstants.APP_NODE_LABEL_EXPRESSION));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Assert
           .assertEquals(
               app.getUser(),
@@ -175,6 +228,10 @@ public class TestSystemMetricsPublisher {
                 .get(ApplicationMetricsConstants.APP_CPU_METRICS).toString()));
       }
       boolean hasCreatedEvent = false;
+<<<<<<< HEAD
+=======
+      boolean hasUpdatedEvent = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       boolean hasFinishedEvent = false;
       boolean hasACLsUpdatedEvent = false;
       for (TimelineEvent event : entity.getEvents()) {
@@ -197,12 +254,34 @@ public class TestSystemMetricsPublisher {
           Assert.assertEquals(YarnApplicationState.FINISHED.toString(), event
               .getEventInfo().get(ApplicationMetricsConstants.STATE_EVENT_INFO));
         } else if (event.getEventType().equals(
+<<<<<<< HEAD
+=======
+            ApplicationMetricsConstants.UPDATED_EVENT_TYPE)) {
+          hasUpdatedEvent = true;
+          Assert.assertEquals(4L, event.getTimestamp());
+          if (1 == i) {
+            Assert.assertEquals(
+                1,
+                event.getEventInfo().get(
+                    ApplicationMetricsConstants.APPLICATION_PRIORITY_INFO));
+            Assert.assertEquals(
+                "new test queue",
+                event.getEventInfo().get(
+                    ApplicationMetricsConstants.QUEUE_ENTITY_INFO));
+          }
+        } else if (event.getEventType().equals(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             ApplicationMetricsConstants.ACLS_UPDATED_EVENT_TYPE)) {
           hasACLsUpdatedEvent = true;
           Assert.assertEquals(4L, event.getTimestamp());
         }
       }
+<<<<<<< HEAD
       Assert.assertTrue(hasCreatedEvent && hasFinishedEvent && hasACLsUpdatedEvent);
+=======
+      Assert.assertTrue(hasCreatedEvent && hasFinishedEvent
+          && hasACLsUpdatedEvent && hasUpdatedEvent);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -346,7 +425,11 @@ public class TestSystemMetricsPublisher {
   }
 
   private static RMApp createRMApp(ApplicationId appId) {
+<<<<<<< HEAD
     RMApp app = mock(RMApp.class);
+=======
+    RMApp app = mock(RMAppImpl.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(app.getApplicationId()).thenReturn(appId);
     when(app.getName()).thenReturn("test app");
     when(app.getApplicationType()).thenReturn("test app type");
@@ -371,7 +454,18 @@ public class TestSystemMetricsPublisher {
     when(app.getApplicationTags()).thenReturn(appTags);
     ApplicationSubmissionContext asc = mock(ApplicationSubmissionContext.class);
     when(asc.getUnmanagedAM()).thenReturn(false);
+<<<<<<< HEAD
     when(app.getApplicationSubmissionContext()).thenReturn(asc);
+=======
+    when(asc.getPriority()).thenReturn(Priority.newInstance(10));
+    when(asc.getNodeLabelExpression()).thenReturn("high-cpu");
+    when(app.getApplicationSubmissionContext()).thenReturn(asc);
+    when(app.getAppNodeLabelExpression()).thenCallRealMethod();
+    ResourceRequest amReq = mock(ResourceRequest.class);
+    when(amReq.getNodeLabelExpression()).thenReturn("high-mem");
+    when(app.getAMResourceRequest()).thenReturn(amReq);
+    when(app.getAmNodeLabelExpression()).thenCallRealMethod();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return app;
   }
 

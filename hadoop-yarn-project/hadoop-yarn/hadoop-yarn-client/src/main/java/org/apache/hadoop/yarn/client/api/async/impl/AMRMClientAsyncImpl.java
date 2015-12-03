@@ -19,6 +19,10 @@
 package org.apache.hadoop.yarn.client.api.async.impl;
 
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -66,6 +70,7 @@ extends AMRMClientAsync<T> {
   private volatile float progress;
   
   private volatile Throwable savedException;
+<<<<<<< HEAD
   
   public AMRMClientAsyncImpl(int intervalMs, CallbackHandler callbackHandler) {
     this(new AMRMClientImpl<T>(), intervalMs, callbackHandler);
@@ -73,6 +78,43 @@ extends AMRMClientAsync<T> {
   
   @Private
   @VisibleForTesting
+=======
+
+  /**
+   *
+   * @param intervalMs heartbeat interval in milliseconds between AM and RM
+   * @param callbackHandler callback handler that processes responses from
+   *                        the <code>ResourceManager</code>
+   */
+  public AMRMClientAsyncImpl(
+      int intervalMs, AbstractCallbackHandler callbackHandler) {
+    this(new AMRMClientImpl<T>(), intervalMs, callbackHandler);
+  }
+
+  public AMRMClientAsyncImpl(AMRMClient<T> client, int intervalMs,
+      AbstractCallbackHandler callbackHandler) {
+    super(client, intervalMs, callbackHandler);
+    heartbeatThread = new HeartbeatThread();
+    handlerThread = new CallbackHandlerThread();
+    responseQueue = new LinkedBlockingQueue<>();
+    keepRunning = true;
+    savedException = null;
+  }
+
+  /**
+   *
+   * @deprecated Use {@link #AMRMClientAsyncImpl(int,
+   *             AMRMClientAsync.AbstractCallbackHandler)} instead.
+   */
+  @Deprecated
+  public AMRMClientAsyncImpl(int intervalMs, CallbackHandler callbackHandler) {
+    this(new AMRMClientImpl<T>(), intervalMs, callbackHandler);
+  }
+
+  @Private
+  @VisibleForTesting
+  @Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public AMRMClientAsyncImpl(AMRMClient<T> client, int intervalMs,
       CallbackHandler callbackHandler) {
     super(client, intervalMs, callbackHandler);
@@ -82,7 +124,11 @@ extends AMRMClientAsync<T> {
     keepRunning = true;
     savedException = null;
   }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   protected void serviceInit(Configuration conf) throws Exception {
     super.serviceInit(conf);
@@ -177,6 +223,15 @@ extends AMRMClientAsync<T> {
     client.removeContainerRequest(req);
   }
 
+<<<<<<< HEAD
+=======
+  @Override
+  public void requestContainerResourceChange(
+      Container container, Resource capability) {
+    client.requestContainerResourceChange(container, capability);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Release containers assigned by the Resource Manager. If the app cannot use
    * the container or wants to give up the container then it can release them.
@@ -300,6 +355,21 @@ extends AMRMClientAsync<T> {
             handler.onContainersCompleted(completed);
           }
 
+<<<<<<< HEAD
+=======
+          if (handler instanceof AMRMClientAsync.AbstractCallbackHandler) {
+            // RM side of the implementation guarantees that there are
+            // no duplications between increased and decreased containers
+            List<Container> changed = new ArrayList<>();
+            changed.addAll(response.getIncreasedContainers());
+            changed.addAll(response.getDecreasedContainers());
+            if (!changed.isEmpty()) {
+              ((AMRMClientAsync.AbstractCallbackHandler) handler)
+                  .onContainersResourceChanged(changed);
+            }
+          }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           List<Container> allocated = response.getAllocatedContainers();
           if (!allocated.isEmpty()) {
             handler.onContainersAllocated(allocated);

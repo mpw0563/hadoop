@@ -59,4 +59,18 @@ class FSNamesystemLock implements ReadWriteLock {
   public boolean isWriteLockedByCurrentThread() {
     return coarseLock.isWriteLockedByCurrentThread();
   }
+<<<<<<< HEAD
+=======
+
+  /**
+   * Returns the QueueLength of waiting threads.
+   *
+   * A larger number indicates greater lock contention.
+   *
+   * @return int - Number of threads waiting on this lock
+   */
+  public int getQueueLength() {
+    return coarseLock.getQueueLength();
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

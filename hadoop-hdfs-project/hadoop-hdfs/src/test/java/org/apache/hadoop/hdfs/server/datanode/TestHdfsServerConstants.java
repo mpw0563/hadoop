@@ -61,7 +61,10 @@ public class TestHdfsServerConstants {
     verifyStartupOptionResult("CHECKPOINT", StartupOption.CHECKPOINT, null);
     verifyStartupOptionResult("UPGRADE", StartupOption.UPGRADE, null);
     verifyStartupOptionResult("ROLLBACK", StartupOption.ROLLBACK, null);
+<<<<<<< HEAD
     verifyStartupOptionResult("FINALIZE", StartupOption.FINALIZE, null);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     verifyStartupOptionResult("ROLLINGUPGRADE", StartupOption.ROLLINGUPGRADE, null);
     verifyStartupOptionResult("IMPORT", StartupOption.IMPORT, null);
     verifyStartupOptionResult("INITIALIZESHAREDEDITS", StartupOption.INITIALIZESHAREDEDITS, null);
@@ -83,9 +86,12 @@ public class TestHdfsServerConstants {
     verifyStartupOptionResult("ROLLINGUPGRADE(ROLLBACK)",
                               StartupOption.ROLLINGUPGRADE,
                               RollingUpgradeStartupOption.ROLLBACK);
+<<<<<<< HEAD
     verifyStartupOptionResult("ROLLINGUPGRADE(DOWNGRADE)",
                               StartupOption.ROLLINGUPGRADE,
                               RollingUpgradeStartupOption.DOWNGRADE);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     verifyStartupOptionResult("ROLLINGUPGRADE(STARTED)",
         StartupOption.ROLLINGUPGRADE,
         RollingUpgradeStartupOption.STARTED);

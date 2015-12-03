@@ -167,6 +167,12 @@ public class WebServices {
     } catch (Exception e) {
       rewrapAndThrowException(e);
     }
+<<<<<<< HEAD
+=======
+    if (appReports == null) {
+      return allApps;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (ApplicationReport appReport : appReports) {
 
       if (checkAppStates &&
@@ -266,6 +272,12 @@ public class WebServices {
       rewrapAndThrowException(e);
     }
     AppAttemptsInfo appAttemptsInfo = new AppAttemptsInfo();
+<<<<<<< HEAD
+=======
+    if (appAttemptReports == null) {
+      return appAttemptsInfo;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (ApplicationAttemptReport appAttemptReport : appAttemptReports) {
       AppAttemptInfo appAttemptInfo = new AppAttemptInfo(appAttemptReport);
       appAttemptsInfo.add(appAttemptInfo);
@@ -336,6 +348,12 @@ public class WebServices {
       rewrapAndThrowException(e);
     }
     ContainersInfo containersInfo = new ContainersInfo();
+<<<<<<< HEAD
+=======
+    if (containerReports == null) {
+      return containersInfo;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (ContainerReport containerReport : containerReports) {
       ContainerInfo containerInfo = new ContainerInfo(containerReport);
       containersInfo.add(containerInfo);

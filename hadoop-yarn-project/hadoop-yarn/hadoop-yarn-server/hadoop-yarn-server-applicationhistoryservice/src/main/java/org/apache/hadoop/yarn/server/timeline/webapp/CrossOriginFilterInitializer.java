@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.yarn.server.timeline.webapp;
 
+<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +27,22 @@ import org.apache.hadoop.http.FilterContainer;
 import org.apache.hadoop.http.FilterInitializer;
 
 public class CrossOriginFilterInitializer extends FilterInitializer {
+=======
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.http.FilterContainer;
+import org.apache.hadoop.security.HttpCrossOriginFilterInitializer;
+import org.apache.hadoop.security.http.CrossOriginFilter;
+
+import java.util.Map;
+
+public class CrossOriginFilterInitializer extends HttpCrossOriginFilterInitializer {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public static final String PREFIX =
       "yarn.timeline-service.http-cross-origin.";
 
   @Override
+<<<<<<< HEAD
   public void initFilter(FilterContainer container, Configuration conf) {
 
     container.addGlobalFilter("Cross Origin Filter",
@@ -50,3 +62,24 @@ public class CrossOriginFilterInitializer extends FilterInitializer {
     return filterParams;
   }
 }
+=======
+  protected String getPrefix() {
+    return PREFIX;
+  }
+
+  @Override
+  public void initFilter(FilterContainer container, Configuration conf) {
+
+    // setup the filter
+    // use the keys with "yarn.timeline-service.http-cross-origin" prefix to
+    // override the ones with the "hadoop.http.cross-origin" prefix.
+
+    Map<String, String> filterParameters =
+        getFilterParameters(conf, HttpCrossOriginFilterInitializer.PREFIX);
+    filterParameters.putAll(getFilterParameters(conf, getPrefix()));
+
+    container.addGlobalFilter("Cross Origin Filter",
+          CrossOriginFilter.class.getName(), filterParameters);
+  }
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

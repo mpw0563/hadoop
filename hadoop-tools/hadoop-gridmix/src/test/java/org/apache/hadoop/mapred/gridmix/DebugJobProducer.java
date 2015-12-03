@@ -262,7 +262,10 @@ public class DebugJobProducer implements JobStoryProducer {
       throw new UnsupportedOperationException();
     }
 
+<<<<<<< HEAD
     @SuppressWarnings({ "deprecation", "incomplete-switch" })
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @Override
     public TaskAttemptInfo getTaskAttemptInfo(
       TaskType taskType, int taskNumber, int taskAttemptNumber) {

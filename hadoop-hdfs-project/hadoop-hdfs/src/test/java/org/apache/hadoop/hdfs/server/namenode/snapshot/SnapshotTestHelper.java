@@ -44,8 +44,13 @@ import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+=======
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockUnderConstructionFeature;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.BlockPoolSliceStorage;
 import org.apache.hadoop.hdfs.server.datanode.BlockScanner;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
@@ -175,10 +180,16 @@ public class SnapshotTestHelper {
    * localName (className@hashCode) parent permission group user
    * 
    * Specific information for different types of INode: 
+<<<<<<< HEAD
    * {@link INodeDirectory}:childrenSize 
    * {@link INodeFile}: fileSize, block list. Check {@link BlockInfo#toString()}
    * and {@link BlockInfoContiguousUnderConstruction#toString()} for detailed information.
    * {@link FileWithSnapshot}: next link
+=======
+   * {@link INodeDirectory}:childrenSize
+   * {@link INodeFile}: fileSize, block list. Check {@link BlockInfo#toString()}
+   * and {@link BlockUnderConstructionFeature#toString()} for detailed information.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * </pre>
    * @see INode#dumpTreeRecursively()
    */
@@ -228,8 +239,13 @@ public class SnapshotTestHelper {
           line2 = line2.replaceAll("Quota\\[.*\\]", "Quota[]");
         }
         
+<<<<<<< HEAD
         // skip the specific fields of BlockInfoUnderConstruction when the node
         // is an INodeFileSnapshot or an INodeFileUnderConstructionSnapshot
+=======
+        // skip the specific fields of BlockUnderConstructionFeature when the
+        // node is an INodeFileSnapshot or INodeFileUnderConstructionSnapshot
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         if (line1.contains("(INodeFileSnapshot)")
             || line1.contains("(INodeFileUnderConstructionSnapshot)")) {
           line1 = line1.replaceAll(

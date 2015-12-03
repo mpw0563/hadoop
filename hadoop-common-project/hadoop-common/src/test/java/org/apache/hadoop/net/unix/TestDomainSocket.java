@@ -712,9 +712,14 @@ public class TestDomainSocket {
       try {
         testValidateSocketPath(prefix + "/foo/bar/baz", prefix);
       } catch (IOException e) {
+<<<<<<< HEAD
         GenericTestUtils.assertExceptionContains("/foo' is world-writable.  " +
             "Its permissions are 0707.  Please fix this or select a " +
             "different socket path.", e);
+=======
+        GenericTestUtils.assertExceptionContains("world-writable" ,e);
+        GenericTestUtils.assertExceptionContains("/foo'" ,e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       try {
         testValidateSocketPath(prefix + "/nope", prefix);
@@ -723,7 +728,11 @@ public class TestDomainSocket {
             "component: ", e);
       }
       // Root should be secure
+<<<<<<< HEAD
       DomainSocket.validateSocketPathSecurity0("/foo", 1);
+=======
+      DomainSocket.validateSocketPathSecurity0("/foo", 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       tmp.close();
     }

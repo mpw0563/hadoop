@@ -20,12 +20,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project-dist</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../../hadoop-project-dist</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-tools-dist</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Apache Hadoop Tools Dist</description>
   <name>Apache Hadoop Tools Dist</name>
   <packaging>jar</packaging>
@@ -52,6 +60,14 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
+=======
+      <artifactId>hadoop-archive-logs</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <artifactId>hadoop-rumen</artifactId>
       <scope>compile</scope>
     </dependency>

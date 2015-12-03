@@ -31,7 +31,11 @@ import org.apache.hadoop.hdfs.protocol.QuotaExceededException;
 import org.apache.hadoop.hdfs.protocol.SnapshotException;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockStoragePolicySuite;
 import org.apache.hadoop.hdfs.server.namenode.Content;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.namenode.ContentSummaryComputationContext;
+=======
+import org.apache.hadoop.hdfs.server.namenode.ContentCounts;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.INode;
 import org.apache.hadoop.hdfs.server.namenode.INodeDirectory;
 import org.apache.hadoop.hdfs.server.namenode.INodeDirectory.SnapshotAndINode;
@@ -219,6 +223,7 @@ public class DirectorySnapshottableFeature extends DirectoryWithSnapshotFeature 
     }
   }
 
+<<<<<<< HEAD
   public ContentSummaryComputationContext computeContentSummary(
       final BlockStoragePolicySuite bsps,
       final INodeDirectory snapshotRoot,
@@ -227,6 +232,14 @@ public class DirectorySnapshottableFeature extends DirectoryWithSnapshotFeature 
     summary.getCounts().addContent(Content.SNAPSHOT, snapshotsByNames.size());
     summary.getCounts().addContent(Content.SNAPSHOTTABLE_DIRECTORY, 1);
     return summary;
+=======
+  @Override
+  public void computeContentSummary4Snapshot(final BlockStoragePolicySuite bsps,
+      final ContentCounts counts) {
+    counts.addContent(Content.SNAPSHOT, snapshotsByNames.size());
+    counts.addContent(Content.SNAPSHOTTABLE_DIRECTORY, 1);
+    super.computeContentSummary4Snapshot(bsps, counts);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

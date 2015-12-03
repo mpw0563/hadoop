@@ -101,7 +101,11 @@ public class CommonNodeLabelsManager extends AbstractService {
   protected NodeLabelsStore store;
   private boolean nodeLabelsEnabled = false;
 
+<<<<<<< HEAD
   private boolean isDistributedNodeLabelConfiguration = false;
+=======
+  private boolean isCentralizedNodeLabelConfiguration = true;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * A <code>Host</code> can have multiple <code>Node</code>s 
@@ -216,6 +220,7 @@ public class CommonNodeLabelsManager extends AbstractService {
   @Override
   protected void serviceInit(Configuration conf) throws Exception {
     // set if node labels enabled
+<<<<<<< HEAD
     nodeLabelsEnabled =
         conf.getBoolean(YarnConfiguration.NODE_LABELS_ENABLED,
             YarnConfiguration.DEFAULT_NODE_LABELS_ENABLED);
@@ -223,13 +228,24 @@ public class CommonNodeLabelsManager extends AbstractService {
     isDistributedNodeLabelConfiguration  =
         YarnConfiguration.isDistributedNodeLabelConfiguration(conf);
     
+=======
+    nodeLabelsEnabled = YarnConfiguration.areNodeLabelsEnabled(conf);
+
+    isCentralizedNodeLabelConfiguration  =
+        YarnConfiguration.isCentralizedNodeLabelConfiguration(conf);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     labelCollections.put(NO_LABEL, new RMNodeLabel(NO_LABEL));
   }
 
   protected void initNodeLabelStore(Configuration conf) throws Exception {
     this.store = new FileSystemNodeLabelsStore(this);
     this.store.init(conf);
+<<<<<<< HEAD
     this.store.recover(isDistributedNodeLabelConfiguration);
+=======
+    this.store.recover(!isCentralizedNodeLabelConfiguration);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   // for UT purpose
@@ -624,10 +640,21 @@ public class CommonNodeLabelsManager extends AbstractService {
       }
     }
     
+<<<<<<< HEAD
     if (null != dispatcher && !isDistributedNodeLabelConfiguration) {
       // In case of DistributedNodeLabelConfiguration, no need to save the the
       // NodeLabels Mapping to the back-end store, as on RM restart/failover
       // NodeLabels are collected from NM through Register/Heartbeat again
+=======
+    if (null != dispatcher && isCentralizedNodeLabelConfiguration) {
+      // In case of DistributedNodeLabelConfiguration or
+      // DelegatedCentralizedNodeLabelConfiguration, no need to save the the
+      // NodeLabels Mapping to the back-end store, as on RM restart/failover
+      // NodeLabels are collected from NM through Register/Heartbeat again
+      // in case of DistributedNodeLabelConfiguration and collected from
+      // RMNodeLabelsMappingProvider in case of
+      // DelegatedCentralizedNodeLabelConfiguration
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       dispatcher.getEventHandler().handle(
           new UpdateNodeToLabelsMappingsEvent(newNMToLabels));
     }
@@ -827,7 +854,11 @@ public class CommonNodeLabelsManager extends AbstractService {
   /**
    * Get mapping of labels info to nodes for specified set of labels.
    *
+<<<<<<< HEAD
    * @param nodelabels
+=======
+   * @param labels
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    *          set of nodelabels for which labels to nodes mapping will be
    *          returned.
    * @return labels to nodes map
@@ -916,7 +947,11 @@ public class CommonNodeLabelsManager extends AbstractService {
     }
   }
 
+<<<<<<< HEAD
   private void checkAndThrowLabelName(String label) throws IOException {
+=======
+  public static void checkAndThrowLabelName(String label) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (label == null || label.isEmpty() || label.length() > MAX_LABEL_LENGTH) {
       throw new IOException("label added is empty or exceeds "
           + MAX_LABEL_LENGTH + " character(s)");

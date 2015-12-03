@@ -27,6 +27,10 @@ import org.apache.hadoop.hdfs.protocol.datatransfer.*;
 import org.apache.hadoop.hdfs.server.datanode.metrics.DataNodeMetrics;
 import org.apache.hadoop.util.DataChecksum;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.*;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.datanode.fsdataset.*;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -147,6 +151,10 @@ public class TestDataXceiverLazyPersistHint {
         any(DataInputStream.class), anyString(), anyString(),
         any(BlockConstructionStage.class), anyLong(), anyLong(), anyLong(),
         anyString(), any(DatanodeInfo.class), any(DataNode.class),
+<<<<<<< HEAD
+=======
+        any(FsDatasetSpi.class),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         any(DataChecksum.class), any(CachingStrategy.class),
         captor.capture(), anyBoolean());
     doReturn(mock(DataOutputStream.class)).when(xceiverSpy)

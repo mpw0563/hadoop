@@ -41,9 +41,16 @@ import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos.BlockProto;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocolPB.PBHelper;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+=======
+import org.apache.hadoop.hdfs.protocolPB.PBHelperClient;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.AclEntryStatusFormat;
 import org.apache.hadoop.hdfs.server.namenode.AclFeature;
 import org.apache.hadoop.hdfs.server.namenode.FSDirectory;
@@ -208,6 +215,10 @@ public class FSImageFormatPBSnapshot {
         throws IOException {
       final FileDiffList diffs = new FileDiffList();
       final LoaderContext state = parent.getLoaderContext();
+<<<<<<< HEAD
+=======
+      final BlockManager bm = fsn.getBlockManager();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       for (int i = 0; i < size; i++) {
         SnapshotDiffSection.FileDiff pbf = SnapshotDiffSection.FileDiff
             .parseDelimitedFrom(in);
@@ -234,13 +245,19 @@ public class FSImageFormatPBSnapshot {
               .toByteArray(), permission, acl, fileInPb.getModificationTime(),
               fileInPb.getAccessTime(), (short) fileInPb.getReplication(),
               fileInPb.getPreferredBlockSize(),
+<<<<<<< HEAD
               (byte)fileInPb.getStoragePolicyID(), 
               xAttrs);
+=======
+              (byte)fileInPb.getStoragePolicyID(), xAttrs,
+              fileInPb.getIsStriped());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
 
         FileDiff diff = new FileDiff(pbf.getSnapshotId(), copy, null,
             pbf.getFileSize());
         List<BlockProto> bpl = pbf.getBlocksList();
+<<<<<<< HEAD
         BlockInfo[] blocks = new BlockInfo[bpl.size()];
         for(int j = 0, e = bpl.size(); j < e; ++j) {
           Block blk = PBHelper.convert(bpl.get(j));
@@ -248,6 +265,17 @@ public class FSImageFormatPBSnapshot {
           if(storedBlock == null) {
             storedBlock = fsn.getBlockManager().addBlockCollection(
                 new BlockInfoContiguous(blk, copy.getFileReplication()), file);
+=======
+        // in file diff there can only be contiguous blocks
+        BlockInfo[] blocks = new BlockInfo[bpl.size()];
+        for(int j = 0, e = bpl.size(); j < e; ++j) {
+          Block blk = PBHelperClient.convert(bpl.get(j));
+          BlockInfo storedBlock = bm.getStoredBlock(blk);
+          if(storedBlock == null) {
+            storedBlock = (BlockInfoContiguous) fsn.getBlockManager()
+                .addBlockCollectionWithCheck(new BlockInfoContiguous(blk,
+                    copy.getFileReplication()), file);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
           blocks[j] = storedBlock;
         }
@@ -257,6 +285,15 @@ public class FSImageFormatPBSnapshot {
         diffs.addFirst(diff);
       }
       file.addSnapshotFeature(diffs);
+<<<<<<< HEAD
+=======
+      short repl = file.getPreferredBlockReplication();
+      for (BlockInfo b : file.getBlocks()) {
+        if (b.getReplication() < repl) {
+          bm.setReplication(b.getReplication(), repl, b);
+        }
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     /** Load the created list in a DirectoryDiff */
@@ -517,7 +554,11 @@ public class FSImageFormatPBSnapshot {
               .setFileSize(diff.getFileSize());
           if(diff.getBlocks() != null) {
             for(Block block : diff.getBlocks()) {
+<<<<<<< HEAD
               fb.addBlocks(PBHelper.convert(block));
+=======
+              fb.addBlocks(PBHelperClient.convert(block));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             }
           }
           INodeFileAttributes copy = diff.snapshotINode;

@@ -42,7 +42,12 @@ class FSDirSymlinkOp {
     if (!DFSUtil.isValidName(link)) {
       throw new InvalidPathException("Invalid link name: " + link);
     }
+<<<<<<< HEAD
     if (FSDirectory.isReservedName(target) || target.isEmpty()) {
+=======
+    if (FSDirectory.isReservedName(target) || target.isEmpty()
+        || FSDirectory.isExactReservedName(target)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throw new InvalidPathException("Invalid target name: " + target);
     }
 

@@ -73,6 +73,7 @@ public class FileOutputCommitter extends OutputCommitter {
     if(wrapped == null) {
       wrapped = new org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter(
           getOutputPath(context), context);
+<<<<<<< HEAD
     }
     return wrapped;
   }
@@ -121,6 +122,56 @@ public class FileOutputCommitter extends OutputCommitter {
         .getCommittedTaskPath(context, out);
   }
 
+=======
+    }
+    return wrapped;
+  }
+  
+  /**
+   * Compute the path where the output of a given job attempt will be placed. 
+   * @param context the context of the job.  This is used to get the
+   * application attempt id.
+   * @return the path to store job attempt data.
+   */
+  @Private
+  Path getJobAttemptPath(JobContext context) {
+    Path out = getOutputPath(context);
+    return out == null ? null : 
+      org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter
+        .getJobAttemptPath(context, out);
+  }
+
+  @Private
+  public Path getTaskAttemptPath(TaskAttemptContext context) throws IOException {
+    Path out = getOutputPath(context);
+    return out == null ? null : getTaskAttemptPath(context, out);
+  }
+
+  private Path getTaskAttemptPath(TaskAttemptContext context, Path out) throws IOException {
+    Path workPath = FileOutputFormat.getWorkOutputPath(context.getJobConf());
+    if(workPath == null && out != null) {
+      return org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter
+      .getTaskAttemptPath(context, out);
+    }
+    return workPath;
+  }
+  
+  /**
+   * Compute the path where the output of a committed task is stored until
+   * the entire job is committed.
+   * @param context the context of the task attempt
+   * @return the path where the output of a committed task is stored until
+   * the entire job is committed.
+   */
+  @Private
+  Path getCommittedTaskPath(TaskAttemptContext context) {
+    Path out = getOutputPath(context);
+    return out == null ? null : 
+      org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter
+        .getCommittedTaskPath(context, out);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public Path getWorkPath(TaskAttemptContext context, Path outputPath) 
   throws IOException {
     return outputPath == null ? null : getTaskAttemptPath(context, outputPath);
@@ -181,6 +232,7 @@ public class FileOutputCommitter extends OutputCommitter {
   public boolean needsTaskCommit(TaskAttemptContext context) 
   throws IOException {
     return getWrapped(context).needsTaskCommit(context, getTaskAttemptPath(context));
+<<<<<<< HEAD
   }
   
   @Override
@@ -195,6 +247,27 @@ public class FileOutputCommitter extends OutputCommitter {
   }
 
   @Override
+=======
+  }
+
+  @Override
+  @Deprecated
+  public boolean isRecoverySupported() {
+    return true;
+  }
+
+  @Override
+  public boolean isCommitJobRepeatable(JobContext context) throws IOException {
+    return getWrapped(context).isCommitJobRepeatable(context);
+  }
+
+  @Override
+  public boolean isRecoverySupported(JobContext context) throws IOException {
+    return getWrapped(context).isRecoverySupported(context);
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void recoverTask(TaskAttemptContext context)
       throws IOException {
     getWrapped(context).recoverTask(context);

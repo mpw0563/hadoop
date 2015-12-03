@@ -100,6 +100,10 @@ The Web processor now supports the following operations:
 * [GETACLSTATUS](./WebHDFS.html#Get_ACL_Status)
 * [GETXATTRS](./WebHDFS.html#Get_an_XAttr)
 * [LISTXATTRS](./WebHDFS.html#List_all_XAttrs)
+<<<<<<< HEAD
+=======
+* [CONTENTSUMMARY] (./WebHDFS.html#Get_Content_Summary_of_a_Directory)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 ### XML Processor
 
@@ -140,7 +144,11 @@ Options
 |:---- |:---- |
 | `-i`\|`--inputFile` *input file* | Specify the input fsimage file to process. Required. |
 | `-o`\|`--outputFile` *output file* | Specify the output filename, if the specified output processor generates one. If the specified file already exists, it is silently overwritten. (output to stdout by default)\|
+<<<<<<< HEAD
 | `-p`\|`--processor` *processor* | Specify the image processor to apply against the image file. Currently valid options are Web (default), XML and FileDistribution. |
+=======
+| `-p`\|`--processor` *processor* | Specify the image processor to apply against the image file. Currently valid options are Web (default), XML, Delimited and FileDistribution. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 | `-addr` *address* | Specify the address(host:port) to listen. (localhost:5978 by default). This option is used with Web processor. |
 | `-maxSize` *size* | Specify the range [0, maxSize] of file sizes to be analyzed in bytes (128GB by default). This option is used with FileDistribution processor. |
 | `-step` *size* | Specify the granularity of the distribution in bytes (2MB by default). This option is used with FileDistribution processor. |

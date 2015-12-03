@@ -110,7 +110,11 @@ public class KerberosUtil {
     }
     // convert hostname to lowercase as kerberos does not work with hostnames
     // with uppercase characters.
+<<<<<<< HEAD
     return service + "/" + fqdn.toLowerCase(Locale.ENGLISH);
+=======
+    return service + "/" + fqdn.toLowerCase(Locale.US);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

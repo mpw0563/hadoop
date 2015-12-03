@@ -43,11 +43,19 @@ import org.junit.Test;
  * by the Text command.
  */
 public class TestHdfsTextCommand {
+<<<<<<< HEAD
   private static final String TEST_ROOT_DIR = "/build/test/data/testText";
   private static final Path AVRO_FILENAME = new Path(TEST_ROOT_DIR, "weather.avro");
   private static MiniDFSCluster cluster;
   private static FileSystem fs;
 
+=======
+  private static final String TEST_ROOT_DIR = "/test/data/testText";
+  private static final Path AVRO_FILENAME = new Path(TEST_ROOT_DIR, "weather.avro");
+  private static MiniDFSCluster cluster;
+  private static FileSystem fs;
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Before
     public void setUp() throws IOException{
     Configuration conf = new HdfsConfiguration();
@@ -65,7 +73,11 @@ public class TestHdfsTextCommand {
       cluster.shutdown();
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Tests whether binary Avro data files are displayed correctly.
    */
@@ -213,3 +225,8 @@ public class TestHdfsTextCommand {
     return contents;
   }
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

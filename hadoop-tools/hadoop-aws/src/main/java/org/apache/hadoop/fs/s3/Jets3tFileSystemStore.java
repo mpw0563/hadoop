@@ -138,9 +138,21 @@ class Jets3tFileSystemStore implements FileSystemStore {
 
   @Override
   public boolean inodeExists(Path path) throws IOException {
+<<<<<<< HEAD
     InputStream in = get(pathToKey(path), true);
     if (in == null) {
       return false;
+=======
+    String key = pathToKey(path);
+    InputStream in = get(key, true);
+    if (in == null) {
+      if (isRoot(key)) {
+        storeINode(path, INode.DIRECTORY_INODE);
+        return true;
+      } else {
+        return false;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     in.close();
     return true;
@@ -218,7 +230,17 @@ class Jets3tFileSystemStore implements FileSystemStore {
 
   @Override
   public INode retrieveINode(Path path) throws IOException {
+<<<<<<< HEAD
     return INode.deserialize(get(pathToKey(path), true));
+=======
+    String key = pathToKey(path);
+    InputStream in = get(key, true);
+    if (in == null && isRoot(key)) {
+      storeINode(path, INode.DIRECTORY_INODE);
+      return INode.DIRECTORY_INODE;
+    }
+    return INode.deserialize(in);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -373,6 +395,13 @@ class Jets3tFileSystemStore implements FileSystemStore {
     return blockToKey(block.getId());
   }
 
+<<<<<<< HEAD
+=======
+  private boolean isRoot(String key) {
+    return key.isEmpty() || key.equals("/");
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public void purge() throws IOException {
     try {

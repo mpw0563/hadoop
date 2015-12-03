@@ -537,7 +537,11 @@ public class TestLinuxContainerExecutor {
 
       // nonsecure without limits
       conf.set(YarnConfiguration.NM_NONSECURE_MODE_LOCAL_USER_KEY, "bar");
+<<<<<<< HEAD
       conf.set(YarnConfiguration.NM_NONSECURE_MODE_LIMIT_USERS, "false");
+=======
+      conf.setBoolean(YarnConfiguration.NM_NONSECURE_MODE_LIMIT_USERS, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       lce = new LinuxContainerExecutor();
       lce.setConf(conf);
       Assert.assertEquals("foo", lce.getRunAsUser("foo"));

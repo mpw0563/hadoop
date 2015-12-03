@@ -18,8 +18,13 @@
 package org.apache.hadoop.hdfs;
 
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_BLOCK_SIZE_KEY;
+<<<<<<< HEAD
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_CLIENT_CONTEXT;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC;
+=======
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_CONTEXT;
+import static org.apache.hadoop.hdfs.client.HdfsClientConfigKeys.DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_DOMAIN_SOCKET_PATH_KEY;
 import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_SHORT_CIRCUIT_SHARED_MEMORY_WATCHER_INTERRUPT_CHECK_MS;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -250,8 +255,13 @@ public class TestBlockReaderFactory {
           LocatedBlock lblock = locatedBlocks.get(0); // first block
           BlockReader blockReader = null;
           try {
+<<<<<<< HEAD
             blockReader = BlockReaderTestUtil.
                 getBlockReader(cluster, lblock, 0, TEST_FILE_LEN);
+=======
+            blockReader = BlockReaderTestUtil.getBlockReader(
+                cluster.getFileSystem(), lblock, 0, TEST_FILE_LEN);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             Assert.fail("expected getBlockReader to fail the first time.");
           } catch (Throwable t) { 
             Assert.assertTrue("expected to see 'TCP reads were disabled " +
@@ -265,8 +275,13 @@ public class TestBlockReaderFactory {
 
           // Second time should succeed.
           try {
+<<<<<<< HEAD
             blockReader = BlockReaderTestUtil.
                 getBlockReader(cluster, lblock, 0, TEST_FILE_LEN);
+=======
+            blockReader = BlockReaderTestUtil.getBlockReader(
+                cluster.getFileSystem(), lblock, 0, TEST_FILE_LEN);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           } catch (Throwable t) { 
             LOG.error("error trying to retrieve a block reader " +
                 "the second time.", t);
@@ -474,8 +489,13 @@ public class TestBlockReaderFactory {
           while (true) {
             BlockReader blockReader = null;
             try {
+<<<<<<< HEAD
               blockReader = BlockReaderTestUtil.
                   getBlockReader(cluster, lblock, 0, TEST_FILE_LEN);
+=======
+              blockReader = BlockReaderTestUtil.getBlockReader(
+                  cluster.getFileSystem(), lblock, 0, TEST_FILE_LEN);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               sem.release();
               try {
                 blockReader.readAll(buf, 0, TEST_FILE_LEN);
@@ -514,8 +534,13 @@ public class TestBlockReaderFactory {
     // getting a ClosedChannelException.
     BlockReader blockReader = null;
     try {
+<<<<<<< HEAD
       blockReader = BlockReaderTestUtil.
           getBlockReader(cluster, lblock, 0, TEST_FILE_LEN);
+=======
+      blockReader = BlockReaderTestUtil.getBlockReader(
+          cluster.getFileSystem(), lblock, 0, TEST_FILE_LEN);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       blockReader.readFully(buf, 0, TEST_FILE_LEN);
     } finally {
       if (blockReader != null) blockReader.close();

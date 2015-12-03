@@ -34,7 +34,12 @@ import org.apache.hadoop.security.token.delegation.AbstractDelegationTokenIdenti
 @InterfaceAudience.Private
 public class DelegationTokenIdentifier
     extends AbstractDelegationTokenIdentifier {
+<<<<<<< HEAD
   public static final Text HDFS_DELEGATION_KIND = new Text("HDFS_DELEGATION_TOKEN");
+=======
+  public static final Text HDFS_DELEGATION_KIND =
+      new Text("HDFS_DELEGATION_TOKEN");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Create an empty delegation token identifier for reading into.
@@ -60,7 +65,12 @@ public class DelegationTokenIdentifier
   @Override
   public String toString() {
     return getKind() + " token " + getSequenceNumber()
+<<<<<<< HEAD
         + " for " + getUser().getShortUserName();
+=======
+        + " for " + getUser().getShortUserName() + " with renewer " +
+        getRenewer();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** @return a string representation of the token */

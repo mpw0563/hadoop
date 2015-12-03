@@ -17,10 +17,14 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+=======
+import static org.junit.Assert.*;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -229,6 +233,7 @@ public class TestGenericJournalConf {
     public BadConstructorJournalManager() {
       super(null, null, null);
     }
+<<<<<<< HEAD
 
     @Override
     public void doPreUpgrade() throws IOException {}
@@ -252,5 +257,7 @@ public class TestGenericJournalConf {
     public long getJournalCTime() throws IOException {
       return -1;
     }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

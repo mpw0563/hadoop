@@ -28,6 +28,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.FSDirectory;
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem;
 import org.apache.hadoop.hdfs.server.namenode.INode;
@@ -38,10 +42,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+<<<<<<< HEAD
  * This class tests the replication handling/calculation of snapshots. In
  * particular, {@link INodeFile#getFileReplication()} and
  * {@link INodeFile#getPreferredBlockReplication()} are tested to make sure
  * the number of replication is calculated correctly with/without snapshots.
+=======
+ * This class tests the replication handling/calculation of snapshots to make
+ * sure the number of replication is calculated correctly with/without
+ * snapshots.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  */
 public class TestSnapshotReplication {
   
@@ -79,9 +89,13 @@ public class TestSnapshotReplication {
   }
   
   /**
+<<<<<<< HEAD
    * Check the replication of a given file. We test both
    * {@link INodeFile#getFileReplication()} and
    * {@link INodeFile#getPreferredBlockReplication()}.
+=======
+   * Check the replication of a given file.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    *
    * @param file The given file
    * @param replication The expected replication number
@@ -98,8 +112,14 @@ public class TestSnapshotReplication {
     // Check the correctness of getPreferredBlockReplication()
     INode inode = fsdir.getINode(file1.toString());
     assertTrue(inode instanceof INodeFile);
+<<<<<<< HEAD
     assertEquals(blockReplication,
         ((INodeFile) inode).getPreferredBlockReplication());
+=======
+    for (BlockInfo b: inode.asFile().getBlocks()) {
+      assertEquals(blockReplication, b.getReplication());
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /**
@@ -141,8 +161,14 @@ public class TestSnapshotReplication {
     // First check the getPreferredBlockReplication for the INode of
     // the currentFile
     final INodeFile inodeOfCurrentFile = getINodeFile(currentFile);
+<<<<<<< HEAD
     assertEquals(expectedBlockRep,
         inodeOfCurrentFile.getPreferredBlockReplication());
+=======
+    for (BlockInfo b : inodeOfCurrentFile.getBlocks()) {
+      assertEquals(expectedBlockRep, b.getReplication());
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Then check replication for every snapshot
     for (Path ss : snapshotRepMap.keySet()) {
       final INodesInPath iip = fsdir.getINodesInPath(ss.toString(), true);
@@ -150,7 +176,13 @@ public class TestSnapshotReplication {
       // The replication number derived from the
       // INodeFileWithLink#getPreferredBlockReplication should
       // always == expectedBlockRep
+<<<<<<< HEAD
       assertEquals(expectedBlockRep, ssInode.getPreferredBlockReplication());
+=======
+      for (BlockInfo b : ssInode.getBlocks()) {
+        assertEquals(expectedBlockRep, b.getReplication());
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // Also check the number derived from INodeFile#getFileReplication
       assertEquals(snapshotRepMap.get(ss).shortValue(),
           ssInode.getFileReplication(iip.getPathSnapshotId()));
@@ -224,7 +256,14 @@ public class TestSnapshotReplication {
       // The replication number derived from the
       // INodeFileWithLink#getPreferredBlockReplication should
       // always == expectedBlockRep
+<<<<<<< HEAD
       assertEquals(REPLICATION, ssInode.getPreferredBlockReplication());
+=======
+      for (BlockInfo b : ssInode.getBlocks()) {
+        assertEquals(REPLICATION, b.getReplication());
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // Also check the number derived from INodeFile#getFileReplication
       assertEquals(snapshotRepMap.get(ss).shortValue(),
           ssInode.getFileReplication());

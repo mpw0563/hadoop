@@ -26,11 +26,16 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+=======
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -86,7 +91,11 @@ public class S3AFileSystem extends FileSystem {
   private int maxKeys;
   private long partSize;
   private TransferManager transfers;
+<<<<<<< HEAD
   private ThreadPoolExecutor threadPoolExecutor;
+=======
+  private ExecutorService threadPoolExecutor;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private long multiPartThreshold;
   public static final Logger LOG = LoggerFactory.getLogger(S3AFileSystem.class);
   private CannedAccessControlList cannedACL;
@@ -95,6 +104,7 @@ public class S3AFileSystem extends FileSystem {
   // The maximum number of entries that can be deleted in any call to s3
   private static final int MAX_ENTRIES_TO_DELETE = 1000;
 
+<<<<<<< HEAD
   private static final AtomicInteger poolNumber = new AtomicInteger(1);
   /**
    * Returns a {@link java.util.concurrent.ThreadFactory} that names each created thread uniquely,
@@ -144,6 +154,8 @@ public class S3AFileSystem extends FileSystem {
     };
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** Called after a new FileSystem instance is constructed.
    * @param name a uri whose authority section names the host, port, etc.
    *   for this FileSystem
@@ -264,6 +276,7 @@ public class S3AFileSystem extends FileSystem {
     }
 
     int maxThreads = conf.getInt(MAX_THREADS, DEFAULT_MAX_THREADS);
+<<<<<<< HEAD
     int coreThreads = conf.getInt(CORE_THREADS, DEFAULT_CORE_THREADS);
     if (maxThreads == 0) {
       maxThreads = Runtime.getRuntime().availableProcessors() * 8;
@@ -283,6 +296,21 @@ public class S3AFileSystem extends FileSystem {
         workQueue,
         newDaemonThreadFactory("s3a-transfer-shared-"));
     threadPoolExecutor.allowCoreThreadTimeOut(true);
+=======
+    if (maxThreads < 2) {
+      LOG.warn(MAX_THREADS + " must be at least 2: forcing to 2.");
+      maxThreads = 2;
+    }
+    int totalTasks = conf.getInt(MAX_TOTAL_TASKS, DEFAULT_MAX_TOTAL_TASKS);
+    if (totalTasks < 1) {
+      LOG.warn(MAX_TOTAL_TASKS + "must be at least 1: forcing to 1.");
+      totalTasks = 1;
+    }
+    long keepAliveTime = conf.getLong(KEEPALIVE_TIME, DEFAULT_KEEPALIVE_TIME);
+    threadPoolExecutor = new BlockingThreadPoolExecutorService(maxThreads,
+        maxThreads + totalTasks, keepAliveTime, TimeUnit.SECONDS,
+        "s3a-transfer-shared");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     TransferManagerConfiguration transferConfiguration = new TransferManagerConfiguration();
     transferConfiguration.setMinimumUploadPartSize(partSize);
@@ -983,6 +1011,12 @@ public class S3AFileSystem extends FileSystem {
 
         return new S3AFileStatus(true, false,
             f.makeQualified(uri, workingDir));
+<<<<<<< HEAD
+=======
+      } else if (key.isEmpty()) {
+        LOG.debug("Found root directory");
+        return new S3AFileStatus(true, true, f.makeQualified(uri, workingDir));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     } catch (AmazonServiceException e) {
       if (e.getStatusCode() != 404) {

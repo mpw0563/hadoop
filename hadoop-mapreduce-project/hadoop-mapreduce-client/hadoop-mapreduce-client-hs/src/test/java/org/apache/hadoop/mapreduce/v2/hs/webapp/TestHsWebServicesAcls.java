@@ -58,6 +58,10 @@ import org.apache.hadoop.security.GroupMappingServiceProvider;
 import org.apache.hadoop.security.Groups;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authorize.AccessControlList;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.webapp.WebApp;
 import org.junit.Before;
 import org.junit.Test;
@@ -419,5 +423,12 @@ public class TestHsWebServicesAcls {
     @Override
     public void setQueueName(String queueName) {
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public void setJobPriority(Priority priority) {
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

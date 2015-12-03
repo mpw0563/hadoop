@@ -24,7 +24,10 @@ import org.apache.hadoop.hdfs.protocol.DatanodeID;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.blockmanagement.DatanodeStorageInfo;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
 import org.junit.Test;
@@ -68,27 +71,46 @@ public class TestCommitBlockSynchronization {
     namesystem.dir.getINodeMap().put(file);
 
     FSNamesystem namesystemSpy = spy(namesystem);
+<<<<<<< HEAD
     BlockInfoContiguousUnderConstruction blockInfo = new BlockInfoContiguousUnderConstruction(
         block, (short) 1, HdfsServerConstants.BlockUCState.UNDER_CONSTRUCTION, targets);
     blockInfo.setBlockCollection(file);
     blockInfo.setGenerationStamp(genStamp);
     blockInfo.initializeBlockRecovery(genStamp);
+=======
+    BlockInfo blockInfo = new BlockInfoContiguous(block, (short) 1);
+    blockInfo.convertToBlockUnderConstruction(
+        HdfsServerConstants.BlockUCState.UNDER_CONSTRUCTION, targets);
+    blockInfo.setBlockCollectionId(file.getId());
+    blockInfo.setGenerationStamp(genStamp);
+    blockInfo.getUnderConstructionFeature().initializeBlockRecovery(blockInfo,
+        genStamp);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     doReturn(blockInfo).when(file).removeLastBlock(any(Block.class));
     doReturn(true).when(file).isUnderConstruction();
     doReturn(new BlockInfoContiguous[1]).when(file).getBlocks();
 
     doReturn(blockInfo).when(namesystemSpy).getStoredBlock(any(Block.class));
     doReturn(blockInfo).when(file).getLastBlock();
+<<<<<<< HEAD
     doReturn("").when(namesystemSpy).closeFileCommitBlocks(
         any(INodeFile.class), any(BlockInfo.class));
+=======
+    doNothing().when(namesystemSpy).closeFileCommitBlocks(
+        any(String.class), any(INodeFile.class), any(BlockInfo.class));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     doReturn(mock(FSEditLog.class)).when(namesystemSpy).getEditLog();
 
     return namesystemSpy;
   }
 
   private INodeFile mockFileUnderConstruction() {
+<<<<<<< HEAD
     INodeFile file = mock(INodeFile.class);
     return file;
+=======
+    return mock(INodeFile.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
@@ -109,7 +131,11 @@ public class TestCommitBlockSynchronization {
 
     // Simulate 'completing' the block.
     BlockInfo completedBlockInfo = new BlockInfoContiguous(block, (short) 1);
+<<<<<<< HEAD
     completedBlockInfo.setBlockCollection(file);
+=======
+    completedBlockInfo.setBlockCollectionId(file.getId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     completedBlockInfo.setGenerationStamp(genStamp);
     doReturn(completedBlockInfo).when(namesystemSpy)
         .getStoredBlock(any(Block.class));
@@ -181,7 +207,11 @@ public class TestCommitBlockSynchronization {
         lastBlock, genStamp, length, true, false, newTargets, null);
 
     BlockInfo completedBlockInfo = new BlockInfoContiguous(block, (short) 1);
+<<<<<<< HEAD
     completedBlockInfo.setBlockCollection(file);
+=======
+    completedBlockInfo.setBlockCollectionId(file.getId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     completedBlockInfo.setGenerationStamp(genStamp);
     doReturn(completedBlockInfo).when(namesystemSpy)
         .getStoredBlock(any(Block.class));

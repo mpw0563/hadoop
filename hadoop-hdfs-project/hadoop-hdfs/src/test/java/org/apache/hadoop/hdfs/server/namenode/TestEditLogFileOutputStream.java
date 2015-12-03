@@ -75,7 +75,10 @@ public class TestEditLogFileOutputStream {
    * Tests writing to the EditLogFileOutputStream. Due to preallocation, the
    * length of the edit log will usually be longer than its valid contents.
    */
+<<<<<<< HEAD
   
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testRawWrites() throws IOException {
     EditLogFileOutputStream elos = new EditLogFileOutputStream(conf,

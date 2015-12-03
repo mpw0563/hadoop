@@ -77,6 +77,10 @@ import org.apache.hadoop.mapreduce.v2.app.launcher.ContainerLauncherEvent;
 import org.apache.hadoop.mapreduce.v2.app.rm.ContainerAllocator;
 import org.apache.hadoop.mapreduce.v2.app.rm.ContainerAllocatorEvent;
 import org.apache.hadoop.mapreduce.v2.app.rm.RMHeartbeatHandler;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.AMPreemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.v2.util.MRApps;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.net.NetUtils;
@@ -495,7 +499,12 @@ public class MRApp extends MRAppMaster {
   }
 
   @Override
+<<<<<<< HEAD
     protected TaskAttemptListener createTaskAttemptListener(AppContext context) {
+=======
+  protected TaskAttemptListener createTaskAttemptListener(
+      AppContext context, AMPreemptionPolicy policy) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new TaskAttemptListener(){
       @Override
       public InetSocketAddress getAddress() {
@@ -542,10 +551,14 @@ public class MRApp extends MRAppMaster {
     public void handle(ContainerLauncherEvent event) {
       switch (event.getType()) {
       case CONTAINER_REMOTE_LAUNCH:
+<<<<<<< HEAD
         getContext().getEventHandler().handle(
             new TaskAttemptContainerLaunchedEvent(event.getTaskAttemptID(),
                 shufflePort));
         
+=======
+        containerLaunched(event.getTaskAttemptID(), shufflePort);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         attemptLaunched(event.getTaskAttemptID());
         break;
       case CONTAINER_REMOTE_CLEANUP:
@@ -557,6 +570,12 @@ public class MRApp extends MRAppMaster {
         break;
       }
     }
+  }
+
+  protected void containerLaunched(TaskAttemptId attemptID, int shufflePort) {
+    getContext().getEventHandler().handle(
+      new TaskAttemptContainerLaunchedEvent(attemptID,
+          shufflePort));
   }
 
   protected void attemptLaunched(TaskAttemptId attemptID) {

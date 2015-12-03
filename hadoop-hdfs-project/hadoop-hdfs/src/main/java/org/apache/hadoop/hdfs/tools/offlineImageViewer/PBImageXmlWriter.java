@@ -242,7 +242,11 @@ public final class PBImageXmlWriter {
   private void dumpINodeFile(INodeSection.INodeFile f) {
     o("replication", f.getReplication()).o("mtime", f.getModificationTime())
         .o("atime", f.getAccessTime())
+<<<<<<< HEAD
         .o("perferredBlockSize", f.getPreferredBlockSize())
+=======
+        .o("preferredBlockSize", f.getPreferredBlockSize())
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .o("permission", dumpPermission(f.getPermission()));
     dumpAcls(f.getAcl());
     if (f.getBlocksCount() > 0) {

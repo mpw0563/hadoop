@@ -49,6 +49,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.atomic.AtomicInteger;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.regex.Pattern;
 
 import javax.crypto.SecretKey;
@@ -170,6 +174,10 @@ public class ShuffleHandler extends AuxiliaryService {
   private int maxShuffleConnections;
   private int shuffleBufferSize;
   private boolean shuffleTransferToAllowed;
+<<<<<<< HEAD
+=======
+  private int maxSessionOpenFiles;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private ReadaheadPool readaheadPool = ReadaheadPool.getInstance();
 
   private Map<String,String> userRsrc;
@@ -197,6 +205,7 @@ public class ShuffleHandler extends AuxiliaryService {
       1000;
 
   public static final String CONNECTION_CLOSE = "close";
+<<<<<<< HEAD
 
   public static final String SUFFLE_SSL_FILE_BUFFER_SIZE_KEY =
     "mapreduce.shuffle.ssl.file.buffer.size";
@@ -220,6 +229,38 @@ public class ShuffleHandler extends AuxiliaryService {
   public static final boolean WINDOWS_DEFAULT_SHUFFLE_TRANSFERTO_ALLOWED = 
       false;
 
+=======
+
+  public static final String SUFFLE_SSL_FILE_BUFFER_SIZE_KEY =
+    "mapreduce.shuffle.ssl.file.buffer.size";
+
+  public static final int DEFAULT_SUFFLE_SSL_FILE_BUFFER_SIZE = 60 * 1024;
+
+  public static final String MAX_SHUFFLE_CONNECTIONS = "mapreduce.shuffle.max.connections";
+  public static final int DEFAULT_MAX_SHUFFLE_CONNECTIONS = 0; // 0 implies no limit
+  
+  public static final String MAX_SHUFFLE_THREADS = "mapreduce.shuffle.max.threads";
+  // 0 implies Netty default of 2 * number of available processors
+  public static final int DEFAULT_MAX_SHUFFLE_THREADS = 0;
+  
+  public static final String SHUFFLE_BUFFER_SIZE = 
+      "mapreduce.shuffle.transfer.buffer.size";
+  public static final int DEFAULT_SHUFFLE_BUFFER_SIZE = 128 * 1024;
+  
+  public static final String  SHUFFLE_TRANSFERTO_ALLOWED = 
+      "mapreduce.shuffle.transferTo.allowed";
+  public static final boolean DEFAULT_SHUFFLE_TRANSFERTO_ALLOWED = true;
+  public static final boolean WINDOWS_DEFAULT_SHUFFLE_TRANSFERTO_ALLOWED = 
+      false;
+
+  /* the maximum number of files a single GET request can
+   open simultaneously during shuffle
+   */
+  public static final String SHUFFLE_MAX_SESSION_OPEN_FILES =
+      "mapreduce.shuffle.max.session-open-files";
+  public static final int DEFAULT_SHUFFLE_MAX_SESSION_OPEN_FILES = 3;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   boolean connectionKeepAliveEnabled = false;
   int connectionKeepAliveTimeOut;
   int mapOutputMetaInfoCacheSize;
@@ -248,8 +289,106 @@ public class ShuffleHandler extends AuxiliaryService {
 
   final ShuffleMetrics metrics;
 
+  class ReduceMapFileCount implements ChannelFutureListener {
+
+    private ReduceContext reduceContext;
+
+    public ReduceMapFileCount(ReduceContext rc) {
+      this.reduceContext = rc;
+    }
+
+    @Override
+    public void operationComplete(ChannelFuture future) throws Exception {
+      if (!future.isSuccess()) {
+        future.getChannel().close();
+        return;
+      }
+      int waitCount = this.reduceContext.getMapsToWait().decrementAndGet();
+      if (waitCount == 0) {
+        metrics.operationComplete(future);
+        future.getChannel().close();
+      } else {
+        pipelineFact.getSHUFFLE().sendMap(reduceContext);
+      }
+    }
+  }
+
+  /**
+   * Maintain parameters per messageReceived() Netty context.
+   * Allows sendMapOutput calls from operationComplete()
+   */
+  private static class ReduceContext {
+
+    private List<String> mapIds;
+    private AtomicInteger mapsToWait;
+    private AtomicInteger mapsToSend;
+    private int reduceId;
+    private ChannelHandlerContext ctx;
+    private String user;
+    private Map<String, Shuffle.MapOutputInfo> infoMap;
+    private String outputBasePathStr;
+
+    public ReduceContext(List<String> mapIds, int rId,
+                         ChannelHandlerContext context, String usr,
+                         Map<String, Shuffle.MapOutputInfo> mapOutputInfoMap,
+                         String outputBasePath) {
+
+      this.mapIds = mapIds;
+      this.reduceId = rId;
+      /**
+      * Atomic count for tracking the no. of map outputs that are yet to
+      * complete. Multiple futureListeners' operationComplete() can decrement
+      * this value asynchronously. It is used to decide when the channel should
+      * be closed.
+      */
+      this.mapsToWait = new AtomicInteger(mapIds.size());
+      /**
+      * Atomic count for tracking the no. of map outputs that have been sent.
+      * Multiple sendMap() calls can increment this value
+      * asynchronously. Used to decide which mapId should be sent next.
+      */
+      this.mapsToSend = new AtomicInteger(0);
+      this.ctx = context;
+      this.user = usr;
+      this.infoMap = mapOutputInfoMap;
+      this.outputBasePathStr = outputBasePath;
+    }
+
+    public int getReduceId() {
+      return reduceId;
+    }
+
+    public ChannelHandlerContext getCtx() {
+      return ctx;
+    }
+
+    public String getUser() {
+      return user;
+    }
+
+    public Map<String, Shuffle.MapOutputInfo> getInfoMap() {
+      return infoMap;
+    }
+
+    public String getOutputBasePathStr() {
+      return outputBasePathStr;
+    }
+
+    public List<String> getMapIds() {
+      return mapIds;
+    }
+
+    public AtomicInteger getMapsToSend() {
+      return mapsToSend;
+    }
+
+    public AtomicInteger getMapsToWait() {
+      return mapsToWait;
+    }
+  }
+
   ShuffleHandler(MetricsSystem ms) {
-    super("httpshuffle");
+    super(MAPREDUCE_SHUFFLE_SERVICEID);
     metrics = ms.register(new ShuffleMetrics());
   }
 
@@ -357,6 +496,12 @@ public class ShuffleHandler extends AuxiliaryService {
          (Shell.WINDOWS)?WINDOWS_DEFAULT_SHUFFLE_TRANSFERTO_ALLOWED:
                          DEFAULT_SHUFFLE_TRANSFERTO_ALLOWED);
 
+<<<<<<< HEAD
+=======
+    maxSessionOpenFiles = conf.getInt(SHUFFLE_MAX_SESSION_OPEN_FILES,
+        DEFAULT_SHUFFLE_MAX_SESSION_OPEN_FILES);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ThreadFactory bossFactory = new ThreadFactoryBuilder()
       .setNameFormat("ShuffleHandler Netty Boss #%d")
       .build();
@@ -384,6 +529,10 @@ public class ShuffleHandler extends AuxiliaryService {
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
+<<<<<<< HEAD
+=======
+    bootstrap.setOption("child.keepAlive", true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     bootstrap.setPipelineFactory(pipelineFact);
     port = conf.getInt(SHUFFLE_PORT_CONFIG_KEY, DEFAULT_SHUFFLE_PORT);
     Channel ch = bootstrap.bind(new InetSocketAddress(port));
@@ -559,6 +708,7 @@ public class ShuffleHandler extends AuxiliaryService {
     userRsrc.put(jobId.toString(), user);
     secretManager.addTokenForJob(jobId.toString(), jobToken);
     LOG.info("Added token for " + jobId.toString());
+<<<<<<< HEAD
   }
 
   private void recoverJobShuffleInfo(String jobIdStr, byte[] data)
@@ -580,6 +730,29 @@ public class ShuffleHandler extends AuxiliaryService {
     addJobToken(jobId, user, jobToken);
   }
 
+=======
+  }
+
+  private void recoverJobShuffleInfo(String jobIdStr, byte[] data)
+      throws IOException {
+    JobID jobId;
+    try {
+      jobId = JobID.forName(jobIdStr);
+    } catch (IllegalArgumentException e) {
+      throw new IOException("Bad job ID " + jobIdStr + " in state store", e);
+    }
+
+    JobShuffleInfoProto proto = JobShuffleInfoProto.parseFrom(data);
+    String user = proto.getUser();
+    TokenProto tokenProto = proto.getJobToken();
+    Token<JobTokenIdentifier> jobToken = new Token<JobTokenIdentifier>(
+        tokenProto.getIdentifier().toByteArray(),
+        tokenProto.getPassword().toByteArray(),
+        new Text(tokenProto.getKind()), new Text(tokenProto.getService()));
+    addJobToken(jobId, user, jobToken);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void recordJobShuffleInfo(JobID jobId, String user,
       Token<JobTokenIdentifier> jobToken) throws IOException {
     if (stateDb != null) {
@@ -627,6 +800,7 @@ public class ShuffleHandler extends AuxiliaryService {
 
     final Shuffle SHUFFLE;
     private SSLFactory sslFactory;
+<<<<<<< HEAD
 
     public HttpPipelineFactory(Configuration conf) throws Exception {
       SHUFFLE = getShuffle(conf);
@@ -638,6 +812,23 @@ public class ShuffleHandler extends AuxiliaryService {
       }
     }
 
+=======
+
+    public HttpPipelineFactory(Configuration conf) throws Exception {
+      SHUFFLE = getShuffle(conf);
+      if (conf.getBoolean(MRConfig.SHUFFLE_SSL_ENABLED_KEY,
+                          MRConfig.SHUFFLE_SSL_ENABLED_DEFAULT)) {
+        LOG.info("Encrypted shuffle is enabled.");
+        sslFactory = new SSLFactory(SSLFactory.Mode.SERVER, conf);
+        sslFactory.init();
+      }
+    }
+
+    public Shuffle getSHUFFLE() {
+      return SHUFFLE;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void destroy() {
       if (sslFactory != null) {
         sslFactory.destroy();
@@ -809,10 +1000,38 @@ public class ShuffleHandler extends AuxiliaryService {
         return;
       }
       ch.write(response);
-      // TODO refactor the following into the pipeline
-      ChannelFuture lastMap = null;
-      for (String mapId : mapIds) {
+      //Initialize one ReduceContext object per messageReceived call
+      ReduceContext reduceContext = new ReduceContext(mapIds, reduceId, ctx,
+          user, mapOutputInfoMap, outputBasePathStr);
+      for (int i = 0; i < Math.min(maxSessionOpenFiles, mapIds.size()); i++) {
+        ChannelFuture nextMap = sendMap(reduceContext);
+        if(nextMap == null) {
+          return;
+        }
+      }
+    }
+
+    /**
+     * Calls sendMapOutput for the mapId pointed by ReduceContext.mapsToSend
+     * and increments it. This method is first called by messageReceived()
+     * maxSessionOpenFiles times and then on the completion of every
+     * sendMapOutput operation. This limits the number of open files on a node,
+     * which can get really large(exhausting file descriptors on the NM) if all
+     * sendMapOutputs are called in one go, as was done previous to this change.
+     * @param reduceContext used to call sendMapOutput with correct params.
+     * @return the ChannelFuture of the sendMapOutput, can be null.
+     */
+    public ChannelFuture sendMap(ReduceContext reduceContext)
+        throws Exception {
+
+      ChannelFuture nextMap = null;
+      if (reduceContext.getMapsToSend().get() <
+          reduceContext.getMapIds().size()) {
+        int nextIndex = reduceContext.getMapsToSend().getAndIncrement();
+        String mapId = reduceContext.getMapIds().get(nextIndex);
+
         try {
+<<<<<<< HEAD
           MapOutputInfo info = mapOutputInfoMap.get(mapId);
           if (info == null) {
             info = getMapOutputInfo(outputBasePathStr + mapId,
@@ -824,18 +1043,136 @@ public class ShuffleHandler extends AuxiliaryService {
           if (null == lastMap) {
             sendError(ctx, NOT_FOUND);
             return;
+=======
+          MapOutputInfo info = reduceContext.getInfoMap().get(mapId);
+          if (info == null) {
+            info = getMapOutputInfo(reduceContext.getOutputBasePathStr() +
+                       mapId, mapId, reduceContext.getReduceId(),
+                       reduceContext.getUser());
           }
+          nextMap = sendMapOutput(
+              reduceContext.getCtx(),
+              reduceContext.getCtx().getChannel(),
+              reduceContext.getUser(), mapId,
+              reduceContext.getReduceId(), info);
+          if (null == nextMap) {
+            sendError(reduceContext.getCtx(), NOT_FOUND);
+            return null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+          }
+          nextMap.addListener(new ReduceMapFileCount(reduceContext));
         } catch (IOException e) {
           LOG.error("Shuffle error :", e);
           String errorMessage = getErrorMessage(e);
+<<<<<<< HEAD
           sendError(ctx,errorMessage , INTERNAL_SERVER_ERROR);
           return;
+=======
+          sendError(reduceContext.getCtx(), errorMessage,
+              INTERNAL_SERVER_ERROR);
+          return null;
         }
       }
-      lastMap.addListener(metrics);
-      lastMap.addListener(ChannelFutureListener.CLOSE);
+      return nextMap;
     }
 
+    private String getErrorMessage(Throwable t) {
+      StringBuffer sb = new StringBuffer(t.getMessage());
+      while (t.getCause() != null) {
+        sb.append(t.getCause().getMessage());
+        t = t.getCause();
+      }
+      return sb.toString();
+    }
+
+    private String getBaseLocation(String jobId, String user) {
+      final JobID jobID = JobID.forName(jobId);
+      final ApplicationId appID =
+          ApplicationId.newInstance(Long.parseLong(jobID.getJtIdentifier()),
+            jobID.getId());
+      final String baseStr =
+          ContainerLocalizer.USERCACHE + "/" + user + "/"
+              + ContainerLocalizer.APPCACHE + "/"
+              + ConverterUtils.toString(appID) + "/output" + "/";
+      return baseStr;
+    }
+
+    protected MapOutputInfo getMapOutputInfo(String base, String mapId,
+        int reduce, String user) throws IOException {
+      // Index file
+      Path indexFileName =
+          lDirAlloc.getLocalPathToRead(base + "/file.out.index", conf);
+      IndexRecord info =
+          indexCache.getIndexInformation(mapId, reduce, indexFileName, user);
+
+      Path mapOutputFileName =
+          lDirAlloc.getLocalPathToRead(base + "/file.out", conf);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(base + " : " + mapOutputFileName + " : " + indexFileName);
+      }
+      MapOutputInfo outputInfo = new MapOutputInfo(mapOutputFileName, info);
+      return outputInfo;
+    }
+
+    protected void populateHeaders(List<String> mapIds, String outputBaseStr,
+        String user, int reduce, HttpRequest request, HttpResponse response,
+        boolean keepAliveParam, Map<String, MapOutputInfo> mapOutputInfoMap)
+        throws IOException {
+
+      long contentLength = 0;
+      for (String mapId : mapIds) {
+        String base = outputBaseStr + mapId;
+        MapOutputInfo outputInfo = getMapOutputInfo(base, mapId, reduce, user);
+        if (mapOutputInfoMap.size() < mapOutputMetaInfoCacheSize) {
+          mapOutputInfoMap.put(mapId, outputInfo);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+        }
+        // Index file
+        Path indexFileName =
+            lDirAlloc.getLocalPathToRead(base + "/file.out.index", conf);
+        IndexRecord info =
+            indexCache.getIndexInformation(mapId, reduce, indexFileName, user);
+        ShuffleHeader header =
+            new ShuffleHeader(mapId, info.partLength, info.rawLength, reduce);
+        DataOutputBuffer dob = new DataOutputBuffer();
+        header.write(dob);
+
+        contentLength += info.partLength;
+        contentLength += dob.getLength();
+      }
+
+      // Now set the response headers.
+      setResponseHeaders(response, keepAliveParam, contentLength);
+    }
+
+    protected void setResponseHeaders(HttpResponse response,
+        boolean keepAliveParam, long contentLength) {
+      if (!connectionKeepAliveEnabled && !keepAliveParam) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Setting connection close header...");
+        }
+        response.setHeader(HttpHeaders.CONNECTION, CONNECTION_CLOSE);
+      } else {
+        response.setHeader(HttpHeaders.CONTENT_LENGTH,
+          String.valueOf(contentLength));
+        response.setHeader(HttpHeaders.CONNECTION, HttpHeaders.KEEP_ALIVE);
+        response.setHeader(HttpHeaders.KEEP_ALIVE, "timeout="
+            + connectionKeepAliveTimeOut);
+        LOG.info("Content Length in shuffle : " + contentLength);
+      }
+    }
+
+    class MapOutputInfo {
+      final Path mapOutputFileName;
+      final IndexRecord indexRecord;
+
+      MapOutputInfo(Path mapOutputFileName, IndexRecord indexRecord) {
+        this.mapOutputFileName = mapOutputFileName;
+        this.indexRecord = indexRecord;
+      }
+    }
+
+<<<<<<< HEAD
     private String getErrorMessage(Throwable t) {
       StringBuffer sb = new StringBuffer(t.getMessage());
       while (t.getCause() != null) {
@@ -931,6 +1268,8 @@ public class ShuffleHandler extends AuxiliaryService {
       }
     }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     protected void verifyRequest(String appid, ChannelHandlerContext ctx,
         HttpRequest request, HttpResponse response, URL requestUri)
         throws IOException {

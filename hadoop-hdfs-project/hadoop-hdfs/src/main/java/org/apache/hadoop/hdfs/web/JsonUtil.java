@@ -169,6 +169,12 @@ public class JsonUtil {
     m.put("xceiverCount", datanodeinfo.getXceiverCount());
     m.put("networkLocation", datanodeinfo.getNetworkLocation());
     m.put("adminState", datanodeinfo.getAdminState().name());
+<<<<<<< HEAD
+=======
+    if (datanodeinfo.getUpgradeDomain() != null) {
+      m.put("upgradeDomain", datanodeinfo.getUpgradeDomain());
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return m;
   }
 
@@ -250,6 +256,24 @@ public class JsonUtil {
     m.put("quota", contentsummary.getQuota());
     m.put("spaceConsumed", contentsummary.getSpaceConsumed());
     m.put("spaceQuota", contentsummary.getSpaceQuota());
+<<<<<<< HEAD
+=======
+    final Map<String, Map<String, Long>> typeQuota =
+        new TreeMap<String, Map<String, Long>>();
+    for (StorageType t : StorageType.getTypesSupportingQuota()) {
+      long tQuota = contentsummary.getTypeQuota(t);
+      if (tQuota != HdfsConstants.QUOTA_RESET) {
+        Map<String, Long> type = typeQuota.get(t.toString());
+        if (type == null) {
+          type = new TreeMap<String, Long>();
+          typeQuota.put(t.toString(), type);
+        }
+        type.put("quota", contentsummary.getTypeQuota(t));
+        type.put("consumed", contentsummary.getTypeConsumed(t));
+      }
+    }
+    m.put("typeQuota", typeQuota);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return toJsonString(ContentSummary.class, m);
   }
 
@@ -312,8 +336,13 @@ public class JsonUtil {
     }
  
     final Map<String, Object> m = new TreeMap<String, Object>();
+<<<<<<< HEAD
     m.put("name", XAttrHelper.getPrefixName(xAttr));
     m.put("value", xAttr.getValue() != null ? 
+=======
+    m.put("name", XAttrHelper.getPrefixedName(xAttr));
+    m.put("value", xAttr.getValue() != null ?
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         XAttrCodec.encodeValue(xAttr.getValue(), encoding) : null);
     return m;
   }
@@ -342,10 +371,17 @@ public class JsonUtil {
   }
   
   public static String toJsonString(final List<XAttr> xAttrs)
+<<<<<<< HEAD
       throws IOException {
     final List<String> names = Lists.newArrayListWithCapacity(xAttrs.size());
     for (XAttr xAttr : xAttrs) {
       names.add(XAttrHelper.getPrefixName(xAttr));
+=======
+    throws IOException {
+    final List<String> names = Lists.newArrayListWithCapacity(xAttrs.size());
+    for (XAttr xAttr : xAttrs) {
+      names.add(XAttrHelper.getPrefixedName(xAttr));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     ObjectMapper mapper = new ObjectMapper();
     String ret = mapper.writeValueAsString(names);
@@ -353,4 +389,8 @@ public class JsonUtil {
     finalMap.put("XAttrNames", ret);
     return mapper.writeValueAsString(finalMap);
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -29,11 +29,19 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.io.input.BoundedInputStream;
 import org.apache.hadoop.fs.FSInputStream;
+<<<<<<< HEAD
 import org.apache.http.HttpStatus;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.net.HttpHeaders;
 
+<<<<<<< HEAD
+=======
+import javax.annotation.Nonnull;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * To support HTTP byte streams, a new connection to an HTTP server needs to be
  * created each time. This class hides the complexity of those multiple
@@ -102,11 +110,16 @@ public abstract class ByteRangeInputStream extends FSInputStream {
   }
 
   protected abstract URL getResolvedUrl(final HttpURLConnection connection
+<<<<<<< HEAD
       ) throws IOException;
+=======
+  ) throws IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @VisibleForTesting
   protected InputStream getInputStream() throws IOException {
     switch (status) {
+<<<<<<< HEAD
       case NORMAL:
         break;
       case SEEK:
@@ -120,6 +133,21 @@ public abstract class ByteRangeInputStream extends FSInputStream {
         break;
       case CLOSED:
         throw new IOException("Stream closed");
+=======
+    case NORMAL:
+      break;
+    case SEEK:
+      if (in != null) {
+        in.close();
+      }
+      InputStreamAndFileLength fin = openInputStream(startPos);
+      in = fin.in;
+      fileLength = fin.length;
+      status = StreamStatus.NORMAL;
+      break;
+    case CLOSED:
+      throw new IOException("Stream closed");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     return in;
   }
@@ -143,7 +171,16 @@ public abstract class ByteRangeInputStream extends FSInputStream {
       length = null;
     } else {
       // for non-chunked transfer-encoding, get content-length
+<<<<<<< HEAD
       long streamlength = getStreamLength(connection, headers);
+=======
+      final String cl = connection.getHeaderField(HttpHeaders.CONTENT_LENGTH);
+      if (cl == null) {
+        throw new IOException(HttpHeaders.CONTENT_LENGTH + " is missing: "
+            + headers);
+      }
+      final long streamlength = Long.parseLong(cl);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       length = startOffset + streamlength;
 
       // Java has a bug with >2GB request streams.  It won't bounds check
@@ -154,6 +191,7 @@ public abstract class ByteRangeInputStream extends FSInputStream {
     return new InputStreamAndFileLength(length, in);
   }
 
+<<<<<<< HEAD
   private static long getStreamLength(HttpURLConnection connection,
       Map<String, List<String>> headers) throws IOException {
     String cl = connection.getHeaderField(HttpHeaders.CONTENT_LENGTH);
@@ -184,6 +222,8 @@ public abstract class ByteRangeInputStream extends FSInputStream {
     }
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static boolean isChunkedTransferEncoding(
       final Map<String, List<String>> headers) {
     return contains(headers, HttpHeaders.TRANSFER_ENCODING, "chunked")
@@ -225,7 +265,11 @@ public abstract class ByteRangeInputStream extends FSInputStream {
   }
 
   @Override
+<<<<<<< HEAD
   public int read(byte b[], int off, int len) throws IOException {
+=======
+  public int read(@Nonnull byte b[], int off, int len) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return update(getInputStream().read(b, off, len));
   }
 
@@ -300,4 +344,18 @@ public abstract class ByteRangeInputStream extends FSInputStream {
     }
     status = StreamStatus.CLOSED;
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public synchronized int available() throws IOException{
+    getInputStream();
+    if(fileLength != null){
+      long remaining = fileLength - currentPos;
+      return remaining <= Integer.MAX_VALUE ? (int) remaining : Integer.MAX_VALUE;
+    }else {
+      return Integer.MAX_VALUE;
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

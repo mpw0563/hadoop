@@ -20,7 +20,12 @@ package org.apache.hadoop.hdfs.web.resources;
 import java.util.Arrays;
 import org.apache.hadoop.util.StringUtils;
 
+<<<<<<< HEAD
 abstract class EnumParam<E extends Enum<E>> extends Param<E, EnumParam.Domain<E>> {
+=======
+abstract class EnumParam<E extends Enum<E>>
+    extends Param<E, EnumParam.Domain<E>> {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   EnumParam(final Domain<E> domain, final E value) {
     super(domain, value);
   }

@@ -612,6 +612,7 @@ public class TestBlockScanner {
 
     // We scan 5 bytes per file (1 byte in file, 4 bytes of checksum)
     final int BYTES_SCANNED_PER_FILE = 5;
+<<<<<<< HEAD
     final int NUM_FILES[] = new int[] { 1, 5, 10 };
     int TOTAL_FILES = 0;
     for (int i = 0; i < NUM_FILES.length; i++) {
@@ -620,6 +621,10 @@ public class TestBlockScanner {
     ctx.createFiles(0, NUM_FILES[0], 1);
     ctx.createFiles(0, NUM_FILES[1], 1);
     ctx.createFiles(0, NUM_FILES[2], 1);
+=======
+    int TOTAL_FILES = 16;
+    ctx.createFiles(0, TOTAL_FILES, 1);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // start scanning
     final TestScanResultHandler.Info info =

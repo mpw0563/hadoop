@@ -46,8 +46,11 @@ import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterRespo
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Container;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ContainerResourceDecrease;
 import org.apache.hadoop.yarn.api.records.ContainerResourceIncrease;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.NMToken;
 import org.apache.hadoop.yarn.api.records.NodeReport;
@@ -254,8 +257,13 @@ public class TestLocalContainerAllocator {
           Resources.none(), null, 1, null,
           Collections.<NMToken>emptyList(),
           yarnToken,
+<<<<<<< HEAD
           Collections.<ContainerResourceIncrease>emptyList(),
           Collections.<ContainerResourceDecrease>emptyList());
+=======
+          Collections.<Container>emptyList(),
+          Collections.<Container>emptyList());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 }

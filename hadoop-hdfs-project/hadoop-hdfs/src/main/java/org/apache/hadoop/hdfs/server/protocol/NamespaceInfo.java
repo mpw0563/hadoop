@@ -47,6 +47,7 @@ public class NamespaceInfo extends StorageInfo {
 
   // only authoritative on the server-side to determine advertisement to
   // clients.  enum will update the supported values
+<<<<<<< HEAD
   private static long CAPABILITIES_SUPPORTED = 0;
 
   public enum Capability {
@@ -68,6 +69,43 @@ public class NamespaceInfo extends StorageInfo {
   // defaults to enabled capabilites since this ctor is for server
   public NamespaceInfo() {
     super(NodeType.NAME_NODE);
+=======
+  private static final long CAPABILITIES_SUPPORTED = getSupportedCapabilities();
+
+  private static long getSupportedCapabilities() {
+    long mask = 0;
+    for (Capability c : Capability.values()) {
+      if (c.supported) {
+        mask |= c.mask;
+      }
+    }
+    return mask;
+  }
+
+  public enum Capability {
+    UNKNOWN(false),
+    STORAGE_BLOCK_REPORT_BUFFERS(true); // use optimized ByteString buffers
+    private final boolean supported;
+    private final long mask;
+    Capability(boolean isSupported) {
+      supported = isSupported;
+      int bits = ordinal() - 1;
+      mask = (bits < 0) ? 0 : (1L << bits);
+    }
+    public long getMask() {
+      return mask;
+    }
+  }
+
+  // defaults to enabled capabilites since this ctor is for server
+  public NamespaceInfo() {
+    this(NodeType.NAME_NODE);
+  }
+
+  // defaults to enabled capabilites since this ctor is for server
+  public NamespaceInfo(NodeType nodeType) {
+    super(nodeType);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     buildVersion = null;
     capabilities = CAPABILITIES_SUPPORTED;
   }
@@ -75,6 +113,7 @@ public class NamespaceInfo extends StorageInfo {
   // defaults to enabled capabilites since this ctor is for server
   public NamespaceInfo(int nsID, String clusterID, String bpID,
       long cT, String buildVersion, String softwareVersion) {
+<<<<<<< HEAD
     this(nsID, clusterID, bpID, cT, buildVersion, softwareVersion,
         CAPABILITIES_SUPPORTED);
   }
@@ -95,6 +134,35 @@ public class NamespaceInfo extends StorageInfo {
       long cT) {
     this(nsID, clusterID, bpID, cT, Storage.getBuildVersion(),
         VersionInfo.getVersion());
+=======
+    this(nsID, clusterID, bpID, cT, buildVersion,
+         softwareVersion, NodeType.NAME_NODE,
+         CAPABILITIES_SUPPORTED);
+  }
+
+  // for use by server and/or client
+  public NamespaceInfo(int nsID, String clusterID, String bpID,
+      long cT, String buildVersion, String softwareVersion,
+      NodeType nodeType, long capabilities) {
+    super(HdfsServerConstants.NAMENODE_LAYOUT_VERSION, nsID, clusterID, cT,
+        nodeType);
+    blockPoolID = bpID;
+    this.buildVersion = buildVersion;
+    this.softwareVersion = softwareVersion;
+    this.capabilities = capabilities;
+  }
+
+  public NamespaceInfo(int nsID, String clusterID, String bpID, 
+      long cT) {
+    this(nsID, clusterID, bpID, cT, Storage.getBuildVersion(),
+        VersionInfo.getVersion());
+  }
+
+  public NamespaceInfo(int nsID, String clusterID, String bpID,
+                       long cT, NodeType nodeType) {
+    this(nsID, clusterID, bpID, cT, Storage.getBuildVersion(),
+         VersionInfo.getVersion(), nodeType, CAPABILITIES_SUPPORTED);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   public long getCapabilities() {

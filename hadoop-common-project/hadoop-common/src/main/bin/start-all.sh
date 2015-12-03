@@ -15,9 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+echo "This script is deprecated. Use start-dfs.sh and start-yarn.sh instead."
+exit 1
 
-# Start all hadoop daemons.  Run this on master node.
 
+<<<<<<< HEAD
 echo "This script is Deprecated. Instead use start-dfs.sh and start-yarn.sh"
 
 bin=`dirname "${BASH_SOURCE-$0}"`
@@ -26,8 +28,29 @@ bin=`cd "$bin"; pwd`
 DEFAULT_LIBEXEC_DIR="$bin"/../libexec
 HADOOP_LIBEXEC_DIR=${HADOOP_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
 . $HADOOP_LIBEXEC_DIR/hadoop-config.sh
+=======
 
+# let's locate libexec...
+if [[ -n "${HADOOP_PREFIX}" ]]; then
+  HADOOP_DEFAULT_LIBEXEC_DIR="${HADOOP_PREFIX}/libexec"
+else
+  this="${BASH_SOURCE-$0}"
+  bin=$(cd -P -- "$(dirname -- "${this}")" >/dev/null && pwd -P)
+  HADOOP_DEFAULT_LIBEXEC_DIR="${bin}/../libexec"
+fi
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+
+HADOOP_LIBEXEC_DIR="${HADOOP_LIBEXEC_DIR:-$HADOOP_DEFAULT_LIBEXEC_DIR}"
+# shellcheck disable=SC2034
+HADOOP_NEW_CONFIG=true
+if [[ -f "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh" ]]; then
+  . "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh"
+else
+  echo "ERROR: Cannot execute ${HADOOP_LIBEXEC_DIR}/hadoop-config.sh." 2>&1
+  exit 1
+fi
 # start hdfs daemons if hdfs is present
+<<<<<<< HEAD
 if [ -f "${HADOOP_HDFS_HOME}"/sbin/start-dfs.sh ]; then
   "${HADOOP_HDFS_HOME}"/sbin/start-dfs.sh --config $HADOOP_CONF_DIR
 fi
@@ -35,4 +58,16 @@ fi
 # start yarn daemons if yarn is present
 if [ -f "${HADOOP_YARN_HOME}"/sbin/start-yarn.sh ]; then
   "${HADOOP_YARN_HOME}"/sbin/start-yarn.sh --config $HADOOP_CONF_DIR
+=======
+if [[ -f "${HADOOP_HDFS_HOME}/sbin/start-dfs.sh" ]]; then
+  "${HADOOP_HDFS_HOME}/sbin/start-dfs.sh" --config "${HADOOP_CONF_DIR}"
 fi
+
+# start yarn daemons if yarn is present
+if [[ -f "${HADOOP_YARN_HOME}/sbin/start-yarn.sh" ]]; then
+  "${HADOOP_YARN_HOME}/sbin/start-yarn.sh" --config "${HADOOP_CONF_DIR}"
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+fi
+
+
+

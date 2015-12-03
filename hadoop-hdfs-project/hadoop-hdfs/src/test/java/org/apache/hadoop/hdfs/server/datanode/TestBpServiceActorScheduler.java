@@ -144,6 +144,31 @@ public class TestBpServiceActorScheduler {
     }
   }
 
+<<<<<<< HEAD
+=======
+
+  /**
+   * Regression test for HDFS-9305.
+   * Delayed processing of a heartbeat can cause a subsequent heartbeat
+   * storm.
+   */
+  @Test
+  public void testScheduleDelayedHeartbeat() {
+    for (final long now : getTimestamps()) {
+      Scheduler scheduler = makeMockScheduler(now);
+      scheduler.scheduleNextHeartbeat();
+      assertFalse(scheduler.isHeartbeatDue(now));
+
+      // Simulate a delayed heartbeat e.g. due to slow processing by NN.
+      scheduler.nextHeartbeatTime = now - (HEARTBEAT_INTERVAL_MS * 10);
+      scheduler.scheduleNextHeartbeat();
+
+      // Ensure that the next heartbeat is not due immediately.
+      assertFalse(scheduler.isHeartbeatDue(now));
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private Scheduler makeMockScheduler(long now) {
     LOG.info("Using now = " + now);
     Scheduler mockScheduler = spy(new Scheduler(HEARTBEAT_INTERVAL_MS, BLOCK_REPORT_INTERVAL_MS));

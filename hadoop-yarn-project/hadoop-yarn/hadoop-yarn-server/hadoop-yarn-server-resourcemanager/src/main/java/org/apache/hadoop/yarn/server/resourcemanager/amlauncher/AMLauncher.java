@@ -21,7 +21,10 @@ package org.apache.hadoop.yarn.server.resourcemanager.amlauncher;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+<<<<<<< HEAD
 import java.security.PrivilegedAction;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +54,10 @@ import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerLaunchContext;
 import org.apache.hadoop.yarn.api.records.NodeId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.client.NMProxy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.event.EventHandler;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.ipc.YarnRPC;
@@ -60,7 +67,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptEventType;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptImpl;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptLaunchFailedEvent;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.util.ConverterUtils;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -79,10 +89,17 @@ public class AMLauncher implements Runnable {
   private final AMLauncherEventType eventType;
   private final RMContext rmContext;
   private final Container masterContainer;
+<<<<<<< HEAD
   
   @SuppressWarnings("rawtypes")
   private final EventHandler handler;
   
+=======
+
+  @SuppressWarnings("rawtypes")
+  private final EventHandler handler;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public AMLauncher(RMContext rmContext, RMAppAttempt application,
       AMLauncherEventType eventType, Configuration conf) {
     this.application = application;
@@ -92,6 +109,7 @@ public class AMLauncher implements Runnable {
     this.handler = rmContext.getDispatcher().getEventHandler();
     this.masterContainer = application.getMasterContainer();
   }
+<<<<<<< HEAD
   
   private void connect() throws IOException {
     ContainerId masterContainerID = masterContainer.getId();
@@ -99,13 +117,26 @@ public class AMLauncher implements Runnable {
     containerMgrProxy = getContainerMgrProxy(masterContainerID);
   }
   
+=======
+
+  private void connect() throws IOException {
+    ContainerId masterContainerID = masterContainer.getId();
+
+    containerMgrProxy = getContainerMgrProxy(masterContainerID);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void launch() throws IOException, YarnException {
     connect();
     ContainerId masterContainerID = masterContainer.getId();
     ApplicationSubmissionContext applicationContext =
       application.getSubmissionContext();
     LOG.info("Setting up container " + masterContainer
+<<<<<<< HEAD
         + " for AM " + application.getAppAttemptId());  
+=======
+        + " for AM " + application.getAppAttemptId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ContainerLaunchContext launchContext =
         createAMContainerLaunchContext(applicationContext, masterContainerID);
 
@@ -129,7 +160,11 @@ public class AMLauncher implements Runnable {
           + application.getAppAttemptId());
     }
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void cleanup() throws IOException, YarnException {
     connect();
     ContainerId containerId = masterContainer.getId();
@@ -151,10 +186,17 @@ public class AMLauncher implements Runnable {
       final ContainerId containerId) {
 
     final NodeId node = masterContainer.getNodeId();
+<<<<<<< HEAD
     final InetSocketAddress containerManagerBindAddress =
         NetUtils.createSocketAddrForHost(node.getHost(), node.getPort());
 
     final YarnRPC rpc = YarnRPC.create(conf); // TODO: Don't create again and again.
+=======
+    final InetSocketAddress containerManagerConnectAddress =
+        NetUtils.createSocketAddrForHost(node.getHost(), node.getPort());
+
+    final YarnRPC rpc = getYarnRPC();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     UserGroupInformation currentUser =
         UserGroupInformation.createRemoteUser(containerId
@@ -168,6 +210,7 @@ public class AMLauncher implements Runnable {
         rmContext.getNMTokenSecretManager().createNMToken(
             containerId.getApplicationAttemptId(), node, user);
     currentUser.addToken(ConverterUtils.convertFromYarn(token,
+<<<<<<< HEAD
         containerManagerBindAddress));
 
     return currentUser
@@ -180,6 +223,17 @@ public class AMLauncher implements Runnable {
                 containerManagerBindAddress, conf);
           }
         });
+=======
+        containerManagerConnectAddress));
+
+    return NMProxy.createNMProxy(conf, ContainerManagementProtocol.class,
+        currentUser, rpc, containerManagerConnectAddress);
+  }
+
+  @VisibleForTesting
+  protected YarnRPC getYarnRPC() {
+    return YarnRPC.create(conf);  // TODO: Don't create again and again.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private ContainerLaunchContext createAMContainerLaunchContext(
@@ -187,17 +241,28 @@ public class AMLauncher implements Runnable {
       ContainerId containerID) throws IOException {
 
     // Construct the actual Container
+<<<<<<< HEAD
     ContainerLaunchContext container = 
+=======
+    ContainerLaunchContext container =
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         applicationMasterContext.getAMContainerSpec();
     LOG.info("Command to launch container "
         + containerID
         + " : "
         + StringUtils.arrayToString(container.getCommands().toArray(
             new String[0])));
+<<<<<<< HEAD
     
     // Finalize the container
     setupTokens(container, containerID);
     
+=======
+
+    // Finalize the container
+    setupTokens(container, containerID);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return container;
   }
 
@@ -209,7 +274,11 @@ public class AMLauncher implements Runnable {
     Map<String, String> environment = container.getEnvironment();
     environment.put(ApplicationConstants.APPLICATION_WEB_PROXY_BASE_ENV,
         application.getWebProxyBase());
+<<<<<<< HEAD
     // Set AppSubmitTime and MaxAppAttempts to be consumable by the AM.
+=======
+    // Set AppSubmitTime to be consumable by the AM.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ApplicationId applicationId =
         application.getAppAttemptId().getApplicationId();
     environment.put(
@@ -217,9 +286,12 @@ public class AMLauncher implements Runnable {
         String.valueOf(rmContext.getRMApps()
             .get(applicationId)
             .getSubmitTime()));
+<<<<<<< HEAD
     environment.put(ApplicationConstants.MAX_APP_ATTEMPTS_ENV,
         String.valueOf(rmContext.getRMApps().get(
             applicationId).getMaxAppAttempts()));
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     Credentials credentials = new Credentials();
     DataInputByteBuffer dibb = new DataInputByteBuffer();
@@ -249,7 +321,11 @@ public class AMLauncher implements Runnable {
     ((RMAppAttemptImpl)application).setAMRMToken(amrmToken);
     return amrmToken;
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @SuppressWarnings("unchecked")
   public void run() {
     switch (eventType) {
@@ -263,8 +339,13 @@ public class AMLauncher implements Runnable {
         String message = "Error launching " + application.getAppAttemptId()
             + ". Got exception: " + StringUtils.stringifyException(ie);
         LOG.info(message);
+<<<<<<< HEAD
         handler.handle(new RMAppAttemptLaunchFailedEvent(application
             .getAppAttemptId(), message));
+=======
+        handler.handle(new RMAppAttemptEvent(application
+            .getAppAttemptId(), RMAppAttemptEventType.LAUNCH_FAILED, message));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       break;
     case CLEANUP:
@@ -279,7 +360,11 @@ public class AMLauncher implements Runnable {
         sb.append(" is not handled by this NodeManager");
         if (!e.getMessage().contains(sb.toString())) {
           // Ignoring if container is already killed by Node Manager.
+<<<<<<< HEAD
           LOG.info("Error cleaning master ", e);          
+=======
+          LOG.info("Error cleaning master ", e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
       break;

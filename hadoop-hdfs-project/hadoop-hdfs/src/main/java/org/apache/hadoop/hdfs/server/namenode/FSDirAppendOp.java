@@ -106,6 +106,16 @@ final class FSDirAppendOp {
                 + clientMachine);
       }
       final INodeFile file = INodeFile.valueOf(inode, path, true);
+<<<<<<< HEAD
+=======
+
+      // not support appending file with striped blocks
+      if (file.isStriped()) {
+        throw new UnsupportedOperationException(
+            "Cannot append to files with striped block " + src);
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       BlockManager blockManager = fsd.getBlockManager();
       final BlockStoragePolicy lpPolicy = blockManager
           .getStoragePolicy("LAZY_PERSIST");
@@ -135,7 +145,11 @@ final class FSDirAppendOp {
     }
 
     HdfsFileStatus stat = FSDirStatAndListingOp.getFileInfo(fsd, src, false,
+<<<<<<< HEAD
         FSDirectory.isReservedRawName(srcArg), true);
+=======
+        FSDirectory.isReservedRawName(srcArg));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (lb != null) {
       NameNode.stateChangeLog.debug(
           "DIR* NameSystem.appendFile: file {} for {} at {} block {} block"
@@ -245,7 +259,11 @@ final class FSDirAppendOp {
     final BlockInfo lastBlock = file.getLastBlock();
     if (lastBlock != null) {
       final long diff = file.getPreferredBlockSize() - lastBlock.getNumBytes();
+<<<<<<< HEAD
       final short repl = file.getPreferredBlockReplication();
+=======
+      final short repl = lastBlock.getReplication();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       delta.addStorageSpace(diff * repl);
       final BlockStoragePolicy policy = fsn.getFSDirectory()
           .getBlockStoragePolicySuite().getPolicy(file.getStoragePolicyID());

@@ -22,7 +22,11 @@ import java.net.HttpURLConnection;
 /** Http DELETE operation parameter. */
 public class DeleteOpParam extends HttpOpParam<DeleteOpParam.Op> {
   /** Delete operations. */
+<<<<<<< HEAD
   public static enum Op implements HttpOpParam.Op {
+=======
+  public enum Op implements HttpOpParam.Op {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     DELETE(HttpURLConnection.HTTP_OK),
     DELETESNAPSHOT(HttpURLConnection.HTTP_OK),
 
@@ -65,7 +69,11 @@ public class DeleteOpParam extends HttpOpParam<DeleteOpParam.Op> {
     }
   }
 
+<<<<<<< HEAD
   private static final Domain<Op> DOMAIN = new Domain<Op>(NAME, Op.class);
+=======
+  private static final Domain<Op> DOMAIN = new Domain<>(NAME, Op.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Constructor.
@@ -79,4 +87,8 @@ public class DeleteOpParam extends HttpOpParam<DeleteOpParam.Op> {
   public String getName() {
     return NAME;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

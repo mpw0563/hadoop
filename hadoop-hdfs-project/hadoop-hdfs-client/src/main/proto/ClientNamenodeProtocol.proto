@@ -34,6 +34,10 @@ import "acl.proto";
 import "xattr.proto";
 import "encryption.proto";
 import "inotify.proto";
+<<<<<<< HEAD
+=======
+import "erasurecoding.proto";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * The ClientNamenodeProtocol Service defines the interface between a client 
@@ -305,6 +309,10 @@ message GetFsStatsResponseProto {
   required uint64 corrupt_blocks = 5;
   required uint64 missing_blocks = 6;
   optional uint64 missing_repl_one_blocks = 7;
+<<<<<<< HEAD
+=======
+  optional uint64 blocks_in_future = 8;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 enum DatanodeReportTypeProto {  // type of the datanode report
@@ -347,6 +355,10 @@ enum SafeModeActionProto {
   SAFEMODE_LEAVE = 1;
   SAFEMODE_ENTER = 2;
   SAFEMODE_GET = 3;
+<<<<<<< HEAD
+=======
+  SAFEMODE_FORCE_EXIT = 4;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 message SetSafeModeRequestProto {
@@ -358,10 +370,20 @@ message SetSafeModeResponseProto {
   required bool result = 1;
 }
 
+<<<<<<< HEAD
 message SaveNamespaceRequestProto { // no parameters
 }
 
 message SaveNamespaceResponseProto { // void response
+=======
+message SaveNamespaceRequestProto {
+  optional uint64 timeWindow = 1 [default = 0];
+  optional uint64 txGap = 2 [default = 0];
+}
+
+message SaveNamespaceResponseProto { // void response
+  optional bool saved = 1 [default = true];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 message RollEditsRequestProto { // no parameters
@@ -863,8 +885,20 @@ service ClientNamenodeProtocol {
       returns(ListEncryptionZonesResponseProto);
   rpc getEZForPath(GetEZForPathRequestProto)
       returns(GetEZForPathResponseProto);
+<<<<<<< HEAD
+=======
+  rpc setErasureCodingPolicy(SetErasureCodingPolicyRequestProto)
+      returns(SetErasureCodingPolicyResponseProto);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   rpc getCurrentEditLogTxid(GetCurrentEditLogTxidRequestProto)
       returns(GetCurrentEditLogTxidResponseProto);
   rpc getEditsFromTxid(GetEditsFromTxidRequestProto)
       returns(GetEditsFromTxidResponseProto);
+<<<<<<< HEAD
+=======
+  rpc getErasureCodingPolicies(GetErasureCodingPoliciesRequestProto)
+      returns(GetErasureCodingPoliciesResponseProto);
+  rpc getErasureCodingPolicy(GetErasureCodingPolicyRequestProto)
+      returns(GetErasureCodingPolicyResponseProto);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -38,6 +38,10 @@ import org.apache.hadoop.metrics2.AbstractMetric;
 import org.apache.hadoop.metrics2.MetricsRecord;
 import org.apache.hadoop.metrics2.MetricsSink;
 import org.apache.hadoop.metrics2.MetricsTag;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.metrics2.impl.TestMetricsConfig;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 
 import com.microsoft.azure.storage.AccessCondition;
@@ -252,7 +256,12 @@ public final class AzureBlobStorageTestAccount {
       new org.apache.hadoop.metrics2.impl.ConfigBuilder()
       .add("azure-file-system.sink.azuretestcollector.class",
           StandardCollector.class.getName())
+<<<<<<< HEAD
       .save("hadoop-metrics2-azure-file-system.properties");
+=======
+      .save(TestMetricsConfig.getTestFilename(
+          "hadoop-metrics2-azure-file-system.properties"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       metricsConfigSaved = true;
     }
   }

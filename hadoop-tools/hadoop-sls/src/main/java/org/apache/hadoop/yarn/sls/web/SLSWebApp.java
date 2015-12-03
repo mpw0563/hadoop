@@ -36,8 +36,13 @@ import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.SchedulerEventType;
 import org.apache.hadoop.yarn.sls.SLSRunner;
 import org.apache.hadoop.yarn.sls.scheduler.FairSchedulerMetrics;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.sls.scheduler.ResourceSchedulerWrapper;
 import org.apache.hadoop.yarn.sls.scheduler.SchedulerMetrics;
+=======
+import org.apache.hadoop.yarn.sls.scheduler.SchedulerMetrics;
+import org.apache.hadoop.yarn.sls.scheduler.SchedulerWrapper;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
@@ -54,7 +59,11 @@ import com.codahale.metrics.MetricRegistry;
 public class SLSWebApp extends HttpServlet {
   private static final long serialVersionUID = 1905162041950251407L;
   private transient Server server;
+<<<<<<< HEAD
   private transient ResourceSchedulerWrapper wrapper;
+=======
+  private transient SchedulerWrapper wrapper;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private transient MetricRegistry metrics;
   private transient SchedulerMetrics schedulerMetrics;
   // metrics objects
@@ -103,7 +112,11 @@ public class SLSWebApp extends HttpServlet {
     queueAllocatedVCoresCounterMap = new HashMap<>();
   }
 
+<<<<<<< HEAD
   public SLSWebApp(ResourceSchedulerWrapper wrapper, int metricsAddressPort) {
+=======
+  public SLSWebApp(SchedulerWrapper wrapper, int metricsAddressPort) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.wrapper = wrapper;
     metrics = wrapper.getMetrics();
     handleOperTimecostHistogramMap =

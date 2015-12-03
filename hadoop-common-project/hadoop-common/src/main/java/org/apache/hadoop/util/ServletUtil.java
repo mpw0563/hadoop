@@ -23,8 +23,6 @@ import java.util.Calendar;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 
@@ -87,6 +85,7 @@ public class ServletUtil {
   public static String htmlFooter() {
     return HTML_TAIL;
   }
+<<<<<<< HEAD
   /**
    * Escape and encode a string regarded as within the query component of an URI.
    * @param value the value to encode
@@ -126,6 +125,8 @@ public class ServletUtil {
       throw new AssertionError("JVM does not support UTF-8"); // should never happen!
     }
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Parse the path component from the given request and return w/o decoding.

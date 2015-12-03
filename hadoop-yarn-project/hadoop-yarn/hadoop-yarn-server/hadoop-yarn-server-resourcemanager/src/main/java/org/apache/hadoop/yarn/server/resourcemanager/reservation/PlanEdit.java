@@ -32,10 +32,19 @@ public interface PlanEdit extends PlanContext, PlanView {
    * 
    * @param reservation the {@link ReservationAllocation} to be added to the
    *          plan
+<<<<<<< HEAD
    * @return true if addition is successful, false otherwise
    */
   public boolean addReservation(ReservationAllocation reservation)
       throws PlanningException;
+=======
+   * @param isRecovering flag to indicate if reservation is being added as part
+   *          of failover or not
+   * @return true if addition is successful, false otherwise
+   */
+  public boolean addReservation(ReservationAllocation reservation,
+      boolean isRecovering) throws PlanningException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Updates an existing {@link ReservationAllocation} in the plan. This is

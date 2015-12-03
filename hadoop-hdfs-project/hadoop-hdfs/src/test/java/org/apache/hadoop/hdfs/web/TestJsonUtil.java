@@ -65,7 +65,11 @@ public class TestJsonUtil {
     final HdfsFileStatus status = new HdfsFileStatus(1001L, false, 3, 1L << 26,
         now, now + 10, new FsPermission((short) 0644), "user", "group",
         DFSUtil.string2Bytes("bar"), DFSUtil.string2Bytes("foo"),
+<<<<<<< HEAD
         HdfsConstants.GRANDFATHER_INODE_ID, 0, null, (byte) 0);
+=======
+        HdfsConstants.GRANDFATHER_INODE_ID, 0, null, (byte) 0, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final FileStatus fstatus = toFileStatus(status, parent);
     System.out.println("status  = " + status);
     System.out.println("fstatus = " + fstatus);

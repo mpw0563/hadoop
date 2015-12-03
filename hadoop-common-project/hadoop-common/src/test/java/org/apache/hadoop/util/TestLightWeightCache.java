@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.util;
 
+<<<<<<< HEAD
+=======
+import java.util.Collection;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
@@ -379,6 +383,14 @@ public class TestLightWeightCache {
       cache.clear();
       Assert.assertEquals(0, size());
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public Collection<IntEntry> values() {
+      throw new UnsupportedOperationException();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static class IntData {

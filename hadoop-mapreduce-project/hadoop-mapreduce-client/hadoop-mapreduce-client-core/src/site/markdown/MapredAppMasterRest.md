@@ -85,7 +85,11 @@ Response Header:
 
 Response Body:
 
+<<<<<<< HEAD
     {
+=======
+    {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       "info" : {
           "appId" : "application_1326232085508_0003",
           "startedOn" : 1326238244047,
@@ -221,7 +225,11 @@ Response Header:
 
       HTTP/1.1 200 OK
       Content-Type: application/xml
+<<<<<<< HEAD
       Content-Length: 1214
+=======
+      Content-Length: 1214 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Server: Jetty(6.1.26)
 
 Response Body:
@@ -356,11 +364,19 @@ Response Body:
           "successfulReduceAttempts" : 0,
           "reducesRunning" : 1,
           "acls" : [
+<<<<<<< HEAD
              {
                 "value" : " ",
                 "name" : "mapreduce.job.acl-modify-job"
              },
              {
+=======
+             {  
+                "value" : " ",
+                "name" : "mapreduce.job.acl-modify-job"
+             },
+             {  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                 "value" : " ",
                 "name" : "mapreduce.job.acl-view-job"
              }
@@ -425,7 +441,11 @@ Response Body:
       <reducesPending>0</reducesPending>
       <reducesRunning>1</reducesRunning>
       <uberized>false</uberized>
+<<<<<<< HEAD
       <diagnostics/>
+=======
+      <diagnostics/>  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <newReduceAttempts>0</newReduceAttempts>
       <runningReduceAttempts>1</runningReduceAttempts>
       <failedReduceAttempts>0</failedReduceAttempts>
@@ -501,6 +521,7 @@ Response Body:
     {
        "jobAttempts" : {
           "jobAttempt" : [
+<<<<<<< HEAD
              {
                 "nodeId" : "host.domain.com:8041",
                 "nodeHttpAddress" : "host.domain.com:8042",
@@ -509,6 +530,16 @@ Response Body:
                 "logsLink" : "http://host.domain.com:8042/node/containerlogs/container_1326232085508_0004_01_000001",
                 "containerId" : "container_1326232085508_0004_01_000001"
              }
+=======
+             {    
+                "nodeId" : "host.domain.com:8041",
+                "nodeHttpAddress" : "host.domain.com:8042",
+                "startTime" : 1326238773493,
+                "id" : 1, 
+                "logsLink" : "http://host.domain.com:8042/node/containerlogs/container_1326232085508_0004_01_000001",
+                "containerId" : "container_1326232085508_0004_01_000001"
+             }  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           ]
        }
     }
@@ -605,77 +636,137 @@ Response Body:
              {
                 "counterGroupName" : "Shuffle Errors",
                 "counter" : [
+<<<<<<< HEAD
                    {
+=======
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "BAD_ID"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "CONNECTION"
+<<<<<<< HEAD
                    },
+=======
+                   }, 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                   {
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "IO_ERROR"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "WRONG_LENGTH"
+<<<<<<< HEAD
                    },                {
+=======
+                   },                {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "WRONG_MAP"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "WRONG_REDUCE"
                    }
                 ]
+<<<<<<< HEAD
              },
              {
                 "counterGroupName" : "org.apache.hadoop.mapreduce.FileSystemCounter",
                 "counter" : [
                    {
+=======
+             }, 
+             {  
+                "counterGroupName" : "org.apache.hadoop.mapreduce.FileSystemCounter",
+                "counter" : [
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 2483,
                       "name" : "FILE_BYTES_READ"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 108763,
                       "name" : "FILE_BYTES_WRITTEN"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "FILE_READ_OPS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "FILE_LARGE_READ_OPS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "FILE_WRITE_OPS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 48,
@@ -686,144 +777,261 @@ Response Body:
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "HDFS_BYTES_WRITTEN"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 1,
                       "name" : "HDFS_READ_OPS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "HDFS_LARGE_READ_OPS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "HDFS_WRITE_OPS"
                    }
                 ]
+<<<<<<< HEAD
              },
              {
                 "counterGroupName" : "org.apache.hadoop.mapreduce.TaskCounter",
                 "counter" : [
                    {
+=======
+             }, 
+             {  
+                "counterGroupName" : "org.apache.hadoop.mapreduce.TaskCounter",
+                "counter" : [
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 1,
                       "name" : "MAP_INPUT_RECORDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 1200,
                       "name" : "MAP_OUTPUT_RECORDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 4800,
                       "name" : "MAP_OUTPUT_BYTES"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 2235,
                       "name" : "MAP_OUTPUT_MATERIALIZED_BYTES"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 48,
                       "name" : "SPLIT_RAW_BYTES"
+<<<<<<< HEAD
                    },
                   {
+=======
+                   }, 
+                  {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "COMBINE_INPUT_RECORDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "COMBINE_OUTPUT_RECORDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 460,
                       "name" : "REDUCE_INPUT_GROUPS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 2235,
                       "name" : "REDUCE_SHUFFLE_BYTES"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 460,
                       "name" : "REDUCE_INPUT_RECORDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "REDUCE_OUTPUT_RECORDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 1200,
                       "name" : "SPILLED_RECORDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 1,
                       "name" : "SHUFFLED_MAPS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
                       "name" : "FAILED_SHUFFLE"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 1,
                       "name" : "MERGED_MAP_OUTPUTS"
+<<<<<<< HEAD
                    },                {
+=======
+                   },                {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 58,
                       "name" : "GC_TIME_MILLIS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 1580,
                       "name" : "CPU_MILLISECONDS"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 462643200,
                       "name" : "PHYSICAL_MEMORY_BYTES"
+<<<<<<< HEAD
                    },
                    {
+=======
+                   }, 
+                   {   
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 2149728256,
                       "name" : "VIRTUAL_MEMORY_BYTES"
+<<<<<<< HEAD
                    },
                   {
+=======
+                   }, 
+                  {  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 357957632,
@@ -831,10 +1039,17 @@ Response Body:
                    }
                 ]
              },
+<<<<<<< HEAD
              {
                 "counterGroupName" : "org.apache.hadoop.mapreduce.lib.input.FileInputFormatCounter",
                 "counter" : [
                    {
+=======
+             {  
+                "counterGroupName" : "org.apache.hadoop.mapreduce.lib.input.FileInputFormatCounter",
+                "counter" : [
+                   {  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
@@ -845,7 +1060,11 @@ Response Body:
              {
                 "counterGroupName" : "org.apache.hadoop.mapreduce.lib.output.FileOutputFormatCounter",
                 "counter" : [
+<<<<<<< HEAD
                    {
+=======
+                   {  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                       "reduceCounterValue" : 0,
                       "mapCounterValue" : 0,
                       "totalCounterValue" : 0,
@@ -979,7 +1198,11 @@ Response Body:
         </counter>
       </counterGroup>
       <counterGroup>
+<<<<<<< HEAD
         <counterGroupName>org.apache.hadoop.mapreduce.TaskCounter</counterGroupName>
+=======
+        <counterGroupName>org.apache.hadoop.mapreduce.TaskCounter</counterGroupName> 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <counter>
           <name>MAP_INPUT_RECORDS</name>
           <totalCounterValue>1</totalCounterValue>
@@ -1175,7 +1398,11 @@ This is a small snippet of the output as the output if very large. The real outp
        "conf" : {
           "path" : "hdfs://host.domain.com:9000/user/user1/.staging/job_1326232085508_0004/job.xml",
           "property" : [
+<<<<<<< HEAD
              {
+=======
+             {  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                 "value" : "/home/hadoop/hdfs/data",
                 "name" : "dfs.datanode.data.dir",
                 "source" : ["hdfs-site.xml", "job.xml"]
@@ -1959,7 +2186,11 @@ For reduce task attempts you also have the following fields:
 
 HTTP Request:
 
+<<<<<<< HEAD
       GET http://<proxy http address:port>/proxy/application_1326232085508_0004/ws/v1/mapreduce/jobs/job_1326232085508_4_4/tasks/task_1326232085508_4_4_r_0/attempts/attempt_1326232085508_4_4_r_0_0
+=======
+      GET http://<proxy http address:port>/proxy/application_1326232085508_0004/ws/v1/mapreduce/jobs/job_1326232085508_4_4/tasks/task_1326232085508_4_4_r_0/attempts/attempt_1326232085508_4_4_r_0_0 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Response Header:
 
@@ -1994,7 +2225,11 @@ Response Body:
 
 HTTP Request:
 
+<<<<<<< HEAD
       GET http://<proxy http address:port>/proxy/application_1326232085508_0004/ws/v1/mapreduce/jobs/job_1326232085508_4_4/tasks/task_1326232085508_4_4_r_0/attempts/attempt_1326232085508_4_4_r_0_0
+=======
+      GET http://<proxy http address:port>/proxy/application_1326232085508_0004/ws/v1/mapreduce/jobs/job_1326232085508_4_4/tasks/task_1326232085508_4_4_r_0/attempts/attempt_1326232085508_4_4_r_0_0 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Accept: application/xml
 
 Response Header:

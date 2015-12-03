@@ -161,12 +161,23 @@ public class TrashPolicyDefault extends TrashPolicy {
   @SuppressWarnings("deprecation")
   @Override
   public void createCheckpoint() throws IOException {
+    createCheckpoint(new Date());
+  }
+
+  @SuppressWarnings("deprecation")
+  public void createCheckpoint(Date date) throws IOException {
+
     if (!fs.exists(current))                     // no trash, no checkpoint
       return;
 
     Path checkpointBase;
     synchronized (CHECKPOINT) {
+<<<<<<< HEAD
       checkpointBase = new Path(trash, CHECKPOINT.format(new Date()));
+=======
+      checkpointBase = new Path(trash, CHECKPOINT.format(date));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     Path checkpoint = checkpointBase;
 
@@ -287,7 +298,7 @@ public class TrashPolicyDefault extends TrashPolicy {
                 TrashPolicyDefault trash = new TrashPolicyDefault(
                     fs, home.getPath(), conf);
                 trash.deleteCheckpoint();
-                trash.createCheckpoint();
+                trash.createCheckpoint(new Date(now));
               } catch (IOException e) {
                 LOG.warn("Trash caught: "+e+". Skipping "+home.getPath()+".");
               } 

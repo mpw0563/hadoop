@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
+<<<<<<< HEAD
+=======
+import com.google.common.annotations.VisibleForTesting;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.security.client.BaseClientToAMTokenSecretManager;
@@ -61,4 +65,13 @@ public class ClientToAMTokenSecretManagerInRM extends
       ApplicationAttemptId applicationAttemptID) {
     return this.masterKeys.get(applicationAttemptID);
   }
+<<<<<<< HEAD
+=======
+
+  @VisibleForTesting
+  public synchronized boolean hasMasterKey(
+      ApplicationAttemptId applicationAttemptID) {
+    return this.masterKeys.containsKey(applicationAttemptID);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

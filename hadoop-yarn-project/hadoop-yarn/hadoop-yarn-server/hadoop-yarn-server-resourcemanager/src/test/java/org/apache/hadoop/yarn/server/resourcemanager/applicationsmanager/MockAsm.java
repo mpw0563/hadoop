@@ -202,6 +202,19 @@ public abstract class MockAsm extends MockApps {
     public LogAggregationStatus getLogAggregationStatusForAppReport() {
       throw new UnsupportedOperationException("Not supported yet.");
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public String getAmNodeLabelExpression() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getAppNodeLabelExpression() {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public static RMApp newApplication(int i) {
@@ -295,7 +308,11 @@ public abstract class MockAsm extends MockApps {
           String clientUserName, boolean allowAccess) {
         ApplicationResourceUsageReport usageReport =
             ApplicationResourceUsageReport.newInstance(0, 0, null, null, null, 
+<<<<<<< HEAD
             0, 0);
+=======
+            0, 0, 0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         ApplicationReport report = ApplicationReport.newInstance(
             getApplicationId(), appAttemptId, getUser(), getQueue(), 
             getName(), null, 0, null, null, getDiagnostics().toString(), 

@@ -40,6 +40,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.DataOutputStream;
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,6 +130,7 @@ public class TestDynamicInputFormat {
     int taskId = 0;
 
     for (InputSplit split : splits) {
+<<<<<<< HEAD
       RecordReader<Text, CopyListingFileStatus> recordReader =
            inputFormat.createRecordReader(split, null);
       StubContext stubContext = new StubContext(jobContext.getConfiguration(),
@@ -133,6 +138,16 @@ public class TestDynamicInputFormat {
       final TaskAttemptContext taskAttemptContext
          = stubContext.getContext();
       
+=======
+      StubContext stubContext = new StubContext(jobContext.getConfiguration(),
+                                                null, taskId);
+      final TaskAttemptContext taskAttemptContext
+         = stubContext.getContext();
+
+      RecordReader<Text, CopyListingFileStatus> recordReader =
+          inputFormat.createRecordReader(split, taskAttemptContext);
+      stubContext.setReader(recordReader);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       recordReader.initialize(splits.get(0), taskAttemptContext);
       float previousProgressValue = 0f;
       while (recordReader.nextKeyValue()) {
@@ -182,4 +197,30 @@ public class TestDynamicInputFormat {
     conf.setInt(DistCpConstants.CONF_LABEL_SPLIT_RATIO, 53);
     Assert.assertEquals(53, DynamicInputFormat.getSplitRatio(3, 200, conf));
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testDynamicInputChunkContext() throws IOException {
+    Configuration configuration = new Configuration();
+    configuration.set(DistCpConstants.CONF_LABEL_LISTING_FILE_PATH,
+        "/tmp/test/file1.seq");
+    DynamicInputFormat firstInputFormat = new DynamicInputFormat();
+    DynamicInputFormat secondInputFormat = new DynamicInputFormat();
+    DynamicInputChunkContext firstContext =
+        firstInputFormat.getChunkContext(configuration);
+    DynamicInputChunkContext secondContext =
+        firstInputFormat.getChunkContext(configuration);
+    DynamicInputChunkContext thirdContext =
+        secondInputFormat.getChunkContext(configuration);
+    DynamicInputChunkContext fourthContext =
+        secondInputFormat.getChunkContext(configuration);
+    Assert.assertTrue("Chunk contexts from the same DynamicInputFormat " +
+        "object should be the same.",firstContext.equals(secondContext));
+    Assert.assertTrue("Chunk contexts from the same DynamicInputFormat " +
+        "object should be the same.",thirdContext.equals(fourthContext));
+    Assert.assertTrue("Contexts from different DynamicInputFormat " +
+        "objects should be different.",!firstContext.equals(thirdContext));
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

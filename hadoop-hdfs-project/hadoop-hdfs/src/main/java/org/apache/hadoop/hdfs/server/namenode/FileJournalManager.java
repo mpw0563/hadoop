@@ -20,6 +20,7 @@ package org.apache.hadoop.hdfs.server.namenode;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+<<<<<<< HEAD
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -42,6 +43,26 @@ import org.apache.hadoop.hdfs.server.common.StorageInfo;
 import org.apache.hadoop.hdfs.server.namenode.FSEditLogLoader.EditLogValidation;
 import org.apache.hadoop.hdfs.server.namenode.NNStorage.NameNodeFile;
 import org.apache.hadoop.hdfs.server.namenode.NNStorageRetentionManager.StoragePurger;
+=======
+import java.util.List;
+import java.util.Comparator;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+import org.apache.hadoop.hdfs.server.common.Storage;
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.NodeType;
+import org.apache.hadoop.hdfs.server.common.Storage.StorageDirectory;
+import org.apache.hadoop.hdfs.server.common.StorageErrorReporter;
+import org.apache.hadoop.hdfs.server.common.StorageInfo;
+import org.apache.hadoop.hdfs.server.namenode.NNStorageRetentionManager.StoragePurger;
+import org.apache.hadoop.hdfs.server.namenode.FSEditLogLoader.EditLogValidation;
+import org.apache.hadoop.hdfs.server.namenode.NNStorage.NameNodeFile;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
 import org.apache.hadoop.hdfs.server.protocol.RemoteEditLog;
 import org.apache.hadoop.io.nativeio.NativeIO;
@@ -76,6 +97,18 @@ public class FileJournalManager implements JournalManager {
       NameNodeFile.EDITS_INPROGRESS.getName() + "_(\\d+).*(\\S+)");
 
   private File currentInProgress = null;
+<<<<<<< HEAD
+=======
+
+  /**
+   * A FileJournalManager should maintain the largest Tx ID that has been
+   * safely written to its edit log files.
+   * It should limit readers to read beyond this ID to avoid potential race
+   * with ongoing writers.
+   * Initial value indicates that all transactions can be read.
+   */
+  private long lastReadableTxId = Long.MAX_VALUE;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @VisibleForTesting
   StoragePurger purger
@@ -158,6 +191,18 @@ public class FileJournalManager implements JournalManager {
   @Override
   synchronized public void setOutputBufferCapacity(int size) {
     this.outputBufferCapacity = size;
+<<<<<<< HEAD
+=======
+  }
+
+
+  public long getLastReadableTxId() {
+    return lastReadableTxId;
+  }
+
+  public void setLastReadableTxId(long id) {
+    this.lastReadableTxId = id;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -194,7 +239,11 @@ public class FileJournalManager implements JournalManager {
       }
       if (elf.isInProgress()) {
         try {
+<<<<<<< HEAD
           elf.validateLog();
+=======
+          elf.scanLog(getLastReadableTxId(), true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         } catch (IOException e) {
           LOG.error("got IOException while trying to validate header of " +
               elf + ".  Skipping.", e);
@@ -242,6 +291,23 @@ public class FileJournalManager implements JournalManager {
       LOG.info("Trash the EditLog file " + elf);
     }
   }
+<<<<<<< HEAD
+=======
+
+  /**
+   * returns matching edit logs via the log directory. Simple helper function
+   * that lists the files in the logDir and calls matchEditLogs(File[])
+   * 
+   * @param logDir
+   *          directory to match edit logs in
+   * @return matched edit logs
+   * @throws IOException
+   *           IOException thrown for invalid logDir
+   */
+  public static List<EditLogFile> matchEditLogs(File logDir) throws IOException {
+    return matchEditLogs(FileUtil.listFiles(logDir));
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * returns matching edit logs via the log directory. Simple helper function
@@ -309,7 +375,11 @@ public class FileJournalManager implements JournalManager {
             LOG.error("In-progress stale edits file " + f + " has improperly "
                 + "formatted transaction ID");
             // skip
+<<<<<<< HEAD
     }
+=======
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
     }
@@ -326,11 +396,21 @@ public class FileJournalManager implements JournalManager {
           (inProgressOk ? " (inProgress ok) " : " (excluding inProgress) ") +
           "from among " + elfs.size() + " candidate file(s)");
     }
+<<<<<<< HEAD
     addStreamsToCollectionFromFiles(elfs, streams, fromTxId, inProgressOk);
   }
   
   static void addStreamsToCollectionFromFiles(Collection<EditLogFile> elfs,
       Collection<EditLogInputStream> streams, long fromTxId, boolean inProgressOk) {
+=======
+    addStreamsToCollectionFromFiles(elfs, streams, fromTxId,
+        getLastReadableTxId(), inProgressOk);
+  }
+  
+  static void addStreamsToCollectionFromFiles(Collection<EditLogFile> elfs,
+      Collection<EditLogInputStream> streams, long fromTxId,
+      long maxTxIdToScan, boolean inProgressOk) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (EditLogFile elf : elfs) {
       if (elf.isInProgress()) {
         if (!inProgressOk) {
@@ -341,7 +421,11 @@ public class FileJournalManager implements JournalManager {
           continue;
         }
         try {
+<<<<<<< HEAD
           elf.validateLog();
+=======
+          elf.scanLog(maxTxIdToScan, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         } catch (IOException e) {
           LOG.error("got IOException while trying to validate header of " +
               elf + ".  Skipping.", e);
@@ -385,7 +469,11 @@ public class FileJournalManager implements JournalManager {
           continue;
         }
 
+<<<<<<< HEAD
         elf.validateLog();
+=======
+        elf.scanLog(getLastReadableTxId(), true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
         if (elf.hasCorruptHeader()) {
           elf.moveAsideCorruptFile();
@@ -517,13 +605,27 @@ public class FileJournalManager implements JournalManager {
      * Find out where the edit log ends.
      * This will update the lastTxId of the EditLogFile or
      * mark it as corrupt if it is.
+<<<<<<< HEAD
      */
     public void validateLog() throws IOException {
       EditLogValidation val = EditLogFileInputStream.validateEditLog(file);
+=======
+     * @param maxTxIdToScan Maximum Tx ID to try to scan.
+     *                      The scan returns after reading this or a higher ID.
+     *                      The file portion beyond this ID is potentially being
+     *                      updated.
+     * @param verifyVersion Whether the scan should verify the layout version
+     */
+    public void scanLog(long maxTxIdToScan, boolean verifyVersion)
+        throws IOException {
+      EditLogValidation val = EditLogFileInputStream.scanEditLog(file,
+          maxTxIdToScan, verifyVersion);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.lastTxId = val.getEndTxId();
       this.hasCorruptHeader = val.hasCorruptHeader();
     }
 
+<<<<<<< HEAD
     public void scanLog() throws IOException {
       EditLogValidation val = EditLogFileInputStream.scanEditLog(file);
       this.lastTxId = val.getEndTxId();
@@ -537,6 +639,15 @@ public class FileJournalManager implements JournalManager {
     public File getFile() {
       return file;
     }
+=======
+    public boolean isInProgress() {
+      return isInProgress;
+    }
+
+    public File getFile() {
+      return file;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
     boolean hasCorruptHeader() {
       return hasCorruptHeader;
@@ -583,11 +694,14 @@ public class FileJournalManager implements JournalManager {
                            isInProgress(), hasCorruptHeader);
     }
   }
+<<<<<<< HEAD
 
   @Override
   public void discardSegments(long startTxid) throws IOException {
     discardEditLogSegments(startTxid);
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   @Override
   public void doPreUpgrade() throws IOException {
@@ -628,6 +742,14 @@ public class FileJournalManager implements JournalManager {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void discardSegments(long startTxid) throws IOException {
+    discardEditLogSegments(startTxid);
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public long getJournalCTime() throws IOException {
     StorageInfo sInfo = new StorageInfo((NodeType)null);
     sInfo.readProperties(sd);

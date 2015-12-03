@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 
+<<<<<<< HEAD
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 
@@ -29,6 +30,19 @@ import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
  * This is an interface for the underlying volume.
  */
 public interface FsVolumeSpi {
+=======
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+import org.apache.hadoop.hdfs.server.datanode.dataset.VolumeSpi;
+
+/**
+ * This is an interface for the underlying volume used by DFS.
+ */
+@InterfaceAudience.Private
+@InterfaceStability.Unstable
+public interface FsVolumeSpi extends VolumeSpi {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Obtain a reference object that had increased 1 reference count of the
    * volume.
@@ -38,6 +52,7 @@ public interface FsVolumeSpi {
    */
   FsVolumeReference obtainReference() throws ClosedChannelException;
 
+<<<<<<< HEAD
   /** @return the StorageUuid of the volume */
   String getStorageID();
 
@@ -69,6 +84,19 @@ public interface FsVolumeSpi {
 
   /**
    * Release disk space previously reserved for RBW block.
+=======
+  /** @return the directory for the finalized blocks in the block pool. */
+  File getFinalizedDir(String bpid) throws IOException;
+  
+  /**
+   * Reserve disk space for a block (RBW or Re-replicating)
+   * so a writer does not run out of space before the block is full.
+   */
+  void reserveSpaceForReplica(long bytesToReserve);
+
+  /**
+   * Release disk space previously reserved for block opened for write.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   void releaseReservedSpace(long bytesToRelease);
 
@@ -180,10 +208,17 @@ public interface FsVolumeSpi {
    * @throws IOException     If there was an IO error loading the saved
    *                           block iterator.
    */
+<<<<<<< HEAD
   BlockIterator loadBlockIterator(String bpid, String name) throws IOException;
 
   /**
    * Get the FSDatasetSpi which this volume is a part of.
    */
+=======
+  BlockIterator loadBlockIterator(String bpid, String name)
+      throws IOException;
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   FsDatasetSpi getDataset();
 }

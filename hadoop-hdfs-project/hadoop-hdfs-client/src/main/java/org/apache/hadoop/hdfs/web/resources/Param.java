@@ -47,6 +47,7 @@ public abstract class Param<T, D extends Param.Domain<T>> {
     try {
       for(Param<?, ?> p : parameters) {
         if (p.getValue() != null) {
+<<<<<<< HEAD
           b.append(separator).append(
               URLEncoder.encode(p.getName(), "UTF-8")
               + "="
@@ -57,6 +58,18 @@ public abstract class Param<T, D extends Param.Domain<T>> {
     // Sane systems know about UTF-8, so this should never happen.
     throw new RuntimeException(e);
   }
+=======
+          b.append(separator)
+              .append(URLEncoder.encode(p.getName(), "UTF-8"))
+              .append("=")
+              .append(URLEncoder.encode(p.getValueString(), "UTF-8"));
+        }
+      }
+    } catch (UnsupportedEncodingException e) {
+      // Sane systems know about UTF-8, so this should never happen.
+      throw new RuntimeException(e);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return b.toString();
   }
 

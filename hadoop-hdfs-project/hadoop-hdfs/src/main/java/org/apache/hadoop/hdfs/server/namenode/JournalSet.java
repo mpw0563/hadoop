@@ -39,8 +39,11 @@ import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
 import org.apache.hadoop.hdfs.server.protocol.RemoteEditLog;
 import org.apache.hadoop.hdfs.server.protocol.RemoteEditLogManifest;
 
+<<<<<<< HEAD
 import static org.apache.hadoop.util.ExitUtil.terminate;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
@@ -54,6 +57,10 @@ import com.google.common.collect.Sets;
  * assumed that FSEditLog methods, that use this class, use proper
  * synchronization.
  */
+<<<<<<< HEAD
+=======
+@InterfaceAudience.Private
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 public class JournalSet implements JournalManager {
 
   static final Log LOG = LogFactory.getLog(FSEditLog.class);
@@ -265,7 +272,11 @@ public class JournalSet implements JournalManager {
    */
   @Override
   public void selectInputStreams(Collection<EditLogInputStream> streams,
+<<<<<<< HEAD
       long fromTxId, boolean inProgressOk) throws IOException {
+=======
+      long fromTxId, boolean inProgressOk) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final PriorityQueue<EditLogInputStream> allStreams = 
         new PriorityQueue<EditLogInputStream>(64,
             EDIT_LOG_INPUT_STREAM_COMPARATOR);
@@ -706,12 +717,15 @@ public class JournalSet implements JournalManager {
   }
 
   @Override
+<<<<<<< HEAD
   public void discardSegments(long startTxId) throws IOException {
     // This operation is handled by FSEditLog directly.
     throw new UnsupportedOperationException();
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void doPreUpgrade() throws IOException {
     // This operation is handled by FSEditLog directly.
     throw new UnsupportedOperationException();
@@ -742,6 +756,15 @@ public class JournalSet implements JournalManager {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void discardSegments(long startTxId) throws IOException {
+    // This operation is handled by FSEditLog directly.
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public long getJournalCTime() throws IOException {
     // This operation is handled by FSEditLog directly.
     throw new UnsupportedOperationException();

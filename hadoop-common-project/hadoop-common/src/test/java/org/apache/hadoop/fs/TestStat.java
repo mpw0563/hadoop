@@ -32,7 +32,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestStat extends FileSystemTestHelper {
+<<<<<<< HEAD
   static{
+=======
+  static {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     FileSystem.enableSymlinks();
   }
   private static Stat stat;

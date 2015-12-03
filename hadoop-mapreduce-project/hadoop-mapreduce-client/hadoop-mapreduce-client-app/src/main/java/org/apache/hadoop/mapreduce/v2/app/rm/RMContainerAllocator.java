@@ -59,6 +59,10 @@ import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptDiagnosticsUpdate
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEventType;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptKillEvent;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.AMPreemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.StringInterner;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateResponse;
@@ -70,6 +74,10 @@ import org.apache.hadoop.yarn.api.records.NMToken;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.PreemptionMessage;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.Token;
@@ -158,17 +166,41 @@ public class RMContainerAllocator extends RMContainerRequestor
   private boolean reduceStarted = false;
   private float maxReduceRampupLimit = 0;
   private float maxReducePreemptionLimit = 0;
+<<<<<<< HEAD
   /**
    * after this threshold, if the container request is not allocated, it is
    * considered delayed.
    */
   private long allocationDelayThresholdMs = 0;
+=======
+
+  // Mapper allocation timeout, after which a reducer is forcibly preempted
+  private long reducerUnconditionalPreemptionDelayMs;
+
+  // Duration to wait before preempting a reducer when there is NO room
+  private long reducerNoHeadroomPreemptionDelayMs = 0;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private float reduceSlowStart = 0;
   private int maxRunningMaps = 0;
   private int maxRunningReduces = 0;
   private long retryInterval;
   private long retrystartTime;
   private Clock clock;
+
+<<<<<<< HEAD
+  @VisibleForTesting
+  protected BlockingQueue<ContainerAllocatorEvent> eventQueue
+    = new LinkedBlockingQueue<ContainerAllocatorEvent>();
+
+  private ScheduleStats scheduleStats = new ScheduleStats();
+
+  private String mapNodeLabelExpression;
+
+  private String reduceNodeLabelExpression;
+=======
+  private final AMPreemptionPolicy preemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @VisibleForTesting
   protected BlockingQueue<ContainerAllocatorEvent> eventQueue
@@ -180,8 +212,13 @@ public class RMContainerAllocator extends RMContainerRequestor
 
   private String reduceNodeLabelExpression;
 
-  public RMContainerAllocator(ClientService clientService, AppContext context) {
+  public RMContainerAllocator(ClientService clientService, AppContext context,
+      AMPreemptionPolicy preemptionPolicy) {
     super(clientService, context);
+<<<<<<< HEAD
+=======
+    this.preemptionPolicy = preemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.stopped = new AtomicBoolean(false);
     this.clock = context.getClock();
   }
@@ -198,7 +235,14 @@ public class RMContainerAllocator extends RMContainerRequestor
     maxReducePreemptionLimit = conf.getFloat(
         MRJobConfig.MR_AM_JOB_REDUCE_PREEMPTION_LIMIT,
         MRJobConfig.DEFAULT_MR_AM_JOB_REDUCE_PREEMPTION_LIMIT);
+<<<<<<< HEAD
     allocationDelayThresholdMs = conf.getInt(
+=======
+    reducerUnconditionalPreemptionDelayMs = 1000 * conf.getInt(
+        MRJobConfig.MR_JOB_REDUCER_UNCONDITIONAL_PREEMPT_DELAY_SEC,
+        MRJobConfig.DEFAULT_MR_JOB_REDUCER_UNCONDITIONAL_PREEMPT_DELAY_SEC);
+    reducerNoHeadroomPreemptionDelayMs = conf.getInt(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         MRJobConfig.MR_JOB_REDUCER_PREEMPT_DELAY_SEC,
         MRJobConfig.DEFAULT_MR_JOB_REDUCER_PREEMPT_DELAY_SEC) * 1000;//sec -> ms
     maxRunningMaps = conf.getInt(MRJobConfig.JOB_RUNNING_MAP_LIMIT,
@@ -406,7 +450,11 @@ public class RMContainerAllocator extends RMContainerRequestor
       }
       
     } else if (
+<<<<<<< HEAD
         event.getType() == ContainerAllocator.EventType.CONTAINER_DEALLOCATE) {
+=======
+      event.getType() == ContainerAllocator.EventType.CONTAINER_DEALLOCATE) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
       LOG.info("Processing the event " + event.toString());
 
@@ -427,11 +475,15 @@ public class RMContainerAllocator extends RMContainerRequestor
         LOG.error("Could not deallocate container for task attemptId " + 
             aId);
       }
+      preemptionPolicy.handleCompletedContainer(event.getAttemptID());
     } else if (
         event.getType() == ContainerAllocator.EventType.CONTAINER_FAILED) {
       ContainerFailedEvent fEv = (ContainerFailedEvent) event;
       String host = getHost(fEv.getContMgrAddress());
       containerFailedOnHost(host);
+      // propagate failures to preemption policy to discard checkpoints for
+      // failed tasks
+      preemptionPolicy.handleFailedContainer(event.getAttemptID());
     }
   }
 
@@ -448,6 +500,7 @@ public class RMContainerAllocator extends RMContainerRequestor
   @VisibleForTesting
   synchronized void setReduceResourceRequest(Resource res) {
     this.reduceResourceRequest = res;
+<<<<<<< HEAD
   }
 
   @Private
@@ -537,14 +590,140 @@ public class RMContainerAllocator extends RMContainerRequestor
       float maxReduceRampupLimit, float reduceSlowStart) {
     
     if (numPendingReduces == 0) {
+=======
+  }
+
+  @Private
+  @VisibleForTesting
+  synchronized void setMapResourceRequest(Resource res) {
+    this.mapResourceRequest = res;
+  }
+
+  @Private
+  @VisibleForTesting
+  void preemptReducesIfNeeded() {
+    if (reduceResourceRequest.equals(Resources.none())) {
+      return; // no reduces
+    }
+
+    if (assignedRequests.maps.size() > 0) {
+      // there are assigned mappers
       return;
     }
+
+    if (scheduledRequests.maps.size() <= 0) {
+      // there are no pending requests for mappers
+      return;
+    }
+    // At this point:
+    // we have pending mappers and all assigned resources are taken by reducers
+
+    if (reducerUnconditionalPreemptionDelayMs >= 0) {
+      // Unconditional preemption is enabled.
+      // If mappers are pending for longer than the configured threshold,
+      // preempt reducers irrespective of what the headroom is.
+      if (preemptReducersForHangingMapRequests(
+          reducerUnconditionalPreemptionDelayMs)) {
+        return;
+      }
+    }
+
+    // The pending mappers haven't been waiting for too long. Let us see if
+    // the headroom can fit a mapper.
+    Resource availableResourceForMap = getAvailableResources();
+    if (ResourceCalculatorUtils.computeAvailableContainers(availableResourceForMap,
+        mapResourceRequest, getSchedulerResourceTypes()) > 0) {
+      // the available headroom is enough to run a mapper
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      return;
+    }
+
+    // Available headroom is not enough to run mapper. See if we should hold
+    // off before preempting reducers and preempt if okay.
+    preemptReducersForHangingMapRequests(reducerNoHeadroomPreemptionDelayMs);
+  }
+
+  private boolean preemptReducersForHangingMapRequests(long pendingThreshold) {
+    int hangingMapRequests = getNumHangingRequests(
+        pendingThreshold, scheduledRequests.maps);
+    if (hangingMapRequests > 0) {
+      preemptReducer(hangingMapRequests);
+      return true;
+    }
+    return false;
+  }
+
+  private void clearAllPendingReduceRequests() {
+    LOG.info("Ramping down all scheduled reduces:"
+        + scheduledRequests.reduces.size());
+    for (ContainerRequest req : scheduledRequests.reduces.values()) {
+      pendingReduces.add(req);
+    }
+    scheduledRequests.reduces.clear();
+  }
+
+  private void preemptReducer(int hangingMapRequests) {
+    clearAllPendingReduceRequests();
+
+    // preempt for making space for at least one map
+    int preemptionReduceNumForOneMap =
+        ResourceCalculatorUtils.divideAndCeilContainers(mapResourceRequest,
+            reduceResourceRequest, getSchedulerResourceTypes());
+    int preemptionReduceNumForPreemptionLimit =
+        ResourceCalculatorUtils.divideAndCeilContainers(
+            Resources.multiply(getResourceLimit(), maxReducePreemptionLimit),
+            reduceResourceRequest, getSchedulerResourceTypes());
+    int preemptionReduceNumForAllMaps =
+        ResourceCalculatorUtils.divideAndCeilContainers(
+            Resources.multiply(mapResourceRequest, hangingMapRequests),
+            reduceResourceRequest, getSchedulerResourceTypes());
+    int toPreempt =
+        Math.min(Math.max(preemptionReduceNumForOneMap,
+                preemptionReduceNumForPreemptionLimit),
+            preemptionReduceNumForAllMaps);
+
+    LOG.info("Going to preempt " + toPreempt
+        + " due to lack of space for maps");
+    assignedRequests.preemptReduce(toPreempt);
+  }
+
+  private int getNumHangingRequests(long allocationDelayThresholdMs,
+      Map<TaskAttemptId, ContainerRequest> requestMap) {
+    if (allocationDelayThresholdMs <= 0)
+      return requestMap.size();
+    int hangingRequests = 0;
+    long currTime = clock.getTime();
+    for (ContainerRequest request: requestMap.values()) {
+      long delay = currTime - request.requestTimeMs;
+      if (delay > allocationDelayThresholdMs)
+        hangingRequests++;
+    }
+    return hangingRequests;
+  }
+  
+  @Private
+  public void scheduleReduces(
+      int totalMaps, int completedMaps,
+      int scheduledMaps, int scheduledReduces,
+      int assignedMaps, int assignedReduces,
+      Resource mapResourceReqt, Resource reduceResourceReqt,
+      int numPendingReduces,
+      float maxReduceRampupLimit, float reduceSlowStart) {
     
+<<<<<<< HEAD
     // get available resources for this job
     Resource headRoom = getAvailableResources();
     if (headRoom == null) {
       headRoom = Resources.none();
     }
+=======
+    if (numPendingReduces == 0) {
+      return;
+    }
+    
+    // get available resources for this job
+    Resource headRoom = getAvailableResources();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     LOG.info("Recalculating schedule, headroom=" + headRoom);
     
@@ -671,9 +850,13 @@ public class RMContainerAllocator extends RMContainerRequestor
     applyConcurrentTaskLimits();
 
     // will be null the first time
+<<<<<<< HEAD
     Resource headRoom =
         getAvailableResources() == null ? Resources.none() :
             Resources.clone(getAvailableResources());
+=======
+    Resource headRoom = Resources.clone(getAvailableResources());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     AllocateResponse response;
     /*
      * If contact with RM is lost, the AM will wait MR_AM_TO_RM_WAIT_INTERVAL_MS
@@ -689,7 +872,11 @@ public class RMContainerAllocator extends RMContainerRequestor
       // this application must clean itself up.
       eventHandler.handle(new JobEvent(this.getJob().getID(),
         JobEventType.JOB_AM_REBOOT));
+<<<<<<< HEAD
       throw new YarnRuntimeException(
+=======
+      throw new RMContainerAllocationException(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         "Resource Manager doesn't recognize AttemptId: "
             + this.getContext().getApplicationAttemptId(), e);
     } catch (ApplicationMasterNotRegisteredException e) {
@@ -707,16 +894,24 @@ public class RMContainerAllocator extends RMContainerRequestor
         LOG.error("Could not contact RM after " + retryInterval + " milliseconds.");
         eventHandler.handle(new JobEvent(this.getJob().getID(),
                                          JobEventType.JOB_AM_REBOOT));
+<<<<<<< HEAD
         throw new YarnRuntimeException("Could not contact RM after " +
+=======
+        throw new RMContainerAllocationException("Could not contact RM after " +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                                 retryInterval + " milliseconds.");
       }
       // Throw this up to the caller, which may decide to ignore it and
       // continue to attempt to contact the RM.
       throw e;
     }
+<<<<<<< HEAD
     Resource newHeadRoom =
         getAvailableResources() == null ? Resources.none()
             : getAvailableResources();
+=======
+    Resource newHeadRoom = getAvailableResources();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     List<Container> newContainers = response.getAllocatedContainers();
     // Setting NMTokens
     if (response.getNMTokens() != null) {
@@ -732,6 +927,17 @@ public class RMContainerAllocator extends RMContainerRequestor
     }
 
     List<ContainerStatus> finishedContainers = response.getCompletedContainersStatuses();
+<<<<<<< HEAD
+=======
+
+    // propagate preemption requests
+    final PreemptionMessage preemptReq = response.getPreemptionMessage();
+    if (preemptReq != null) {
+      preemptionPolicy.preempt(
+          new PreemptionContext(assignedRequests), preemptReq);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (newContainers.size() + finishedContainers.size() > 0
         || !headRoom.equals(newHeadRoom)) {
       //something changed
@@ -751,6 +957,10 @@ public class RMContainerAllocator extends RMContainerRequestor
     computeIgnoreBlacklisting();
 
     handleUpdatedNodes(response);
+<<<<<<< HEAD
+=======
+    handleJobPriorityChange(response);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     for (ContainerStatus cont : finishedContainers) {
       LOG.info("Received completed container " + cont.getContainerId());
@@ -769,7 +979,13 @@ public class RMContainerAllocator extends RMContainerRequestor
         String diagnostics = StringInterner.weakIntern(cont.getDiagnostics());
         eventHandler.handle(new TaskAttemptDiagnosticsUpdateEvent(attemptID,
             diagnostics));
+<<<<<<< HEAD
       }      
+=======
+
+        preemptionPolicy.handleCompletedContainer(attemptID);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     return newContainers;
   }
@@ -873,12 +1089,26 @@ public class RMContainerAllocator extends RMContainerRequestor
     }
   }
 
+<<<<<<< HEAD
   @Private
   public Resource getResourceLimit() {
     Resource headRoom = getAvailableResources();
     if (headRoom == null) {
       headRoom = Resources.none();
     }
+=======
+  private void handleJobPriorityChange(AllocateResponse response) {
+    Priority priorityFromResponse = Priority.newInstance(response
+        .getApplicationPriority().getPriority());
+
+    // Update the job priority to Job directly.
+    getJob().setJobPriority(priorityFromResponse);
+  }
+
+  @Private
+  public Resource getResourceLimit() {
+    Resource headRoom = getAvailableResources();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Resource assignedMapResource =
         Resources.multiply(mapResourceRequest, assignedRequests.maps.size());
     Resource assignedReduceResource =
@@ -984,6 +1214,7 @@ public class RMContainerAllocator extends RMContainerRequestor
       Iterator<Container> it = allocatedContainers.iterator();
       LOG.info("Got allocated containers " + allocatedContainers.size());
       containersAllocated += allocatedContainers.size();
+      int reducePending = reduces.size();
       while (it.hasNext()) {
         Container allocated = it.next();
         if (LOG.isDebugEnabled()) {
@@ -1014,6 +1245,7 @@ public class RMContainerAllocator extends RMContainerRequestor
         else if (PRIORITY_REDUCE.equals(priority)) {
           if (ResourceCalculatorUtils.computeAvailableContainers(allocatedResource,
               reduceResourceRequest, getSchedulerResourceTypes()) <= 0
+<<<<<<< HEAD
               || reduces.isEmpty()) {
             LOG.info("Cannot assign container " + allocated 
                 + " for a reduce as either "
@@ -1021,6 +1253,16 @@ public class RMContainerAllocator extends RMContainerRequestor
                 + " or no pending reduce tasks - reduces.isEmpty=" 
                 + reduces.isEmpty()); 
             isAssignable = false;
+=======
+              || (reducePending <= 0)) {
+            LOG.info("Cannot assign container " + allocated
+                + " for a reduce as either "
+                + " container memory less than required " + reduceResourceRequest
+                + " or no pending reduce tasks.");
+            isAssignable = false;
+          } else {
+            reducePending--;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
         } else {
           LOG.warn("Container allocated at unwanted priority: " + priority + 
@@ -1085,6 +1327,7 @@ public class RMContainerAllocator extends RMContainerRequestor
         LOG.info("Releasing unassigned container " + allocated);
         containerNotAssigned(allocated);
       }
+<<<<<<< HEAD
     }
     
     @SuppressWarnings("unchecked")
@@ -1112,6 +1355,35 @@ public class RMContainerAllocator extends RMContainerRequestor
       release(allocated.getId());      
     }
     
+=======
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void containerAssigned(Container allocated, 
+                                    ContainerRequest assigned) {
+      // Update resource requests
+      decContainerReq(assigned);
+
+      // send the container-assigned event to task attempt
+      eventHandler.handle(new TaskAttemptContainerAssignedEvent(
+          assigned.attemptID, allocated, applicationACLs));
+
+      assignedRequests.add(allocated, assigned.attemptID);
+
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Assigned container (" + allocated + ") "
+            + " to task " + assigned.attemptID + " on node "
+            + allocated.getNodeId().toString());
+      }
+    }
+    
+    private void containerNotAssigned(Container allocated) {
+      containersReleased++;
+      pendingRelease.add(allocated.getId());
+      release(allocated.getId());      
+    }
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     private ContainerRequest assignWithoutLocality(Container allocated) {
       ContainerRequest assigned = null;
       
@@ -1419,6 +1691,13 @@ public class RMContainerAllocator extends RMContainerRequestor
         numContainersAllocated = containersAllocated;
         changed |= (numContainersReleased != containersReleased);
         numContainersReleased = containersReleased;
+<<<<<<< HEAD
+=======
+      }
+
+      if (changed) {
+        log(msgPrefix);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       if (changed) {
@@ -1439,5 +1718,42 @@ public class RMContainerAllocator extends RMContainerRequestor
         " HostLocal:" + hostLocalAssigned +
         " RackLocal:" + rackLocalAssigned);
     }
+
+    public void log(String msgPrefix) {
+        LOG.info(msgPrefix + "PendingReds:" + numPendingReduces +
+        " ScheduledMaps:" + numScheduledMaps +
+        " ScheduledReds:" + numScheduledReduces +
+        " AssignedMaps:" + numAssignedMaps +
+        " AssignedReds:" + numAssignedReduces +
+        " CompletedMaps:" + numCompletedMaps +
+        " CompletedReds:" + numCompletedReduces +
+        " ContAlloc:" + numContainersAllocated +
+        " ContRel:" + numContainersReleased +
+        " HostLocal:" + hostLocalAssigned +
+        " RackLocal:" + rackLocalAssigned);
+    }
   }
+
+  static class PreemptionContext extends AMPreemptionPolicy.Context {
+    final AssignedRequests reqs;
+
+    PreemptionContext(AssignedRequests reqs) {
+      this.reqs = reqs;
+    }
+    @Override
+    public TaskAttemptId getTaskAttempt(ContainerId container) {
+      return reqs.get(container);
+    }
+
+    @Override
+    public List<Container> getContainers(TaskType t){
+      if(TaskType.REDUCE.equals(t))
+        return new ArrayList<Container>(reqs.reduces.values());
+      if(TaskType.MAP.equals(t))
+        return new ArrayList<Container>(reqs.maps.values());
+      return null;
+    }
+
+  }
+
 }

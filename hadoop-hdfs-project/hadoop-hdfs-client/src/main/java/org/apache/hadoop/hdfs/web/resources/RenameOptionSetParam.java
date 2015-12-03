@@ -26,7 +26,11 @@ public class RenameOptionSetParam extends EnumSetParam<Options.Rename> {
   /** Default parameter value. */
   public static final String DEFAULT = "";
 
+<<<<<<< HEAD
   private static final Domain<Options.Rename> DOMAIN = new Domain<Options.Rename>(
+=======
+  private static final Domain<Options.Rename> DOMAIN = new Domain<>(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       NAME, Options.Rename.class);
 
   /**
@@ -49,4 +53,8 @@ public class RenameOptionSetParam extends EnumSetParam<Options.Rename> {
   public String getName() {
     return NAME;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

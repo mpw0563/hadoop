@@ -74,6 +74,10 @@ import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEventType;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptKillEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.impl.JobImpl;
 import org.apache.hadoop.mapreduce.v2.app.job.impl.TaskAttemptImpl;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.NoopAMPreemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.v2.util.MRBuilderUtils;
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.net.NetUtils;
@@ -97,6 +101,10 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.ContainerResourceChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerState;
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.NMToken;
@@ -124,8 +132,15 @@ import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.MemoryRMStateStore;
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Allocation;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceScheduler;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppState;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Allocation;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceScheduler;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.common.fica.FiCaSchedulerApp;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.SchedulerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fifo.FifoScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.security.AMRMTokenSecretManager;
@@ -427,7 +442,11 @@ public class TestRMContainerAllocator {
         MRBuilderUtils.newJobReport(jobId, "job", "user", JobState.RUNNING, 0,
             0, 0, 0, 0, 0, 0, "jobfile", null, false, ""));
     final MyContainerAllocator allocator = new MyContainerAllocator(rm, conf,
+<<<<<<< HEAD
         appAttemptId, mockJob);
+=======
+        appAttemptId, mockJob, new SystemClock());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // add resources to scheduler
     dispatcher.await();
 
@@ -561,6 +580,118 @@ public class TestRMContainerAllocator {
         assignedRequests.preemptionWaitingReduces.size());
   }
 
+<<<<<<< HEAD
+=======
+  @Test(timeout = 30000)
+  public void testUnconditionalPreemptReducers() throws Exception {
+    LOG.info("Running testForcePreemptReducers");
+
+    int forcePreemptThresholdSecs = 2;
+    Configuration conf = new Configuration();
+    conf.setInt(MRJobConfig.MR_JOB_REDUCER_PREEMPT_DELAY_SEC,
+        2 * forcePreemptThresholdSecs);
+    conf.setInt(MRJobConfig.MR_JOB_REDUCER_UNCONDITIONAL_PREEMPT_DELAY_SEC,
+        forcePreemptThresholdSecs);
+
+    MyResourceManager rm = new MyResourceManager(conf);
+    rm.start();
+    rm.getMyFifoScheduler().forceResourceLimit(Resource.newInstance(8192, 8));
+    DrainDispatcher dispatcher = (DrainDispatcher) rm.getRMContext()
+        .getDispatcher();
+
+    // Submit the application
+    RMApp app = rm.submitApp(1024);
+    dispatcher.await();
+
+    MockNM amNodeManager = rm.registerNode("amNM:1234", 2048);
+    amNodeManager.nodeHeartbeat(true);
+    dispatcher.await();
+
+    ApplicationAttemptId appAttemptId = app.getCurrentAppAttempt()
+        .getAppAttemptId();
+    rm.sendAMLaunched(appAttemptId);
+    dispatcher.await();
+
+    JobId jobId = MRBuilderUtils.newJobId(appAttemptId.getApplicationId(), 0);
+    Job mockJob = mock(Job.class);
+    when(mockJob.getReport()).thenReturn(
+        MRBuilderUtils.newJobReport(jobId, "job", "user", JobState.RUNNING, 0,
+            0, 0, 0, 0, 0, 0, "jobfile", null, false, ""));
+    ControlledClock clock = new ControlledClock(null);
+    clock.setTime(1);
+    MyContainerAllocator allocator = new MyContainerAllocator(rm, conf,
+        appAttemptId, mockJob, clock);
+    allocator.setMapResourceRequest(BuilderUtils.newResource(1024, 1));
+    allocator.setReduceResourceRequest(BuilderUtils.newResource(1024, 1));
+    RMContainerAllocator.AssignedRequests assignedRequests =
+        allocator.getAssignedRequests();
+    RMContainerAllocator.ScheduledRequests scheduledRequests =
+        allocator.getScheduledRequests();
+    ContainerRequestEvent event1 =
+        createReq(jobId, 1, 2048, new String[] { "h1" }, false, false);
+    scheduledRequests.maps.put(mock(TaskAttemptId.class),
+        new RMContainerRequestor.ContainerRequest(event1, null, clock.getTime()));
+    assignedRequests.reduces.put(mock(TaskAttemptId.class),
+        mock(Container.class));
+
+    clock.setTime(clock.getTime() + 1);
+    allocator.preemptReducesIfNeeded();
+    Assert.assertEquals("The reducer is preeempted too soon", 0,
+        assignedRequests.preemptionWaitingReduces.size());
+
+    clock.setTime(clock.getTime() + 1000 * forcePreemptThresholdSecs);
+    allocator.preemptReducesIfNeeded();
+    Assert.assertEquals("The reducer is not preeempted", 1,
+        assignedRequests.preemptionWaitingReduces.size());
+  }
+
+  @Test(timeout = 30000)
+  public void testExcessReduceContainerAssign() throws Exception {
+  final Configuration conf = new Configuration();
+    conf.setFloat(MRJobConfig.COMPLETED_MAPS_FOR_REDUCE_SLOWSTART, 0.0f);
+    final MyResourceManager2 rm = new MyResourceManager2(conf);
+    rm.start();
+    final DrainDispatcher dispatcher = (DrainDispatcher)rm.getRMContext()
+            .getDispatcher();
+    final RMApp app = rm.submitApp(2048);
+    dispatcher.await();
+    final String host = "host1";
+    final MockNM nm = rm.registerNode(String.format("%s:1234", host), 4096);
+    nm.nodeHeartbeat(true);
+    dispatcher.await();
+    final ApplicationAttemptId appAttemptId = app.getCurrentAppAttempt()
+          .getAppAttemptId();
+    rm.sendAMLaunched(appAttemptId);
+    dispatcher.await();
+    final JobId jobId = MRBuilderUtils
+                 .newJobId(appAttemptId.getApplicationId(), 0);
+    final Job mockJob = mock(Job.class);
+    when(mockJob.getReport()).thenReturn(
+        MRBuilderUtils.newJobReport(jobId, "job", "user", JobState.RUNNING, 0,
+            0, 0, 0, 0, 0, 0, "jobfile", null, false, ""));
+    final MyContainerAllocator allocator = new MyContainerAllocator(rm, conf,
+        appAttemptId, mockJob, new SystemClock());
+
+    // request to allocate two reduce priority containers
+    final String[] locations = new String[] { host };
+    allocator.sendRequest(createReq(jobId, 0, 1024, locations, false, true));
+    allocator.scheduleAllReduces();
+    allocator.makeRemoteRequest();
+    nm.nodeHeartbeat(true);
+    dispatcher.await();
+    allocator.sendRequest(createReq(jobId, 1, 1024, locations, false, false));
+
+    int assignedContainer;
+    for (assignedContainer = 0; assignedContainer < 1;) {
+      assignedContainer += allocator.schedule().size();
+      nm.nodeHeartbeat(true);
+      dispatcher.await();
+    }
+    // only 1 allocated container should be assigned
+    Assert.assertEquals(assignedContainer, 1);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testMapReduceAllocationWithNodeLabelExpression() throws Exception {
 
@@ -584,7 +715,12 @@ public class TestRMContainerAllocator {
             0, 0, 0, 0, 0, 0, "jobfile", null, false, ""));
     final MockScheduler mockScheduler = new MockScheduler(appAttemptId);
     MyContainerAllocator allocator =
+<<<<<<< HEAD
         new MyContainerAllocator(null, conf, appAttemptId, mockJob) {
+=======
+        new MyContainerAllocator(null, conf, appAttemptId, mockJob,
+            new SystemClock()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           @Override
           protected void register() {
           }
@@ -676,7 +812,11 @@ public class TestRMContainerAllocator {
         MRBuilderUtils.newJobReport(jobId, "job", "user", JobState.RUNNING, 0,
             0, 0, 0, 0, 0, 0, "jobfile", null, false, ""));
     MyContainerAllocator allocator = new MyContainerAllocator(rm, conf,
+<<<<<<< HEAD
         appAttemptId, mockJob);
+=======
+        appAttemptId, mockJob, new SystemClock());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // add resources to scheduler
     MockNM nodeManager1 = rm.registerNode("h1:1234", 1024);
@@ -769,6 +909,20 @@ public class TestRMContainerAllocator {
     }
   }
 
+<<<<<<< HEAD
+=======
+  private static class MyResourceManager2 extends MyResourceManager {
+    public MyResourceManager2(Configuration conf) {
+      super(conf);
+    }
+
+    @Override
+    protected ResourceScheduler createScheduler() {
+      return new ExcessReduceContainerAllocateScheduler(this.getRMContext());
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testReportedAppProgress() throws Exception {
 
@@ -1568,14 +1722,25 @@ public class TestRMContainerAllocator {
     List<ContainerId> lastRelease = null;
     List<String> lastBlacklistAdditions;
     List<String> lastBlacklistRemovals;
+<<<<<<< HEAD
+=======
+    Resource forceResourceLimit = null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
     // override this to copy the objects otherwise FifoScheduler updates the
     // numContainers in same objects as kept by RMContainerAllocator
     @Override
     public synchronized Allocation allocate(
         ApplicationAttemptId applicationAttemptId, List<ResourceRequest> ask,
+<<<<<<< HEAD
         List<ContainerId> release, 
         List<String> blacklistAdditions, List<String> blacklistRemovals) {
+=======
+        List<ContainerId> release, List<String> blacklistAdditions,
+        List<String> blacklistRemovals,
+        List<ContainerResourceChangeRequest> increaseRequests,
+        List<ContainerResourceChangeRequest> decreaseRequests) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       List<ResourceRequest> askCopy = new ArrayList<ResourceRequest>();
       for (ResourceRequest req : ask) {
         ResourceRequest reqCopy = ResourceRequest.newInstance(req
@@ -1588,9 +1753,78 @@ public class TestRMContainerAllocator {
       lastRelease = release;
       lastBlacklistAdditions = blacklistAdditions;
       lastBlacklistRemovals = blacklistRemovals;
+<<<<<<< HEAD
       return super.allocate(
           applicationAttemptId, askCopy, release, 
           blacklistAdditions, blacklistRemovals);
+=======
+      Allocation allocation = super.allocate(
+          applicationAttemptId, askCopy, release, blacklistAdditions,
+          blacklistRemovals, increaseRequests, decreaseRequests);
+      if (forceResourceLimit != null) {
+        // Test wants to force the non-default resource limit
+        allocation.setResourceLimit(forceResourceLimit);
+      }
+      return allocation;
+    }
+
+    public void forceResourceLimit(Resource resource) {
+      this.forceResourceLimit = resource;
+    }
+  }
+
+  private static class ExcessReduceContainerAllocateScheduler extends FifoScheduler {
+
+    public ExcessReduceContainerAllocateScheduler(RMContext rmContext) {
+      super();
+      try {
+        Configuration conf = new Configuration();
+        reinitialize(conf, rmContext);
+      } catch (IOException ie) {
+        LOG.info("add application failed with ", ie);
+        assert (false);
+      }
+    }
+
+    @Override
+    public synchronized Allocation allocate(
+        ApplicationAttemptId applicationAttemptId, List<ResourceRequest> ask,
+        List<ContainerId> release, List<String> blacklistAdditions,
+        List<String> blacklistRemovals,
+        List<ContainerResourceChangeRequest> increaseRequest,
+        List<ContainerResourceChangeRequest> decreaseRequests) {
+      List<ResourceRequest> askCopy = new ArrayList<ResourceRequest>();
+      for (ResourceRequest req : ask) {
+        ResourceRequest reqCopy = ResourceRequest.newInstance(req
+            .getPriority(), req.getResourceName(), req.getCapability(), req
+            .getNumContainers(), req.getRelaxLocality());
+        askCopy.add(reqCopy);
+      }
+      SecurityUtil.setTokenServiceUseIp(false);
+      Allocation normalAlloc = super.allocate(
+          applicationAttemptId, askCopy, release,
+          blacklistAdditions, blacklistRemovals, null, null);
+      List<Container> containers = normalAlloc.getContainers();
+      if(containers.size() > 0) {
+        // allocate excess container
+        FiCaSchedulerApp application = super.getApplicationAttempt(applicationAttemptId);
+        ContainerId containerId = BuilderUtils.newContainerId(application
+            .getApplicationAttemptId(), application.getNewContainerId());
+        Container excessC = mock(Container.class);
+        when(excessC.getId()).thenReturn(containerId);
+        when(excessC.getPriority()).thenReturn(RMContainerAllocator.PRIORITY_REDUCE);
+        Resource mockR = mock(Resource.class);
+        when(mockR.getMemory()).thenReturn(2048);
+        when(excessC.getResource()).thenReturn(mockR);
+        NodeId nId = mock(NodeId.class);
+        when(nId.getHost()).thenReturn("local");
+        when(excessC.getNodeId()).thenReturn(nId);
+        containers.add(excessC);
+      }
+      Allocation excessAlloc = mock(Allocation.class);
+      when(excessAlloc.getContainers()).thenReturn(containers);
+      return excessAlloc;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -1746,14 +1980,23 @@ public class TestRMContainerAllocator {
     // Use this constructor when using a real job.
     MyContainerAllocator(MyResourceManager rm,
         ApplicationAttemptId appAttemptId, AppContext context) {
+<<<<<<< HEAD
       super(createMockClientService(), context);
+=======
+      super(createMockClientService(), context, new NoopAMPreemptionPolicy());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.rm = rm;
     }
 
     // Use this constructor when you are using a mocked job.
     public MyContainerAllocator(MyResourceManager rm, Configuration conf,
         ApplicationAttemptId appAttemptId, Job job) {
+<<<<<<< HEAD
       super(createMockClientService(), createAppContext(appAttemptId, job));
+=======
+      super(createMockClientService(), createAppContext(appAttemptId, job),
+          new NoopAMPreemptionPolicy());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.rm = rm;
       super.init(conf);
       super.start();
@@ -1762,7 +2005,12 @@ public class TestRMContainerAllocator {
     public MyContainerAllocator(MyResourceManager rm, Configuration conf,
         ApplicationAttemptId appAttemptId, Job job, Clock clock) {
       super(createMockClientService(),
+<<<<<<< HEAD
           createAppContext(appAttemptId, job, clock));
+=======
+          createAppContext(appAttemptId, job, clock),
+          new NoopAMPreemptionPolicy());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.rm = rm;
       super.init(conf);
       super.start();
@@ -1827,12 +2075,16 @@ public class TestRMContainerAllocator {
         }
       }, 100, 10000);
       // run the scheduler
+<<<<<<< HEAD
       try {
         super.heartbeat();
       } catch (Exception e) {
         LOG.error("error in heartbeat ", e);
         throw new YarnRuntimeException(e);
       }
+=======
+      super.heartbeat();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       List<TaskAttemptContainerAssignedEvent> result
         = new ArrayList<TaskAttemptContainerAssignedEvent>(events);
@@ -1882,7 +2134,11 @@ public class TestRMContainerAllocator {
     @Override
     protected AllocateResponse makeRemoteRequest() throws IOException,
       YarnException {
+<<<<<<< HEAD
       throw new YarnRuntimeException("for testing");
+=======
+      throw new IOException("for testing");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -2084,7 +2340,12 @@ public class TestRMContainerAllocator {
         ApplicationId.newInstance(1, 1));
 
     RMContainerAllocator allocator = new RMContainerAllocator(
+<<<<<<< HEAD
         mock(ClientService.class), appContext) {
+=======
+        mock(ClientService.class), appContext,
+        new NoopAMPreemptionPolicy()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           @Override
           protected void register() {
           }
@@ -2134,7 +2395,12 @@ public class TestRMContainerAllocator {
   @Test
   public void testCompletedContainerEvent() {
     RMContainerAllocator allocator = new RMContainerAllocator(
+<<<<<<< HEAD
         mock(ClientService.class), mock(AppContext.class));
+=======
+        mock(ClientService.class), mock(AppContext.class),
+        new NoopAMPreemptionPolicy());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
     TaskAttemptId attemptId = MRBuilderUtils.newTaskAttemptId(
         MRBuilderUtils.newTaskId(
@@ -2445,7 +2711,11 @@ public class TestRMContainerAllocator {
     try {
       allocator.schedule();
       Assert.fail("Should Have Exception");
+<<<<<<< HEAD
     } catch (YarnRuntimeException e) {
+=======
+    } catch (RMContainerAllocationException e) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Assert.assertTrue(e.getMessage().contains("Could not contact RM after"));
     }
     dispatcher.await();
@@ -2561,7 +2831,11 @@ public class TestRMContainerAllocator {
             0, 0, 0, 0, 0, 0, "jobfile", null, false, ""));
     final MockScheduler mockScheduler = new MockScheduler(appAttemptId);
     MyContainerAllocator allocator = new MyContainerAllocator(null, conf,
+<<<<<<< HEAD
         appAttemptId, mockJob) {
+=======
+        appAttemptId, mockJob, new SystemClock()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           @Override
           protected void register() {
           }
@@ -2666,6 +2940,46 @@ public class TestRMContainerAllocator {
     allocator.close();
   }
 
+<<<<<<< HEAD
+=======
+  @Test(expected = RMContainerAllocationException.class)
+  public void testAttemptNotFoundCausesRMCommunicatorException()
+      throws Exception {
+
+    Configuration conf = new Configuration();
+    MyResourceManager rm = new MyResourceManager(conf);
+    rm.start();
+    DrainDispatcher dispatcher = (DrainDispatcher) rm.getRMContext()
+        .getDispatcher();
+
+    // Submit the application
+    RMApp app = rm.submitApp(1024);
+    dispatcher.await();
+
+    MockNM amNodeManager = rm.registerNode("amNM:1234", 2048);
+    amNodeManager.nodeHeartbeat(true);
+    dispatcher.await();
+
+    ApplicationAttemptId appAttemptId = app.getCurrentAppAttempt()
+        .getAppAttemptId();
+    rm.sendAMLaunched(appAttemptId);
+    dispatcher.await();
+
+    JobId jobId = MRBuilderUtils.newJobId(appAttemptId.getApplicationId(), 0);
+    Job mockJob = mock(Job.class);
+    when(mockJob.getReport()).thenReturn(
+        MRBuilderUtils.newJobReport(jobId, "job", "user", JobState.RUNNING, 0,
+            0, 0, 0, 0, 0, 0, "jobfile", null, false, ""));
+    MyContainerAllocator allocator = new MyContainerAllocator(rm, conf,
+        appAttemptId, mockJob);
+
+    // Now kill the application
+    rm.killApp(app.getApplicationId());
+    rm.waitForState(app.getApplicationId(), RMAppState.KILLED);
+    allocator.schedule();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static class MockScheduler implements ApplicationMasterProtocol {
     ApplicationAttemptId attemptId;
     long nextContainerId = 10;
@@ -2721,6 +3035,11 @@ public class TestRMContainerAllocator {
           Collections.<NodeReport>emptyList(),
           Resource.newInstance(512000, 1024), null, 10, null,
           Collections.<NMToken>emptyList());
+<<<<<<< HEAD
+=======
+      // RM will always ensure that a default priority is sent to AM
+      response.setApplicationPriority(Priority.newInstance(0));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       containersToComplete.clear();
       containersToAllocate.clear();
       return response;

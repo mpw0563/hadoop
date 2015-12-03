@@ -20,11 +20,19 @@ package org.apache.hadoop.hdfs.web;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.hadoop.fs.ContentSummary;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.ContentSummary.Builder;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.FileChecksum;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.MD5MD5CRC32CastagnoliFileChecksum;
 import org.apache.hadoop.fs.MD5MD5CRC32FileChecksum;
 import org.apache.hadoop.fs.MD5MD5CRC32GzipFileChecksum;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.StorageType;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.XAttrCodec;
 import org.apache.hadoop.fs.permission.AclEntry;
 import org.apache.hadoop.fs.permission.AclStatus;
@@ -60,7 +68,12 @@ class JsonUtilClient {
 
   /** Convert a Json map to a RemoteException. */
   static RemoteException toRemoteException(final Map<?, ?> json) {
+<<<<<<< HEAD
     final Map<?, ?> m = (Map<?, ?>)json.get(RemoteException.class.getSimpleName());
+=======
+    final Map<?, ?> m = (Map<?, ?>)json.get(
+        RemoteException.class.getSimpleName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final String message = (String)m.get("message");
     final String javaClassName = (String)m.get("javaClassName");
     return new RemoteException(javaClassName, message);
@@ -100,7 +113,12 @@ class JsonUtilClient {
   }
 
   /** Convert a Json map to a HdfsFileStatus object. */
+<<<<<<< HEAD
   static HdfsFileStatus toFileStatus(final Map<?, ?> json, boolean includesType) {
+=======
+  static HdfsFileStatus toFileStatus(final Map<?, ?> json,
+      boolean includesType) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (json == null) {
       return null;
     }
@@ -108,7 +126,12 @@ class JsonUtilClient {
     final Map<?, ?> m = includesType ?
         (Map<?, ?>)json.get(FileStatus.class.getSimpleName()) : json;
     final String localName = (String) m.get("pathSuffix");
+<<<<<<< HEAD
     final WebHdfsConstants.PathType type = WebHdfsConstants.PathType.valueOf((String) m.get("type"));
+=======
+    final WebHdfsConstants.PathType type =
+        WebHdfsConstants.PathType.valueOf((String) m.get("type"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final byte[] symlink = type != WebHdfsConstants.PathType.SYMLINK? null
         : DFSUtilClient.string2Bytes((String) m.get("symlink"));
 
@@ -116,23 +139,41 @@ class JsonUtilClient {
     final String owner = (String) m.get("owner");
     final String group = (String) m.get("group");
     final FsPermission permission = toFsPermission((String) m.get("permission"),
+<<<<<<< HEAD
                                                    (Boolean) m.get("aclBit"),
                                                    (Boolean) m.get("encBit"));
+=======
+        (Boolean) m.get("aclBit"),
+        (Boolean) m.get("encBit"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final long aTime = ((Number) m.get("accessTime")).longValue();
     final long mTime = ((Number) m.get("modificationTime")).longValue();
     final long blockSize = ((Number) m.get("blockSize")).longValue();
     final short replication = ((Number) m.get("replication")).shortValue();
     final long fileId = m.containsKey("fileId") ?
+<<<<<<< HEAD
         ((Number) m.get("fileId")).longValue() : HdfsConstants.GRANDFATHER_INODE_ID;
+=======
+        ((Number) m.get("fileId")).longValue() :
+        HdfsConstants.GRANDFATHER_INODE_ID;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final int childrenNum = getInt(m, "childrenNum", -1);
     final byte storagePolicy = m.containsKey("storagePolicy") ?
         (byte) ((Number) m.get("storagePolicy")).longValue() :
         HdfsConstants.BLOCK_STORAGE_POLICY_ID_UNSPECIFIED;
+<<<<<<< HEAD
     return new HdfsFileStatus(len, type == WebHdfsConstants.PathType.DIRECTORY, replication,
         blockSize, mTime, aTime, permission, owner, group,
         symlink, DFSUtilClient.string2Bytes(localName),
         fileId, childrenNum, null,
         storagePolicy);
+=======
+    return new HdfsFileStatus(len, type == WebHdfsConstants.PathType.DIRECTORY,
+        replication, blockSize, mTime, aTime, permission, owner, group,
+        symlink, DFSUtilClient.string2Bytes(localName),
+        fileId, childrenNum, null,
+        storagePolicy, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Convert a Json map to an ExtendedBlock object. */
@@ -185,7 +226,11 @@ class JsonUtilClient {
 
   /** Convert a Json map to an DatanodeInfo object. */
   static DatanodeInfo toDatanodeInfo(final Map<?, ?> m)
+<<<<<<< HEAD
     throws IOException {
+=======
+      throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (m == null) {
       return null;
     }
@@ -241,7 +286,12 @@ class JsonUtilClient {
         getLong(m, "lastUpdateMonotonic", 0l),
         getInt(m, "xceiverCount", 0),
         getString(m, "networkLocation", ""),
+<<<<<<< HEAD
         DatanodeInfo.AdminStates.valueOf(getString(m, "adminState", "NORMAL")));
+=======
+        DatanodeInfo.AdminStates.valueOf(getString(m, "adminState", "NORMAL")),
+        getString(m, "upgradeDomain", ""));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Convert an Object[] to a DatanodeInfo[]. */
@@ -303,17 +353,41 @@ class JsonUtilClient {
       return null;
     }
 
+<<<<<<< HEAD
     final Map<?, ?> m = (Map<?, ?>)json.get(ContentSummary.class.getSimpleName());
+=======
+    final Map<?, ?> m = (Map<?, ?>)json.get(
+        ContentSummary.class.getSimpleName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final long length = ((Number) m.get("length")).longValue();
     final long fileCount = ((Number) m.get("fileCount")).longValue();
     final long directoryCount = ((Number) m.get("directoryCount")).longValue();
     final long quota = ((Number) m.get("quota")).longValue();
     final long spaceConsumed = ((Number) m.get("spaceConsumed")).longValue();
     final long spaceQuota = ((Number) m.get("spaceQuota")).longValue();
+<<<<<<< HEAD
 
     return new ContentSummary.Builder().length(length).fileCount(fileCount).
         directoryCount(directoryCount).quota(quota).spaceConsumed(spaceConsumed).
         spaceQuota(spaceQuota).build();
+=======
+    final Map<?, ?> typem = (Map<?, ?>) m.get("typeQuota");
+
+    Builder contentSummaryBuilder = new ContentSummary.Builder().length(length)
+        .fileCount(fileCount).directoryCount(directoryCount).quota(quota)
+        .spaceConsumed(spaceConsumed).spaceQuota(spaceQuota);
+    if (typem != null) {
+      for (StorageType t : StorageType.getTypesSupportingQuota()) {
+        Map<?, ?> type = (Map<?, ?>) typem.get(t.toString());
+        if (type != null) {
+          contentSummaryBuilder = contentSummaryBuilder.typeQuota(t,
+              ((Number) type.get("quota")).longValue()).typeConsumed(t,
+              ((Number) type.get("consumed")).longValue());
+        }
+      }
+    }
+    return contentSummaryBuilder.build();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Convert a Json map to a MD5MD5CRC32FileChecksum. */
@@ -328,13 +402,19 @@ class JsonUtilClient {
     final int length = ((Number) m.get("length")).intValue();
     final byte[] bytes = StringUtils.hexStringToByte((String) m.get("bytes"));
 
+<<<<<<< HEAD
     final DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
+=======
+    final DataInputStream in = new DataInputStream(
+        new ByteArrayInputStream(bytes));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final DataChecksum.Type crcType =
         MD5MD5CRC32FileChecksum.getCrcTypeFromAlgorithmName(algorithm);
     final MD5MD5CRC32FileChecksum checksum;
 
     // Recreate what DFSClient would have returned.
     switch(crcType) {
+<<<<<<< HEAD
       case CRC32:
         checksum = new MD5MD5CRC32GzipFileChecksum();
         break;
@@ -343,6 +423,16 @@ class JsonUtilClient {
         break;
       default:
         throw new IOException("Unknown algorithm: " + algorithm);
+=======
+    case CRC32:
+      checksum = new MD5MD5CRC32GzipFileChecksum();
+      break;
+    case CRC32C:
+      checksum = new MD5MD5CRC32CastagnoliFileChecksum();
+      break;
+    default:
+      throw new IOException("Unknown algorithm: " + algorithm);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     checksum.readFields(in);
 
@@ -389,14 +479,22 @@ class JsonUtilClient {
     return aclStatusBuilder.build();
   }
 
+<<<<<<< HEAD
   static String getPath(final Map<?, ?> json)
       throws IOException {
+=======
+  static String getPath(final Map<?, ?> json) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (json == null) {
       return null;
     }
 
+<<<<<<< HEAD
     String path = (String) json.get("Path");
     return path;
+=======
+    return (String) json.get("Path");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   static byte[] getXAttr(final Map<?, ?> json, final String name)
@@ -445,7 +543,11 @@ class JsonUtilClient {
     ObjectReader reader = new ObjectMapper().reader(List.class);
     final List<Object> xattrs = reader.readValue(namesInJson);
     final List<String> names =
+<<<<<<< HEAD
       Lists.newArrayListWithCapacity(json.keySet().size());
+=======
+        Lists.newArrayListWithCapacity(json.keySet().size());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     for (Object xattr : xattrs) {
       names.add((String) xattr);
@@ -494,7 +596,12 @@ class JsonUtilClient {
       return null;
     }
 
+<<<<<<< HEAD
     final Map<?, ?> m = (Map<?, ?>)json.get(LocatedBlocks.class.getSimpleName());
+=======
+    final Map<?, ?> m = (Map<?, ?>)json.get(
+        LocatedBlocks.class.getSimpleName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final long fileLength = ((Number) m.get("fileLength")).longValue();
     final boolean isUnderConstruction = (Boolean)m.get("isUnderConstruction");
     final List<LocatedBlock> locatedBlocks = toLocatedBlockList(
@@ -503,7 +610,11 @@ class JsonUtilClient {
         (Map<?, ?>) m.get("lastLocatedBlock"));
     final boolean isLastBlockComplete = (Boolean)m.get("isLastBlockComplete");
     return new LocatedBlocks(fileLength, isUnderConstruction, locatedBlocks,
+<<<<<<< HEAD
         lastLocatedBlock, isLastBlockComplete, null);
+=======
+        lastLocatedBlock, isLastBlockComplete, null, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
 }

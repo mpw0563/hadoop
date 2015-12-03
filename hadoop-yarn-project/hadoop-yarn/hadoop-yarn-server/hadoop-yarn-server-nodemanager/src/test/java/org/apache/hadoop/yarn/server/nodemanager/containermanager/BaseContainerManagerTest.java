@@ -22,22 +22,35 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Arrays;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.yarn.server.nodemanager.executor.DeletionAsUserContext;
 import org.junit.Assert;
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.UnsupportedFileSystemException;
+<<<<<<< HEAD
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.SecretManager.InvalidToken;
 import org.apache.hadoop.util.NodeHealthScriptRunner;
+=======
+import org.apache.hadoop.net.ServerSocketUtil;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.token.SecretManager.InvalidToken;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.ContainerManagementProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.GetContainerStatusesRequest;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
@@ -74,6 +87,11 @@ import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
 import org.junit.After;
 import org.junit.Before;
 
+<<<<<<< HEAD
+=======
+import static org.mockito.Mockito.spy;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 public abstract class BaseContainerManagerTest {
 
   protected static RecordFactory recordFactory = RecordFactoryProvider
@@ -149,7 +167,11 @@ public abstract class BaseContainerManagerTest {
   protected ContainerExecutor createContainerExecutor() {
     DefaultContainerExecutor exec = new DefaultContainerExecutor();
     exec.setConf(conf);
+<<<<<<< HEAD
     return exec;
+=======
+    return spy(exec);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Before
@@ -165,7 +187,11 @@ public abstract class BaseContainerManagerTest {
     LOG.info("Created localDir in " + localDir.getAbsolutePath());
     LOG.info("Created tmpDir in " + tmpDir.getAbsolutePath());
 
+<<<<<<< HEAD
     String bindAddress = "0.0.0.0:12345";
+=======
+    String bindAddress = "0.0.0.0:" + ServerSocketUtil.getPort(49162, 10);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     conf.set(YarnConfiguration.NM_ADDRESS, bindAddress);
     conf.set(YarnConfiguration.NM_LOCAL_DIRS, localDir.getAbsolutePath());
     conf.set(YarnConfiguration.NM_LOG_DIRS, localLogDir.getAbsolutePath());
@@ -192,7 +218,11 @@ public abstract class BaseContainerManagerTest {
       createContainerManager(DeletionService delSrvc) {
     
     return new ContainerManagerImpl(context, exec, delSrvc, nodeStatusUpdater,
+<<<<<<< HEAD
       metrics, new ApplicationACLsManager(conf), dirsHandler) {
+=======
+      metrics, dirsHandler) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       @Override
       public void
           setBlockNewContainerRequests(boolean blockNewContainerRequests) {
@@ -210,12 +240,22 @@ public abstract class BaseContainerManagerTest {
         // do nothing
       }
       @Override
+<<<<<<< HEAD
         protected void authorizeStartRequest(
             NMTokenIdentifier nmTokenIdentifier,
             ContainerTokenIdentifier containerTokenIdentifier) throws YarnException {
           // do nothing
         }
       
+=======
+      protected void authorizeStartAndResourceIncreaseRequest(
+          NMTokenIdentifier nmTokenIdentifier,
+          ContainerTokenIdentifier containerTokenIdentifier,
+          boolean startRequest) throws YarnException {
+        // do nothing
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       @Override
         protected void updateNMTokenIdentifier(
             NMTokenIdentifier nmTokenIdentifier) throws InvalidToken {
@@ -246,7 +286,11 @@ public abstract class BaseContainerManagerTest {
       public void delete(String user, Path subDir, Path... baseDirs) {
         // Don't do any deletions.
         LOG.info("Psuedo delete: user - " + user + ", subDir - " + subDir
+<<<<<<< HEAD
             + ", baseDirs - " + baseDirs); 
+=======
+            + ", baseDirs - " + Arrays.asList(baseDirs));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       };
     };
   }
@@ -311,4 +355,37 @@ public abstract class BaseContainerManagerTest {
         app.getApplicationState().equals(finalState));
   }
 
+<<<<<<< HEAD
+=======
+  public static void waitForNMContainerState(ContainerManagerImpl
+      containerManager, ContainerId containerID,
+          org.apache.hadoop.yarn.server.nodemanager.containermanager
+              .container.ContainerState finalState)
+                  throws InterruptedException, YarnException, IOException {
+    waitForNMContainerState(containerManager, containerID, finalState, 20);
+  }
+
+  public static void waitForNMContainerState(ContainerManagerImpl
+      containerManager, ContainerId containerID,
+          org.apache.hadoop.yarn.server.nodemanager.containermanager
+          .container.ContainerState finalState, int timeOutMax)
+              throws InterruptedException, YarnException, IOException {
+    Container container =
+        containerManager.getContext().getContainers().get(containerID);
+    org.apache.hadoop.yarn.server.nodemanager
+        .containermanager.container.ContainerState currentState =
+            container.getContainerState();
+    int timeoutSecs = 0;
+    while (!currentState.equals(finalState)
+        && timeoutSecs++ < timeOutMax) {
+      Thread.sleep(1000);
+      LOG.info("Waiting for NM container to get into state " + finalState
+          + ". Current state is " + currentState);
+      currentState = container.getContainerState();
+    }
+    LOG.info("Container state is " + currentState);
+    Assert.assertEquals("ContainerState is not correct (timedout)",
+        finalState, currentState);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

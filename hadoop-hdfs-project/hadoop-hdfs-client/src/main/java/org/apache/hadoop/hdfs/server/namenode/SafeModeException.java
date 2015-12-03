@@ -25,8 +25,13 @@ import org.apache.hadoop.classification.InterfaceStability;
 
 /**
  * This exception is thrown when the name node is in safe mode.
+<<<<<<< HEAD
  * Client cannot modified namespace until the safe mode is off. 
  * 
+=======
+ * Client cannot modified namespace until the safe mode is off.
+ *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  */
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
@@ -35,4 +40,8 @@ public class SafeModeException extends IOException {
   public SafeModeException(String msg) {
     super(msg);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

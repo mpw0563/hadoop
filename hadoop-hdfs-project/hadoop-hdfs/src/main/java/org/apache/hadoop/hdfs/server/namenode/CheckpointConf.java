@@ -44,7 +44,17 @@ public class CheckpointConf {
 
   /** The output dir for legacy OIV image */
   private final String legacyOivImageDir;
+<<<<<<< HEAD
   
+=======
+
+  /**
+  * multiplier on the checkpoint period to allow other nodes to do the checkpointing, when not the
+  * 'primary' checkpoint node
+  */
+  private double quietMultiplier;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public CheckpointConf(Configuration conf) {
     checkpointCheckPeriod = conf.getLong(
         DFS_NAMENODE_CHECKPOINT_CHECK_PERIOD_KEY,
@@ -57,6 +67,11 @@ public class CheckpointConf {
     maxRetriesOnMergeError = conf.getInt(DFS_NAMENODE_CHECKPOINT_MAX_RETRIES_KEY,
                                   DFS_NAMENODE_CHECKPOINT_MAX_RETRIES_DEFAULT);
     legacyOivImageDir = conf.get(DFS_NAMENODE_LEGACY_OIV_IMAGE_DIR_KEY);
+<<<<<<< HEAD
+=======
+    quietMultiplier = conf.getDouble(DFS_NAMENODE_CHECKPOINT_QUIET_MULTIPLIER_KEY,
+      DFS_NAMENODE_CHECKPOINT_QUIET_MULTIPLIER_DEFAULT);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     warnForDeprecatedConfigs(conf);
   }
   
@@ -91,4 +106,11 @@ public class CheckpointConf {
   public String getLegacyOivImageDir() {
     return legacyOivImageDir;
   }
+<<<<<<< HEAD
+=======
+
+  public double getQuietPeriod() {
+    return this.checkpointPeriod * this.quietMultiplier;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

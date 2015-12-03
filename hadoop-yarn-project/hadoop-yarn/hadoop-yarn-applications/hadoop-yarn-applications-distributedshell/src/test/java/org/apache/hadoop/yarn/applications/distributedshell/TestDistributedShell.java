@@ -39,6 +39,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.net.NetUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.net.ServerSocketUtil;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.JarFinder;
 import org.apache.hadoop.util.Shell;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
@@ -81,6 +85,11 @@ public class TestDistributedShell {
     conf.setBoolean(YarnConfiguration.TIMELINE_SERVICE_ENABLED, true);
     conf.set(YarnConfiguration.RM_SCHEDULER, CapacityScheduler.class.getName());
     conf.setBoolean(YarnConfiguration.NODE_LABELS_ENABLED, true);
+<<<<<<< HEAD
+=======
+    conf.set("mapreduce.jobhistory.address",
+        "0.0.0.0:" + ServerSocketUtil.getPort(10021, 10));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
     if (yarnCluster == null) {
       yarnCluster =
@@ -89,9 +98,20 @@ public class TestDistributedShell {
       yarnCluster.init(conf);
       
       yarnCluster.start();
+<<<<<<< HEAD
       
       waitForNMsToRegister();
       
+=======
+
+      conf.set(
+          YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+          MiniYARNCluster.getHostname() + ":"
+              + yarnCluster.getApplicationHistoryServer().getPort());
+
+      waitForNMsToRegister();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       URL url = Thread.currentThread().getContextClassLoader().getResource("yarn-site.xml");
       if (url == null) {
         throw new RuntimeException("Could not find 'yarn-site.xml' dummy file in classpath");

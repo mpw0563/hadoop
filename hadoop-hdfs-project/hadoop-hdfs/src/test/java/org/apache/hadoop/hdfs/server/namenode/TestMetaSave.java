@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.assertFalse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -26,7 +30,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+<<<<<<< HEAD
 import java.util.Random;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
@@ -36,9 +43,17 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.junit.AfterClass;
+=======
+import org.apache.hadoop.hdfs.DFSTestUtil;
+import org.apache.hadoop.hdfs.HdfsConfiguration;
+import org.apache.hadoop.hdfs.MiniDFSCluster;
+import org.junit.AfterClass;
+import org.junit.Assert;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -52,6 +67,7 @@ public class TestMetaSave {
   private static MiniDFSCluster cluster = null;
   private static FileSystem fileSys = null;
   private static NamenodeProtocols nnRpc = null;
+<<<<<<< HEAD
 
   private void createFile(FileSystem fileSys, Path name) throws IOException {
     FSDataOutputStream stm = fileSys.create(name, true, fileSys.getConf()
@@ -63,6 +79,8 @@ public class TestMetaSave {
     stm.write(buffer);
     stm.close();
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @BeforeClass
   public static void setUp() throws IOException {
@@ -87,13 +105,19 @@ public class TestMetaSave {
   public void testMetaSave() throws IOException, InterruptedException {
     for (int i = 0; i < 2; i++) {
       Path file = new Path("/filestatus" + i);
+<<<<<<< HEAD
       createFile(fileSys, file);
+=======
+      DFSTestUtil.createFile(fileSys, file, 1024, 1024, blockSize, (short) 2,
+          seed);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     cluster.stopDataNode(1);
     // wait for namenode to discover that a datanode is dead
     Thread.sleep(15000);
     nnRpc.setReplication("/filestatus0", (short) 4);
+<<<<<<< HEAD
 
     nnRpc.metaSave("metasave.out.txt");
 
@@ -120,6 +144,35 @@ public class TestMetaSave {
     }
   }
 
+=======
+
+    nnRpc.metaSave("metasave.out.txt");
+
+    // Verification
+    FileInputStream fstream = new FileInputStream(getLogFile(
+      "metasave.out.txt"));
+    DataInputStream in = new DataInputStream(fstream);
+    BufferedReader reader = null;
+    try {
+      reader = new BufferedReader(new InputStreamReader(in));
+      String line = reader.readLine();
+      Assert.assertEquals(
+          "3 files and directories, 2 blocks = 5 total filesystem objects",
+          line);
+      line = reader.readLine();
+      assertTrue(line.equals("Live Datanodes: 1"));
+      line = reader.readLine();
+      assertTrue(line.equals("Dead Datanodes: 1"));
+      reader.readLine();
+      line = reader.readLine();
+      assertTrue(line.matches("^/filestatus[01]:.*"));
+    } finally {
+      if (reader != null)
+        reader.close();
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Tests metasave after delete, to make sure there are no orphaned blocks
    */
@@ -128,7 +181,8 @@ public class TestMetaSave {
       throws IOException, InterruptedException {
     for (int i = 0; i < 2; i++) {
       Path file = new Path("/filestatus" + i);
-      createFile(fileSys, file);
+      DFSTestUtil.createFile(fileSys, file, 1024, 1024, blockSize, (short) 2,
+          seed);
     }
 
     cluster.stopDataNode(1);
@@ -158,6 +212,19 @@ public class TestMetaSave {
       assertTrue(line.equals("Mis-replicated blocks that have been postponed:"));
       line = reader.readLine();
       assertTrue(line.equals("Metasave: Blocks being replicated: 0"));
+<<<<<<< HEAD
+=======
+      line = reader.readLine();
+      assertTrue(line.equals("Metasave: Blocks 2 waiting deletion from 1 datanodes."));
+     //skip 2 lines to reach HDFS-9033 scenario.
+      line = reader.readLine();
+      line = reader.readLine();
+      line = reader.readLine();
+      assertTrue(line.equals("Metasave: Number of datanodes: 2"));
+      line = reader.readLine();
+      assertFalse(line.contains("NaN"));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       if (reader != null)
         reader.close();

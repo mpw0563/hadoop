@@ -43,10 +43,18 @@ import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.metrics2.source.JvmMetrics;
 import org.apache.hadoop.metrics2.util.MBeans;
 import org.apache.hadoop.security.SecurityUtil;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.tracing.TraceUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.DiskChecker;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+<<<<<<< HEAD
+=======
+import org.apache.htrace.core.Tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.mortbay.util.ajax.JSON;
 
 import com.google.common.base.Preconditions;
@@ -69,6 +77,10 @@ public class JournalNode implements Tool, Configurable, JournalNodeMXBean {
   private ObjectName journalNodeInfoBeanName;
   private String httpServerURI;
   private File localDir;
+<<<<<<< HEAD
+=======
+  Tracer tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   static {
     HdfsConfiguration.init();
@@ -105,6 +117,14 @@ public class JournalNode implements Tool, Configurable, JournalNodeMXBean {
     this.localDir = new File(
         conf.get(DFSConfigKeys.DFS_JOURNALNODE_EDITS_DIR_KEY,
         DFSConfigKeys.DFS_JOURNALNODE_EDITS_DIR_DEFAULT).trim());
+<<<<<<< HEAD
+=======
+    if (this.tracer == null) {
+      this.tracer = new Tracer.Builder("JournalNode").
+          conf(TraceUtils.wrapHadoopConf("journalnode.htrace", conf)).
+          build();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static void validateAndCreateJournalDir(File dir) throws IOException {
@@ -203,6 +223,13 @@ public class JournalNode implements Tool, Configurable, JournalNodeMXBean {
       MBeans.unregister(journalNodeInfoBeanName);
       journalNodeInfoBeanName = null;
     }
+<<<<<<< HEAD
+=======
+    if (tracer != null) {
+      tracer.close();
+      tracer = null;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -296,11 +323,14 @@ public class JournalNode implements Tool, Configurable, JournalNodeMXBean {
     System.exit(ToolRunner.run(new JournalNode(), args));
   }
 
+<<<<<<< HEAD
   public void discardSegments(String journalId, long startTxId)
       throws IOException {
     getOrCreateJournal(journalId).discardSegments(startTxId);
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void doPreUpgrade(String journalId) throws IOException {
     getOrCreateJournal(journalId).doPreUpgrade();
   }
@@ -323,8 +353,19 @@ public class JournalNode implements Tool, Configurable, JournalNodeMXBean {
     getOrCreateJournal(journalId, StartupOption.ROLLBACK).doRollback();
   }
 
+<<<<<<< HEAD
   public Long getJournalCTime(String journalId) throws IOException {
     return getOrCreateJournal(journalId).getJournalCTime();
   }
 
+=======
+  public void discardSegments(String journalId, long startTxId)
+      throws IOException {
+    getOrCreateJournal(journalId).discardSegments(startTxId);
+  }
+
+  public Long getJournalCTime(String journalId) throws IOException {
+    return getOrCreateJournal(journalId).getJournalCTime();
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

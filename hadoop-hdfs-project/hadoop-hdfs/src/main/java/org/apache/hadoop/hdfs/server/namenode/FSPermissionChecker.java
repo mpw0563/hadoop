@@ -179,6 +179,19 @@ class FSPermissionChecker implements AccessControlEnforcer {
       if (inodes[i] != null) {
         pathByNameArr[i] = inodes[i].getLocalNameBytes();
         inodeAttrs[i] = getINodeAttrs(pathByNameArr, i, inodes[i], snapshotId);
+<<<<<<< HEAD
+      }
+    }
+
+    String path = inodesInPath.getPath();
+    int ancestorIndex = inodes.length - 2;
+
+    AccessControlEnforcer enforcer =
+        getAttributesProvider().getExternalAccessControlEnforcer(this);
+    enforcer.checkPermission(fsOwner, supergroup, callerUgi, inodeAttrs, inodes,
+        pathByNameArr, snapshotId, path, ancestorIndex, doCheckOwner,
+        ancestorAccess, parentAccess, access, subAccess, ignoreEmptyDir);
+=======
       }
     }
 
@@ -192,6 +205,26 @@ class FSPermissionChecker implements AccessControlEnforcer {
         ancestorAccess, parentAccess, access, subAccess, ignoreEmptyDir);
   }
 
+  /**
+   * Check whether exception e is due to an ancestor inode's not being
+   * directory.
+   */
+  private void checkAncestorType(INode[] inodes, int ancestorIndex,
+      AccessControlException e) throws AccessControlException {
+    for (int i = 0; i <= ancestorIndex; i++) {
+      if (inodes[i] == null) {
+        break;
+      }
+      if (!inodes[i].isDirectory()) {
+        throw new AccessControlException(
+            e.getMessage() + " (Ancestor " + inodes[i].getFullPathName()
+                + " is not a directory).");
+      }
+    }
+    throw e;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  }
+
   @Override
   public void checkPermission(String fsOwner, String supergroup,
       UserGroupInformation callerUgi, INodeAttributes[] inodeAttrs,
@@ -202,12 +235,24 @@ class FSPermissionChecker implements AccessControlEnforcer {
       throws AccessControlException {
     for(; ancestorIndex >= 0 && inodes[ancestorIndex] == null;
         ancestorIndex--);
+<<<<<<< HEAD
     checkTraverse(inodeAttrs, path, ancestorIndex);
+=======
+    try {
+      checkTraverse(inodeAttrs, path, ancestorIndex);
+    } catch (AccessControlException e) {
+      checkAncestorType(inodes, ancestorIndex, e);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     final INodeAttributes last = inodeAttrs[inodeAttrs.length - 1];
     if (parentAccess != null && parentAccess.implies(FsAction.WRITE)
         && inodeAttrs.length > 1 && last != null) {
+<<<<<<< HEAD
       checkStickyBit(inodeAttrs[inodeAttrs.length - 2], last);
+=======
+      checkStickyBit(inodeAttrs[inodeAttrs.length - 2], last, path);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     if (ancestorAccess != null && inodeAttrs.length > 1) {
       check(inodeAttrs, path, ancestorIndex, ancestorAccess);
@@ -318,6 +363,7 @@ class FSPermissionChecker implements AccessControlEnforcer {
     }
     throw new AccessControlException(
         toAccessControlString(inode, path, access, mode));
+<<<<<<< HEAD
   }
 
   /**
@@ -407,6 +453,97 @@ class FSPermissionChecker implements AccessControlEnforcer {
   /** Guarded by {@link FSNamesystem#readLock()} */
   private void checkStickyBit(INodeAttributes parent, INodeAttributes inode
       ) throws AccessControlException {
+=======
+  }
+
+  /**
+   * Checks requested access against an Access Control List.  This method relies
+   * on finding the ACL data in the relevant portions of {@link FsPermission} and
+   * {@link AclFeature} as implemented in the logic of {@link AclStorage}.  This
+   * method also relies on receiving the ACL entries in sorted order.  This is
+   * assumed to be true, because the ACL modification methods in
+   * {@link AclTransformation} sort the resulting entries.
+   *
+   * More specifically, this method depends on these invariants in an ACL:
+   * - The list must be sorted.
+   * - Each entry in the list must be unique by scope + type + name.
+   * - There is exactly one each of the unnamed user/group/other entries.
+   * - The mask entry must not have a name.
+   * - The other entry must not have a name.
+   * - Default entries may be present, but they are ignored during enforcement.
+   *
+   * @param inode INodeAttributes accessed inode
+   * @param snapshotId int snapshot ID
+   * @param access FsAction requested permission
+   * @param mode FsPermission mode from inode
+   * @param aclFeature AclFeature of inode
+   * @throws AccessControlException if the ACL denies permission
+   */
+  private void checkAccessAcl(INodeAttributes inode, String path,
+      FsAction access, FsPermission mode, AclFeature aclFeature)
+      throws AccessControlException {
+    boolean foundMatch = false;
+
+    // Use owner entry from permission bits if user is owner.
+    if (getUser().equals(inode.getUserName())) {
+      if (mode.getUserAction().implies(access)) {
+        return;
+      }
+      foundMatch = true;
+    }
+
+    // Check named user and group entries if user was not denied by owner entry.
+    if (!foundMatch) {
+      for (int pos = 0, entry; pos < aclFeature.getEntriesSize(); pos++) {
+        entry = aclFeature.getEntryAt(pos);
+        if (AclEntryStatusFormat.getScope(entry) == AclEntryScope.DEFAULT) {
+          break;
+        }
+        AclEntryType type = AclEntryStatusFormat.getType(entry);
+        String name = AclEntryStatusFormat.getName(entry);
+        if (type == AclEntryType.USER) {
+          // Use named user entry with mask from permission bits applied if user
+          // matches name.
+          if (getUser().equals(name)) {
+            FsAction masked = AclEntryStatusFormat.getPermission(entry).and(
+                mode.getGroupAction());
+            if (masked.implies(access)) {
+              return;
+            }
+            foundMatch = true;
+            break;
+          }
+        } else if (type == AclEntryType.GROUP) {
+          // Use group entry (unnamed or named) with mask from permission bits
+          // applied if user is a member and entry grants access.  If user is a
+          // member of multiple groups that have entries that grant access, then
+          // it doesn't matter which is chosen, so exit early after first match.
+          String group = name == null ? inode.getGroupName() : name;
+          if (getGroups().contains(group)) {
+            FsAction masked = AclEntryStatusFormat.getPermission(entry).and(
+                mode.getGroupAction());
+            if (masked.implies(access)) {
+              return;
+            }
+            foundMatch = true;
+          }
+        }
+      }
+    }
+
+    // Use other entry if user was not denied by an earlier match.
+    if (!foundMatch && mode.getOtherAction().implies(access)) {
+      return;
+    }
+
+    throw new AccessControlException(
+        toAccessControlString(inode, path, access, mode));
+  }
+
+  /** Guarded by {@link FSNamesystem#readLock()} */
+  private void checkStickyBit(INodeAttributes parent, INodeAttributes inode,
+      String path) throws AccessControlException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (!parent.getFsPermission().getStickyBit()) {
       return;
     }
@@ -421,8 +558,19 @@ class FSPermissionChecker implements AccessControlEnforcer {
       return;
     }
 
+<<<<<<< HEAD
     throw new AccessControlException("Permission denied by sticky bit setting:" +
       " user=" + getUser() + ", inode=" + inode);
+=======
+    throw new AccessControlException(String.format(
+        "Permission denied by sticky bit: user=%s, path=\"%s\":%s:%s:%s%s, " +
+        "parent=\"%s\":%s:%s:%s%s", user,
+        path, inode.getUserName(), inode.getGroupName(),
+        inode.isDirectory() ? "d" : "-", inode.getFsPermission().toString(),
+        path.substring(0, path.length() - inode.toString().length() - 1 ),
+        parent.getUserName(), parent.getGroupName(),
+        parent.isDirectory() ? "d" : "-", parent.getFsPermission().toString()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

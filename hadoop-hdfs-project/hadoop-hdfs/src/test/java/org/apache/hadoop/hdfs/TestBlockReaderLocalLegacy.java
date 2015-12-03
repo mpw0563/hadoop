@@ -64,12 +64,20 @@ public class TestBlockReaderLocalLegacy {
           getAbsolutePath());
     }
     conf.setBoolean(HdfsClientConfigKeys.Read.ShortCircuit.KEY, true);
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADERLOCAL, true);
+=======
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADERLOCAL, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     conf.setBoolean(HdfsClientConfigKeys.Read.ShortCircuit.SKIP_CHECKSUM_KEY,
         false);
     conf.set(DFSConfigKeys.DFS_BLOCK_LOCAL_PATH_ACCESS_USER_KEY,
         UserGroupInformation.getCurrentUser().getShortUserName());
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC, false);
+=======
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_DOMAIN_SOCKET_DATA_TRAFFIC, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Set short retry timeouts so this test runs faster
     conf.setInt(HdfsClientConfigKeys.Retry.WINDOW_BASE_KEY, 10);
     return conf;
@@ -164,7 +172,11 @@ public class TestBlockReaderLocalLegacy {
   public void testBlockReaderLocalLegacyWithAppend() throws Exception {
     final short REPL_FACTOR = 1;
     final HdfsConfiguration conf = getConfiguration(null);
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADERLOCAL, true);
+=======
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADERLOCAL, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     final MiniDFSCluster cluster =
         new MiniDFSCluster.Builder(conf).numDataNodes(1).build();
@@ -182,7 +194,11 @@ public class TestBlockReaderLocalLegacy {
     {
       final LocatedBlock lb = cluster.getNameNode().getRpcServer()
           .getBlockLocations(path.toString(), 0, 1).get(0);
+<<<<<<< HEAD
       proxy = DFSUtil.createClientDatanodeProtocolProxy(
+=======
+      proxy = DFSUtilClient.createClientDatanodeProtocolProxy(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           lb.getLocations()[0], conf, 60000, false);
       token = lb.getBlockToken();
 

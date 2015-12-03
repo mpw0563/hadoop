@@ -165,7 +165,11 @@
       <comparators>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^-get( )*\[-p\]( )*\[-ignoreCrc\]( )*\[-crc\]( )*&lt;src&gt; \.\.\. &lt;localdst&gt; :\s*</expected-output>
+=======
+          <expected-output>^-get( )*\[-f\]( )*\[-p\]( )*\[-ignoreCrc\]( )*\[-crc\]( )*&lt;src&gt; \.\.\. &lt;localdst&gt; :\s*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -173,11 +177,23 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>\s*When copying multiple files, the destination must be a directory. Passing -p\s*</expected-output>
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^( |\t)*preserves access and modification times, ownership and the mode.*</expected-output>
+=======
+           <expected-output>^( |\t)*When copying multiple files, the destination must be a directory. Passing -f( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*overwrites the destination if it already exists and -p preserves access and( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+         <expected-output>^( |\t)*modification times, ownership and the mode.*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
       </comparators>
     </test>
@@ -232,7 +248,7 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
-          <expected-output>^\s*size\s+name\(full path\)\s*</expected-output>
+          <expected-output>^\s*size\s+disk space consumed\s+name\(full path\)\s*</expected-output>
         </comparator>
       </comparators>
     </test>
@@ -279,6 +295,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^( |\t)*DIR_COUNT FILE_COUNT CONTENT_SIZE PATHNAME( )*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -290,6 +307,19 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*or, with the -q option:( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*QUOTA REM_QUOTA SPACE_QUOTA REM_SPACE_QUOTA( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <expected-output>^( |\t)*DIR_COUNT FILE_COUNT CONTENT_SIZE PATHNAME( )*</expected-output>
         </comparator>
         <comparator>
@@ -336,11 +366,16 @@
       <comparators>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^-cp \[-f\] \[-p \| -p\[topax\]\] &lt;src&gt; \.\.\. &lt;dst&gt; :\s*</expected-output>
+=======
+          <expected-output>^-cp \[-f\] \[-p \| -p\[topax\]\] \[-d\] &lt;src&gt; \.\.\. &lt;dst&gt; :\s*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^\s*Copy files that match the file pattern &lt;src&gt; to a destination.  When copying( )*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -360,6 +395,27 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*multiple files, the destination must be a directory.( )*Passing -p preserves status( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*\[topax\] \(timestamps, ownership, permission, ACLs, XAttr\). If -p is specified( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*with no &lt;arg&gt;, then preserves timestamps, ownership, permission. If -pa is( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*specified, then preserves permission also because ACL is a super-set of( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <expected-output>^( |\t)*permission. Passing -f overwrites the destination if it already exists. raw( )*</expected-output>
         </comparator>
         <comparator>
@@ -376,7 +432,15 @@
         </comparator>
         <comparator>
             <type>RegexpComparator</type>
+<<<<<<< HEAD
             <expected-output>^\s*\(or absence\) of the \/\.reserved\/raw prefix and not by the -p option.( )*</expected-output>
+=======
+          <expected-output>^\s*\(or absence\) of the \/\.reserved\/raw prefix and not by the -p option\. Passing -d( )*</expected-output>
+        </comparator>
+        <comparator>
+            <type>RegexpComparator</type>
+            <expected-output>^\s*will skip creation of temporary file\(&lt;dst&gt;\._COPYING_\)\.( )*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
       </comparators>
     </test>
@@ -391,7 +455,11 @@
       <comparators>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^-rm \[-f\] \[-r\|-R\] \[-skipTrash\] &lt;src&gt; \.\.\. :\s*</expected-output>
+=======
+          <expected-output>^-rm \[-f\] \[-r\|-R\] \[-skipTrash\] \[-safely\] &lt;src&gt; \.\.\. :\s*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -403,7 +471,11 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^\s*-skipTrash\s+option bypasses trash, if enabled, and immediately deletes &lt;src&gt;( )*</expected-output>
+=======
+          <expected-output>^\s*-skipTrash\s+option bypasses trash, if enabled, and immediately deletes &lt;src&gt;\.( )*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -415,7 +487,11 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^\s+-\[rR\]\s+Recursively deletes directories\s*</expected-output>
+=======
+          <expected-output>^\s+-\[rR\]\s+Recursively deletes directories\.\s*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
       </comparators>
     </test>
@@ -431,6 +507,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^-rmdir \[--ignore-fail-on-non-empty\] &lt;dir&gt; \.\.\. :\s*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -438,6 +515,15 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>\s+Removes the directory entry specified by each directory argument, provided it is\s*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <expected-output>\s+empty\.\s*</expected-output>
         </comparator>
       </comparators>
@@ -472,7 +558,11 @@
       <comparators>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^-put \[-f\] \[-p\] \[-l\] &lt;localsrc&gt; \.\.\. &lt;dst&gt; :( )*</expected-output>
+=======
+          <expected-output>^-put \[-f\] \[-p\] \[-l\] \[-d\] &lt;localsrc&gt; \.\.\. &lt;dst&gt; :( )*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -493,6 +583,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^\s*-f  Overwrites the destination if it already exists.( )*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -505,6 +596,24 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^\s*durability. Use with care.( )*</expected-output>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*-l  Allow DataNode to lazily persist the file to disk. Forces( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*replication factor of 1. This flag will result in reduced( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*durability. Use with care.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*-d  Skip creation of temporary file\(&lt;dst&gt;\._COPYING_\).( )*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
       </comparators>
     </test>
@@ -519,7 +628,11 @@
       <comparators>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^-copyFromLocal \[-f\] \[-p\] \[-l\] &lt;localsrc&gt; \.\.\. &lt;dst&gt; :\s*</expected-output>
+=======
+          <expected-output>^-copyFromLocal \[-f\] \[-p\] \[-l\] \[-d\] &lt;localsrc&gt; \.\.\. &lt;dst&gt; :\s*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -558,6 +671,7 @@
       <comparators>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^-get( )*\[-p\]( )*\[-ignoreCrc\]( )*\[-crc\]( )*&lt;src&gt; \.\.\. &lt;localdst&gt; :\s*</expected-output>
         </comparator>
         <comparator>
@@ -571,6 +685,25 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^( |\t)*preserves access and modification times, ownership and the mode.( )*</expected-output>
+=======
+          <expected-output>^-get( )*\[-f\]( )*\[-p\]( )*\[-ignoreCrc\]( )*\[-crc\]( )*&lt;src&gt; \.\.\. &lt;localdst&gt; :\s*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*Copy files that match the file pattern &lt;src&gt; to the local name.( )*&lt;src&gt; is kept.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*When copying multiple files, the destination must be a directory. Passing -f( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*overwrites the destination if it already exists and -p preserves access and( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+         <expected-output>^( |\t)*modification times, ownership and the mode.*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
       </comparators>
     </test>
@@ -586,6 +719,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^-getmerge \[-nl\] &lt;src&gt; &lt;localdst&gt; :\s*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -597,6 +731,19 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*Get all the files in the directories that match the source file pattern and( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*merge and sort them to only one file on local fs. &lt;src&gt; is kept.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <expected-output>^( |\t)*-nl\s+Add a newline character at the end of each file.( )*</expected-output>
         </comparator>
       </comparators>
@@ -614,6 +761,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^-cat \[-ignoreCrc\] &lt;src&gt; \.\.\. :\s*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -645,6 +793,39 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*Fetch all files that match the file pattern &lt;src&gt; and display their content on\s*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*stdout.</expected-output>
+        </comparator>
+      </comparators>
+    </test>
+
+    <test> <!-- TESTED -->
+      <description>help: help for checksum</description>
+      <test-commands>
+        <command>-help checksum</command>
+      </test-commands>
+      <cleanup-commands>
+        <!-- No cleanup -->
+      </cleanup-commands>
+      <comparators>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^-checksum &lt;src&gt; \.\.\. :\s*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*Dump checksum information for files that match the file pattern &lt;src&gt; to stdout\.\s*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <expected-output>^\s*Note that this requires a round-trip to a datanode storing each block of the\s*</expected-output>
         </comparator>
         <comparator>
@@ -672,7 +853,11 @@
       <comparators>
         <comparator>
           <type>RegexpComparator</type>
+<<<<<<< HEAD
           <expected-output>^-copyToLocal \[-p\] \[-ignoreCrc\] \[-crc\] &lt;src&gt; \.\.\. &lt;localdst&gt; :\s*</expected-output>
+=======
+          <expected-output>^-copyToLocal \[-f\] \[-p\] \[-ignoreCrc\] \[-crc\] &lt;src&gt; \.\.\. &lt;localdst&gt; :\s*</expected-output>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -734,6 +919,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^-setrep \[-R\] \[-w\] &lt;rep&gt; &lt;path&gt; \.\.\. :\s*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -752,6 +938,26 @@
             <expected-output>^\s*-w\s+It requests that the command waits for the replication to complete\. This( )*</expected-output>
         </comparator>
         <comparator>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*Set the replication level of a file. If &lt;path&gt; is a directory then the command( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*recursively changes the replication factor of all files under the directory tree( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^\s*rooted at &lt;path&gt;\.( )*</expected-output>
+        </comparator>
+        <comparator>
+            <type>RegexpComparator</type>
+            <expected-output>^\s*-w\s+It requests that the command waits for the replication to complete\. This( )*</expected-output>
+        </comparator>
+        <comparator>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             <type>RegexpComparator</type>
             <expected-output>^( |\t)*can potentially take a very long time\.( )*</expected-output>
         </comparator>
@@ -819,6 +1025,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^-stat \[format\] &lt;path&gt; \.\.\. :\s*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -850,6 +1057,39 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*Print statistics about the file/directory at &lt;path&gt;( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*in the specified format. Format accepts filesize in( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*blocks \(%b\), type \(%F\), group name of owner \(%g\),( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*name \(%n\), block size \(%o\), replication \(%r\), user name( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*of owner \(%u\), modification date \(%y, %Y\).( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*%y shows UTC date as "yyyy-MM-dd HH:mm:ss" and( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*%Y shows milliseconds since January 1, 1970 UTC.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <expected-output>^( |\t)*If the format is not specified, %y is used by default.( )*</expected-output>
         </comparator>
       </comparators>
@@ -889,6 +1129,7 @@
         <comparator>
           <type>RegexpComparator</type>
           <expected-output>^-chmod \[-R\] &lt;MODE\[,MODE\]... \| OCTALMODE&gt; PATH... :\s*</expected-output>
+<<<<<<< HEAD
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
@@ -936,6 +1177,55 @@
         </comparator>
         <comparator>
           <type>RegexpComparator</type>
+=======
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*Changes permissions of a file. This works similar to the shell's chmod command( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*with a few exceptions.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*-R\s*modifies the files recursively. This is the only option currently( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*supported.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*&lt;MODE&gt;\s*Mode is the same as mode used for the shell's command. The only( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*letters recognized are 'rwxXt', e\.g\. \+t,a\+r,g-w,\+rwx,o=r\.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*&lt;OCTALMODE&gt;\s+Mode specifed in 3 or 4 digits. If 4 digits, the first may be 1 or( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*0 to turn the sticky bit on or off, respectively.( )*Unlike( |\t)*the( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*shell command, it is not possible to specify only part of the( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*mode, e\.g\. 754 is same as u=rwx,g=rx,o=r\.( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+          <expected-output>^( |\t)*If none of 'augo' is specified, 'a' is assumed and unlike the shell command, no( )*</expected-output>
+        </comparator>
+        <comparator>
+          <type>RegexpComparator</type>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <expected-output>^( |\t)*umask is applied.( )*</expected-output>
         </comparator>
       </comparators>

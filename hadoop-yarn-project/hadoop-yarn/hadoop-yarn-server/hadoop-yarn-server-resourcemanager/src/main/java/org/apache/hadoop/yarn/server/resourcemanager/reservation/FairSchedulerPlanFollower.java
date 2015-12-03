@@ -30,7 +30,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSParentQueu
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hadoop.yarn.util.Clock;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.util.resource.Resources;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +63,7 @@ public class FairSchedulerPlanFollower extends AbstractSchedulerPlanFollower {
   }
 
   @Override
+<<<<<<< HEAD
   protected float calculateReservationToPlanRatio(Resource clusterResources,
       Resource planResources, Resource capToAssign) {
     return Resources.divide(fs.getResourceCalculator(),
@@ -74,6 +78,8 @@ public class FairSchedulerPlanFollower extends AbstractSchedulerPlanFollower {
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected List<? extends Queue> getChildReservationQueues(Queue queue) {
     FSQueue planQueue = (FSQueue)queue;
     List<FSQueue> childQueues = planQueue.getChildQueues();

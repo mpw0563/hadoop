@@ -105,7 +105,11 @@ public class SaslPlainServer implements SaslServer {
         authz = ac.getAuthorizedID();
       }
     } catch (Exception e) {
+<<<<<<< HEAD
       throw new SaslException("PLAIN auth failed: " + e.getMessage());
+=======
+      throw new SaslException("PLAIN auth failed: " + e.toString(), e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       completed = true;
     }

@@ -21,7 +21,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+<<<<<<< HEAD
 import java.io.File;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +35,7 @@ import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
@@ -64,6 +68,27 @@ public class TestReplicationPolicyWithNodeGroup {
   private static final DatanodeStorageInfo[] storages;
   private static final DatanodeDescriptor[] dataNodes;
   static {
+=======
+import org.apache.hadoop.fs.StorageType;
+import org.apache.hadoop.hdfs.DFSTestUtil;
+import org.apache.hadoop.hdfs.TestBlockStoragePolicy;
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+import org.apache.hadoop.net.NetworkTopology;
+import org.apache.hadoop.net.NetworkTopologyWithNodeGroup;
+import org.apache.hadoop.net.Node;
+import org.junit.Test;
+
+
+public class TestReplicationPolicyWithNodeGroup extends BaseReplicationPolicyTest {
+  public TestReplicationPolicyWithNodeGroup() {
+    this.blockPlacementPolicy = BlockPlacementPolicyWithNodeGroup.class.getName();
+  }
+
+  @Override
+  DatanodeDescriptor[] getDatanodeDescriptors(Configuration conf) {
+    conf.set(CommonConfigurationKeysPublic.NET_TOPOLOGY_IMPL_KEY,
+            NetworkTopologyWithNodeGroup.class.getName());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final String[] racks = {
         "/d1/r1/n1",
         "/d1/r1/n1",
@@ -75,7 +100,11 @@ public class TestReplicationPolicyWithNodeGroup {
         "/d2/r3/n6"
     };
     storages = DFSTestUtil.createDatanodeStorageInfos(racks);
+<<<<<<< HEAD
     dataNodes = DFSTestUtil.toDatanodeDescriptor(storages);
+=======
+    return DFSTestUtil.toDatanodeDescriptor(storages);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static final DatanodeStorageInfo[] storagesInBoundaryCase;
@@ -142,6 +171,7 @@ public class TestReplicationPolicyWithNodeGroup {
     dataNodesForDependencies = DFSTestUtil.toDatanodeDescriptor(storagesForDependencies);
     
   };
+<<<<<<< HEAD
   
   @Before
   public void setUp() throws Exception {
@@ -196,6 +226,9 @@ public class TestReplicationPolicyWithNodeGroup {
     }
   }
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Scan the targets list: all targets should be on different NodeGroups.
    * Return false if two targets are found on the same NodeGroup.
@@ -204,7 +237,11 @@ public class TestReplicationPolicyWithNodeGroup {
       DatanodeStorageInfo[] targets) {
     if(targets.length == 0)
       return true;
+<<<<<<< HEAD
     Set<String> targetSet = new HashSet<String>();
+=======
+    Set<String> targetSet = new HashSet<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for(DatanodeStorageInfo storage:targets) {
       final DatanodeDescriptor node = storage.getDatanodeDescriptor();
       String nodeGroup = NetworkTopology.getLastHalf(node.getNetworkLocation());
@@ -217,10 +254,13 @@ public class TestReplicationPolicyWithNodeGroup {
     return true;
   }
 
+<<<<<<< HEAD
   private boolean isOnSameRack(DatanodeStorageInfo left, DatanodeStorageInfo right) {
     return isOnSameRack(left.getDatanodeDescriptor(), right);
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private boolean isOnSameRack(DatanodeDescriptor left, DatanodeStorageInfo right) {
     return cluster.isOnSameRack(left, right.getDatanodeDescriptor());
   }
@@ -233,6 +273,7 @@ public class TestReplicationPolicyWithNodeGroup {
     return cluster.isOnSameNodeGroup(left, right.getDatanodeDescriptor());
   }
 
+<<<<<<< HEAD
   private DatanodeStorageInfo[] chooseTarget(int numOfReplicas) {
     return chooseTarget(numOfReplicas, dataNodes[0]);
   }
@@ -260,6 +301,16 @@ public class TestReplicationPolicyWithNodeGroup {
       Set<Node> excludedNodes) {
     return replicator.chooseTarget(filename, numOfReplicas, writer, chosenNodes,
         false, excludedNodes, BLOCK_SIZE, TestBlockStoragePolicy.DEFAULT_STORAGE_POLICY);
+=======
+  private DatanodeStorageInfo[] chooseTarget(
+      int numOfReplicas,
+      DatanodeDescriptor writer,
+      Set<Node> excludedNodes,
+      List<DatanodeDescriptor> favoredNodes) {
+    return replicator.chooseTarget(filename, numOfReplicas, writer,
+      excludedNodes, BLOCK_SIZE, favoredNodes,
+      TestBlockStoragePolicy.DEFAULT_STORAGE_POLICY);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -317,7 +368,11 @@ public class TestReplicationPolicyWithNodeGroup {
   }
 
   private void verifyNoTwoTargetsOnSameNodeGroup(DatanodeStorageInfo[] targets) {
+<<<<<<< HEAD
     Set<String> nodeGroupSet = new HashSet<String>();
+=======
+    Set<String> nodeGroupSet = new HashSet<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (DatanodeStorageInfo target: targets) {
       nodeGroupSet.add(target.getDatanodeDescriptor().getNetworkLocation());
     }
@@ -336,10 +391,17 @@ public class TestReplicationPolicyWithNodeGroup {
   public void testChooseTarget2() throws Exception {
     DatanodeStorageInfo[] targets;
     BlockPlacementPolicyDefault repl = (BlockPlacementPolicyDefault)replicator;
+<<<<<<< HEAD
     List<DatanodeStorageInfo> chosenNodes = new ArrayList<DatanodeStorageInfo>();
 
     Set<Node> excludedNodes = new HashSet<Node>();
     excludedNodes.add(dataNodes[1]); 
+=======
+    List<DatanodeStorageInfo> chosenNodes = new ArrayList<>();
+
+    Set<Node> excludedNodes = new HashSet<>();
+    excludedNodes.add(dataNodes[1]);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     targets = repl.chooseTarget(filename, 4, dataNodes[0], chosenNodes, false, 
         excludedNodes, BLOCK_SIZE, TestBlockStoragePolicy.DEFAULT_STORAGE_POLICY);
     assertEquals(targets.length, 4);
@@ -467,7 +529,11 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testChooseTarget5() throws Exception {
+<<<<<<< HEAD
     setupDataNodeCapacity();
+=======
+    updateHeartbeatWithUsage();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     DatanodeStorageInfo[] targets;
     targets = chooseTarget(0, NODE);
     assertEquals(targets.length, 0);
@@ -487,6 +553,28 @@ public class TestReplicationPolicyWithNodeGroup {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * In this testcase, client is dataNodes[7], but it is not qualified
+   * to be chosen. And there is no other node available on client Node group.
+   * So the 1st replica should be placed on client local rack dataNodes[6]
+   * @throws Exception
+   */
+  @Test
+  public void testChooseTargetForLocalStorage() throws Exception {
+    updateHeartbeatWithUsage(dataNodes[7],
+        2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L,
+        (HdfsServerConstants.MIN_BLOCKS_FOR_WRITE-1)*BLOCK_SIZE, 0L,
+        0L, 0L, 0, 0); // no space
+
+    DatanodeStorageInfo[] targets;
+    targets = chooseTarget(1, dataNodes[7]);
+    assertEquals(targets.length, 1);
+    assertTrue(targets[0].getDatanodeDescriptor().equals(dataNodes[6]));
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * This testcase tests re-replication, when dataNodes[0] is already chosen.
    * So the 1st replica can be placed on random rack. 
    * the 2nd replica should be placed on different node and nodegroup by same rack as 
@@ -495,8 +583,13 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testRereplicate1() throws Exception {
+<<<<<<< HEAD
     setupDataNodeCapacity();
     List<DatanodeStorageInfo> chosenNodes = new ArrayList<DatanodeStorageInfo>();
+=======
+    updateHeartbeatWithUsage();
+    List<DatanodeStorageInfo> chosenNodes = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     chosenNodes.add(storages[0]);
     DatanodeStorageInfo[] targets;
     
@@ -528,8 +621,13 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testRereplicate2() throws Exception {
+<<<<<<< HEAD
     setupDataNodeCapacity();
     List<DatanodeStorageInfo> chosenNodes = new ArrayList<DatanodeStorageInfo>();
+=======
+    updateHeartbeatWithUsage();
+    List<DatanodeStorageInfo> chosenNodes = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     chosenNodes.add(storages[0]);
     chosenNodes.add(storages[1]);
 
@@ -556,8 +654,13 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testRereplicate3() throws Exception {
+<<<<<<< HEAD
     setupDataNodeCapacity();
     List<DatanodeStorageInfo> chosenNodes = new ArrayList<DatanodeStorageInfo>();
+=======
+    updateHeartbeatWithUsage();
+    List<DatanodeStorageInfo> chosenNodes = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     chosenNodes.add(storages[0]);
     chosenNodes.add(storages[3]);
 
@@ -592,9 +695,14 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testChooseReplicaToDelete() throws Exception {
+<<<<<<< HEAD
     List<DatanodeStorageInfo> replicaList = new ArrayList<DatanodeStorageInfo>();
     final Map<String, List<DatanodeStorageInfo>> rackMap
         = new HashMap<String, List<DatanodeStorageInfo>>();
+=======
+    List<DatanodeStorageInfo> replicaList = new ArrayList<>();
+    final Map<String, List<DatanodeStorageInfo>> rackMap = new HashMap<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     dataNodes[0].setRemaining(4*1024*1024);
     replicaList.add(storages[0]);
 
@@ -607,16 +715,28 @@ public class TestReplicationPolicyWithNodeGroup {
     dataNodes[5].setRemaining(1*1024*1024);
     replicaList.add(storages[5]);
 
+<<<<<<< HEAD
     List<DatanodeStorageInfo> first = new ArrayList<DatanodeStorageInfo>();
     List<DatanodeStorageInfo> second = new ArrayList<DatanodeStorageInfo>();
+=======
+    List<DatanodeStorageInfo> first = new ArrayList<>();
+    List<DatanodeStorageInfo> second = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     replicator.splitNodesWithRack(
         replicaList, rackMap, first, second);
     assertEquals(3, first.size());
     assertEquals(1, second.size());
+<<<<<<< HEAD
     List<StorageType> excessTypes = new ArrayList<StorageType>();
     excessTypes.add(StorageType.DEFAULT);
     DatanodeStorageInfo chosen = replicator.chooseReplicaToDelete(
         null, null, (short)3, first, second, excessTypes);
+=======
+    List<StorageType> excessTypes = new ArrayList<>();
+    excessTypes.add(StorageType.DEFAULT);
+    DatanodeStorageInfo chosen = ((BlockPlacementPolicyDefault) replicator)
+        .chooseReplicaToDelete(first, second, excessTypes);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Within first set {dataNodes[0], dataNodes[1], dataNodes[2]}, 
     // dataNodes[0] and dataNodes[1] are in the same nodegroup, 
     // but dataNodes[1] is chosen as less free space
@@ -628,8 +748,13 @@ public class TestReplicationPolicyWithNodeGroup {
     // Within first set {dataNodes[0], dataNodes[2]}, dataNodes[2] is chosen
     // as less free space
     excessTypes.add(StorageType.DEFAULT);
+<<<<<<< HEAD
     chosen = replicator.chooseReplicaToDelete(
         null, null, (short)2, first, second, excessTypes);
+=======
+    chosen = ((BlockPlacementPolicyDefault) replicator).chooseReplicaToDelete(
+        first, second, excessTypes);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(chosen, storages[2]);
 
     replicator.adjustSetsWithChosenReplica(rackMap, first, second, chosen);
@@ -637,8 +762,13 @@ public class TestReplicationPolicyWithNodeGroup {
     assertEquals(2, second.size());
     // Within second set, dataNodes[5] with less free space
     excessTypes.add(StorageType.DEFAULT);
+<<<<<<< HEAD
     chosen = replicator.chooseReplicaToDelete(
         null, null, (short)1, first, second, excessTypes);
+=======
+    chosen = ((BlockPlacementPolicyDefault) replicator).chooseReplicaToDelete(
+        first, second, excessTypes);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(chosen, storages[5]);
   }
   
@@ -652,6 +782,7 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testChooseTargetsOnBoundaryTopology() throws Exception {
+<<<<<<< HEAD
     for(int i=0; i<NUM_OF_DATANODES; i++) {
       cluster.remove(dataNodes[i]);
     }
@@ -665,6 +796,16 @@ public class TestReplicationPolicyWithNodeGroup {
                 (HdfsServerConstants.MIN_BLOCKS_FOR_WRITE-1)*BLOCK_SIZE,
                 0L, 0L, 0L, 0, 0);
 
+=======
+    for(int i=0; i<dataNodes.length; i++) {
+      cluster.remove(dataNodes[i]);
+    }
+
+    for(int i=0; i<dataNodesInBoundaryCase.length; i++) {
+      cluster.add(dataNodesInBoundaryCase[i]);
+    }
+    for(int i=0; i<dataNodesInBoundaryCase.length; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       updateHeartbeatWithUsage(dataNodesInBoundaryCase[i],
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L,
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L, 0L, 0L, 0, 0);
@@ -695,12 +836,20 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testRereplicateOnBoundaryTopology() throws Exception {
+<<<<<<< HEAD
     for(int i=0; i<NUM_OF_DATANODES_BOUNDARY; i++) {
+=======
+    for(int i=0; i<dataNodesInBoundaryCase.length; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       updateHeartbeatWithUsage(dataNodesInBoundaryCase[i],
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L,
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L, 0L, 0L, 0, 0);
     }
+<<<<<<< HEAD
     List<DatanodeStorageInfo> chosenNodes = new ArrayList<DatanodeStorageInfo>();
+=======
+    List<DatanodeStorageInfo> chosenNodes = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     chosenNodes.add(storagesInBoundaryCase[0]);
     chosenNodes.add(storagesInBoundaryCase[5]);
     DatanodeStorageInfo[] targets;
@@ -719,21 +868,36 @@ public class TestReplicationPolicyWithNodeGroup {
    */
   @Test
   public void testChooseMoreTargetsThanNodeGroups() throws Exception {
+<<<<<<< HEAD
     for(int i=0; i<NUM_OF_DATANODES; i++) {
       cluster.remove(dataNodes[i]);
     }
     for(int i=0; i<NUM_OF_DATANODES_BOUNDARY; i++) {
+=======
+    for(int i=0; i<dataNodes.length; i++) {
+      cluster.remove(dataNodes[i]);
+    }
+    for(int i=0; i<dataNodesInBoundaryCase.length; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       DatanodeDescriptor node = dataNodesInBoundaryCase[i];
       if (cluster.contains(node)) {
         cluster.remove(node);
       }
     }
 
+<<<<<<< HEAD
     for(int i=0; i<NUM_OF_DATANODES_MORE_TARGETS; i++) {
       cluster.add(dataNodesInMoreTargetsCase[i]);
     }
 
     for(int i=0; i<NUM_OF_DATANODES_MORE_TARGETS; i++) {
+=======
+    for(int i=0; i<dataNodesInMoreTargetsCase.length; i++) {
+      cluster.add(dataNodesInMoreTargetsCase[i]);
+    }
+
+    for(int i=0; i<dataNodesInMoreTargetsCase.length; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       updateHeartbeatWithUsage(dataNodesInMoreTargetsCase[i],
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L,
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L, 0L, 0L, 0, 0);
@@ -754,11 +918,19 @@ public class TestReplicationPolicyWithNodeGroup {
 
   @Test
   public void testChooseTargetWithDependencies() throws Exception {
+<<<<<<< HEAD
     for(int i=0; i<NUM_OF_DATANODES; i++) {
       cluster.remove(dataNodes[i]);
     }
     
     for(int i=0; i<NUM_OF_DATANODES_MORE_TARGETS; i++) {
+=======
+    for(int i=0; i<dataNodes.length; i++) {
+      cluster.remove(dataNodes[i]);
+    }
+    
+    for(int i=0; i<dataNodesInMoreTargetsCase.length; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       DatanodeDescriptor node = dataNodesInMoreTargetsCase[i];
       if (cluster.contains(node)) {
         cluster.remove(node);
@@ -768,7 +940,11 @@ public class TestReplicationPolicyWithNodeGroup {
     Host2NodesMap host2DatanodeMap = namenode.getNamesystem()
         .getBlockManager()
         .getDatanodeManager().getHost2DatanodeMap();
+<<<<<<< HEAD
     for(int i=0; i<NUM_OF_DATANODES_FOR_DEPENDENCIES; i++) {
+=======
+    for(int i=0; i<dataNodesForDependencies.length; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       cluster.add(dataNodesForDependencies[i]);
       host2DatanodeMap.add(dataNodesForDependencies[i]);
     }
@@ -784,16 +960,27 @@ public class TestReplicationPolicyWithNodeGroup {
         dataNodesForDependencies[3].getHostName());
     
     //Update heartbeat
+<<<<<<< HEAD
     for(int i=0; i<NUM_OF_DATANODES_FOR_DEPENDENCIES; i++) {
+=======
+    for(int i=0; i<dataNodesForDependencies.length; i++) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       updateHeartbeatWithUsage(dataNodesForDependencies[i],
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L,
           2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L, 0L, 0L, 0, 0);
     }
+<<<<<<< HEAD
     
     List<DatanodeStorageInfo> chosenNodes = new ArrayList<DatanodeStorageInfo>();
     
     DatanodeStorageInfo[] targets;
     Set<Node> excludedNodes = new HashSet<Node>();
+=======
+
+    List<DatanodeStorageInfo> chosenNodes = new ArrayList<>();
+    DatanodeStorageInfo[] targets;
+    Set<Node> excludedNodes = new HashSet<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     excludedNodes.add(dataNodesForDependencies[5]);
     
     //try to select three targets as there are three node groups
@@ -806,9 +993,65 @@ public class TestReplicationPolicyWithNodeGroup {
     assertTrue(targets[1].equals(storagesForDependencies[3]) || targets[1].equals(storagesForDependencies[4]));
     
     //verify that all data nodes are in the excluded list
+<<<<<<< HEAD
     assertEquals(excludedNodes.size(), NUM_OF_DATANODES_FOR_DEPENDENCIES);
     for(int i=0; i<NUM_OF_DATANODES_FOR_DEPENDENCIES; i++) {
       assertTrue(excludedNodes.contains(dataNodesForDependencies[i]));
     }
   }
+=======
+    assertEquals(excludedNodes.size(), dataNodesForDependencies.length);
+    for(int i=0; i<dataNodesForDependencies.length; i++) {
+      assertTrue(excludedNodes.contains(dataNodesForDependencies[i]));
+    }
+  }
+
+  /**
+   * In this testcase, favored node is dataNodes[6].
+   * 1st replica should be placed on favored node.
+   * @throws Exception
+   */
+  @Test
+  public void testChooseTargetAsFavouredNodes() throws Exception {
+    DatanodeStorageInfo[] targets;
+    List<DatanodeDescriptor> favoredNodes =
+        new ArrayList<DatanodeDescriptor>();
+    favoredNodes.add(dataNodes[6]);
+    favoredNodes.add(dataNodes[0]);
+    favoredNodes.add(dataNodes[1]);
+    targets = chooseTarget(1, dataNodes[7], null, favoredNodes);
+    assertEquals(targets.length, 1);
+    assertTrue(favoredNodes.contains(targets[0].getDatanodeDescriptor()));
+  }
+
+  /**
+   * In this testcase, passed 2 favored nodes
+   * dataNodes[0](Good Node), dataNodes[3](Bad node).
+   * 1st replica should be placed on good favored node dataNodes[0].
+   * 2nd replica should be on bad favored node's nodegroup dataNodes[4].
+   * @throws Exception
+   */
+  @Test
+  public void testChooseFavoredNodesNodeGroup() throws Exception {
+    updateHeartbeatWithUsage(dataNodes[3],
+        2* HdfsServerConstants.MIN_BLOCKS_FOR_WRITE*BLOCK_SIZE, 0L,
+        (HdfsServerConstants.MIN_BLOCKS_FOR_WRITE-1)*BLOCK_SIZE, 0L,
+        0L, 0L, 0, 0); // no space
+
+    DatanodeStorageInfo[] targets;
+    List<DatanodeDescriptor> expectedTargets =
+        new ArrayList<DatanodeDescriptor>();
+    expectedTargets.add(dataNodes[0]);
+    expectedTargets.add(dataNodes[4]);
+    List<DatanodeDescriptor> favouredNodes =
+        new ArrayList<DatanodeDescriptor>();
+    favouredNodes.add(dataNodes[3]);
+    favouredNodes.add(dataNodes[0]);
+    targets = chooseTarget(2, dataNodes[7], null, favouredNodes);
+    assertTrue("1st Replica is incorrect",
+      expectedTargets.contains(targets[0].getDatanodeDescriptor()));
+    assertTrue("2nd Replica is incorrect",
+      expectedTargets.contains(targets[1].getDatanodeDescriptor()));
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

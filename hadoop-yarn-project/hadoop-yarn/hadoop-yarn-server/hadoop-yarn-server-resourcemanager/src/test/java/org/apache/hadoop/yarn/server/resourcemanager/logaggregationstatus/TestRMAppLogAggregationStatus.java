@@ -87,9 +87,15 @@ public class TestRMAppLogAggregationStatus {
 
     rmContext =
         new RMContextImpl(rmDispatcher, null, null, null,
+<<<<<<< HEAD
           null, null, null, null, null,
           new RMApplicationHistoryWriter());
     rmContext.setSystemMetricsPublisher(new SystemMetricsPublisher());
+=======
+          null, null, null, null, null);
+    rmContext.setSystemMetricsPublisher(new SystemMetricsPublisher());
+    rmContext.setRMApplicationHistoryWriter(mock(RMApplicationHistoryWriter.class));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     scheduler = mock(YarnScheduler.class);
     doAnswer(
@@ -165,7 +171,11 @@ public class TestRMAppLogAggregationStatus {
     node1ReportForApp.add(report1);
     node1.handle(new RMNodeStatusEvent(node1.getNodeID(), NodeHealthStatus
       .newInstance(true, null, 0), new ArrayList<ContainerStatus>(), null,
+<<<<<<< HEAD
       null, node1ReportForApp));
+=======
+      null, node1ReportForApp, null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     List<LogAggregationReport> node2ReportForApp =
         new ArrayList<LogAggregationReport>();
@@ -177,7 +187,11 @@ public class TestRMAppLogAggregationStatus {
     node2ReportForApp.add(report2);
     node2.handle(new RMNodeStatusEvent(node2.getNodeID(), NodeHealthStatus
       .newInstance(true, null, 0), new ArrayList<ContainerStatus>(), null,
+<<<<<<< HEAD
       null, node2ReportForApp));
+=======
+      null, node2ReportForApp, null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // node1 and node2 has updated its log aggregation status
     // verify that the log aggregation status for node1, node2
     // has been changed
@@ -215,7 +229,11 @@ public class TestRMAppLogAggregationStatus {
     node1ReportForApp2.add(report1_2);
     node1.handle(new RMNodeStatusEvent(node1.getNodeID(), NodeHealthStatus
       .newInstance(true, null, 0), new ArrayList<ContainerStatus>(), null,
+<<<<<<< HEAD
       null, node1ReportForApp2));
+=======
+      null, node1ReportForApp2, null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // verify that the log aggregation status for node1
     // has been changed
@@ -284,7 +302,11 @@ public class TestRMAppLogAggregationStatus {
     // 10 diagnostic messages/failure messages
     node1.handle(new RMNodeStatusEvent(node1.getNodeID(), NodeHealthStatus
       .newInstance(true, null, 0), new ArrayList<ContainerStatus>(), null,
+<<<<<<< HEAD
       null, node1ReportForApp3));
+=======
+      null, node1ReportForApp3, null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     logAggregationStatus = rmApp.getLogAggregationReportsForApp();
     Assert.assertEquals(2, logAggregationStatus.size());
@@ -329,7 +351,11 @@ public class TestRMAppLogAggregationStatus {
     node2ReportForApp2.add(report2_3);
     node2.handle(new RMNodeStatusEvent(node2.getNodeID(), NodeHealthStatus
       .newInstance(true, null, 0), new ArrayList<ContainerStatus>(), null,
+<<<<<<< HEAD
       null, node2ReportForApp2));
+=======
+      null, node2ReportForApp2, null));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Assert.assertEquals(LogAggregationStatus.FAILED,
       rmApp.getLogAggregationStatusForAppReport());
     logAggregationStatus = rmApp.getLogAggregationReportsForApp();
@@ -489,7 +515,11 @@ public class TestRMAppLogAggregationStatus {
           2, Resource.newInstance(10, 2), "test");
     return new RMAppImpl(this.appId, this.rmContext,
       conf, "test", "test", "default", submissionContext,
+<<<<<<< HEAD
       this.rmContext.getScheduler(),
+=======
+      scheduler,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.rmContext.getApplicationMasterService(),
       System.currentTimeMillis(), "test",
       null, null);

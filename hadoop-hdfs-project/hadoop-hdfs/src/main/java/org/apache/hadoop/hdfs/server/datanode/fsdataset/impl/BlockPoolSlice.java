@@ -38,7 +38,11 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.DU;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSUtil;
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.BlockListAsLongs;
 import org.apache.hadoop.hdfs.protocol.BlockListAsLongs.BlockReportReplica;
@@ -111,7 +115,11 @@ class BlockPoolSlice {
       }
     }
 
+<<<<<<< HEAD
     this.ioFileBufferSize = DFSUtil.getIoFileBufferSize(conf);
+=======
+    this.ioFileBufferSize = DFSUtilClient.getIoFileBufferSize(conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     this.deleteDuplicateReplicas = conf.getBoolean(
         DFSConfigKeys.DFS_DATANODE_DUPLICATE_REPLICA_DELETION,
@@ -127,12 +135,15 @@ class BlockPoolSlice {
       FileUtil.fullyDelete(tmpDir);
     }
     this.rbwDir = new File(currentDir, DataStorage.STORAGE_DIR_RBW);
+<<<<<<< HEAD
     final boolean supportAppends = conf.getBoolean(
         DFSConfigKeys.DFS_SUPPORT_APPEND_KEY,
         DFSConfigKeys.DFS_SUPPORT_APPEND_DEFAULT);
     if (rbwDir.exists() && !supportAppends) {
       FileUtil.fullyDelete(rbwDir);
     }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (!rbwDir.mkdirs()) {  // create rbw directory if not exist
       if (!rbwDir.isDirectory()) {
         throw new IOException("Mkdirs failed to create " + rbwDir.toString());
@@ -279,7 +290,11 @@ class BlockPoolSlice {
     return DatanodeUtil.createTmpFile(b, f);
   }
 
+<<<<<<< HEAD
   File addBlock(Block b, File f) throws IOException {
+=======
+  File addFinalizedBlock(Block b, File f) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     File blockDir = DatanodeUtil.idToBlockDir(finalizedDir, b.getBlockId());
     if (!blockDir.exists()) {
       if (!blockDir.mkdirs()) {
@@ -309,7 +324,11 @@ class BlockPoolSlice {
   }
 
   void checkDirs() throws DiskErrorException {
+<<<<<<< HEAD
     DiskChecker.checkDirs(finalizedDir);
+=======
+    DiskChecker.checkDir(finalizedDir);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     DiskChecker.checkDir(tmpDir);
     DiskChecker.checkDir(rbwDir);
   }
@@ -749,7 +768,16 @@ class BlockPoolSlice {
       // Now it is safe to add the replica into volumeMap
       // In case of any exception during parsing this cache file, fall back
       // to scan all the files on disk.
+<<<<<<< HEAD
       for (ReplicaInfo info: tmpReplicaMap.replicas(bpid)) {
+=======
+      for (Iterator<ReplicaInfo> iter =
+          tmpReplicaMap.replicas(bpid).iterator(); iter.hasNext(); ) {
+        ReplicaInfo info = iter.next();
+        // We use a lightweight GSet to store replicaInfo, we need to remove
+        // it from one GSet before adding to another.
+        iter.remove();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         volumeMap.add(bpid, info);
       }
       LOG.info("Successfully read replica from cache file : " 

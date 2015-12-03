@@ -17,10 +17,20 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+import java.io.IOException;
+
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.hdfs.protocol.Block;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
 import org.apache.hadoop.hdfs.server.namenode.NameNode.OperationCategory;
+=======
+import org.apache.hadoop.hdfs.protocol.ErasureCodingPolicy;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockCollection;
+import org.apache.hadoop.hdfs.server.namenode.NameNode.OperationCategory;
+import org.apache.hadoop.hdfs.server.namenode.ha.HAContext;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.util.RwLock;
 import org.apache.hadoop.ipc.StandbyException;
 import org.apache.hadoop.security.AccessControlException;
@@ -41,11 +51,35 @@ public interface Namesystem extends RwLock, SafeMode {
 
   boolean isGenStampInFuture(Block block);
 
+<<<<<<< HEAD
+=======
+  BlockCollection getBlockCollection(long id);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   void adjustSafeModeBlockTotals(int deltaSafe, int deltaTotal);
 
   void checkOperation(OperationCategory read) throws StandbyException;
 
+<<<<<<< HEAD
   boolean isInSnapshot(BlockInfoContiguousUnderConstruction blockUC);
 
   CacheManager getCacheManager();
 }
+=======
+  /**
+   * Gets the erasure coding policy for the path
+   * @param src
+   *          - path
+   * @return {@link ErasureCodingPolicy}
+   * @throws IOException
+   */
+  ErasureCodingPolicy getErasureCodingPolicyForPath(String src)
+      throws IOException;
+
+  boolean isInSnapshot(BlockInfo blockUC);
+
+  CacheManager getCacheManager();
+
+  HAContext getHAContext();
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

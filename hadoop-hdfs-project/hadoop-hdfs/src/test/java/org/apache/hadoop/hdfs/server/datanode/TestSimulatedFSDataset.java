@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.hdfs.server.datanode;
 
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.hdfs.server.common.HdfsServerConstants.NodeType.NAME_NODE;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +38,11 @@ import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.BlockListAsLongs;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.server.blockmanagement.SequentialBlockIdGenerator;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+import org.apache.hadoop.hdfs.server.datanode.dataset.DatasetSpi;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.ReplicaOutputStreams;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.impl.FsDatasetFactory;
@@ -114,12 +123,20 @@ public class TestSimulatedFSDataset {
   @Test
   public void testFSDatasetFactory() {
     final Configuration conf = new Configuration();
+<<<<<<< HEAD
     FsDatasetSpi.Factory<?> f = FsDatasetSpi.Factory.getFactory(conf);
+=======
+    FsDatasetSpi.Factory f = DatasetSpi.Factory.getFactory(conf, NAME_NODE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(FsDatasetFactory.class, f.getClass());
     assertFalse(f.isSimulated());
 
     SimulatedFSDataset.setFactory(conf);
+<<<<<<< HEAD
     FsDatasetSpi.Factory<?> s = FsDatasetSpi.Factory.getFactory(conf);
+=======
+    FsDatasetSpi.Factory s = DatasetSpi.Factory.getFactory(conf, NAME_NODE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(SimulatedFSDataset.Factory.class, s.getClass());
     assertTrue(s.isSimulated());
   }

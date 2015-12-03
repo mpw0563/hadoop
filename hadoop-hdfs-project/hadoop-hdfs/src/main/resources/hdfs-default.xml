@@ -76,6 +76,36 @@
     This is useful for making the name node listen on all interfaces by
     setting it to 0.0.0.0.
   </description>
+<<<<<<< HEAD
+=======
+</property>
+
+<property>
+  <name>dfs.namenode.lifeline.rpc-address</name>
+  <value></value>
+  <description>
+    NameNode RPC lifeline address.  This is an optional separate RPC address
+    that can be used to isolate health checks and liveness to protect against
+    resource exhaustion in the main RPC handler pool.  In the case of
+    HA/Federation where multiple NameNodes exist, the name service ID is added
+    to the name e.g. dfs.namenode.lifeline.rpc-address.ns1.  The value of this
+    property will take the form of nn-host1:rpc-port.  If this property is not
+    defined, then the NameNode will not start a lifeline RPC server.  By
+    default, the property is not defined.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.lifeline.rpc-bind-host</name>
+  <value></value>
+  <description>
+    The actual address the lifeline RPC server will bind to.  If this optional
+    address is set, it overrides only the hostname portion of
+    dfs.namenode.lifeline.rpc-address.  It can also be specified per name node
+    or name service for HA/Federation.  This is useful for making the name node
+    listen on all interfaces by setting it to 0.0.0.0.
+  </description>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 </property>
 
 <property>
@@ -210,6 +240,21 @@
   <name>dfs.namenode.https-address</name>
   <value>0.0.0.0:50470</value>
   <description>The namenode secure http server address and port.</description>
+<<<<<<< HEAD
+</property>
+
+<property>
+  <name>dfs.namenode.https-bind-host</name>
+  <value></value>
+  <description>
+    The actual adress the HTTPS server will bind to. If this optional address
+    is set, it overrides only the hostname portion of dfs.namenode.https-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node HTTPS server listen on all
+    interfaces by setting it to 0.0.0.0.
+  </description>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 </property>
 
 <property>
@@ -225,19 +270,28 @@
 </property>
 
  <property>
-  <name>dfs.datanode.dns.interface</name>
-  <value>default</value>
-  <description>The name of the Network Interface from which a data node should 
-  report its IP address.
-  </description>
+   <name>dfs.datanode.dns.interface</name>
+   <value>default</value>
+   <description>
+     The name of the Network Interface from which a data node should
+     report its IP address. e.g. eth2. This setting may be required for some
+     multi-homed nodes where the DataNodes are assigned multiple hostnames
+     and it is desirable for the DataNodes to use a non-default hostname.
+
+     Prefer using hadoop.security.dns.interface over
+     dfs.datanode.dns.interface.
+   </description>
  </property>
  
 <property>
   <name>dfs.datanode.dns.nameserver</name>
   <value>default</value>
-  <description>The host name or IP address of the name server (DNS)
-  which a DataNode should use to determine the host name used by the
-  NameNode for communication and display purposes.
+  <description>
+    The host name or IP address of the name server (DNS) which a DataNode
+    should use to determine its own host name.
+
+    Prefer using hadoop.security.dns.nameserver over
+    dfs.datanode.dns.nameserver.
   </description>
  </property>
  
@@ -265,6 +319,15 @@
   <description>Decide if chooseTarget considers the target's load or not
   </description>
 </property>
+
+  <property>
+    <name>dfs.namenode.replication.considerLoad.factor</name>
+    <value>2.0</value>
+    <description>The factor by which a node's load can exceed the average
+      before being rejected for writes, only if considerLoad is true.
+    </description>
+  </property>
+
 <property>
   <name>dfs.default.chunk.view.size</name>
   <value>32768</value>
@@ -470,6 +533,18 @@
 </property>
 
 <property>
+  <name>dfs.namenode.safemode.replication.min</name>
+  <value></value>
+  <description>
+      a separate minimum replication factor for calculating safe block count.
+      This is an expert level setting.
+      Setting this lower than the dfs.namenode.replication.min
+      is not recommend and/or dangerous for production setups.
+      When it's not set it takes value from dfs.namenode.replication.min
+  </description>
+</property>
+
+<property>
   <name>dfs.blocksize</name>
   <value>134217728</value>
   <description>
@@ -615,6 +690,29 @@
 </property>
 
 <property>
+<<<<<<< HEAD
+=======
+  <name>dfs.datanode.directoryscan.throttle.limit.ms.per.sec</name>
+  <value>1000</value>
+  <description>The report compilation threads are limited to only running for
+  a given number of milliseconds per second, as configured by the
+  property. The limit is taken per thread, not in aggregate, e.g. setting
+  a limit of 100ms for 4 compiler threads will result in each thread being
+  limited to 100ms, not 25ms.
+
+  Note that the throttle does not interrupt the report compiler threads, so the
+  actual running time of the threads per second will typically be somewhat
+  higher than the throttle limit, usually by no more than 20%.
+
+  Setting this limit to 1000 disables compiler thread throttling. Only
+  values between 1 and 1000 are valid. Setting an invalid value will result
+  in the throttle being disbled and an error message being logged. 1000 is
+  the default setting.
+  </description>
+</property>
+
+<property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.heartbeat.interval</name>
   <value>3</value>
   <description>Determines datanode heartbeat interval in seconds.</description>
@@ -638,6 +736,21 @@
   dfs.namenode.service.handler.count will be valid only if
   dfs.namenode.servicerpc-address is configured.
   </description>
+<<<<<<< HEAD
+=======
+</property>
+
+<property>
+  <name>dfs.namenode.lifeline.handler.count</name>
+  <value>1</value>
+  <description>
+    Sets number of RPC server threads the NameNode runs for handling the
+    lifeline RPC server.  The default value is 1, because this RPC server
+    handles only HA health check requests from ZKFC.  These are lightweight
+    requests that run single-threaded from the ZKFC client side.  This property
+    has no effect if dfs.namenode.lifeline.rpc-address is not defined.
+  </description>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 </property>
 
 <property>
@@ -914,6 +1027,21 @@
 </property>
 
 <property>
+<<<<<<< HEAD
+=======
+  <name>dfs.namenode.checkpoint.check.quiet-multiplier</name>
+  <value>1.5</value>
+  <description>
+    Used to calculate the amount of time between retries when in the 'quiet' period
+    for creating checkpoints (active namenode already has an up-to-date image from another
+    checkpointer), so we wait a multiplier of the dfs.namenode.checkpoint.check.period before
+    retrying the checkpoint because another node likely is already managing the checkpoints,
+    allowing us to save bandwidth to transfer checkpoints that don't need to be used.
+  </description>
+</property>
+
+<property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.namenode.num.checkpoints.retained</name>
   <value>2</value>
   <description>The number of image checkpoint files (fsimage_*) that will be retained by
@@ -1020,12 +1148,46 @@
   <name>dfs.image.transfer.bandwidthPerSec</name>
   <value>0</value>
   <description>
+<<<<<<< HEAD
         Maximum bandwidth used for image transfer in bytes per second.
+=======
+        Maximum bandwidth used for regular image transfers (instead of
+        bootstrapping the standby namenode), in bytes per second.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         This can help keep normal namenode operations responsive during
         checkpointing. The maximum bandwidth and timeout in
         dfs.image.transfer.timeout should be set such that normal image
         transfers can complete successfully.
+<<<<<<< HEAD
         A default value of 0 indicates that throttling is disabled. 
+=======
+        A default value of 0 indicates that throttling is disabled.
+        The maximum bandwidth used for bootstrapping standby namenode is
+        configured with dfs.image.transfer-bootstrap-standby.bandwidthPerSec.
+  </description>
+</property>
+
+  <property>
+    <name>dfs.image.transfer-bootstrap-standby.bandwidthPerSec</name>
+    <value>0</value>
+    <description>
+      Maximum bandwidth used for transferring image to bootstrap standby
+      namenode, in bytes per second.
+      A default value of 0 indicates that throttling is disabled. This default
+      value should be used in most cases, to ensure timely HA operations.
+      The maximum bandwidth used for regular image transfers is configured
+      with dfs.image.transfer.bandwidthPerSec.
+    </description>
+  </property>
+
+<property>
+  <name>dfs.image.transfer.chunksize</name>
+  <value>65536</value>
+  <description>
+        Chunksize in bytes to upload the checkpoint.
+        Chunked streaming is used to avoid internal buffering of contents
+        of image file of huge size.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 
@@ -1291,6 +1453,17 @@
 </property>
 
 <property>
+<<<<<<< HEAD
+=======
+  <name>dfs.ha.tail-edits.namenode-retries</name>
+  <value>3</value>
+  <description>
+    Number of retries to use when contacting the namenode when tailing the log.
+  </description>
+</property>
+
+<property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.ha.automatic-failover.enabled</name>
   <value>false</value>
   <description>
@@ -1535,6 +1708,7 @@
 </property>
 
 <property>
+<<<<<<< HEAD
   <name>dfs.webhdfs.enabled</name>
   <value>true</value>
   <description>
@@ -1543,6 +1717,8 @@
 </property>
 
 <property>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>hadoop.fuse.connection.timeout</name>
   <value>300</value>
   <description>
@@ -1564,6 +1740,33 @@
 </property>
 
 <property>
+<<<<<<< HEAD
+=======
+  <name>dfs.namenode.metrics.logger.period.seconds</name>
+  <value>600</value>
+  <description>
+    This setting controls how frequently the NameNode logs its metrics. The
+    logging configuration must also define one or more appenders for
+    NameNodeMetricsLog for the metrics to be logged.
+    NameNode metrics logging is disabled if this value is set to zero or
+    less than zero.
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.metrics.logger.period.seconds</name>
+  <value>600</value>
+  <description>
+    This setting controls how frequently the DataNode logs its metrics. The
+    logging configuration must also define one or more appenders for
+    DataNodeMetricsLog for the metrics to be logged.
+    DataNode metrics logging is disabled if this value is set to zero or
+    less than zero.
+  </description>
+</property>
+
+<property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.metrics.percentiles.intervals</name>
   <value></value>
   <description>
@@ -1674,6 +1877,7 @@
 </property>
 
 <property>
+<<<<<<< HEAD
   <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
   <value>false</value>
   <description>
@@ -1698,6 +1902,8 @@
 </property>
 
 <property>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.journalnode.rpc-address</name>
   <value>0.0.0.0:8485</value>
   <description>
@@ -2073,6 +2279,21 @@
 </property>
 
 <property>
+<<<<<<< HEAD
+=======
+  <name>dfs.client.socket.send.buffer.size</name>
+  <value>131072</value>
+  <description>
+    Socket send buffer size for a write pipeline in DFSClient side.
+    This may affect TCP connection throughput.
+    If it is set to zero or negative value,
+    no buffer size will be set explicitly,
+    thus enable tcp auto-tuning on some system.
+  </description>
+</property>
+
+<property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.domain.socket.path</name>
   <value></value>
   <description>
@@ -2186,6 +2407,7 @@
 </property>
 
 <property>
+<<<<<<< HEAD
   <name>dfs.client.slow.io.warning.threshold.ms</name>
   <value>30000</value>
   <description>The threshold in milliseconds at which we will log a slow
@@ -2204,6 +2426,8 @@
 </property>
 
 <property>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.namenode.xattrs.enabled</name>
   <value>true</value>
   <description>
@@ -2223,7 +2447,31 @@
   <name>dfs.namenode.fs-limits.max-xattr-size</name>
   <value>16384</value>
   <description>
+<<<<<<< HEAD
     The maximum combined size of the name and value of an extended attribute in bytes.
+=======
+    The maximum combined size of the name and value of an extended attribute
+    in bytes. It should be larger than 0, and less than or equal to maximum
+    size hard limit which is 32768.
+  </description>
+</property>
+
+<property>
+  <name>dfs.client.slow.io.warning.threshold.ms</name>
+  <value>30000</value>
+  <description>The threshold in milliseconds at which we will log a slow
+    io warning in a dfsclient. By default, this parameter is set to 30000
+    milliseconds (30 seconds).
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.slow.io.warning.threshold.ms</name>
+  <value>300</value>
+  <description>The threshold in milliseconds at which we will log a slow
+    io warning in a datanode. By default, this parameter is set to 300
+    milliseconds.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 
@@ -2240,6 +2488,17 @@
 </property>
 
 <property>
+<<<<<<< HEAD
+=======
+  <name>dfs.datanode.block.id.layout.upgrade.threads</name>
+  <value>12</value>
+  <description>The number of threads to use when creating hard links from
+    current to previous blocks during upgrade of a DataNode to block ID-based
+    block layout (see HDFS-6482 for details on the layout).</description>
+</property>
+
+<property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.namenode.list.encryption.zones.num.responses</name>
   <value>100</value>
   <description>When listing encryption zones, the maximum number of zones
@@ -2288,6 +2547,7 @@
 </property>
 
 <property>
+<<<<<<< HEAD
   <name>dfs.datanode.block.id.layout.upgrade.threads</name>
   <value>12</value>
   <description>The number of threads to use when creating hard links from
@@ -2296,6 +2556,8 @@
 </property>
 
 <property>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>dfs.encryption.key.provider.uri</name>
   <description>
     The KeyProvider to use when interacting with encryption keys used
@@ -2358,11 +2620,19 @@
   </description>
 </property>
 
+<<<<<<< HEAD
   <property>
     <name>dfs.datanode.block-pinning.enabled</name>
     <value>false</value>
     <description>Whether pin blocks on favored DataNode.</description>
   </property>
+=======
+<property>
+  <name>dfs.datanode.block-pinning.enabled</name>
+  <value>false</value>
+  <description>Whether pin blocks on favored DataNode.</description>
+</property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 <property>
   <name>dfs.client.block.write.locateFollowingBlock.initial.delay.ms</name>
@@ -2373,23 +2643,12 @@
 </property>
 
 <property>
+<<<<<<< HEAD
   <name>dfs.htrace.spanreceiver.classes</name>
   <value></value>
   <description>
     The class name of the HTrace SpanReceiver for the NameNode and DataNode.
-  </description>
-</property>
-
-<property>
-  <name>dfs.client.htrace.spanreceiver.classes</name>
-  <value></value>
-  <description>
-    The class name of the HTrace SpanReceiver for the HDFS client. You do not
-    need to enable this if your client program has been modified to use HTrace.
-  </description>
-</property>
-
-<property>
+=======
   <name>dfs.ha.zkfc.nn.http.timeout.ms</name>
   <value>20000</value>
   <description>
@@ -2397,6 +2656,92 @@
     tries to get local NN thread dump after local NN becomes
     SERVICE_NOT_RESPONDING or SERVICE_UNHEALTHY.
     If it is set to zero, DFS ZKFC won't get local NN thread dump.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  </description>
+</property>
+
+<property>
+<<<<<<< HEAD
+  <name>dfs.client.htrace.spanreceiver.classes</name>
+  <value></value>
+  <description>
+    The class name of the HTrace SpanReceiver for the HDFS client. You do not
+    need to enable this if your client program has been modified to use HTrace.
+=======
+  <name>dfs.datanode.stripedread.timeout.millis</name>
+  <value>5000</value>
+  <description>Datanode striped read timeout in milliseconds.
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.stripedread.threads</name>
+  <value>20</value>
+  <description>Number of threads used by the Datanode for background recovery work.
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.stripedread.buffer.size</name>
+  <value>65536</value>
+  <description>Datanode striped read buffer size.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.quota.init-threads</name>
+  <value>4</value>
+  <description>
+    The number of concurrent threads to be used in quota initialization. The
+    speed of quota initialization also affects the namenode fail-over latency.
+    If the size of name space is big, try increasing this.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+  </description>
+</property>
+
+<property>
+<<<<<<< HEAD
+  <name>dfs.ha.zkfc.nn.http.timeout.ms</name>
+  <value>20000</value>
+  <description>
+    The HTTP connection and read timeout value (unit is ms ) when DFS ZKFC
+    tries to get local NN thread dump after local NN becomes
+    SERVICE_NOT_RESPONDING or SERVICE_UNHEALTHY.
+    If it is set to zero, DFS ZKFC won't get local NN thread dump.
+=======
+  <name>dfs.datanode.transfer.socket.send.buffer.size</name>
+  <value>131072</value>
+  <description>
+    Socket send buffer size for DataXceiver (mirroring packets to downstream
+    in pipeline). This may affect TCP connection throughput.
+    If it is set to zero or negative value, no buffer size will be set
+    explicitly, thus enable tcp auto-tuning on some system.
+  </description>
+</property>
+
+<property>
+  <name>dfs.datanode.transfer.socket.recv.buffer.size</name>
+  <value>131072</value>
+  <description>
+    Socket receive buffer size for DataXceiver (receiving packets from client
+    during block writing). This may affect TCP connection throughput.
+    If it is set to zero or negative value, no buffer size will be set
+    explicitly, thus enable tcp auto-tuning on some system.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.upgrade.domain.factor</name>
+  <value>${dfs.replication}</value>
+  <description>
+    This is valid only when block placement policy is set to
+    BlockPlacementPolicyWithUpgradeDomain. It defines the number of
+    unique upgrade domains any block's replicas should have.
+    When the number of replicas is less or equal to this value, the policy
+    ensures each replica has an unique upgrade domain. When the number of
+    replicas is greater than this value, the policy ensures the number of
+    unique domains is at least this value.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </description>
 </property>
 

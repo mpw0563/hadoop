@@ -73,7 +73,11 @@ public abstract class KeyProvider {
       this.versionName = versionName;
       this.material = material;
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public String getName() {
       return name;
     }

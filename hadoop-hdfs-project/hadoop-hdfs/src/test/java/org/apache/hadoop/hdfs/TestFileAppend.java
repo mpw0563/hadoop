@@ -107,6 +107,7 @@ public class TestFileAppend{
     AppendTestUtil.checkFullFile(fileSys, name,
         AppendTestUtil.NUM_BLOCKS * AppendTestUtil.BLOCK_SIZE,
         expected, "Read 1", false);
+<<<<<<< HEAD
   }
 
   /**
@@ -179,6 +180,8 @@ public class TestFileAppend{
       fs.close();
       cluster.shutdown();
     }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -331,7 +334,11 @@ public class TestFileAppend{
   
       //1st append does not add any data so that the last block remains full
       //and the last block in INodeFileUnderConstruction is a BlockInfo
+<<<<<<< HEAD
       //but not BlockInfoUnderConstruction. 
+=======
+      //but does not have a BlockUnderConstructionFeature.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fs2.append(p);
       
       //2nd append should get AlreadyBeingCreatedException
@@ -369,7 +376,11 @@ public class TestFileAppend{
   
       //1st append does not add any data so that the last block remains full
       //and the last block in INodeFileUnderConstruction is a BlockInfo
+<<<<<<< HEAD
       //but not BlockInfoUnderConstruction.
+=======
+      //but does not have a BlockUnderConstructionFeature.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ((DistributedFileSystem) fs2).append(p,
           EnumSet.of(CreateFlag.APPEND, CreateFlag.NEW_BLOCK), 4096, null);
 
@@ -393,7 +404,10 @@ public class TestFileAppend{
       throws IOException, InterruptedException {
     Configuration conf = new HdfsConfiguration();
     conf.setInt(DFSConfigKeys.DFS_REPLICATION_KEY, 1);
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.DFS_SUPPORT_APPEND_KEY, true);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     //Set small soft-limit for lease
     final long softLimit = 1L;
     final long hardLimit = 9999999L;
@@ -500,7 +514,11 @@ public class TestFileAppend{
       String dnAddress = dnProp.datanode.getXferAddress().toString();
       if (dnAddress.startsWith("/")) {
         dnAddress = dnAddress.substring(1);
+<<<<<<< HEAD
 }
+=======
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // append again to bump genstamps
       for (int i = 0; i < 2; i++) {

@@ -18,10 +18,21 @@
 package org.apache.hadoop.hdfs.server.namenode;
 
 import java.io.File;
+<<<<<<< HEAD
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+=======
+import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +42,10 @@ import org.apache.hadoop.hdfs.server.common.Storage.StorageDirectory;
 import org.apache.hadoop.hdfs.server.common.StorageInfo;
 
 import com.google.common.base.Preconditions;
+<<<<<<< HEAD
 import org.apache.hadoop.io.IOUtils;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public abstract class NNUpgradeUtil {
   
@@ -116,6 +130,7 @@ public abstract class NNUpgradeUtil {
     // rename current to tmp
     renameCurToTmp(sd);
 
+<<<<<<< HEAD
     final File curDir = sd.getCurrentDir();
     final File tmpDir = sd.getPreviousTmp();
     List<String> fileNameList = IOUtils.listDirectory(tmpDir, new FilenameFilter() {
@@ -131,6 +146,32 @@ public abstract class NNUpgradeUtil {
       File newFile = new File(curDir, prevFile.getName());
       Files.createLink(newFile.toPath(), prevFile.toPath());
     }
+=======
+    final Path curDir = sd.getCurrentDir().toPath();
+    final Path tmpDir = sd.getPreviousTmp().toPath();
+
+    Files.walkFileTree(tmpDir,
+      /* do not follow links */ Collections.<FileVisitOption>emptySet(),
+        1, new SimpleFileVisitor<Path>() {
+
+          @Override
+          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+              throws IOException {
+
+            String name = file.getFileName().toString();
+
+            if (Files.isRegularFile(file)
+                && name.startsWith(NNStorage.NameNodeFile.EDITS.getName())) {
+
+              Path newFile = curDir.resolve(name);
+              Files.createLink(newFile, file);
+            }
+
+            return super.visitFile(file, attrs);
+          }
+        }
+    );
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

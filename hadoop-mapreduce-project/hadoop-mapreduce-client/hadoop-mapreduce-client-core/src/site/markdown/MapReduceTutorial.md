@@ -213,10 +213,17 @@ Sample text-files as input:
     $ bin/hadoop fs -ls /user/joe/wordcount/input/
     /user/joe/wordcount/input/file01
     /user/joe/wordcount/input/file02
+<<<<<<< HEAD
 
     $ bin/hadoop fs -cat /user/joe/wordcount/input/file01
     Hello World Bye World
 
+=======
+    
+    $ bin/hadoop fs -cat /user/joe/wordcount/input/file01
+    Hello World Bye World
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     $ bin/hadoop fs -cat /user/joe/wordcount/input/file02
     Hello Hadoop Goodbye Hadoop
 
@@ -1076,10 +1083,17 @@ Sample text-files as input:
     $ bin/hadoop fs -ls /user/joe/wordcount/input/
     /user/joe/wordcount/input/file01
     /user/joe/wordcount/input/file02
+<<<<<<< HEAD
 
     $ bin/hadoop fs -cat /user/joe/wordcount/input/file01
     Hello World, Bye World!
 
+=======
+    
+    $ bin/hadoop fs -cat /user/joe/wordcount/input/file01
+    Hello World, Bye World!
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     $ bin/hadoop fs -cat /user/joe/wordcount/input/file02
     Hello Hadoop, Goodbye to hadoop.
 

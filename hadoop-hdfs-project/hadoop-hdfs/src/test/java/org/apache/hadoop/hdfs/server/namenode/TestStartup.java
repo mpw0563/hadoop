@@ -32,7 +32,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Random;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,6 +92,7 @@ public class TestStartup {
   static final int fileSize = 8192;
   private long editsLength=0, fsimageLength=0;
 
+<<<<<<< HEAD
 
   private void writeFile(FileSystem fileSys, Path name, int repl)
   throws IOException {
@@ -103,6 +107,8 @@ public class TestStartup {
   }
 
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Before
   public void setUp() throws Exception {
     ExitUtil.disableSystemExit();
@@ -167,7 +173,12 @@ public class TestStartup {
         // create a file
         FileSystem fileSys = cluster.getFileSystem();
         Path p = new Path("t" + i);
+<<<<<<< HEAD
         this.writeFile(fileSys, p, 1);
+=======
+        DFSTestUtil.createFile(fileSys, p, fileSize, fileSize,
+            blockSize, (short) 1, seed);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         LOG.info("--file " + p.toString() + " created");
         LOG.info("--doing checkpoint");
         sn.doCheckpoint();  // this shouldn't fail
@@ -456,7 +467,11 @@ public class TestStartup {
     NamenodeProtocols nnRpc = namenode.getRpcServer();
     assertTrue(nnRpc.getFileInfo("/test").isDir());
     nnRpc.setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
+<<<<<<< HEAD
     nnRpc.saveNamespace();
+=======
+    nnRpc.saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     namenode.stop();
     namenode.join();
 
@@ -486,7 +501,11 @@ public class TestStartup {
     NamenodeProtocols nnRpc = namenode.getRpcServer();
     assertTrue(nnRpc.getFileInfo("/test").isDir());
     nnRpc.setSafeMode(SafeModeAction.SAFEMODE_ENTER, false);
+<<<<<<< HEAD
     nnRpc.saveNamespace();
+=======
+    nnRpc.saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     namenode.stop();
     namenode.join();
   }
@@ -670,7 +689,11 @@ public class TestStartup {
       fail("Expected exception with negative xattr size");
     } catch (IllegalArgumentException e) {
       GenericTestUtils.assertExceptionContains(
+<<<<<<< HEAD
           "Cannot set a negative value for the maximum size of an xattr", e);
+=======
+          "The maximum size of an xattr should be > 0", e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       conf.setInt(DFSConfigKeys.DFS_NAMENODE_MAX_XATTR_SIZE_KEY,
           DFSConfigKeys.DFS_NAMENODE_MAX_XATTR_SIZE_DEFAULT);
@@ -694,6 +717,7 @@ public class TestStartup {
         cluster.shutdown();
       }
     }
+<<<<<<< HEAD
 
     try {
       // Set up a logger to check log message
@@ -719,6 +743,8 @@ public class TestStartup {
         cluster.shutdown();
       }
     }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
 

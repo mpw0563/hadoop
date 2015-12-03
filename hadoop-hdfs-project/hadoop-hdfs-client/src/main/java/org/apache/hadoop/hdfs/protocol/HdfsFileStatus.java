@@ -33,7 +33,12 @@ import org.apache.hadoop.hdfs.DFSUtilClient;
 @InterfaceStability.Evolving
 public class HdfsFileStatus {
 
+<<<<<<< HEAD
   private final byte[] path;  // local name of the inode that's encoded in java UTF8
+=======
+  // local name of the inode that's encoded in java UTF8
+  private final byte[] path;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final byte[] symlink; // symlink target encoded in java UTF8 or null
   private final long length;
   private final boolean isdir;
@@ -48,6 +53,11 @@ public class HdfsFileStatus {
 
   private final FileEncryptionInfo feInfo;
 
+<<<<<<< HEAD
+=======
+  private final ErasureCodingPolicy ecPolicy;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   // Used by dir, not including dot and dotdot. Always zero for a regular file.
   private final int childrenNum;
   private final byte storagePolicy;
@@ -73,7 +83,11 @@ public class HdfsFileStatus {
       long blocksize, long modification_time, long access_time,
       FsPermission permission, String owner, String group, byte[] symlink,
       byte[] path, long fileId, int childrenNum, FileEncryptionInfo feInfo,
+<<<<<<< HEAD
       byte storagePolicy) {
+=======
+      byte storagePolicy, ErasureCodingPolicy ecPolicy) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.length = length;
     this.isdir = isdir;
     this.block_replication = (short)block_replication;
@@ -93,6 +107,10 @@ public class HdfsFileStatus {
     this.childrenNum = childrenNum;
     this.feInfo = feInfo;
     this.storagePolicy = storagePolicy;
+<<<<<<< HEAD
+=======
+    this.ecPolicy = ecPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -250,6 +268,13 @@ public class HdfsFileStatus {
     return feInfo;
   }
 
+<<<<<<< HEAD
+=======
+  public ErasureCodingPolicy getErasureCodingPolicy() {
+    return ecPolicy;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public final int getChildrenNum() {
     return childrenNum;
   }

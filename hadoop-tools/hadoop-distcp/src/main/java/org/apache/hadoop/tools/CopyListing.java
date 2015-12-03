@@ -27,6 +27,11 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.tools.util.DistCpUtils;
 import org.apache.hadoop.security.Credentials;
+<<<<<<< HEAD
+=======
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -46,7 +51,11 @@ import com.google.common.collect.Sets;
 public abstract class CopyListing extends Configured {
 
   private Credentials credentials;
+<<<<<<< HEAD
 
+=======
+  static final Log LOG = LogFactory.getLog(DistCp.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Build listing function creates the input listing that distcp uses to
    * perform the copy.
@@ -89,6 +98,10 @@ public abstract class CopyListing extends Configured {
     config.setLong(DistCpConstants.CONF_LABEL_TOTAL_NUMBER_OF_RECORDS, getNumberOfPaths());
 
     validateFinalListing(pathToListFile, options);
+<<<<<<< HEAD
+=======
+    LOG.info("Number of paths in the copy list: " + this.getNumberOfPaths());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -153,6 +166,10 @@ public abstract class CopyListing extends Configured {
       Text currentKey = new Text();
       Set<URI> aclSupportCheckFsSet = Sets.newHashSet();
       Set<URI> xAttrSupportCheckFsSet = Sets.newHashSet();
+<<<<<<< HEAD
+=======
+      long idx = 0;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       while (reader.next(currentKey)) {
         if (currentKey.equals(lastKey)) {
           CopyListingFileStatus currentFileStatus = new CopyListingFileStatus();
@@ -178,6 +195,15 @@ public abstract class CopyListing extends Configured {
           }
         }
         lastKey.set(currentKey);
+<<<<<<< HEAD
+=======
+
+        if (options.shouldUseDiff() && LOG.isDebugEnabled()) {
+          LOG.debug("Copy list entry " + idx + ": " +
+                  lastFileStatus.getPath().toUri().getPath());
+          idx++;
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     } finally {
       IOUtils.closeStream(reader);
@@ -224,9 +250,12 @@ public abstract class CopyListing extends Configured {
                                            Credentials credentials,
                                            DistCpOptions options)
       throws IOException {
+<<<<<<< HEAD
     if (options.shouldUseDiff()) {
       return new GlobbedCopyListing(configuration, credentials);
     }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String copyListingClassName = configuration.get(DistCpConstants.
         CONF_LABEL_COPY_LISTING_CLASS, "");
     Class<? extends CopyListing> copyListingClass;

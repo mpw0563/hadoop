@@ -24,6 +24,11 @@ import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ContainerState;
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.proto.YarnProtos.ResourceProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerIdProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerStateProto;
 import org.apache.hadoop.yarn.proto.YarnProtos.ContainerStatusProto;
@@ -78,6 +83,10 @@ public class ContainerStatusPBImpl extends ContainerStatus {
     sb.append("ContainerStatus: [");
     sb.append("ContainerId: ").append(getContainerId()).append(", ");
     sb.append("State: ").append(getState()).append(", ");
+<<<<<<< HEAD
+=======
+    sb.append("Capability: ").append(getCapability()).append(", ");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     sb.append("Diagnostics: ").append(getDiagnostics()).append(", ");
     sb.append("ExitStatus: ").append(getExitStatus()).append(", ");
     sb.append("]");
@@ -168,6 +177,28 @@ public class ContainerStatusPBImpl extends ContainerStatus {
     builder.setDiagnostics(diagnostics);
   }
 
+<<<<<<< HEAD
+=======
+  @Override
+  public synchronized Resource getCapability() {
+    ContainerStatusProtoOrBuilder p = viaProto ? proto : builder;
+    if (!p.hasCapability()) {
+      return null;
+    }
+    return convertFromProtoFormat(p.getCapability());
+  }
+
+  @Override
+  public synchronized void setCapability(Resource capability) {
+    maybeInitBuilder();
+    if (capability == null) {
+      builder.clearCapability();
+      return;
+    }
+    builder.setCapability(convertToProtoFormat(capability));
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private ContainerStateProto convertToProtoFormat(ContainerState e) {
     return ProtoUtils.convertToProtoFormat(e);
   }
@@ -184,6 +215,17 @@ public class ContainerStatusPBImpl extends ContainerStatus {
     return ((ContainerIdPBImpl)t).getProto();
   }
 
+<<<<<<< HEAD
 
 
 }  
+=======
+  private ResourceProto convertToProtoFormat(Resource e) {
+    return ((ResourcePBImpl)e).getProto();
+  }
+
+  private ResourcePBImpl convertFromProtoFormat(ResourceProto p) {
+    return new ResourcePBImpl(p);
+  }
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

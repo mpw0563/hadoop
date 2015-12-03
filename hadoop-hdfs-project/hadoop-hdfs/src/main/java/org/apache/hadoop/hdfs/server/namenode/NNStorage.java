@@ -29,6 +29,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -52,6 +53,10 @@ import org.apache.hadoop.hdfs.util.PersistentLongFile;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.net.DNS;
 import org.apache.hadoop.util.Time;
+<<<<<<< HEAD
+=======
+import org.mortbay.util.ajax.JSON;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -149,6 +154,11 @@ public class NNStorage extends Storage implements Closeable,
   private HashMap<String, String> deprecatedProperties;
 
   /**
+   * Name directories size for metric.
+   */
+  private Map<String, Long> nameDirSizeMap = new HashMap<>();
+
+  /**
    * Construct the NNStorage.
    * @param conf Namenode configuration.
    * @param imageDirs Directories the image can be stored in.
@@ -166,6 +176,11 @@ public class NNStorage extends Storage implements Closeable,
     setStorageDirectories(imageDirs, 
                           Lists.newArrayList(editsDirs),
                           FSNamesystem.getSharedEditsDirs(conf));
+<<<<<<< HEAD
+=======
+    //Update NameDirSize metric value after NN start
+    updateNameDirSize();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override // Storage
@@ -512,6 +527,7 @@ public class NNStorage extends Storage implements Closeable,
       if (FileUtil.canRead(sd.getRoot()) && fsImage.exists()) {
         return fsImage;
       }
+<<<<<<< HEAD
     }
     return null;
   }
@@ -530,10 +546,33 @@ public class NNStorage extends Storage implements Closeable,
           return fsImage;
         }
       }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     return null;
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * @return The first image file whose txid is the same with the given txid and
+   * image type is one of the given types.
+   */
+  public File getFsImage(long txid, EnumSet<NameNodeFile> nnfs) {
+    for (Iterator<StorageDirectory> it = dirIterator(NameNodeDirType.IMAGE);
+        it.hasNext();) {
+      StorageDirectory sd = it.next();
+      for (NameNodeFile nnf : nnfs) {
+        File fsImage = getStorageFile(sd, nnf, txid);
+        if (FileUtil.canRead(sd.getRoot()) && fsImage.exists()) {
+          return fsImage;
+        }
+      }
+    }
+    return null;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public File getFsImageName(long txid) {
     return getFsImageName(txid, NameNodeFile.IMAGE);
   }
@@ -573,7 +612,11 @@ public class NNStorage extends Storage implements Closeable,
   public static NamespaceInfo newNamespaceInfo()
       throws UnknownHostException {
     return new NamespaceInfo(newNamespaceID(), newClusterID(),
+<<<<<<< HEAD
         newBlockPoolID(), 0L);
+=======
+        newBlockPoolID(), Time.now());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   public void format() throws IOException {
@@ -1075,4 +1118,23 @@ public class NNStorage extends Storage implements Closeable,
         getBlockPoolID(),
         getCTime());
   }
+<<<<<<< HEAD
+=======
+
+  public String getNNDirectorySize() {
+    return JSON.toString(nameDirSizeMap);
+  }
+
+  public void updateNameDirSize() {
+    Map<String, Long> nnDirSizeMap = new HashMap<>();
+    for (Iterator<StorageDirectory> it = dirIterator(); it.hasNext();) {
+      StorageDirectory sd = it.next();
+      if (!sd.isShared()) {
+        nnDirSizeMap.put(sd.getRoot().getAbsolutePath(), sd.getDirecorySize());
+      }
+    }
+    nameDirSizeMap.clear();
+    nameDirSizeMap.putAll(nnDirSizeMap);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

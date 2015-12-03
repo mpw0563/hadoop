@@ -27,7 +27,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+<<<<<<< HEAD
 import java.util.Iterator;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Random;
 
 import org.apache.commons.logging.Log;
@@ -82,6 +85,10 @@ public class DBCountPageView extends Configured implements Tool {
   
   private Connection connection;
   private boolean initialized = false;
+<<<<<<< HEAD
+=======
+  private boolean isOracle = false;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private static final String[] AccessFieldNames = {"url", "referrer", "time"};
   private static final String[] PageviewFieldNames = {"url", "pageview"};
@@ -102,7 +109,13 @@ public class DBCountPageView extends Configured implements Tool {
   
   private void createConnection(String driverClassName
       , String url) throws Exception {
+<<<<<<< HEAD
 
+=======
+    if(StringUtils.toLowerCase(driverClassName).contains("oracle")) {
+      isOracle = true;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Class.forName(driverClassName);
     connection = DriverManager.getConnection(url);
     connection.setAutoCommit(false);
@@ -142,7 +155,11 @@ public class DBCountPageView extends Configured implements Tool {
   }
   
   private void dropTables() {
+<<<<<<< HEAD
     String dropAccess = "DROP TABLE Access";
+=======
+    String dropAccess = "DROP TABLE HAccess";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String dropPageview = "DROP TABLE Pageview";
     Statement st = null;
     try {
@@ -157,18 +174,34 @@ public class DBCountPageView extends Configured implements Tool {
   }
   
   private void createTables() throws SQLException {
+<<<<<<< HEAD
 
     String createAccess = 
       "CREATE TABLE " +
       "Access(url      VARCHAR(100) NOT NULL," +
             " referrer VARCHAR(100)," +
             " time     BIGINT NOT NULL, " +
+=======
+	String dataType = "BIGINT NOT NULL";
+	if(isOracle) {
+	  dataType = "NUMBER(19) NOT NULL";
+	}
+    String createAccess = 
+      "CREATE TABLE " +
+      "HAccess(url      VARCHAR(100) NOT NULL," +
+            " referrer VARCHAR(100)," +
+            " time     " + dataType + ", " +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             " PRIMARY KEY (url, time))";
 
     String createPageview = 
       "CREATE TABLE " +
       "Pageview(url      VARCHAR(100) NOT NULL," +
+<<<<<<< HEAD
               " pageview     BIGINT NOT NULL, " +
+=======
+              " pageview     " + dataType + ", " +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                " PRIMARY KEY (url))";
     
     Statement st = connection.createStatement();
@@ -189,7 +222,11 @@ public class DBCountPageView extends Configured implements Tool {
     PreparedStatement statement = null ;
     try {
       statement = connection.prepareStatement(
+<<<<<<< HEAD
           "INSERT INTO Access(url, referrer, time)" +
+=======
+          "INSERT INTO HAccess(url, referrer, time)" +
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           " VALUES (?, ?, ?)");
 
       Random random = new Random();
@@ -248,7 +285,11 @@ public class DBCountPageView extends Configured implements Tool {
   /**Verifies the results are correct */
   private boolean verify() throws SQLException {
     //check total num pageview
+<<<<<<< HEAD
     String countAccessQuery = "SELECT COUNT(*) FROM Access";
+=======
+    String countAccessQuery = "SELECT COUNT(*) FROM HAccess";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String sumPageviewQuery = "SELECT SUM(pageview) FROM Pageview";
     Statement st = null;
     ResultSet rs = null;
@@ -396,7 +437,11 @@ public class DBCountPageView extends Configured implements Tool {
 
     DBConfiguration.configureDB(conf, driverClassName, url);
 
+<<<<<<< HEAD
     Job job = new Job(conf);
+=======
+    Job job = Job.getInstance(conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         
     job.setJobName("Count Pageviews of URLs");
     job.setJarByClass(DBCountPageView.class);
@@ -404,7 +449,11 @@ public class DBCountPageView extends Configured implements Tool {
     job.setCombinerClass(LongSumReducer.class);
     job.setReducerClass(PageviewReducer.class);
 
+<<<<<<< HEAD
     DBInputFormat.setInput(job, AccessRecord.class, "Access"
+=======
+    DBInputFormat.setInput(job, AccessRecord.class, "HAccess"
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         , null, "url", AccessFieldNames);
 
     DBOutputFormat.setOutput(job, "Pageview", PageviewFieldNames);

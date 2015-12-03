@@ -41,6 +41,10 @@ public class CSAssignment {
   private final boolean skipped;
   private boolean fulfilledReservation;
   private final AssignmentInformation assignmentInformation;
+<<<<<<< HEAD
+=======
+  private boolean increaseAllocation;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public CSAssignment(Resource resource, NodeType type) {
     this(resource, type, null, null, false, false);
@@ -138,4 +142,15 @@ public class CSAssignment {
   public AssignmentInformation getAssignmentInformation() {
     return this.assignmentInformation;
   }
+<<<<<<< HEAD
+=======
+  
+  public boolean isIncreasedAllocation() {
+    return increaseAllocation;
+  }
+
+  public void setIncreasedAllocation(boolean flag) {
+    increaseAllocation = flag;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

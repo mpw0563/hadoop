@@ -54,10 +54,18 @@ public class BlockIdManager {
    * The global block ID space for this file system.
    */
   private final SequentialBlockIdGenerator blockIdGenerator;
+<<<<<<< HEAD
+=======
+  private final SequentialBlockGroupIdGenerator blockGroupIdGenerator;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public BlockIdManager(BlockManager blockManager) {
     this.generationStampV1Limit = HdfsConstants.GRANDFATHER_GENERATION_STAMP;
     this.blockIdGenerator = new SequentialBlockIdGenerator(blockManager);
+<<<<<<< HEAD
+=======
+    this.blockGroupIdGenerator = new SequentialBlockGroupIdGenerator(blockManager);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -102,21 +110,54 @@ public class BlockIdManager {
   }
 
   /**
+<<<<<<< HEAD
    * Sets the maximum allocated block ID for this filesystem. This is
    * the basis for allocating new block IDs.
    */
   public void setLastAllocatedBlockId(long blockId) {
+=======
+   * Sets the maximum allocated contiguous block ID for this filesystem. This is
+   * the basis for allocating new block IDs.
+   */
+  public void setLastAllocatedContiguousBlockId(long blockId) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     blockIdGenerator.skipTo(blockId);
   }
 
   /**
+<<<<<<< HEAD
    * Gets the maximum sequentially allocated block ID for this filesystem
    */
   public long getLastAllocatedBlockId() {
+=======
+   * Gets the maximum sequentially allocated contiguous block ID for this
+   * filesystem
+   */
+  public long getLastAllocatedContiguousBlockId() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return blockIdGenerator.getCurrentValue();
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Sets the maximum allocated striped block ID for this filesystem. This is
+   * the basis for allocating new block IDs.
+   */
+  public void setLastAllocatedStripedBlockId(long blockId) {
+    blockGroupIdGenerator.skipTo(blockId);
+  }
+
+  /**
+   * Gets the maximum sequentially allocated striped block ID for this
+   * filesystem
+   */
+  public long getLastAllocatedStripedBlockId() {
+    return blockGroupIdGenerator.getCurrentValue();
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Sets the current generation stamp for legacy blocks
    */
   public void setGenerationStampV1(long stamp) {
@@ -187,10 +228,21 @@ public class BlockIdManager {
   /**
    * Increments, logs and then returns the block ID
    */
+<<<<<<< HEAD
   public long nextBlockId() {
     return blockIdGenerator.nextValue();
   }
 
+=======
+  public long nextContiguousBlockId() {
+    return blockIdGenerator.nextValue();
+  }
+
+  public long nextStripedBlockId() {
+    return blockGroupIdGenerator.nextValue();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public boolean isGenStampInFuture(Block block) {
     if (isLegacyBlock(block)) {
       return block.getGenerationStamp() > getGenerationStampV1();
@@ -206,4 +258,31 @@ public class BlockIdManager {
       .LAST_RESERVED_BLOCK_ID);
     generationStampV1Limit = HdfsConstants.GRANDFATHER_GENERATION_STAMP;
   }
+<<<<<<< HEAD
 }
+=======
+
+  public static boolean isStripedBlockID(long id) {
+    return id < 0;
+  }
+
+  /**
+   * The last 4 bits of HdfsConstants.BLOCK_GROUP_INDEX_MASK(15) is 1111,
+   * so the last 4 bits of (~HdfsConstants.BLOCK_GROUP_INDEX_MASK) is 0000
+   * and the other 60 bits are 1. Group ID is the first 60 bits of any
+   * data/parity block id in the same striped block group.
+   */
+  public static long convertToStripedID(long id) {
+    return id & (~HdfsServerConstants.BLOCK_GROUP_INDEX_MASK);
+  }
+
+  public static int getBlockIndex(Block reportedBlock) {
+    return (int) (reportedBlock.getBlockId() &
+        HdfsServerConstants.BLOCK_GROUP_INDEX_MASK);
+  }
+
+  SequentialBlockGroupIdGenerator getBlockGroupIdGenerator() {
+    return blockGroupIdGenerator;
+  }
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

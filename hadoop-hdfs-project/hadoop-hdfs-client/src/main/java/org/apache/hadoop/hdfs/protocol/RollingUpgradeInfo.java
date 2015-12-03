@@ -64,7 +64,10 @@ public class RollingUpgradeInfo extends RollingUpgradeStatus {
 
   /**
    * Finalize the upgrade if not already finalized
+<<<<<<< HEAD
    * @param finalizeTime
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   public void finalize(long finalizeTime) {
     if (finalizeTime != 0) {
@@ -99,8 +102,16 @@ public class RollingUpgradeInfo extends RollingUpgradeStatus {
   @Override
   public String toString() {
     return super.toString()
+<<<<<<< HEAD
       +  "\n     Start Time: " + (startTime == 0? "<NOT STARTED>": timestamp2String(startTime))
       +  "\n  Finalize Time: " + (finalizeTime == 0? "<NOT FINALIZED>": timestamp2String(finalizeTime));
+=======
+        +  "\n     Start Time: "
+        + (startTime == 0 ? "<NOT STARTED>" : timestamp2String(startTime))
+        +  "\n  Finalize Time: "
+        + (finalizeTime == 0 ? "<NOT FINALIZED>" :
+        timestamp2String(finalizeTime));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static String timestamp2String(long timestamp) {

@@ -252,6 +252,7 @@ public class SecondaryNameNode implements Runnable,
 
     // Initialize other scheduling parameters from the configuration
     checkpointConf = new CheckpointConf(conf);
+<<<<<<< HEAD
 
     final InetSocketAddress httpAddr = infoSocAddr;
 
@@ -293,6 +294,11 @@ public class SecondaryNameNode implements Runnable,
           NetUtils.getHostPortString(httpsAddress));
     }
 
+=======
+    nameNodeStatusBeanName = MBeans.register("SecondaryNameNode",
+            "SecondaryNameNodeInfo", this);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     legacyOivImageDir = conf.get(
         DFSConfigKeys.DFS_NAMENODE_LEGACY_OIV_IMAGE_DIR_KEY);
 
@@ -459,7 +465,11 @@ public class SecondaryNameNode implements Runnable,
               LOG.info("Image has changed. Downloading updated image from NN.");
               MD5Hash downloadedHash = TransferFsImage.downloadImageToStorage(
                   nnHostPort, sig.mostRecentCheckpointTxId,
+<<<<<<< HEAD
                   dstImage.getStorage(), true);
+=======
+                  dstImage.getStorage(), true, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               dstImage.saveDigestAndRenameCheckpointImage(NameNodeFile.IMAGE,
                   sig.mostRecentCheckpointTxId, downloadedHash);
             }
@@ -499,6 +509,52 @@ public class SecondaryNameNode implements Runnable,
         scheme);
     LOG.debug("Will connect to NameNode at " + address);
     return address.toURL();
+<<<<<<< HEAD
+=======
+  }
+
+  /**
+   * Start the web server.
+   */
+  @VisibleForTesting
+  public void startInfoServer() throws IOException {
+    final InetSocketAddress httpAddr = getHttpAddress(conf);
+    final String httpsAddrString = conf.getTrimmed(
+        DFSConfigKeys.DFS_NAMENODE_SECONDARY_HTTPS_ADDRESS_KEY,
+        DFSConfigKeys.DFS_NAMENODE_SECONDARY_HTTPS_ADDRESS_DEFAULT);
+    InetSocketAddress httpsAddr = NetUtils.createSocketAddr(httpsAddrString);
+
+    HttpServer2.Builder builder = DFSUtil.httpServerTemplateForNNAndJN(conf,
+        httpAddr, httpsAddr, "secondary", DFSConfigKeys.
+            DFS_SECONDARY_NAMENODE_KERBEROS_INTERNAL_SPNEGO_PRINCIPAL_KEY,
+        DFSConfigKeys.DFS_SECONDARY_NAMENODE_KEYTAB_FILE_KEY);
+
+    infoServer = builder.build();
+    infoServer.setAttribute("secondary.name.node", this);
+    infoServer.setAttribute("name.system.image", checkpointImage);
+    infoServer.setAttribute(JspHelper.CURRENT_CONF, conf);
+    infoServer.addInternalServlet("imagetransfer", ImageServlet.PATH_SPEC,
+        ImageServlet.class, true);
+    infoServer.start();
+
+    LOG.info("Web server init done");
+
+    HttpConfig.Policy policy = DFSUtil.getHttpPolicy(conf);
+    int connIdx = 0;
+    if (policy.isHttpEnabled()) {
+      InetSocketAddress httpAddress =
+          infoServer.getConnectorAddress(connIdx++);
+      conf.set(DFSConfigKeys.DFS_NAMENODE_SECONDARY_HTTP_ADDRESS_KEY,
+          NetUtils.getHostPortString(httpAddress));
+    }
+
+    if (policy.isHttpsEnabled()) {
+      InetSocketAddress httpsAddress =
+          infoServer.getConnectorAddress(connIdx);
+      conf.set(DFSConfigKeys.DFS_NAMENODE_SECONDARY_HTTPS_ADDRESS_KEY,
+          NetUtils.getHostPortString(httpsAddress));
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -680,6 +736,15 @@ public class SecondaryNameNode implements Runnable,
       }
 
       if (secondary != null) {
+<<<<<<< HEAD
+=======
+        // The web server is only needed when starting SNN as a daemon,
+        // and not needed if called from shell command. Starting the web server
+        // from shell may fail when getting credentials, if the environment
+        // is not set up for it, which is most of the case.
+        secondary.startInfoServer();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         secondary.startCheckpointThread();
         secondary.join();
       }
@@ -907,7 +972,11 @@ public class SecondaryNameNode implements Runnable,
             throw new RuntimeException(ioe);
           }
           FileJournalManager.addStreamsToCollectionFromFiles(editFiles, streams,
+<<<<<<< HEAD
               fromTxId, inProgressOk);
+=======
+              fromTxId, Long.MAX_VALUE, inProgressOk);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
       

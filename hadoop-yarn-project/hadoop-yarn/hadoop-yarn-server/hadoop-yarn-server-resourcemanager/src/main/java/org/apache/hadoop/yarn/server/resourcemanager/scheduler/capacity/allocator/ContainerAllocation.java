@@ -25,6 +25,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.NodeType;
 import org.apache.hadoop.yarn.util.resource.Resources;
 
 public class ContainerAllocation {
+<<<<<<< HEAD
   public static final ContainerAllocation PRIORITY_SKIPPED =
       new ContainerAllocation(null, null, AllocationState.PRIORITY_SKIPPED);
   
@@ -37,6 +38,33 @@ public class ContainerAllocation {
   public static final ContainerAllocation LOCALITY_SKIPPED =
       new ContainerAllocation(null, null, AllocationState.LOCALITY_SKIPPED);
   
+=======
+  /**
+   * Skip the locality (e.g. node-local, rack-local, any), and look at other
+   * localities of the same priority
+   */
+  public static final ContainerAllocation LOCALITY_SKIPPED =
+      new ContainerAllocation(null, null, AllocationState.LOCALITY_SKIPPED);
+
+  /**
+   * Skip the priority, and look at other priorities of the same application
+   */
+  public static final ContainerAllocation PRIORITY_SKIPPED =
+      new ContainerAllocation(null, null, AllocationState.PRIORITY_SKIPPED);
+
+  /**
+   * Skip the application, and look at other applications of the same queue
+   */
+  public static final ContainerAllocation APP_SKIPPED =
+      new ContainerAllocation(null, null, AllocationState.APP_SKIPPED);
+
+  /**
+   * Skip the leaf-queue, and look at other queues of the same parent queue
+   */
+  public static final ContainerAllocation QUEUE_SKIPPED =
+      new ContainerAllocation(null, null, AllocationState.QUEUE_SKIPPED);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   RMContainer containerToBeUnreserved;
   private Resource resourceToBeAllocated = Resources.none();
   AllocationState state;
@@ -50,17 +78,26 @@ public class ContainerAllocation {
     this.resourceToBeAllocated = resourceToBeAllocated;
     this.state = state;
   }
+<<<<<<< HEAD
   
   public RMContainer getContainerToBeUnreserved() {
     return containerToBeUnreserved;
   }
   
+=======
+
+  public RMContainer getContainerToBeUnreserved() {
+    return containerToBeUnreserved;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public Resource getResourceToBeAllocated() {
     if (resourceToBeAllocated == null) {
       return Resources.none();
     }
     return resourceToBeAllocated;
   }
+<<<<<<< HEAD
   
   public AllocationState getAllocationState() {
     return state;
@@ -70,6 +107,17 @@ public class ContainerAllocation {
     return containerNodeType;
   }
   
+=======
+
+  public AllocationState getAllocationState() {
+    return state;
+  }
+
+  public NodeType getContainerNodeType() {
+    return containerNodeType;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public Container getUpdatedContainer() {
     return updatedContainer;
   }

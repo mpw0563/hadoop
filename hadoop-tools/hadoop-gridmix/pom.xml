@@ -17,12 +17,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../../hadoop-project</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-gridmix</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <description>Apache Hadoop Gridmix</description>
   <name>Apache Hadoop Gridmix</name>
   <packaging>jar</packaging>
@@ -75,7 +83,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
       <artifactId>hadoop-hdfs</artifactId>
+=======
+      <artifactId>hadoop-hdfs-client</artifactId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -88,6 +100,14 @@
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-hdfs</artifactId>
       <scope>test</scope>
+<<<<<<< HEAD
+=======
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-hdfs</artifactId>
+      <scope>test</scope>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <type>test-jar</type>
     </dependency>
     <dependency>

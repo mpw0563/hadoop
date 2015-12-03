@@ -28,6 +28,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+<<<<<<< HEAD
+=======
+import com.google.common.collect.ImmutableList;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
@@ -86,7 +90,23 @@ public class QueueManager {
    * could be referred to as just "parent1.queue2".
    */
   public FSLeafQueue getLeafQueue(String name, boolean create) {
+<<<<<<< HEAD
     FSQueue queue = getQueue(name, create, FSQueueType.LEAF);
+=======
+    return getLeafQueue(name, create, true);
+  }
+
+  public FSLeafQueue getLeafQueue(
+      String name,
+      boolean create,
+      boolean recomputeSteadyShares) {
+    FSQueue queue = getQueue(
+        name,
+        create,
+        FSQueueType.LEAF,
+        recomputeSteadyShares
+    );
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (queue instanceof FSParentQueue) {
       return null;
     }
@@ -116,12 +136,29 @@ public class QueueManager {
    * could be referred to as just "parent1.queue2".
    */
   public FSParentQueue getParentQueue(String name, boolean create) {
+<<<<<<< HEAD
     FSQueue queue = getQueue(name, create, FSQueueType.PARENT);
+=======
+    return getParentQueue(name, create, true);
+  }
+
+  public FSParentQueue getParentQueue(
+      String name,
+      boolean create,
+      boolean recomputeSteadyShares) {
+    FSQueue queue = getQueue(
+        name,
+        create,
+        FSQueueType.PARENT,
+        recomputeSteadyShares
+    );
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (queue instanceof FSLeafQueue) {
       return null;
     }
     return (FSParentQueue) queue;
   }
+<<<<<<< HEAD
   
   private FSQueue getQueue(String name, boolean create, FSQueueType queueType) {
     name = ensureRootPrefix(name);
@@ -138,6 +175,30 @@ public class QueueManager {
       }
       return queue;
     }
+=======
+
+  private FSQueue getQueue(
+      String name,
+      boolean create,
+      FSQueueType queueType,
+      boolean recomputeSteadyShares) {
+    boolean recompute = recomputeSteadyShares;
+    name = ensureRootPrefix(name);
+    FSQueue queue;
+    synchronized (queues) {
+      queue = queues.get(name);
+      if (queue == null && create) {
+        // if the queue doesn't exist,create it and return
+        queue = createQueue(name, queueType);
+      } else {
+        recompute = false;
+      }
+    }
+    if (recompute) {
+      rootQueue.recomputeSteadyShares();
+    }
+    return queue;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /**
@@ -295,6 +356,7 @@ public class QueueManager {
    * Remove a queue and all its descendents.
    */
   private void removeQueue(FSQueue queue) {
+<<<<<<< HEAD
     if (queue instanceof FSLeafQueue) {
       leafQueues.remove(queue);
     } else {
@@ -306,6 +368,20 @@ public class QueueManager {
     queues.remove(queue.getName());
     FSParentQueue parent = queue.getParent();
     parent.removeChildQueue(queue);
+=======
+    synchronized (queues) {
+      if (queue instanceof FSLeafQueue) {
+        leafQueues.remove(queue);
+      } else {
+        for (FSQueue childQueue:queue.getChildQueues()) {
+          removeQueue(childQueue);
+        }
+      }
+      queues.remove(queue.getName());
+      FSParentQueue parent = queue.getParent();
+      parent.removeChildQueue(queue);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   /**
@@ -360,7 +436,13 @@ public class QueueManager {
    * Get a collection of all queues
    */
   public Collection<FSQueue> getQueues() {
+<<<<<<< HEAD
     return queues.values();
+=======
+    synchronized (queues) {
+      return ImmutableList.copyOf(queues.values());
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   private String ensureRootPrefix(String name) {
@@ -372,6 +454,7 @@ public class QueueManager {
   
   public void updateAllocationConfiguration(AllocationConfiguration queueConf) {
     // Create leaf queues and the parent queues in a leaf's ancestry if they do not exist
+<<<<<<< HEAD
     for (String name : queueConf.getConfiguredQueues().get(FSQueueType.LEAF)) {
       if (removeEmptyIncompatibleQueues(name, FSQueueType.LEAF)) {
         getLeafQueue(name, true);
@@ -387,6 +470,27 @@ public class QueueManager {
       }
     }
     
+=======
+    synchronized (queues) {
+      for (String name : queueConf.getConfiguredQueues().get(
+              FSQueueType.LEAF)) {
+        if (removeEmptyIncompatibleQueues(name, FSQueueType.LEAF)) {
+          getLeafQueue(name, true, false);
+        }
+      }
+      // At this point all leaves and 'parents with
+      // at least one child' would have been created.
+      // Now create parents with no configured leaf.
+      for (String name : queueConf.getConfiguredQueues().get(
+          FSQueueType.PARENT)) {
+        if (removeEmptyIncompatibleQueues(name, FSQueueType.PARENT)) {
+          getParentQueue(name, true, false);
+        }
+      }
+    }
+    rootQueue.recomputeSteadyShares();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (FSQueue queue : queues.values()) {
       // Update queue metrics
       FSQueueMetrics queueMetrics = queue.getMetrics();

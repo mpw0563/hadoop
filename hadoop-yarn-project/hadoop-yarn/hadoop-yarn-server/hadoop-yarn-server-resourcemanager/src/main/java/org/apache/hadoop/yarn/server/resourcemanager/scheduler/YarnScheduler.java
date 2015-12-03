@@ -28,11 +28,21 @@ import org.apache.hadoop.classification.InterfaceAudience.Public;
 import org.apache.hadoop.classification.InterfaceStability.Evolving;
 import org.apache.hadoop.classification.InterfaceStability.Stable;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.conf.Configuration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationResourceUsageReport;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ContainerId;
+=======
+import org.apache.hadoop.yarn.api.records.Container;
+import org.apache.hadoop.yarn.api.records.ContainerId;
+import org.apache.hadoop.yarn.api.records.ContainerResourceChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.QueueACL;
@@ -131,16 +141,29 @@ public interface YarnScheduler extends EventHandler<SchedulerEvent> {
    * @param release
    * @param blacklistAdditions 
    * @param blacklistRemovals 
+<<<<<<< HEAD
+=======
+   * @param increaseRequests
+   * @param decreaseRequests
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @return the {@link Allocation} for the application
    */
   @Public
   @Stable
+<<<<<<< HEAD
   Allocation 
   allocate(ApplicationAttemptId appAttemptId, 
       List<ResourceRequest> ask,
       List<ContainerId> release, 
       List<String> blacklistAdditions, 
       List<String> blacklistRemovals);
+=======
+  Allocation allocate(ApplicationAttemptId appAttemptId,
+      List<ResourceRequest> ask, List<ContainerId> release,
+      List<String> blacklistAdditions, List<String> blacklistRemovals,
+      List<ContainerResourceChangeRequest> increaseRequests,
+      List<ContainerResourceChangeRequest> decreaseRequests);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Get node resource usage report.
@@ -306,4 +329,58 @@ public interface YarnScheduler extends EventHandler<SchedulerEvent> {
   public Priority checkAndGetApplicationPriority(Priority priorityFromContext,
       String user, String queueName, ApplicationId applicationId)
       throws YarnException;
+<<<<<<< HEAD
+=======
+
+  /**
+   *
+   * Change application priority of a submitted application at runtime
+   *
+   * @param newPriority Submitted Application priority.
+   *
+   * @param applicationId Application ID
+   */
+  public void updateApplicationPriority(Priority newPriority,
+      ApplicationId applicationId) throws YarnException;
+
+  /**
+   *
+   * Get previous attempts' live containers for work-preserving AM restart.
+   *
+   * @param appAttemptId the id of the application attempt
+   *
+   * @return list of live containers for the given attempt
+   */
+  List<Container> getTransferredContainers(ApplicationAttemptId appAttemptId);
+
+  /**
+   * Set the cluster max priority
+   * 
+   * @param conf
+   * @throws YarnException
+   */
+  void setClusterMaxPriority(Configuration conf) throws YarnException;
+
+  /**
+   * @param attemptId
+   */
+  List<ResourceRequest> getPendingResourceRequestsForAttempt(
+      ApplicationAttemptId attemptId);
+
+  /**
+   * Get cluster max priority.
+   * 
+   * @return maximum priority of cluster
+   */
+  Priority getMaxClusterLevelAppPriority();
+
+  /**
+   * Get SchedulerNode corresponds to nodeId.
+   *
+   * @param nodeId the node id of RMNode
+   *
+   * @return SchedulerNode corresponds to nodeId
+   */
+  SchedulerNode getSchedulerNode(NodeId nodeId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

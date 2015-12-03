@@ -36,6 +36,13 @@ import org.apache.hadoop.security.Groups;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.NativeCodeLoader;
 import org.junit.Test;
+<<<<<<< HEAD
+=======
+
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @InterfaceAudience.LimitedPrivate({"HDFS", "MapReduce"})
 @InterfaceStability.Evolving
@@ -379,10 +386,10 @@ public class TestAccessControlList {
     assertTrue(acl.isAllAllowed());
 
     UserGroupInformation drwho =
-      UserGroupInformation.createUserForTesting("drwho@APACHE.ORG",
+      UserGroupInformation.createUserForTesting("drwho@EXAMPLE.COM",
           new String[] { "aliens" });
     UserGroupInformation drwho2 =
-      UserGroupInformation.createUserForTesting("drwho2@APACHE.ORG",
+      UserGroupInformation.createUserForTesting("drwho2@EXAMPLE.COM",
           new String[] { "tardis" });
 
     acl.addUser("drwho");
@@ -408,16 +415,16 @@ public class TestAccessControlList {
     AccessControlList acl;
 
     UserGroupInformation drwho =
-        UserGroupInformation.createUserForTesting("drwho@APACHE.ORG",
+        UserGroupInformation.createUserForTesting("drwho@EXAMPLE.COM",
             new String[] { "aliens", "humanoids", "timelord" });
     UserGroupInformation susan =
-        UserGroupInformation.createUserForTesting("susan@APACHE.ORG",
+        UserGroupInformation.createUserForTesting("susan@EXAMPLE.COM",
             new String[] { "aliens", "humanoids", "timelord" });
     UserGroupInformation barbara =
-        UserGroupInformation.createUserForTesting("barbara@APACHE.ORG",
+        UserGroupInformation.createUserForTesting("barbara@EXAMPLE.COM",
             new String[] { "humans", "teachers" });
     UserGroupInformation ian =
-        UserGroupInformation.createUserForTesting("ian@APACHE.ORG",
+        UserGroupInformation.createUserForTesting("ian@EXAMPLE.COM",
             new String[] { "humans", "teachers" });
 
     acl = new AccessControlList("drwho humanoids");
@@ -449,6 +456,11 @@ public class TestAccessControlList {
     assertUserAllowed(susan, acl);
     assertUserAllowed(barbara, acl);
     assertUserAllowed(ian, acl);
+
+    acl = new AccessControlList("");
+    UserGroupInformation spyUser = spy(drwho);
+    acl.isUserAllowed(spyUser);
+    verify(spyUser, never()).getGroupNames();
   }
 
   private void assertUserAllowed(UserGroupInformation ugi,

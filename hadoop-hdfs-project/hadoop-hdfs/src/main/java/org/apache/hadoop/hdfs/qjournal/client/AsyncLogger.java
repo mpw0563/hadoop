@@ -165,7 +165,13 @@ interface AsyncLogger {
 
   public ListenableFuture<Void> doRollback();
 
+<<<<<<< HEAD
   public ListenableFuture<Long> getJournalCTime();
 
   public ListenableFuture<Void> discardSegments(long startTxId);
+=======
+  public ListenableFuture<Void> discardSegments(long startTxId);
+
+  public ListenableFuture<Long> getJournalCTime();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -33,6 +33,11 @@ import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptContainerAssigned
 import org.apache.hadoop.mapreduce.v2.app.rm.ContainerAllocator;
 import org.apache.hadoop.mapreduce.v2.app.rm.ContainerAllocatorEvent;
 import org.apache.hadoop.mapreduce.v2.app.rm.RMContainerAllocator;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.AMPreemptionPolicy;
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.NoopAMPreemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.service.AbstractService;
 import org.apache.hadoop.yarn.api.ApplicationMasterProtocol;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateRequest;
@@ -61,6 +66,8 @@ public class MRAppBenchmark {
 
   /**
    * Runs memory and time benchmark with Mock MRApp.
+   * @param app Application to submit
+   * @throws Exception On application failure
    */
   public void run(MRApp app) throws Exception {
     Logger rootLogger = LogManager.getRootLogger();
@@ -133,6 +140,7 @@ public class MRAppBenchmark {
       protected void serviceStart() throws Exception {
         thread = new Thread(new Runnable() {
           @Override
+          @SuppressWarnings("unchecked")
           public void run() {
             ContainerAllocatorEvent event = null;
             while (!Thread.currentThread().isInterrupted()) {
@@ -192,7 +200,13 @@ public class MRAppBenchmark {
       @Override
       protected ContainerAllocator createContainerAllocator(
           ClientService clientService, AppContext context) {
+<<<<<<< HEAD
         return new RMContainerAllocator(clientService, context) {
+=======
+
+        AMPreemptionPolicy policy = new NoopAMPreemptionPolicy();
+        return new RMContainerAllocator(clientService, context, policy) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           @Override
           protected ApplicationMasterProtocol createSchedulerProxy() {
             return new ApplicationMasterProtocol() {

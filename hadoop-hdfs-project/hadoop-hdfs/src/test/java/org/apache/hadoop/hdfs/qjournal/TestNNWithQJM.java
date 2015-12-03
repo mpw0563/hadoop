@@ -17,8 +17,12 @@
  */
 package org.apache.hadoop.hdfs.qjournal;
 
+<<<<<<< HEAD
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+=======
+import static org.junit.Assert.*;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +42,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 public class TestNNWithQJM {
   final Configuration conf = new HdfsConfiguration();
   private MiniJournalCluster mjc = null;

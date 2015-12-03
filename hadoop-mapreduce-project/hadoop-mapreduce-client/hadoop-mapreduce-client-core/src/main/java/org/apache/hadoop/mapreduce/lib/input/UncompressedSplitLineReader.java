@@ -40,8 +40,11 @@ public class UncompressedSplitLineReader extends SplitLineReader {
   private long totalBytesRead = 0;
   private boolean finished = false;
   private boolean usingCRLF;
+<<<<<<< HEAD
   private int unusedBytes = 0;
   private int lastBytesRead = 0;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public UncompressedSplitLineReader(FSDataInputStream in, Configuration conf,
       byte[] recordDelimiterBytes, long splitLength) throws IOException {
@@ -59,7 +62,10 @@ public class UncompressedSplitLineReader extends SplitLineReader {
                                 (int)(splitLength - totalBytesRead));
     }
     int bytesRead = in.read(buffer, 0, maxBytesToRead);
+<<<<<<< HEAD
     lastBytesRead = bytesRead;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // If the split ended in the middle of a record delimiter then we need
     // to read one additional record, as the consumer of the next split will
@@ -83,13 +89,18 @@ public class UncompressedSplitLineReader extends SplitLineReader {
   @Override
   public int readLine(Text str, int maxLineLength, int maxBytesToConsume)
       throws IOException {
+<<<<<<< HEAD
     long bytesRead = 0;
+=======
+    int bytesRead = 0;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (!finished) {
       // only allow at most one more record to be read after the stream
       // reports the split ended
       if (totalBytesRead > splitLength) {
         finished = true;
       }
+<<<<<<< HEAD
       bytesRead = totalBytesRead;
       int bytesConsumed = super.readLine(str, maxLineLength, maxBytesToConsume);
       bytesRead = totalBytesRead - bytesRead;
@@ -116,6 +127,12 @@ public class UncompressedSplitLineReader extends SplitLineReader {
       bytesRead -= unusedBytes;
     }
     return (int) bytesRead;
+=======
+
+      bytesRead = super.readLine(str, maxLineLength, maxBytesToConsume);
+    }
+    return bytesRead;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override

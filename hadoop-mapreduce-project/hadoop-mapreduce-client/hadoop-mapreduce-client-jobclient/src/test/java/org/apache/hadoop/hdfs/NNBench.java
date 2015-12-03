@@ -57,8 +57,11 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reducer;
+<<<<<<< HEAD
 import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * This program executes a specified operation that applies load to 
@@ -689,9 +692,12 @@ public class NNBench {
       dataDirName = conf.get("test.nnbench.datadir.name");
       op = conf.get("test.nnbench.operation");
       readFile = conf.getBoolean("test.nnbench.readFileAfterOpen", false);
+<<<<<<< HEAD
       int taskId =
           TaskAttemptID.forName(conf.get(MRJobConfig.TASK_ATTEMPT_ID))
               .getTaskID().getId();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       
       long totalTimeTPmS = 0l;
       long startTimeTPmS = 0l;
@@ -704,6 +710,7 @@ public class NNBench {
       successfulFileOps = 0l;
       
       if (barrier()) {
+<<<<<<< HEAD
         String filePrefix = "file_" + taskId + "_";
         if (op.equals(OP_CREATE_WRITE)) {
           startTimeTPmS = System.currentTimeMillis();
@@ -717,6 +724,20 @@ public class NNBench {
         } else if (op.equals(OP_DELETE)) {
           startTimeTPmS = System.currentTimeMillis();
           doDeleteOp(filePrefix, reporter);
+=======
+        if (op.equals(OP_CREATE_WRITE)) {
+          startTimeTPmS = System.currentTimeMillis();
+          doCreateWriteOp("file_" + hostName + "_", reporter);
+        } else if (op.equals(OP_OPEN_READ)) {
+          startTimeTPmS = System.currentTimeMillis();
+          doOpenReadOp("file_" + hostName + "_", reporter);
+        } else if (op.equals(OP_RENAME)) {
+          startTimeTPmS = System.currentTimeMillis();
+          doRenameOp("file_" + hostName + "_", reporter);
+        } else if (op.equals(OP_DELETE)) {
+          startTimeTPmS = System.currentTimeMillis();
+          doDeleteOp("file_" + hostName + "_", reporter);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         
         endTimeTPms = System.currentTimeMillis();

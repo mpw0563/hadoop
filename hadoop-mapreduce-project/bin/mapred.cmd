@@ -36,6 +36,10 @@ if "%1" == "--config" (
   shift
   shift
 )
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 if "%1" == "--loglevel" (
   shift
   shift
@@ -110,7 +114,11 @@ goto :eof
 
 
 :classpath
+<<<<<<< HEAD
   set CLASS=org.apache.hadoop.util.Classpath 
+=======
+  set CLASS=org.apache.hadoop.util.Classpath
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   goto :eof
 
 :job

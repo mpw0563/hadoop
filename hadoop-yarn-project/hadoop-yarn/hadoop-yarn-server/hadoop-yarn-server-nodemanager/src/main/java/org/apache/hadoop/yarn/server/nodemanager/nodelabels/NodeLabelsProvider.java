@@ -20,18 +20,25 @@ package org.apache.hadoop.yarn.server.nodemanager.nodelabels;
 
 import java.util.Set;
 
+<<<<<<< HEAD
 import org.apache.hadoop.service.AbstractService;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.NodeLabel;
 
 /**
  * Interface which will be responsible for fetching the labels
  * 
  */
+<<<<<<< HEAD
 public abstract class NodeLabelsProvider extends AbstractService {
 
   public NodeLabelsProvider(String name) {
     super(name);
   }
+=======
+public interface NodeLabelsProvider {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Provides the labels. LabelProvider is expected to give same Labels

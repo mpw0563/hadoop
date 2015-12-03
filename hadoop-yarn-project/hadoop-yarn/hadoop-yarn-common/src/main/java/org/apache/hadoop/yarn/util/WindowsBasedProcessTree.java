@@ -51,8 +51,16 @@ public class WindowsBasedProcessTree extends ResourceCalculatorProcessTree {
     
   public static boolean isAvailable() {
     if (Shell.WINDOWS) {
+<<<<<<< HEAD
       ShellCommandExecutor shellExecutor = new ShellCommandExecutor(
           new String[] { Shell.WINUTILS, "help" });
+=======
+      if (!Shell.hasWinutilsPath()) {
+        return false;
+      }
+      ShellCommandExecutor shellExecutor = new ShellCommandExecutor(
+          new String[] { Shell.getWinUtilsPath(), "help" });
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       try {
         shellExecutor.execute();
       } catch (IOException e) {
@@ -75,9 +83,16 @@ public class WindowsBasedProcessTree extends ResourceCalculatorProcessTree {
 
   // helper method to override while testing
   String getAllProcessInfoFromShell() {
+<<<<<<< HEAD
     ShellCommandExecutor shellExecutor = new ShellCommandExecutor(
         new String[] { Shell.WINUTILS, "task", "processList", taskProcessId });
     try {
+=======
+    try {
+      ShellCommandExecutor shellExecutor = new ShellCommandExecutor(
+          new String[] {Shell.getWinUtilsFile().getCanonicalPath(),
+              "task", "processList", taskProcessId });
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       shellExecutor.execute();
       return shellExecutor.getOutput();
     } catch (IOException e) {

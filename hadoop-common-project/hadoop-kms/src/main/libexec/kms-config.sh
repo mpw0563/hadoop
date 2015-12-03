@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #!/bin/bash
+=======
+#!/usr/bin/env bash
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +17,7 @@
 #  limitations under the License.
 #
 
+<<<<<<< HEAD
 # resolve links - $0 may be a softlink
 PRG="${0}"
 
@@ -192,3 +197,66 @@ else
 fi
 
 print
+=======
+function hadoop_subproject_init
+{
+  local this
+  local binparent
+  local varlist
+
+  if [[ -z "${HADOOP_KMS_ENV_PROCESSED}" ]]; then
+    if [[ -e "${HADOOP_CONF_DIR}/kms-env.sh" ]]; then
+      . "${HADOOP_CONF_DIR}/kms-env.sh"
+      export HADOOP_KMS_ENV_PROCESSED=true
+    fi
+  fi
+
+  export HADOOP_CATALINA_PREFIX=kms
+
+  export HADOOP_CATALINA_TEMP="${KMS_TEMP:-${HADOOP_PREFIX}/temp}"
+
+  hadoop_deprecate_envvar KMS_CONFIG HADOOP_CONF_DIR
+
+  hadoop_deprecate_envvar KMS_LOG HADOOP_LOG_DIR
+
+  export HADOOP_CATALINA_CONFIG="${HADOOP_CONF_DIR}"
+  export HADOOP_CATALINA_LOG="${HADOOP_LOG_DIR}"
+
+  export HADOOP_CATALINA_HTTP_PORT="${KMS_HTTP_PORT:-16000}"
+  export HADOOP_CATALINA_ADMIN_PORT="${KMS_ADMIN_PORT:-$((HADOOP_CATALINA_HTTP_PORT+1))}"
+  export HADOOP_CATALINA_MAX_THREADS="${KMS_MAX_THREADS:-1000}"
+
+  export HADOOP_CATALINA_SSL_KEYSTORE_FILE="${KMS_SSL_KEYSTORE_FILE:-${HOME}/.keystore}"
+
+  # this is undocumented, but older versions would rip the TRUSTSTORE_PASS out of the
+  # CATALINA_OPTS
+  # shellcheck disable=SC2086
+  export KMS_SSL_TRUSTSTORE_PASS=${KMS_SSL_TRUSTSTORE_PASS:-"$(echo ${CATALINA_OPTS} | grep -o 'trustStorePassword=[^ ]*' | cut -f2 -d= )"}
+
+  export CATALINA_BASE="${CATALINA_BASE:-${HADOOP_PREFIX}/share/hadoop/kms/tomcat}"
+  export HADOOP_CATALINA_HOME="${KMS_CATALINA_HOME:-${CATALINA_BASE}}"
+
+  export CATALINA_OUT="${CATALINA_OUT:-${HADOOP_LOG_DIR}/hadoop-${HADOOP_IDENT_STRING}-kms-${HOSTNAME}.out}"
+
+  export CATALINA_PID="${CATALINA_PID:-${HADOOP_PID_DIR}/hadoop-${HADOOP_IDENT_STRING}-kms.pid}"
+
+  if [[ -n "${HADOOP_SHELL_SCRIPT_DEBUG}" ]]; then
+    varlist=$(env | egrep '(^KMS|^CATALINA)' | cut -f1 -d= | grep -v _PASS)
+    for i in ${varlist}; do
+      hadoop_debug "Setting ${i} to ${!i}"
+    done
+  fi
+}
+
+if [[ -n "${HADOOP_COMMON_HOME}" ]] &&
+   [[ -e "${HADOOP_COMMON_HOME}/libexec/hadoop-config.sh" ]]; then
+  . "${HADOOP_COMMON_HOME}/libexec/hadoop-config.sh"
+elif [[ -e "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh" ]]; then
+  . "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh"
+elif [[ -e "${HADOOP_PREFIX}/libexec/hadoop-config.sh" ]]; then
+  . "${HADOOP_PREFIX}/libexec/hadoop-config.sh"
+else
+  echo "ERROR: Hadoop common not found." 2>&1
+  exit 1
+fi
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

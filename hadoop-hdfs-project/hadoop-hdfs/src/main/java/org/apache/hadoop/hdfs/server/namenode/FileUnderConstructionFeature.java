@@ -21,7 +21,10 @@ import java.io.IOException;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.INode.BlocksMapUpdateInfo;
 
 /**
@@ -61,9 +64,15 @@ public class FileUnderConstructionFeature implements INode.Feature {
     BlockInfo lastBlock = f.getLastBlock();
     assert (lastBlock != null) : "The last block for path "
         + f.getFullPathName() + " is null when updating its length";
+<<<<<<< HEAD
     assert (lastBlock instanceof BlockInfoContiguousUnderConstruction)
         : "The last block for path " + f.getFullPathName()
             + " is not a BlockInfoUnderConstruction when updating its length";
+=======
+    assert !lastBlock.isComplete()
+        : "The last block for path " + f.getFullPathName()
+            + " is not under-construction when updating its length";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     lastBlock.setNumBytes(lastBlockLength);
   }
 
@@ -76,9 +85,14 @@ public class FileUnderConstructionFeature implements INode.Feature {
       final BlocksMapUpdateInfo collectedBlocks) {
     final BlockInfo[] blocks = f.getBlocks();
     if (blocks != null && blocks.length > 0
+<<<<<<< HEAD
         && blocks[blocks.length - 1] instanceof BlockInfoContiguousUnderConstruction) {
       BlockInfoContiguousUnderConstruction lastUC =
           (BlockInfoContiguousUnderConstruction) blocks[blocks.length - 1];
+=======
+        && !blocks[blocks.length - 1].isComplete()) {
+      BlockInfo lastUC = blocks[blocks.length - 1];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (lastUC.getNumBytes() == 0) {
         // this is a 0-sized block. do not need check its UC state here
         collectedBlocks.addDeleteBlock(lastUC);

@@ -112,6 +112,7 @@ public abstract class AbstractGangliaSink implements MetricsSink {
    * org.apache.hadoop.metrics2.MetricsPlugin#init(org.apache.commons.configuration
    * .SubsetConfiguration)
    */
+  @Override
   public void init(SubsetConfiguration conf) {
     LOG.debug("Initializing the GangliaSink for Ganglia metrics.");
 
@@ -167,6 +168,7 @@ public abstract class AbstractGangliaSink implements MetricsSink {
    *
    * @see org.apache.hadoop.metrics2.MetricsSink#flush()
    */
+  @Override
   public void flush() {
     // nothing to do as we are not buffering data
   }

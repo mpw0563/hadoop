@@ -222,6 +222,18 @@ public class SwiftNativeFileSystem extends FileSystem {
   }
 
   /**
+<<<<<<< HEAD
+=======
+   * Override getCononicalServiceName because we don't support token in Swift
+   */
+  @Override
+  public String getCanonicalServiceName() {
+    // Does not support Token
+    return null;
+  }
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Return an array containing hostnames, offset and size of
    * portions of the given file.  For a nonexistent
    * file or regions, null will be returned.
@@ -301,7 +313,11 @@ public class SwiftNativeFileSystem extends FileSystem {
    * creating directories until one that exists is found.
    *
    * This strategy means if a file is created in an existing directory,
+<<<<<<< HEAD
    * one quick poll sufficies.
+=======
+   * one quick poll suffices.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    *
    * There is a big assumption here: that all parent directories of an existing
    * directory also exists.
@@ -540,7 +556,11 @@ public class SwiftNativeFileSystem extends FileSystem {
    * Low-level operation to also set the block size for this operation
    * @param path       the file name to open
    * @param bufferSize the size of the buffer to be used.
+<<<<<<< HEAD
    * @param readBlockSize how big should the read blockk/buffer size be?
+=======
+   * @param readBlockSize how big should the read block/buffer size be?
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @return the input stream
    * @throws FileNotFoundException if the file is not found
    * @throws IOException any IO problem

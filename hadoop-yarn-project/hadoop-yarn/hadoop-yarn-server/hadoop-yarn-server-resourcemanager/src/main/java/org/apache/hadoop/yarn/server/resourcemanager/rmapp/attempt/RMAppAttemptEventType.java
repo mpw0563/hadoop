@@ -22,6 +22,10 @@ public enum RMAppAttemptEventType {
   // Source: RMApp
   START,
   KILL,
+<<<<<<< HEAD
+=======
+  FAIL,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // Source: AMLauncher
   LAUNCHED,

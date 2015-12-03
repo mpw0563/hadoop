@@ -17,12 +17,17 @@
  */
 package org.apache.hadoop.hdfs;
 
+<<<<<<< HEAD
 import static org.apache.hadoop.http.HttpConfig.Policy.HTTP_AND_HTTPS;
 import static org.apache.hadoop.http.HttpConfig.Policy.HTTP_ONLY;
 
 import org.apache.hadoop.HadoopIllegalArgumentException;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Assert;
+=======
+import org.apache.hadoop.HadoopIllegalArgumentException;
+import org.apache.hadoop.conf.Configuration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Test;
 
 public final class TestHttpPolicy {
@@ -33,6 +38,7 @@ public final class TestHttpPolicy {
     conf.set(DFSConfigKeys.DFS_HTTP_POLICY_KEY, "invalid");
     DFSUtil.getHttpPolicy(conf);
   }
+<<<<<<< HEAD
 
   @Test
   public void testDeprecatedConfiguration() {
@@ -51,4 +57,6 @@ public final class TestHttpPolicy {
     conf.setBoolean(DFSConfigKeys.DFS_HTTPS_ENABLE_KEY, true);
     Assert.assertSame(HTTP_ONLY, DFSUtil.getHttpPolicy(conf));
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -85,7 +85,11 @@ public class RpcMetrics {
   @Metric("Number of sent bytes") MutableCounterLong sentBytes;
   @Metric("Queue time") MutableRate rpcQueueTime;
   MutableQuantiles[] rpcQueueTimeMillisQuantiles;
+<<<<<<< HEAD
   @Metric("Processsing time") MutableRate rpcProcessingTime;
+=======
+  @Metric("Processing time") MutableRate rpcProcessingTime;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   MutableQuantiles[] rpcProcessingTimeMillisQuantiles;
   @Metric("Number of authentication failures")
   MutableCounterLong rpcAuthenticationFailures;
@@ -93,10 +97,19 @@ public class RpcMetrics {
   MutableCounterLong rpcAuthenticationSuccesses;
   @Metric("Number of authorization failures")
   MutableCounterLong rpcAuthorizationFailures;
+<<<<<<< HEAD
   @Metric("Number of authorization sucesses")
   MutableCounterLong rpcAuthorizationSuccesses;
   @Metric("Number of client backoff requests")
   MutableCounterLong rpcClientBackoff;
+=======
+  @Metric("Number of authorization successes")
+  MutableCounterLong rpcAuthorizationSuccesses;
+  @Metric("Number of client backoff requests")
+  MutableCounterLong rpcClientBackoff;
+  @Metric("Number of Slow RPC calls")
+  MutableCounterLong rpcSlowCalls;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @Metric("Number of open connections") public int numOpenConnections() {
     return server.getNumOpenConnections();
@@ -108,7 +121,7 @@ public class RpcMetrics {
 
   // Public instrumentation methods that could be extracted to an
   // abstract class if we decide to do custom instrumentation classes a la
-  // JobTrackerInstrumenation. The methods with //@Override comment are
+  // JobTrackerInstrumentation. The methods with //@Override comment are
   // candidates for abstract methods in a abstract instrumentation class.
 
   /**
@@ -201,5 +214,54 @@ public class RpcMetrics {
   //@Override
   public void incrClientBackoff() {
     rpcClientBackoff.incr();
+<<<<<<< HEAD
+=======
+  }
+
+  /**
+   * Increments the Slow RPC counter.
+   */
+  public  void incrSlowRpc() {
+    rpcSlowCalls.incr();
+  }
+  /**
+   * Returns a MutableRate Counter.
+   * @return Mutable Rate
+   */
+  public MutableRate getRpcProcessingTime() {
+    return rpcProcessingTime;
+  }
+
+  /**
+   * Returns the number of samples that we have seen so far.
+   * @return long
+   */
+  public long getProcessingSampleCount() {
+    return rpcProcessingTime.lastStat().numSamples();
+  }
+
+  /**
+   * Returns mean of RPC Processing Times.
+   * @return double
+   */
+  public double getProcessingMean() {
+    return  rpcProcessingTime.lastStat().mean();
+  }
+
+  /**
+   * Return Standard Deviation of the Processing Time.
+   * @return  double
+   */
+  public double getProcessingStdDev() {
+    return rpcProcessingTime.lastStat().stddev();
+  }
+
+  /**
+   * Returns the number of slow calls.
+   * @return long
+   */
+  public long getRpcSlowCalls() {
+    return rpcSlowCalls.value();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

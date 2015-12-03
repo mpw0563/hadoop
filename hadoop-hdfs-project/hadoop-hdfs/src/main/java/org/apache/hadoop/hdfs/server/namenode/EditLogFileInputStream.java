@@ -41,7 +41,10 @@ import org.apache.hadoop.hdfs.server.namenode.FSEditLogLoader.EditLogValidation;
 import org.apache.hadoop.hdfs.server.namenode.TransferFsImage.HttpGetFailedException;
 import org.apache.hadoop.hdfs.web.URLConnectionFactory;
 import org.apache.hadoop.io.IOUtils;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.client.AuthenticationException;
@@ -158,7 +161,11 @@ public class EditLogFileInputStream extends EditLogInputStream {
               "flags from log");
         }
       }
+<<<<<<< HEAD
       reader = new FSEditLogOp.Reader(dataIn, tracker, logVersion);
+=======
+      reader = FSEditLogOp.Reader.create(dataIn, tracker, logVersion);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       reader.setMaxOpSize(maxOpSize);
       state = State.OPEN;
     } finally {
@@ -236,6 +243,7 @@ public class EditLogFileInputStream extends EditLogInputStream {
         break; // return null
     }
     return op;
+<<<<<<< HEAD
   }
 
   @Override
@@ -251,6 +259,23 @@ public class EditLogFileInputStream extends EditLogInputStream {
   }
 
   @Override
+=======
+  }
+
+  @Override
+  protected long scanNextOp() throws IOException {
+    Preconditions.checkState(state == State.OPEN);
+    FSEditLogOp cachedNext = getCachedOp();
+    return cachedNext == null ? reader.scanOp() : cachedNext.txid;
+  }
+
+  @Override
+  protected FSEditLogOp nextOp() throws IOException {
+    return nextOpImpl(false);
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected FSEditLogOp nextValidOp() {
     try {
       return nextOpImpl(true);
@@ -301,21 +326,42 @@ public class EditLogFileInputStream extends EditLogInputStream {
     return getName();
   }
 
+<<<<<<< HEAD
   static FSEditLogLoader.EditLogValidation validateEditLog(File file)
+=======
+  /**
+   * @param file          File being scanned and validated.
+   * @param maxTxIdToScan Maximum Tx ID to try to scan.
+   *                      The scan returns after reading this or a higher
+   *                      ID. The file portion beyond this ID is
+   *                      potentially being updated.
+   * @return Result of the validation
+   * @throws IOException
+   */
+  static FSEditLogLoader.EditLogValidation scanEditLog(File file,
+      long maxTxIdToScan, boolean verifyVersion)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throws IOException {
     EditLogFileInputStream in;
     try {
       in = new EditLogFileInputStream(file);
+<<<<<<< HEAD
       in.getVersion(true); // causes us to read the header
     } catch (LogHeaderCorruptException e) {
       // If the header is malformed or the wrong value, this indicates a corruption
+=======
+      // read the header, initialize the inputstream, but do not check the
+      // layoutversion
+      in.getVersion(verifyVersion);
+    } catch (LogHeaderCorruptException e) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LOG.warn("Log file " + file + " has no valid header", e);
       return new FSEditLogLoader.EditLogValidation(0,
           HdfsServerConstants.INVALID_TXID, true);
     }
-    
+
     try {
-      return FSEditLogLoader.validateEditLog(in);
+      return FSEditLogLoader.scanEditLog(in, maxTxIdToScan);
     } finally {
       IOUtils.closeStream(in);
     }

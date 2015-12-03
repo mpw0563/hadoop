@@ -45,6 +45,10 @@ import org.apache.hadoop.hdfs.server.namenode.INode;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeStorageReport;
 import org.apache.hadoop.hdfs.server.protocol.StorageReport;
 import org.apache.hadoop.io.IOUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.protocol.ErasureCodingPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.net.NetworkTopology;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.util.Time;
@@ -174,8 +178,26 @@ public class Mover {
     }
   }
 
+<<<<<<< HEAD
   DBlock newDBlock(Block block, List<MLocation> locations) {
     final DBlock db = new DBlock(block);
+=======
+  DBlock newDBlock(LocatedBlock lb, List<MLocation> locations,
+                   ErasureCodingPolicy ecPolicy) {
+    Block blk = lb.getBlock().getLocalBlock();
+    DBlock db;
+    if (lb.isStriped()) {
+      LocatedStripedBlock lsb = (LocatedStripedBlock) lb;
+      byte[] indices = new byte[lsb.getBlockIndices().length];
+      for (int i = 0; i < indices.length; i++) {
+        indices[i] = (byte) lsb.getBlockIndices()[i];
+      }
+      db = new DBlockStriped(blk, indices, (short) ecPolicy.getNumDataUnits(),
+          ecPolicy.getCellSize());
+    } else {
+      db = new DBlock(blk);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for(MLocation ml : locations) {
       StorageGroup source = storages.getSource(ml);
       if (source != null) {
@@ -358,9 +380,16 @@ public class Mover {
         LOG.warn("Failed to get the storage policy of file " + fullPath);
         return;
       }
+<<<<<<< HEAD
       final List<StorageType> types = policy.chooseStorageTypes(
           status.getReplication());
 
+=======
+      List<StorageType> types = policy.chooseStorageTypes(
+          status.getReplication());
+
+      final ErasureCodingPolicy ecPolicy = status.getErasureCodingPolicy();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final LocatedBlocks locatedBlocks = status.getBlockLocations();
       final boolean lastBlkComplete = locatedBlocks.isLastBlockComplete();
       List<LocatedBlock> lbs = locatedBlocks.getLocatedBlocks();
@@ -370,10 +399,20 @@ public class Mover {
           continue;
         }
         LocatedBlock lb = lbs.get(i);
+<<<<<<< HEAD
         final StorageTypeDiff diff = new StorageTypeDiff(types,
             lb.getStorageTypes());
         if (!diff.removeOverlap(true)) {
           if (scheduleMoves4Block(diff, lb)) {
+=======
+        if (lb.isStriped()) {
+          types = policy.chooseStorageTypes((short) lb.getLocations().length);
+        }
+        final StorageTypeDiff diff = new StorageTypeDiff(types,
+            lb.getStorageTypes());
+        if (!diff.removeOverlap(true)) {
+          if (scheduleMoves4Block(diff, lb, ecPolicy)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             result.updateHasRemaining(diff.existing.size() > 1
                 && diff.expected.size() > 1);
             // One block scheduled successfully, set noBlockMoved to false
@@ -385,10 +424,20 @@ public class Mover {
       }
     }
 
+<<<<<<< HEAD
     boolean scheduleMoves4Block(StorageTypeDiff diff, LocatedBlock lb) {
       final List<MLocation> locations = MLocation.toLocations(lb);
       Collections.shuffle(locations);
       final DBlock db = newDBlock(lb.getBlock().getLocalBlock(), locations);
+=======
+    boolean scheduleMoves4Block(StorageTypeDiff diff, LocatedBlock lb,
+                                ErasureCodingPolicy ecPolicy) {
+      final List<MLocation> locations = MLocation.toLocations(lb);
+      if (!(lb instanceof LocatedStripedBlock)) {
+        Collections.shuffle(locations);
+      }
+      final DBlock db = newDBlock(lb, locations, ecPolicy);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       for (final StorageType t : diff.existing) {
         for (final MLocation ml : locations) {
@@ -571,12 +620,29 @@ public class Mover {
             IOUtils.cleanup(LOG, nnc);
             iter.remove();
           } else if (r != ExitStatus.IN_PROGRESS) {
+<<<<<<< HEAD
+=======
+            if (r == ExitStatus.NO_MOVE_PROGRESS) {
+              System.err.println("Failed to move some blocks after "
+                  + m.retryMaxAttempts + " retries. Exiting...");
+            } else if (r == ExitStatus.NO_MOVE_BLOCK) {
+              System.err.println("Some blocks can't be moved. Exiting...");
+            } else {
+              System.err.println("Mover failed. Exiting with status " + r
+                  + "... ");
+            }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             // must be an error statue, return
             return r.getExitCode();
           }
         }
         Thread.sleep(sleeptime);
       }
+<<<<<<< HEAD
+=======
+      System.out.println("Mover Successful: all blocks satisfy"
+          + " the specified storage policy. Exiting...");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return ExitStatus.SUCCESS.getExitCode();
     } finally {
       for (NameNodeConnector nnc : connectors) {
@@ -781,4 +847,8 @@ public class Mover {
       System.exit(-1);
     }
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

@@ -71,8 +71,15 @@ public interface PlanFollower extends Runnable {
    * start time is imminent.
    * 
    * @param plan the Plan to synchronize
+<<<<<<< HEAD
    */
   public void synchronizePlan(Plan plan);
+=======
+   * @param shouldReplan replan on reduction of plan capacity if true or
+   *          proportionally scale down reservations if false
+   */
+  public void synchronizePlan(Plan plan, boolean shouldReplan);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Setter for the list of plans.

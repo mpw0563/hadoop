@@ -50,7 +50,10 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppEventType;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppRecoverEvent;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppRejectedEvent;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppState;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptImpl;
@@ -282,14 +285,24 @@ public class RMAppManager implements EventHandler<RMAppManagerEvent>,
 
     RMAppImpl application =
         createAndPopulateNewRMApp(submissionContext, submitTime, user, false);
+<<<<<<< HEAD
     ApplicationId appId = submissionContext.getApplicationId();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Credentials credentials = null;
     try {
       credentials = parseCredentials(submissionContext);
       if (UserGroupInformation.isSecurityEnabled()) {
+<<<<<<< HEAD
         this.rmContext.getDelegationTokenRenewer().addApplicationAsync(appId,
             credentials, submissionContext.getCancelTokensWhenComplete(),
             application.getUser());
+=======
+        this.rmContext.getDelegationTokenRenewer()
+            .addApplicationAsync(applicationId, credentials,
+                submissionContext.getCancelTokensWhenComplete(),
+                application.getUser());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else {
         // Dispatcher is not yet started at this time, so these START events
         // enqueued should be guaranteed to be first processed when dispatcher
@@ -304,7 +317,12 @@ public class RMAppManager implements EventHandler<RMAppManagerEvent>,
       // scheduler about the existence of the application
       assert application.getState() == RMAppState.NEW;
       this.rmContext.getDispatcher().getEventHandler()
+<<<<<<< HEAD
           .handle(new RMAppRejectedEvent(applicationId, e.getMessage()));
+=======
+          .handle(new RMAppEvent(applicationId,
+              RMAppEventType.APP_REJECTED, e.getMessage()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throw RPCUtil.getRemoteException(e);
     }
   }
@@ -326,6 +344,18 @@ public class RMAppManager implements EventHandler<RMAppManagerEvent>,
   private RMAppImpl createAndPopulateNewRMApp(
       ApplicationSubmissionContext submissionContext, long submitTime,
       String user, boolean isRecovery) throws YarnException {
+<<<<<<< HEAD
+=======
+    // Do queue mapping
+    if (!isRecovery) {
+      if (rmContext.getQueuePlacementManager() != null) {
+        // We only do queue mapping when it's a new application
+        rmContext.getQueuePlacementManager().placeApplication(
+            submissionContext, user);
+      }
+    }
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ApplicationId applicationId = submissionContext.getApplicationId();
     ResourceRequest amReq =
         validateAndCreateResourceRequest(submissionContext, isRecovery);

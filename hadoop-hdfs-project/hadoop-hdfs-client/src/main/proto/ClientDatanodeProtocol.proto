@@ -102,6 +102,7 @@ message GetBlockLocalPathInfoResponseProto {
 }
 
 /**
+<<<<<<< HEAD
  * Query for the disk locations of a number of blocks on this DN.
  * blockPoolId - the pool to query
  * blockIds - list of block IDs to query
@@ -128,6 +129,8 @@ message GetHdfsBlockLocationsResponseProto {
 }
 
 /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * forUpgrade - if true, clients are advised to wait for restart and quick
  *              upgrade restart is instrumented. Otherwise, datanode does
  *              the regular shutdown.
@@ -188,6 +191,19 @@ message ListReconfigurablePropertiesResponseProto {
   repeated string name = 1;
 }
 
+<<<<<<< HEAD
+=======
+message GetBalancerBandwidthRequestProto {
+}
+
+/**
+ * bandwidth - balancer bandwidth value of the datanode.
+ */
+message GetBalancerBandwidthResponseProto {
+  required uint64 bandwidth = 1;
+}
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * Protocol used from client to the Datanode.
  * See the request and response for details of rpc call.
@@ -219,6 +235,7 @@ service ClientDatanodeProtocolService {
   rpc getBlockLocalPathInfo(GetBlockLocalPathInfoRequestProto)
       returns(GetBlockLocalPathInfoResponseProto);
 
+<<<<<<< HEAD
   /**
    * Retrieve additional HDFS-specific metadata about a set of blocks stored
    * on the local file system.
@@ -226,6 +243,8 @@ service ClientDatanodeProtocolService {
   rpc getHdfsBlockLocations(GetHdfsBlockLocationsRequestProto)
       returns(GetHdfsBlockLocationsResponseProto);
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   rpc shutdownDatanode(ShutdownDatanodeRequestProto)
       returns(ShutdownDatanodeResponseProto);
 
@@ -244,4 +263,13 @@ service ClientDatanodeProtocolService {
 
   rpc triggerBlockReport(TriggerBlockReportRequestProto)
       returns(TriggerBlockReportResponseProto);
+<<<<<<< HEAD
+=======
+
+  /**
+   * Returns the balancer bandwidth value of datanode.
+   */
+  rpc getBalancerBandwidth(GetBalancerBandwidthRequestProto)
+      returns(GetBalancerBandwidthResponseProto);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

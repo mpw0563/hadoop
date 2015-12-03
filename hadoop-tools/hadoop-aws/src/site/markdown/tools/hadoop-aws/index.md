@@ -206,7 +206,11 @@ If you do any of these: change your credentials immediately!
 
     <property>
       <name>fs.s3a.attempts.maximum</name>
+<<<<<<< HEAD
       <value>10</value>
+=======
+      <value>20</value>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <description>How many times we should retry commands on transient errors.</description>
     </property>
 
@@ -218,7 +222,11 @@ If you do any of these: change your credentials immediately!
 
     <property>
       <name>fs.s3a.connection.timeout</name>
+<<<<<<< HEAD
       <value>50000</value>
+=======
+      <value>200000</value>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <description>Socket connection timeout in milliseconds.</description>
     </property>
 
@@ -231,18 +239,25 @@ If you do any of these: change your credentials immediately!
 
     <property>
       <name>fs.s3a.threads.max</name>
+<<<<<<< HEAD
       <value>256</value>
+=======
+      <value>10</value>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <description> Maximum number of concurrent active (part)uploads,
       which each use a thread from the threadpool.</description>
     </property>
 
     <property>
+<<<<<<< HEAD
       <name>fs.s3a.threads.core</name>
       <value>15</value>
       <description>Number of core threads in the threadpool.</description>
     </property>
 
     <property>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <name>fs.s3a.threads.keepalivetime</name>
       <value>60</value>
       <description>Number of seconds a thread can be idle before being
@@ -251,7 +266,11 @@ If you do any of these: change your credentials immediately!
 
     <property>
       <name>fs.s3a.max.total.tasks</name>
+<<<<<<< HEAD
       <value>1000</value>
+=======
+      <value>5</value>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <description>Number of (part)uploads allowed to the queue before
       blocking additional uploads.</description>
     </property>

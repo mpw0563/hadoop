@@ -212,15 +212,27 @@ public class TestNameNodeRecovery {
       this.paddingLength = paddingLength;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void addTransactionsToLog(EditLogOutputStream elos,
         OpInstanceCache cache) throws IOException {
       padEditLog(elos, paddingLength);
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public long getLastValidTxId() {
       return -1;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public Set<Long> getValidTxIds() {
       return new HashSet<Long>();
     } 
@@ -296,16 +308,28 @@ public class TestNameNodeRecovery {
       this.paddingLength = paddingLength;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void addTransactionsToLog(EditLogOutputStream elos,
         OpInstanceCache cache) throws IOException {
       padEditLog(elos, paddingLength);
       addDeleteOpcode(elos, cache, 0, "/foo");
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public long getLastValidTxId() {
       return 0;
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public Set<Long> getValidTxIds() {
       return Sets.newHashSet(0L);
     } 

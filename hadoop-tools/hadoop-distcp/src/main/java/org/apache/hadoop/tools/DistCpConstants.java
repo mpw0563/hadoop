@@ -30,7 +30,11 @@ public class DistCpConstants {
   public static final int DEFAULT_MAPS = 20;
 
   /* Default bandwidth if none specified */
+<<<<<<< HEAD
   public static final int DEFAULT_BANDWIDTH_MB = 100;
+=======
+  public static final float DEFAULT_BANDWIDTH_MB = 100;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /* Default strategy for copying. Implementation looked up
      from distcp-default.xml

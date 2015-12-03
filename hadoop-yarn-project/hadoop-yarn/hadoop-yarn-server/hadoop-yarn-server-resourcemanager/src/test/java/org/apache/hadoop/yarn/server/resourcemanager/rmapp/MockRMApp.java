@@ -31,6 +31,10 @@ import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.LogAggregationStatus;
 import org.apache.hadoop.yarn.api.records.NodeId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
@@ -64,6 +68,11 @@ public class MockRMApp implements RMApp {
     finish = time;
     id = MockApps.newAppID(newid);
     state = newState;
+<<<<<<< HEAD
+=======
+    amReq = ResourceRequest.newInstance(Priority.UNDEFINED, "0.0.0.0",
+        Resource.newInstance(0, 0), 1);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public MockRMApp(int newid, long time, RMAppState newState, String userName) {
@@ -283,4 +292,17 @@ public class MockRMApp implements RMApp {
   public LogAggregationStatus getLogAggregationStatusForAppReport() {
     return null;
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public String getAmNodeLabelExpression() {
+    return null;
+  }
+
+  @Override
+  public String getAppNodeLabelExpression() {
+    return null;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

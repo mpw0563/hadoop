@@ -46,8 +46,13 @@ import org.apache.hadoop.hdfs.protocol.proto.DatanodeProtocolProtos.StorageBlock
 import org.apache.hadoop.hdfs.protocol.proto.DatanodeProtocolProtos.StorageReceivedDeletedBlocksProto;
 import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos.DatanodeIDProto;
 import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos.LocatedBlockProto;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos.VersionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos.VersionResponseProto;
+=======
+import org.apache.hadoop.hdfs.protocol.proto.HdfsServerProtos.VersionRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.HdfsServerProtos.VersionResponseProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.protocol.DatanodeCommand;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeProtocol;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeRegistration;
@@ -105,7 +110,11 @@ public class DatanodeProtocolServerSideTranslatorPB implements
       HeartbeatRequestProto request) throws ServiceException {
     HeartbeatResponse response;
     try {
+<<<<<<< HEAD
       final StorageReport[] report = PBHelper.convertStorageReports(
+=======
+      final StorageReport[] report = PBHelperClient.convertStorageReports(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           request.getReportsList());
       VolumeFailureSummary volumeFailureSummary =
           request.hasVolumeFailureSummary() ? PBHelper.convertVolumeFailureSummary(
@@ -132,7 +141,11 @@ public class DatanodeProtocolServerSideTranslatorPB implements
     RollingUpgradeStatus rollingUpdateStatus = response
         .getRollingUpdateStatus();
     if (rollingUpdateStatus != null) {
+<<<<<<< HEAD
       builder.setRollingUpgradeStatus(PBHelper
+=======
+      builder.setRollingUpgradeStatus(PBHelperClient
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           .convertRollingUpgradeStatus(rollingUpdateStatus));
     }
     builder.setFullBlockReportLeaseId(response.getFullBlockReportLeaseId());
@@ -157,7 +170,11 @@ public class DatanodeProtocolServerSideTranslatorPB implements
       } else {
         blocks = BlockListAsLongs.decodeLongs(s.getBlocksList());
       }
+<<<<<<< HEAD
       report[index++] = new StorageBlockReport(PBHelper.convert(s.getStorage()),
+=======
+      report[index++] = new StorageBlockReport(PBHelperClient.convert(s.getStorage()),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           blocks);
     }
     try {
@@ -214,7 +231,11 @@ public class DatanodeProtocolServerSideTranslatorPB implements
       }
       if (sBlock.hasStorage()) {
         info[i] = new StorageReceivedDeletedBlocks(
+<<<<<<< HEAD
             PBHelper.convert(sBlock.getStorage()), rdBlocks);
+=======
+            PBHelperClient.convert(sBlock.getStorage()), rdBlocks);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else {
         info[i] = new StorageReceivedDeletedBlocks(sBlock.getStorageUuid(), rdBlocks);
       }
@@ -259,7 +280,11 @@ public class DatanodeProtocolServerSideTranslatorPB implements
     List<LocatedBlockProto> lbps = request.getBlocksList();
     LocatedBlock [] blocks = new LocatedBlock [lbps.size()];
     for(int i=0; i<lbps.size(); i++) {
+<<<<<<< HEAD
       blocks[i] = PBHelper.convert(lbps.get(i));
+=======
+      blocks[i] = PBHelperClient.convertLocatedBlockProto(lbps.get(i));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     try {
       impl.reportBadBlocks(blocks);
@@ -276,12 +301,20 @@ public class DatanodeProtocolServerSideTranslatorPB implements
     List<DatanodeIDProto> dnprotos = request.getNewTaragetsList();
     DatanodeID[] dns = new DatanodeID[dnprotos.size()];
     for (int i = 0; i < dnprotos.size(); i++) {
+<<<<<<< HEAD
       dns[i] = PBHelper.convert(dnprotos.get(i));
+=======
+      dns[i] = PBHelperClient.convert(dnprotos.get(i));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     final List<String> sidprotos = request.getNewTargetStoragesList();
     final String[] storageIDs = sidprotos.toArray(new String[sidprotos.size()]);
     try {
+<<<<<<< HEAD
       impl.commitBlockSynchronization(PBHelper.convert(request.getBlock()),
+=======
+      impl.commitBlockSynchronization(PBHelperClient.convert(request.getBlock()),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           request.getNewGenStamp(), request.getNewLength(),
           request.getCloseFile(), request.getDeleteBlock(), dns, storageIDs);
     } catch (IOException e) {

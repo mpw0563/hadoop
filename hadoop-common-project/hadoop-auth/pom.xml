@@ -20,12 +20,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../../hadoop-project</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-auth</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <packaging>jar</packaging>
 
   <name>Apache Hadoop Auth</name>
@@ -59,11 +67,14 @@
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
+<<<<<<< HEAD
       <artifactId>jetty-util</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       <artifactId>jetty</artifactId>
       <scope>test</scope>
     </dependency>
@@ -115,6 +126,7 @@
     <dependency>
       <groupId>com.nimbusds</groupId>
       <artifactId>nimbus-jose-jwt</artifactId>
+<<<<<<< HEAD
       <scope>compile</scope>
       <exclusions>
         <exclusion>
@@ -127,6 +139,20 @@
       <groupId>org.apache.directory.server</groupId>
       <artifactId>apacheds-kerberos-codec</artifactId>
       <scope>compile</scope>
+=======
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk15on</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.directory.server</groupId>
+      <artifactId>apacheds-kerberos-codec</artifactId>
+      <scope>compile</scope>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         <exclusions>
           <exclusion>
             <groupId>org.apache.directory.api</groupId>

@@ -47,6 +47,10 @@ import org.apache.hadoop.io.EnumSetWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.retry.AtMostOnce;
 import org.apache.hadoop.io.retry.Idempotent;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.security.AccessControlException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.KerberosInfo;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenInfo;
@@ -711,10 +715,19 @@ public interface ClientProtocol {
   int GET_STATS_CORRUPT_BLOCKS_IDX = 4;
   int GET_STATS_MISSING_BLOCKS_IDX = 5;
   int GET_STATS_MISSING_REPL_ONE_BLOCKS_IDX = 6;
+<<<<<<< HEAD
 
   /**
    * Get a set of statistics about the filesystem.
    * Right now, only seven values are returned.
+=======
+  int GET_STATS_BYTES_IN_FUTURE_BLOCKS_IDX = 7;
+  int STATS_ARRAY_LENGTH = 8;
+
+  /**
+   * Get a set of statistics about the filesystem.
+   * Right now, only eight values are returned.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * <ul>
    * <li> [0] contains the total storage capacity of the system, in bytes.</li>
    * <li> [1] contains the total used space of the system, in bytes.</li>
@@ -724,6 +737,10 @@ public interface ClientProtocol {
    * <li> [5] contains number of blocks without any good replicas left. </li>
    * <li> [6] contains number of blocks which have replication factor
    *          1 and have lost the only replica. </li>
+<<<<<<< HEAD
+=======
+   * <li> [7] contains number of bytes  that are at risk for deletion. </li>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * </ul>
    * Use public constants like {@link #GET_STATS_CAPACITY_IDX} in place of
    * actual numbers to index into the array.
@@ -828,12 +845,26 @@ public interface ClientProtocol {
    * <p>
    * Saves current namespace into storage directories and reset edits log.
    * Requires superuser privilege and safe mode.
+<<<<<<< HEAD
    * 
    * @throws AccessControlException if the superuser privilege is violated.
    * @throws IOException if image creation failed.
    */
   @AtMostOnce
   void saveNamespace() throws IOException;
+=======
+   *
+   * @param timeWindow NameNode does a checkpoint if the latest checkpoint was
+   *                   done beyond the given time period (in seconds).
+   * @param txGap NameNode does a checkpoint if the gap between the latest
+   *              checkpoint and the latest transaction id is greater this gap.
+   * @return whether an extra checkpoint has been done
+   *
+   * @throws IOException if image creation failed.
+   */
+  @AtMostOnce
+  boolean saveNamespace(long timeWindow, long txGap) throws IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Roll the edit log.
@@ -1478,4 +1509,34 @@ public interface ClientProtocol {
    */
   @Idempotent
   EventBatchList getEditsFromTxid(long txid) throws IOException;
+<<<<<<< HEAD
+=======
+
+  /**
+   * Set an erasure coding policy on a specified path.
+   * @param src The path to set policy on.
+   * @param ecPolicy The erasure coding policy. If null, default policy will
+   *                 be used
+   */
+  @AtMostOnce
+  void setErasureCodingPolicy(String src, ErasureCodingPolicy ecPolicy)
+      throws IOException;
+
+  /**
+   * Get the erasure coding policies loaded in Namenode
+   *
+   * @throws IOException
+   */
+  @Idempotent
+  ErasureCodingPolicy[] getErasureCodingPolicies() throws IOException;
+
+  /**
+   * Get the information about the EC policy for the path
+   *
+   * @param src path to get the info for
+   * @throws IOException
+   */
+  @Idempotent
+  ErasureCodingPolicy getErasureCodingPolicy(String src) throws IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

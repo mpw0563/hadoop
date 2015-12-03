@@ -105,9 +105,15 @@ Federation adds a new `NameServiceID` abstraction. A Namenode and its correspond
 
 | Daemon | Configuration Parameter |
 |:---- |:---- |
+<<<<<<< HEAD
 | Namenode | `dfs.namenode.rpc-address` <br/> `dfs.namenode.servicerpc-address` <br/> `dfs.namenode.http-address` <br/> `dfs.namenode.https-address` <br/> `dfs.namenode.keytab.file` <br/> `dfs.namenode.name.dir` <br/> `dfs.namenode.edits.dir` <br/> `dfs.namenode.checkpoint.dir` <br/> `dfs.namenode.checkpoint.edits.dir` |
 | Secondary Namenode | `dfs.namenode.secondary.http-address` <br/> `dfs.secondary.namenode.keytab.file` |
 | BackupNode | `dfs.namenode.backup.address` <br/> `dfs.secondary.namenode.keytab.file` |
+=======
+| Namenode | `dfs.namenode.rpc-address` `dfs.namenode.servicerpc-address` `dfs.namenode.http-address` `dfs.namenode.https-address` `dfs.namenode.keytab.file` `dfs.namenode.name.dir` `dfs.namenode.edits.dir` `dfs.namenode.checkpoint.dir` `dfs.namenode.checkpoint.edits.dir` |
+| Secondary Namenode | `dfs.namenode.secondary.http-address` `dfs.secondary.namenode.keytab.file` |
+| BackupNode | `dfs.namenode.backup.address` `dfs.secondary.namenode.keytab.file` |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Here is an example configuration with two Namenodes:
 
@@ -164,7 +170,11 @@ Note that the cluster\_id in step 2 must be same as that of the cluster\_id in s
 
 Older releases only support a single Namenode. Upgrade the cluster to newer release in order to enable federation During upgrade you can provide a ClusterID as follows:
 
+<<<<<<< HEAD
     [hdfs]$ $HADOOP_PREFIX/bin/hdfs start namenode --config $HADOOP_CONF_DIR  -upgrade -clusterId <cluster_ID>
+=======
+    [hdfs]$ $HADOOP_PREFIX/bin/hdfs --daemon start namenode -upgrade -clusterId <cluster_ID>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 If cluster\_id is not provided, it is auto generated.
 
@@ -208,7 +218,11 @@ These commands can be run from any node where the HDFS configuration is availabl
 
 The Balancer has been changed to work with multiple Namenodes. The Balancer can be run using the command:
 
+<<<<<<< HEAD
     [hdfs]$ $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR --script $HADOOP_PREFIX/bin/hdfs start balancer [-policy <policy>]
+=======
+    [hdfs]$ $HADOOP_PREFIX/bin/hdfs --daemon start balancer [-policy <policy>]
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 The policy parameter can be any of the following:
 
@@ -219,7 +233,11 @@ The policy parameter can be any of the following:
   level which also balances at the Datanode level.
 
 Note that Balancer only balances the data and does not balance the namespace.
+<<<<<<< HEAD
 For the complete command usage, see [balancer](../hadoop-common/CommandsManual.html#balancer).
+=======
+For the complete command usage, see [balancer](./HDFSCommands.html#balancer).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 ### Decommissioning
 

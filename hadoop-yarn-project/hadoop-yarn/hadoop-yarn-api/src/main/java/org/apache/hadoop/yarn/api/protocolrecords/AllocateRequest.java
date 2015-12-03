@@ -22,11 +22,19 @@ import java.util.List;
 
 import org.apache.hadoop.classification.InterfaceAudience.Public;
 import org.apache.hadoop.classification.InterfaceStability.Stable;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.classification.InterfaceStability.Unstable;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.ApplicationMasterProtocol;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.ResourceBlacklistRequest;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ContainerResourceIncreaseRequest;
+=======
+import org.apache.hadoop.yarn.api.records.ContainerResourceChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
 import org.apache.hadoop.yarn.util.Records;
 
@@ -46,6 +54,19 @@ import org.apache.hadoop.yarn.util.Records;
  *   <li>
  *     A list of unused {@link Container} which are being returned.
  *   </li>
+<<<<<<< HEAD
+=======
+ *   <li>
+ *     A list of {@link ContainerResourceChangeRequest} to inform
+ *     the <code>ResourceManager</code> about the resource increase
+ *     requirements of running containers.
+ *   </li>
+ *   <li>
+ *     A list of {@link ContainerResourceChangeRequest} to inform
+ *     the <code>ResourceManager</code> about the resource decrease
+ *     requirements of running containers.
+ *   </li>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * </ul>
  * 
  * @see ApplicationMasterProtocol#allocate(AllocateRequest)
@@ -61,7 +82,11 @@ public abstract class AllocateRequest {
       List<ContainerId> containersToBeReleased,
       ResourceBlacklistRequest resourceBlacklistRequest) {
     return newInstance(responseID, appProgress, resourceAsk,
+<<<<<<< HEAD
         containersToBeReleased, resourceBlacklistRequest, null);
+=======
+        containersToBeReleased, resourceBlacklistRequest, null, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @Public
@@ -70,7 +95,12 @@ public abstract class AllocateRequest {
       List<ResourceRequest> resourceAsk,
       List<ContainerId> containersToBeReleased,
       ResourceBlacklistRequest resourceBlacklistRequest,
+<<<<<<< HEAD
       List<ContainerResourceIncreaseRequest> increaseRequests) {
+=======
+      List<ContainerResourceChangeRequest> increaseRequests,
+      List<ContainerResourceChangeRequest> decreaseRequests) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     AllocateRequest allocateRequest = Records.newRecord(AllocateRequest.class);
     allocateRequest.setResponseId(responseID);
     allocateRequest.setProgress(appProgress);
@@ -78,6 +108,10 @@ public abstract class AllocateRequest {
     allocateRequest.setReleaseList(containersToBeReleased);
     allocateRequest.setResourceBlacklistRequest(resourceBlacklistRequest);
     allocateRequest.setIncreaseRequests(increaseRequests);
+<<<<<<< HEAD
+=======
+    allocateRequest.setDecreaseRequests(decreaseRequests);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return allocateRequest;
   }
   
@@ -184,6 +218,7 @@ public abstract class AllocateRequest {
       ResourceBlacklistRequest resourceBlacklistRequest);
   
   /**
+<<<<<<< HEAD
    * Get the <code>ContainerResourceIncreaseRequest</code> being sent by the
    * <code>ApplicationMaster</code>
    */
@@ -200,4 +235,40 @@ public abstract class AllocateRequest {
   @Stable
   public abstract void setIncreaseRequests(
       List<ContainerResourceIncreaseRequest> increaseRequests);
+=======
+   * Get the list of container resource increase requests being sent by the
+   * <code>ApplicationMaster</code>.
+   */
+  @Public
+  @Unstable
+  public abstract List<ContainerResourceChangeRequest> getIncreaseRequests();
+
+  /**
+   * Set the list of container resource increase requests to inform the
+   * <code>ResourceManager</code> about the containers whose resources need
+   * to be increased.
+   */
+  @Public
+  @Unstable
+  public abstract void setIncreaseRequests(
+      List<ContainerResourceChangeRequest> increaseRequests);
+
+  /**
+   * Get the list of container resource decrease requests being sent by the
+   * <code>ApplicationMaster</code>.
+   */
+  @Public
+  @Unstable
+  public abstract List<ContainerResourceChangeRequest> getDecreaseRequests();
+
+  /**
+   * Set the list of container resource decrease requests to inform the
+   * <code>ResourceManager</code> about the containers whose resources need
+   * to be decreased.
+   */
+  @Public
+  @Unstable
+  public abstract void setDecreaseRequests(
+      List<ContainerResourceChangeRequest> decreaseRequests);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

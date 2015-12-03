@@ -25,6 +25,10 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.hdfs.DFSUtil;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.server.datanode.DataNodeLayoutVersion;
 import org.apache.hadoop.hdfs.server.namenode.FSDirectory;
@@ -42,6 +46,7 @@ import org.apache.hadoop.util.StringUtils;
 @InterfaceAudience.Private
 public interface HdfsServerConstants {
   int MIN_BLOCKS_FOR_WRITE = 1;
+<<<<<<< HEAD
   /**
    * For a HDFS client to write to a file, a lease is granted; During the lease
    * period, no other client can write to the file. The writing client can
@@ -64,6 +69,16 @@ public interface HdfsServerConstants {
    * close the file on behalf of the writer, and recover the lease.
    */
   long LEASE_HARDLIMIT_PERIOD = 60 * LEASE_SOFTLIMIT_PERIOD;
+=======
+
+  /**
+   * Please see {@link HdfsConstants#LEASE_SOFTLIMIT_PERIOD} and
+   * {@link HdfsConstants#LEASE_HARDLIMIT_PERIOD} for more information.
+   */
+  long LEASE_SOFTLIMIT_PERIOD = HdfsConstants.LEASE_SOFTLIMIT_PERIOD;
+  long LEASE_HARDLIMIT_PERIOD = HdfsConstants.LEASE_HARDLIMIT_PERIOD;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   long LEASE_RECOVER_PERIOD = 10 * 1000; // in ms
   // We need to limit the length and depth of a path in the filesystem.
   // HADOOP-438
@@ -99,12 +114,15 @@ public interface HdfsServerConstants {
   };
   byte[] DOT_SNAPSHOT_DIR_BYTES
               = DFSUtil.string2Bytes(HdfsConstants.DOT_SNAPSHOT_DIR);
+<<<<<<< HEAD
   byte MEMORY_STORAGE_POLICY_ID = 15;
   byte ALLSSD_STORAGE_POLICY_ID = 12;
   byte ONESSD_STORAGE_POLICY_ID = 10;
   byte HOT_STORAGE_POLICY_ID = 7;
   byte WARM_STORAGE_POLICY_ID = 5;
   byte COLD_STORAGE_POLICY_ID = 2;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Type of the node
@@ -112,12 +130,22 @@ public interface HdfsServerConstants {
   enum NodeType {
     NAME_NODE,
     DATA_NODE,
+<<<<<<< HEAD
     JOURNAL_NODE
   }
 
   /** Startup options for rolling upgrade. */
   public static enum RollingUpgradeStartupOption{
     ROLLBACK, DOWNGRADE, STARTED;
+=======
+    JOURNAL_NODE,
+    STORAGE_CONTAINER_SERVICE
+  }
+
+  /** Startup options for rolling upgrade. */
+  enum RollingUpgradeStartupOption{
+    ROLLBACK, STARTED;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     public String getOptionString() {
       return StartupOption.ROLLINGUPGRADE.getName() + " "
@@ -132,6 +160,17 @@ public interface HdfsServerConstants {
     private static final RollingUpgradeStartupOption[] VALUES = values();
 
     static RollingUpgradeStartupOption fromString(String s) {
+<<<<<<< HEAD
+=======
+      if ("downgrade".equalsIgnoreCase(s)) {
+        throw new IllegalArgumentException(
+            "The \"downgrade\" option is no longer supported"
+                + " since it may incorrectly finalize an ongoing rolling upgrade."
+                + " For downgrade instruction, please see the documentation"
+                + " (http://hadoop.apache.org/docs/current/hadoop-project-dist/"
+                + "hadoop-hdfs/HdfsRollingUpgrade.html#Downgrade).");
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       for(RollingUpgradeStartupOption opt : VALUES) {
         if (opt.name().equalsIgnoreCase(s)) {
           return opt;
@@ -161,7 +200,10 @@ public interface HdfsServerConstants {
     CHECKPOINT("-checkpoint"),
     UPGRADE ("-upgrade"),
     ROLLBACK("-rollback"),
+<<<<<<< HEAD
     FINALIZE("-finalize"),
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     ROLLINGUPGRADE("-rollingUpgrade"),
     IMPORT  ("-importCheckpoint"),
     BOOTSTRAPSTANDBY("-bootstrapStandby"),
@@ -279,12 +321,15 @@ public interface HdfsServerConstants {
     }
   }
 
+<<<<<<< HEAD
   // Timeouts for communicating with DataNode for streaming writes/reads
   int READ_TIMEOUT = 60 * 1000;
   int READ_TIMEOUT_EXTENSION = 5 * 1000;
   int WRITE_TIMEOUT = 8 * 60 * 1000;
   int WRITE_TIMEOUT_EXTENSION = 5 * 1000; //for write pipeline
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Defines the NameNode role.
    */
@@ -317,6 +362,11 @@ public interface HdfsServerConstants {
     /** Temporary replica: created for replication and relocation only. */
     TEMPORARY(4);
 
+<<<<<<< HEAD
+=======
+    private static final ReplicaState[] cachedValues = ReplicaState.values();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     private final int value;
 
     ReplicaState(int v) {
@@ -328,12 +378,20 @@ public interface HdfsServerConstants {
     }
 
     public static ReplicaState getState(int v) {
+<<<<<<< HEAD
       return ReplicaState.values()[v];
+=======
+      return cachedValues[v];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     /** Read from in */
     public static ReplicaState read(DataInput in) throws IOException {
+<<<<<<< HEAD
       return values()[in.readByte()];
+=======
+      return cachedValues[in.readByte()];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     /** Write to out */
@@ -386,4 +444,12 @@ public interface HdfsServerConstants {
       "raw.hdfs.crypto.file.encryption.info";
   String SECURITY_XATTR_UNREADABLE_BY_SUPERUSER =
       "security.hdfs.unreadable.by.superuser";
+<<<<<<< HEAD
+=======
+  String XATTR_ERASURECODING_POLICY =
+      "raw.hdfs.erasurecoding.policy";
+
+  long BLOCK_GROUP_INDEX_MASK = 15;
+  byte MAX_BLOCKS_IN_GROUP = 16;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

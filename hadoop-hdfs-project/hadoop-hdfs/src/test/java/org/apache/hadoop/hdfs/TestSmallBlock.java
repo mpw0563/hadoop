@@ -25,9 +25,11 @@ import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
+<<<<<<< HEAD
 import org.apache.hadoop.fs.CommonConfigurationKeys;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
@@ -43,6 +45,7 @@ public class TestSmallBlock {
   static final int blockSize = 1;
   static final int fileSize = 20;
   boolean simulatedStorage = false;
+<<<<<<< HEAD
 
   private void writeFile(FileSystem fileSys, Path name) throws IOException {
     // create and write a file that contains three blocks of data
@@ -55,6 +58,8 @@ public class TestSmallBlock {
     stm.write(buffer);
     stm.close();
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   private void checkAndEraseData(byte[] actual, int from, byte[] expected, String message) {
     for (int idx = 0; idx < actual.length; idx++) {
@@ -107,7 +112,12 @@ public class TestSmallBlock {
     DistributedFileSystem fileSys = cluster.getFileSystem();
     try {
       Path file1 = new Path("/smallblocktest.dat");
+<<<<<<< HEAD
       writeFile(fileSys, file1);
+=======
+      DFSTestUtil.createFile(fileSys, file1, fileSize, fileSize, blockSize,
+          (short) 1, seed);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       checkFile(fileSys, file1);
       cleanupFile(fileSys, file1);
     } finally {

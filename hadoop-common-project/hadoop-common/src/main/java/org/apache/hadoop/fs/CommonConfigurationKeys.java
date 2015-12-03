@@ -137,6 +137,24 @@ public class CommonConfigurationKeys extends CommonConfigurationKeysPublic {
       false;
 
   /**
+<<<<<<< HEAD
+=======
+   * Erasure Coding configuration family
+   */
+
+  /** Supported erasure codec classes */
+  public static final String IO_ERASURECODE_CODECS_KEY = "io.erasurecode.codecs";
+
+  /** Raw coder factory for the RS codec. */
+  public static final String IO_ERASURECODE_CODEC_RS_RAWCODER_KEY =
+      "io.erasurecode.codec.rs.rawcoder";
+
+  /** Raw coder factory for the XOR codec. */
+  public static final String IO_ERASURECODE_CODEC_XOR_RAWCODER_KEY =
+      "io.erasurecode.codec.xor.rawcoder";
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Service Authorization
    */
   public static final String 
@@ -295,4 +313,10 @@ public class CommonConfigurationKeys extends CommonConfigurationKeysPublic {
   public static final String NFS_EXPORTS_ALLOWED_HOSTS_SEPARATOR = ";";
   public static final String NFS_EXPORTS_ALLOWED_HOSTS_KEY = "nfs.exports.allowed.hosts";
   public static final String NFS_EXPORTS_ALLOWED_HOSTS_KEY_DEFAULT = "* rw";
+<<<<<<< HEAD
+=======
+
+  // HDFS client HTrace configuration.
+  public static final String  FS_CLIENT_HTRACE_PREFIX = "fs.client.htrace.";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

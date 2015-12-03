@@ -24,6 +24,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+<<<<<<< HEAD
+=======
+import java.security.NoSuchAlgorithmException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +40,11 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+<<<<<<< HEAD
+=======
+import javax.crypto.KeyGenerator;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
@@ -47,13 +56,25 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.ipc.ProtocolSignature;
 import org.apache.hadoop.mapreduce.Cluster.JobTrackerStatus;
 import org.apache.hadoop.mapreduce.ClusterMetrics;
+<<<<<<< HEAD
 import org.apache.hadoop.mapreduce.MRConfig;
+=======
+import org.apache.hadoop.mapreduce.CryptoUtils;
+import org.apache.hadoop.mapreduce.MRConfig;
+import org.apache.hadoop.mapreduce.MRJobConfig;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.OutputFormat;
 import org.apache.hadoop.mapreduce.QueueInfo;
 import org.apache.hadoop.mapreduce.TaskCompletionEvent;
 import org.apache.hadoop.mapreduce.TaskTrackerInfo;
 import org.apache.hadoop.mapreduce.TaskType;
+<<<<<<< HEAD
 import org.apache.hadoop.mapreduce.protocol.ClientProtocol;
+=======
+import org.apache.hadoop.mapreduce.checkpoint.TaskCheckpointID;
+import org.apache.hadoop.mapreduce.protocol.ClientProtocol;
+import org.apache.hadoop.mapreduce.security.TokenCache;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.security.token.delegation.DelegationTokenIdentifier;
 import org.apache.hadoop.mapreduce.server.jobtracker.JTConfig;
 import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitMetaInfo;
@@ -83,6 +104,11 @@ public class LocalJobRunner implements ClientProtocol {
   public static final String LOCAL_MAX_REDUCES =
     "mapreduce.local.reduce.tasks.maximum";
 
+<<<<<<< HEAD
+=======
+  public static final String INTERMEDIATE_DATA_ENCRYPTION_ALGO = "HmacSHA1";
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private FileSystem fs;
   private HashMap<JobID, Job> jobs = new HashMap<JobID, Job>();
   private JobConf conf;
@@ -187,6 +213,28 @@ public class LocalJobRunner implements ClientProtocol {
 
       jobs.put(id, this);
 
+<<<<<<< HEAD
+=======
+      if (CryptoUtils.isEncryptedSpillEnabled(job)) {
+        try {
+          int keyLen = conf.getInt(
+              MRJobConfig.MR_ENCRYPTED_INTERMEDIATE_DATA_KEY_SIZE_BITS,
+              MRJobConfig
+                  .DEFAULT_MR_ENCRYPTED_INTERMEDIATE_DATA_KEY_SIZE_BITS);
+          KeyGenerator keyGen =
+              KeyGenerator.getInstance(INTERMEDIATE_DATA_ENCRYPTION_ALGO);
+          keyGen.init(keyLen);
+          Credentials creds =
+              UserGroupInformation.getCurrentUser().getCredentials();
+          TokenCache.setEncryptedSpillKey(keyGen.generateKey().getEncoded(),
+              creds);
+          UserGroupInformation.getCurrentUser().addCredentials(creds);
+        } catch (NoSuchAlgorithmException e) {
+          throw new IOException("Error generating encrypted spill key", e);
+        }
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.start();
     }
 
@@ -575,10 +623,24 @@ public class LocalJobRunner implements ClientProtocol {
 
     // TaskUmbilicalProtocol methods
 
+<<<<<<< HEAD
     public JvmTask getTask(JvmContext context) { return null; }
     
     public synchronized boolean statusUpdate(TaskAttemptID taskId,
         TaskStatus taskStatus) throws IOException, InterruptedException {
+=======
+    @Override
+    public JvmTask getTask(JvmContext context) { return null; }
+    
+    @Override
+    public synchronized AMFeedback statusUpdate(TaskAttemptID taskId,
+        TaskStatus taskStatus) throws IOException, InterruptedException {
+      AMFeedback feedback = new AMFeedback();
+      feedback.setTaskFound(true);
+      if (null == taskStatus) {
+        return feedback;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // Serialize as we would if distributed in order to make deep copy
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       DataOutputStream dos = new DataOutputStream(baos);
@@ -618,7 +680,11 @@ public class LocalJobRunner implements ClientProtocol {
       }
 
       // ignore phase
+<<<<<<< HEAD
       return true;
+=======
+      return feedback;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     /** Return the current values of the counters for this job,
@@ -654,24 +720,40 @@ public class LocalJobRunner implements ClientProtocol {
       statusUpdate(taskid, taskStatus);
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void reportDiagnosticInfo(TaskAttemptID taskid, String trace) {
       // Ignore for now
     }
     
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void reportNextRecordRange(TaskAttemptID taskid, 
         SortedRanges.Range range) throws IOException {
       LOG.info("Task " + taskid + " reportedNextRecordRange " + range);
     }
 
+<<<<<<< HEAD
     public boolean ping(TaskAttemptID taskid) throws IOException {
       return true;
     }
     
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public boolean canCommit(TaskAttemptID taskid) 
     throws IOException {
       return true;
     }
     
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void done(TaskAttemptID taskId) throws IOException {
       int taskIndex = mapIds.indexOf(taskId);
       if (taskIndex >= 0) {                       // mapping
@@ -681,11 +763,19 @@ public class LocalJobRunner implements ClientProtocol {
       }
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public synchronized void fsError(TaskAttemptID taskId, String message) 
     throws IOException {
       LOG.fatal("FSError: "+ message + "from task: " + taskId);
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public void shuffleError(TaskAttemptID taskId, String message) throws IOException {
       LOG.fatal("shuffleError: "+ message + "from task: " + taskId);
     }
@@ -695,12 +785,37 @@ public class LocalJobRunner implements ClientProtocol {
       LOG.fatal("Fatal: "+ msg + "from task: " + taskId);
     }
     
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public MapTaskCompletionEventsUpdate getMapCompletionEvents(JobID jobId, 
         int fromEventId, int maxLocs, TaskAttemptID id) throws IOException {
       return new MapTaskCompletionEventsUpdate(
         org.apache.hadoop.mapred.TaskCompletionEvent.EMPTY_ARRAY, false);
     }
+<<<<<<< HEAD
     
+=======
+
+    @Override
+    public void preempted(TaskAttemptID taskId, TaskStatus taskStatus)
+        throws IOException, InterruptedException {
+      // ignore
+    }
+
+    @Override
+    public TaskCheckpointID getCheckpointID(TaskID taskId) {
+      // ignore
+      return null;
+    }
+
+    @Override
+    public void setCheckpointID(TaskID downgrade, TaskCheckpointID cid) {
+      // ignore
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public LocalJobRunner(Configuration conf) throws IOException {

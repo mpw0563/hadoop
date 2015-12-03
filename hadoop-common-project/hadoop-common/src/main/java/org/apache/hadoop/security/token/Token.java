@@ -162,7 +162,11 @@ public class Token<T extends TokenIdentifier> implements Writable {
 
   /**
    * Set the token kind. This is only intended to be used by services that
+<<<<<<< HEAD
    * wrap another service's token, such as HFTP wrapping HDFS.
+=======
+   * wrap another service's token.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param newKind
    */
   @InterfaceAudience.Private

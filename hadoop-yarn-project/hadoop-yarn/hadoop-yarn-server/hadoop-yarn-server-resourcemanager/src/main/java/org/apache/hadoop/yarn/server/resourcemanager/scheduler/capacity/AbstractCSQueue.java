@@ -43,9 +43,16 @@ import org.apache.hadoop.yarn.security.PrivilegedEntity;
 import org.apache.hadoop.yarn.security.PrivilegedEntity.EntityType;
 import org.apache.hadoop.yarn.security.YarnAuthorizationProvider;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.NodeType;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceLimits;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceUsage;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceLimits;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceUsage;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedContainerChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerUtils;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
@@ -75,7 +82,11 @@ public abstract class AbstractCSQueue implements CSQueue {
   private boolean preemptionDisabled;
 
   // Track resource usage-by-label like used-resource/pending-resource, etc.
+<<<<<<< HEAD
   ResourceUsage queueUsage;
+=======
+  volatile ResourceUsage queueUsage;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   // Track capacities like used-capcity/abs-used-capacity/capacity/abs-capacity,
   // etc.
@@ -144,7 +155,11 @@ public abstract class AbstractCSQueue implements CSQueue {
   }
 
   @Override
+<<<<<<< HEAD
   public synchronized float getUsedCapacity() {
+=======
+  public float getUsedCapacity() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return queueCapacities.getUsedCapacity();
   }
 
@@ -197,7 +212,11 @@ public abstract class AbstractCSQueue implements CSQueue {
   }
 
   @Override
+<<<<<<< HEAD
   public synchronized void setUsedCapacity(float usedCapacity) {
+=======
+  public void setUsedCapacity(float usedCapacity) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     queueCapacities.setUsedCapacity(usedCapacity);
   }
   
@@ -339,22 +358,43 @@ public abstract class AbstractCSQueue implements CSQueue {
     return minimumAllocation;
   }
   
+<<<<<<< HEAD
   synchronized void allocateResource(Resource clusterResource, 
       Resource resource, String nodePartition) {
     queueUsage.incUsed(nodePartition, resource);
 
     ++numContainers;
+=======
+  synchronized void allocateResource(Resource clusterResource,
+      Resource resource, String nodePartition, boolean changeContainerResource) {
+    queueUsage.incUsed(nodePartition, resource);
+
+    if (!changeContainerResource) {
+      ++numContainers;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     CSQueueUtils.updateQueueStatistics(resourceCalculator, clusterResource,
         minimumAllocation, this, labelManager, nodePartition);
   }
   
   protected synchronized void releaseResource(Resource clusterResource,
+<<<<<<< HEAD
       Resource resource, String nodePartition) {
+=======
+      Resource resource, String nodePartition, boolean changeContainerResource) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     queueUsage.decUsed(nodePartition, resource);
 
     CSQueueUtils.updateQueueStatistics(resourceCalculator, clusterResource,
         minimumAllocation, this, labelManager, nodePartition);
+<<<<<<< HEAD
     --numContainers;
+=======
+
+    if (!changeContainerResource) {
+      --numContainers;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @Private
@@ -445,8 +485,13 @@ public abstract class AbstractCSQueue implements CSQueue {
   }
   
   synchronized boolean canAssignToThisQueue(Resource clusterResource,
+<<<<<<< HEAD
       String nodePartition, ResourceLimits currentResourceLimits, Resource resourceCouldBeUnreserved,
       SchedulingMode schedulingMode) {
+=======
+      String nodePartition, ResourceLimits currentResourceLimits,
+      Resource resourceCouldBeUnreserved, SchedulingMode schedulingMode) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Get current limited resource: 
     // - When doing RESPECT_PARTITION_EXCLUSIVITY allocation, we will respect
     // queues' max capacity.
@@ -543,6 +588,35 @@ public abstract class AbstractCSQueue implements CSQueue {
     }
   }
   
+<<<<<<< HEAD
+=======
+  @Override
+  public void incUsedResource(String nodeLabel, Resource resourceToInc,
+      SchedulerApplicationAttempt application) {
+    if (nodeLabel == null) {
+      nodeLabel = RMNodeLabelsManager.NO_LABEL;
+    }
+    // ResourceUsage has its own lock, no addition lock needs here.
+    queueUsage.incUsed(nodeLabel, resourceToInc);
+    if (null != parent) {
+      parent.incUsedResource(nodeLabel, resourceToInc, null);
+    }
+  }
+
+  @Override
+  public void decUsedResource(String nodeLabel, Resource resourceToDec,
+      SchedulerApplicationAttempt application) {
+    if (nodeLabel == null) {
+      nodeLabel = RMNodeLabelsManager.NO_LABEL;
+    }
+    // ResourceUsage has its own lock, no addition lock needs here.
+    queueUsage.decUsed(nodeLabel, resourceToDec);
+    if (null != parent) {
+      parent.decUsedResource(nodeLabel, resourceToDec, null);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Return if the queue has pending resource on given nodePartition and
    * schedulingMode. 

@@ -22,7 +22,12 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import org.apache.hadoop.util.StringUtils;
 
+<<<<<<< HEAD
 abstract class EnumSetParam<E extends Enum<E>> extends Param<EnumSet<E>, EnumSetParam.Domain<E>> {
+=======
+abstract class EnumSetParam<E extends Enum<E>>
+    extends Param<EnumSet<E>, EnumSetParam.Domain<E>> {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** Convert an EnumSet to a string of comma separated values. */
   static <E extends Enum<E>> String toString(EnumSet<E> set) {
     if (set == null || set.isEmpty()) {

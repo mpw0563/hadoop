@@ -27,7 +27,9 @@ import org.apache.hadoop.classification.InterfaceStability;
  * default context, so that no performance data is emitted if no configuration
  * data is found.
  * 
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public class NullContext extends AbstractMetricsContext {
@@ -40,6 +42,7 @@ public class NullContext extends AbstractMetricsContext {
   /**
    * Do-nothing version of startMonitoring
    */
+  @Override
   @InterfaceAudience.Private
   public void startMonitoring() {
   }
@@ -47,6 +50,7 @@ public class NullContext extends AbstractMetricsContext {
   /**
    * Do-nothing version of emitRecord
    */
+  @Override
   @InterfaceAudience.Private
   protected void emitRecord(String contextName, String recordName,
                             OutputRecord outRec) 
@@ -55,6 +59,7 @@ public class NullContext extends AbstractMetricsContext {
   /**
    * Do-nothing version of update
    */
+  @Override
   @InterfaceAudience.Private
   protected void update(MetricsRecordImpl record) {
   }
@@ -62,6 +67,7 @@ public class NullContext extends AbstractMetricsContext {
   /**
    * Do-nothing version of remove
    */
+  @Override
   @InterfaceAudience.Private
   protected void remove(MetricsRecordImpl record) {
   }

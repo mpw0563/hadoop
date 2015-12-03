@@ -590,7 +590,11 @@ public class SwiftNativeFileSystemStore {
           //outcome #2 -move to subdir of dest
           destPath = toObjectPath(new Path(dst, src.getName()));
         } else {
+<<<<<<< HEAD
           //outcome #1 dest it's a file: fail if differeent
+=======
+          //outcome #1 dest it's a file: fail if different
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           if (!renamingOnToSelf) {
             throw new FileAlreadyExistsException(
                     "cannot rename a file over one that already exists");
@@ -953,7 +957,11 @@ public class SwiftNativeFileSystemStore {
                                                         statuses, "; "));
     }
 
+<<<<<<< HEAD
     //delete the entries. including ourself.
+=======
+    //delete the entries. including ourselves.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     for (FileStatus entryStatus : statuses) {
       Path entryPath = entryStatus.getPath();
       try {

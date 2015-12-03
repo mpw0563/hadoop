@@ -63,7 +63,12 @@ public class ServerProxy {
     RetryPolicy retryPolicy = null;
     if (maxWaitTime == -1) {
       // wait forever.
+<<<<<<< HEAD
       retryPolicy = RetryPolicies.RETRY_FOREVER;
+=======
+      retryPolicy = RetryPolicies.retryForeverWithFixedSleep(retryIntervalMS,
+          TimeUnit.MILLISECONDS);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } else {
       retryPolicy =
           RetryPolicies.retryUpToMaximumTimeWithFixedSleep(maxWaitTime,

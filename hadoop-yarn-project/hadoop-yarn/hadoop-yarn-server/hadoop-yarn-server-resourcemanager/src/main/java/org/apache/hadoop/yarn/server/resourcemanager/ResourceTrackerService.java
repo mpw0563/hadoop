@@ -22,7 +22,10 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+<<<<<<< HEAD
 import java.util.HashSet;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -43,7 +46,11 @@ import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerState;
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.NodeId;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.NodeLabel;
+=======
+import org.apache.hadoop.yarn.api.records.NodeState;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
@@ -62,6 +69,10 @@ import org.apache.hadoop.yarn.server.api.protocolrecords.UnRegisterNodeManagerRe
 import org.apache.hadoop.yarn.server.api.records.MasterKey;
 import org.apache.hadoop.yarn.server.api.records.NodeAction;
 import org.apache.hadoop.yarn.server.api.records.NodeStatus;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.NodeLabelsUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptContainerFinishedEvent;
@@ -104,6 +115,10 @@ public class ResourceTrackerService extends AbstractService implements
   private int minAllocVcores;
 
   private boolean isDistributedNodeLabelsConf;
+<<<<<<< HEAD
+=======
+  private boolean isDelegatedCentralizedNodeLabelsConf;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public ResourceTrackerService(RMContext rmContext,
       NodesListManager nodesListManager,
@@ -148,8 +163,17 @@ public class ResourceTrackerService extends AbstractService implements
         YarnConfiguration.RM_NODEMANAGER_MINIMUM_VERSION,
         YarnConfiguration.DEFAULT_RM_NODEMANAGER_MINIMUM_VERSION);
 
+<<<<<<< HEAD
     isDistributedNodeLabelsConf =
         YarnConfiguration.isDistributedNodeLabelConfiguration(conf);
+=======
+    if (YarnConfiguration.areNodeLabelsEnabled(conf)) {
+      isDistributedNodeLabelsConf =
+          YarnConfiguration.isDistributedNodeLabelConfiguration(conf);
+      isDelegatedCentralizedNodeLabelsConf =
+          YarnConfiguration.isDelegatedCentralizedNodeLabelConfiguration(conf);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     super.serviceInit(conf);
   }
@@ -240,6 +264,7 @@ public class ResourceTrackerService extends AbstractService implements
     }
   }
 
+<<<<<<< HEAD
   static Set<String> convertToStringSet(Set<NodeLabel> nodeLabels) {
     if (null == nodeLabels) {
       return null;
@@ -251,6 +276,8 @@ public class ResourceTrackerService extends AbstractService implements
     return labels;
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @SuppressWarnings("unchecked")
   @Override
   public RegisterNodeManagerResponse registerNodeManager(
@@ -325,6 +352,11 @@ public class ResourceTrackerService extends AbstractService implements
     } else {
       LOG.info("Reconnect from the node at: " + host);
       this.nmLivelinessMonitor.unregister(nodeId);
+<<<<<<< HEAD
+=======
+      // Reset heartbeat ID since node just restarted.
+      oldNode.resetLastNodeHeartBeatResponse();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.rmContext
           .getDispatcher()
           .getEventHandler()
@@ -350,7 +382,12 @@ public class ResourceTrackerService extends AbstractService implements
     }
 
     // Update node's labels to RM's NodeLabelManager.
+<<<<<<< HEAD
     Set<String> nodeLabels = convertToStringSet(request.getNodeLabels());
+=======
+    Set<String> nodeLabels = NodeLabelsUtils.convertToStringSet(
+        request.getNodeLabels());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (isDistributedNodeLabelsConf && nodeLabels != null) {
       try {
         updateNodeLabelsFromNMReport(nodeLabels, nodeId);
@@ -360,6 +397,11 @@ public class ResourceTrackerService extends AbstractService implements
         response.setDiagnosticsMessage(ex.getMessage());
         response.setAreNodeLabelsAcceptedByRM(false);
       }
+<<<<<<< HEAD
+=======
+    } else if (isDelegatedCentralizedNodeLabelsConf) {
+      this.rmContext.getRMDelegatedNodeLabelsUpdater().updateNodeLabels(nodeId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     StringBuilder message = new StringBuilder();
@@ -397,8 +439,15 @@ public class ResourceTrackerService extends AbstractService implements
 
     NodeId nodeId = remoteNodeStatus.getNodeId();
 
+<<<<<<< HEAD
     // 1. Check if it's a valid (i.e. not excluded) node
     if (!this.nodesListManager.isValidNode(nodeId.getHost())) {
+=======
+    // 1. Check if it's a valid (i.e. not excluded) node, if not, see if it is
+    // in decommissioning.
+    if (!this.nodesListManager.isValidNode(nodeId.getHost())
+        && !isNodeInDecommissioning(nodeId)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       String message =
           "Disallowed NodeManager nodeId: " + nodeId + " hostname: "
               + nodeId.getHost();
@@ -447,6 +496,11 @@ public class ResourceTrackerService extends AbstractService implements
             getResponseId() + 1, NodeAction.NORMAL, null, null, null, null,
             nextHeartBeatInterval);
     rmNode.updateNodeHeartbeatResponseForCleanup(nodeHeartBeatResponse);
+<<<<<<< HEAD
+=======
+    rmNode.updateNodeHeartbeatResponseForContainersDecreasing(
+        nodeHeartBeatResponse);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     populateKeys(request, nodeHeartBeatResponse);
 
@@ -459,8 +513,14 @@ public class ResourceTrackerService extends AbstractService implements
     // 4. Send status to RMNode, saving the latest response.
     RMNodeStatusEvent nodeStatusEvent =
         new RMNodeStatusEvent(nodeId, remoteNodeStatus.getNodeHealthStatus(),
+<<<<<<< HEAD
           remoteNodeStatus.getContainersStatuses(),
           remoteNodeStatus.getKeepAliveApplications(), nodeHeartBeatResponse);
+=======
+            remoteNodeStatus.getContainersStatuses(),
+            remoteNodeStatus.getKeepAliveApplications(), nodeHeartBeatResponse,
+            remoteNodeStatus.getIncreasedContainers());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (request.getLogAggregationReportsForApps() != null
         && !request.getLogAggregationReportsForApps().isEmpty()) {
       nodeStatusEvent.setLogAggregationReportsForApps(request
@@ -472,7 +532,12 @@ public class ResourceTrackerService extends AbstractService implements
     if (isDistributedNodeLabelsConf && request.getNodeLabels() != null) {
       try {
         updateNodeLabelsFromNMReport(
+<<<<<<< HEAD
             convertToStringSet(request.getNodeLabels()), nodeId);
+=======
+            NodeLabelsUtils.convertToStringSet(request.getNodeLabels()),
+            nodeId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         nodeHeartBeatResponse.setAreNodeLabelsAcceptedByRM(true);
       } catch (IOException ex) {
         //ensure the error message is captured and sent across in response
@@ -484,6 +549,22 @@ public class ResourceTrackerService extends AbstractService implements
     return nodeHeartBeatResponse;
   }
 
+<<<<<<< HEAD
+=======
+  /**
+   * Check if node in decommissioning state.
+   * @param nodeId
+   */
+  private boolean isNodeInDecommissioning(NodeId nodeId) {
+    RMNode rmNode = this.rmContext.getRMNodes().get(nodeId);
+    if (rmNode != null &&
+        rmNode.getState().equals(NodeState.DECOMMISSIONING)) {
+      return true;
+    }
+    return false;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @SuppressWarnings("unchecked")
   @Override
   public UnRegisterNodeManagerResponse unRegisterNodeManager(

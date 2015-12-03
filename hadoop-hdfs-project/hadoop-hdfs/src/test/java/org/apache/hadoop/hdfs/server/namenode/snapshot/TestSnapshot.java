@@ -34,7 +34,10 @@ import java.util.HashMap;
 import java.util.Random;
 
 import org.apache.commons.io.output.NullOutputStream;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -74,7 +77,11 @@ import org.junit.rules.ExpectedException;
  */
 public class TestSnapshot {
   {
+<<<<<<< HEAD
     ((Log4JLogger)INode.LOG).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(INode.LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     SnapshotTestHelper.disableLogs();
   }
 
@@ -846,7 +853,11 @@ public class TestSnapshot {
 
     @Override
     void modify() throws Exception {
+<<<<<<< HEAD
       DFSTestUtil.createFile(fs, file, fileLen,
+=======
+      DFSTestUtil.createFile(fs, file, fileLen, fileLen, BLOCKSIZE,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           REPLICATION, seed);
     }
 

@@ -49,8 +49,13 @@ import org.apache.hadoop.security.token.SecretManager;
 import org.apache.hadoop.security.token.TokenIdentifier;
 import org.apache.hadoop.util.ProtoUtil;
 import org.apache.hadoop.util.Time;
+<<<<<<< HEAD
 import org.apache.htrace.Trace;
 import org.apache.htrace.TraceScope;
+=======
+import org.apache.htrace.core.TraceScope;
+import org.apache.htrace.core.Tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.BlockingService;
@@ -206,12 +211,22 @@ public class ProtobufRpcEngine implements RpcEngine {
             + method.getName() + "]");
       }
 
+<<<<<<< HEAD
       TraceScope traceScope = null;
       // if Tracing is on then start a new span for this rpc.
       // guard it in the if statement to make sure there isn't
       // any extra string manipulation.
       if (Trace.isTracing()) {
         traceScope = Trace.startSpan(RpcClientUtil.methodToTraceString(method));
+=======
+      // if Tracing is on then start a new span for this rpc.
+      // guard it in the if statement to make sure there isn't
+      // any extra string manipulation.
+      Tracer tracer = Tracer.curThreadTracer();
+      TraceScope traceScope = null;
+      if (tracer != null) {
+        traceScope = tracer.newScope(RpcClientUtil.methodToTraceString(method));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       RequestHeaderProto rpcRequestHeader = constructRpcRequestHeader(method);
@@ -236,9 +251,15 @@ public class ProtobufRpcEngine implements RpcEngine {
               remoteId + ": " + method.getName() +
                 " {" + e + "}");
         }
+<<<<<<< HEAD
         if (Trace.isTracing()) {
           traceScope.getSpan().addTimelineAnnotation(
               "Call got exception: " + e.toString());
+=======
+        if (traceScope != null) {
+          traceScope.addTimelineAnnotation("Call got exception: " +
+              e.toString());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         throw new ServiceException(e);
       } finally {
@@ -567,7 +588,11 @@ public class ProtobufRpcEngine implements RpcEngine {
       /**
        * This is a server side method, which is invoked over RPC. On success
        * the return response has protobuf response payload. On failure, the
+<<<<<<< HEAD
        * exception name and the stack trace are return in the resposne.
+=======
+       * exception name and the stack trace are returned in the response.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
        * See {@link HadoopRpcResponseProto}
        * 
        * In this method there three types of exceptions possible and they are
@@ -582,11 +607,16 @@ public class ProtobufRpcEngine implements RpcEngine {
        * it is.</li>
        * </ol>
        */
+<<<<<<< HEAD
       public Writable call(RPC.Server server, String protocol,
+=======
+      public Writable call(RPC.Server server, String connectionProtocolName,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           Writable writableRequest, long receiveTime) throws Exception {
         RpcRequestWrapper request = (RpcRequestWrapper) writableRequest;
         RequestHeaderProto rpcRequest = request.requestHeader;
         String methodName = rpcRequest.getMethodName();
+<<<<<<< HEAD
         String protoName = rpcRequest.getDeclaringClassProtocolName();
         long clientVersion = rpcRequest.getClientProtocolVersion();
         if (server.verbose)
@@ -594,12 +624,46 @@ public class ProtobufRpcEngine implements RpcEngine {
         
         ProtoClassProtoImpl protocolImpl = getProtocolImpl(server, protoName,
             clientVersion);
+=======
+        
+        
+        /** 
+         * RPCs for a particular interface (ie protocol) are done using a
+         * IPC connection that is setup using rpcProxy.
+         * The rpcProxy's has a declared protocol name that is 
+         * sent form client to server at connection time. 
+         * 
+         * Each Rpc call also sends a protocol name 
+         * (called declaringClassprotocolName). This name is usually the same
+         * as the connection protocol name except in some cases. 
+         * For example metaProtocols such ProtocolInfoProto which get info
+         * about the protocol reuse the connection but need to indicate that
+         * the actual protocol is different (i.e. the protocol is
+         * ProtocolInfoProto) since they reuse the connection; in this case
+         * the declaringClassProtocolName field is set to the ProtocolInfoProto.
+         */
+
+        String declaringClassProtoName = 
+            rpcRequest.getDeclaringClassProtocolName();
+        long clientVersion = rpcRequest.getClientProtocolVersion();
+        if (server.verbose)
+          LOG.info("Call: connectionProtocolName=" + connectionProtocolName + 
+              ", method=" + methodName);
+        
+        ProtoClassProtoImpl protocolImpl = getProtocolImpl(server, 
+                              declaringClassProtoName, clientVersion);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         BlockingService service = (BlockingService) protocolImpl.protocolImpl;
         MethodDescriptor methodDescriptor = service.getDescriptorForType()
             .findMethodByName(methodName);
         if (methodDescriptor == null) {
+<<<<<<< HEAD
           String msg = "Unknown method " + methodName + " called on " + protocol
               + " protocol.";
+=======
+          String msg = "Unknown method " + methodName + " called on " 
+                                + connectionProtocolName + " protocol.";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           LOG.warn(msg);
           throw new RpcNoSuchMethodException(msg);
         }
@@ -637,6 +701,12 @@ public class ProtobufRpcEngine implements RpcEngine {
           server.rpcMetrics.addRpcProcessingTime(processingTime);
           server.rpcDetailedMetrics.addProcessingTime(detailedMetricsName,
               processingTime);
+<<<<<<< HEAD
+=======
+          if (server.isLogSlowRPC()) {
+            server.logSlowRpcCalls(methodName, processingTime);
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         return new RpcResponseWrapper(result);
       }

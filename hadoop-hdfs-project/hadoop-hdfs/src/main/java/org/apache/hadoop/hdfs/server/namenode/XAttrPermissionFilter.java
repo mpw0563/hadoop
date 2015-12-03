@@ -72,7 +72,11 @@ public class XAttrPermissionFilter {
         isRawPath && isSuperUser) {
       return;
     }
+<<<<<<< HEAD
     if (XAttrHelper.getPrefixName(xAttr).
+=======
+    if (XAttrHelper.getPrefixedName(xAttr).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         equals(SECURITY_XATTR_UNREADABLE_BY_SUPERUSER)) {
       if (xAttr.getValue() != null) {
         throw new AccessControlException("Attempt to set a value for '" +
@@ -82,7 +86,11 @@ public class XAttrPermissionFilter {
       return;
     }
     throw new AccessControlException("User doesn't have permission for xattr: "
+<<<<<<< HEAD
         + XAttrHelper.getPrefixName(xAttr));
+=======
+        + XAttrHelper.getPrefixedName(xAttr));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   static void checkPermissionForApi(FSPermissionChecker pc,
@@ -115,7 +123,11 @@ public class XAttrPermissionFilter {
       } else if (xAttr.getNameSpace() == XAttr.NameSpace.RAW &&
           isSuperUser && isRawPath) {
         filteredXAttrs.add(xAttr);
+<<<<<<< HEAD
       } else if (XAttrHelper.getPrefixName(xAttr).
+=======
+      } else if (XAttrHelper.getPrefixedName(xAttr).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           equals(SECURITY_XATTR_UNREADABLE_BY_SUPERUSER)) {
         filteredXAttrs.add(xAttr);
       }

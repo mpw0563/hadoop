@@ -36,7 +36,14 @@ import org.apache.hadoop.metrics.spi.NullContext;
 /**
  * Factory class for creating MetricsContext objects.  To obtain an instance
  * of this class, use the static <code>getFactory()</code> method.
+<<<<<<< HEAD
  */
+=======
+ *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
+ */
+@Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 @InterfaceAudience.LimitedPrivate({"HDFS", "MapReduce"})
 @InterfaceStability.Evolving
 public class ContextFactory {

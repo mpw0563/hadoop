@@ -393,7 +393,7 @@ class JobSubmitter {
       LOG.info("loading user's secret keys from " + tokensFileName);
       String localFileName = new Path(tokensFileName).toUri().getPath();
 
-      boolean json_error = false;
+    
       try {
         // read JSON
         ObjectMapper mapper = new ObjectMapper();
@@ -404,13 +404,9 @@ class JobSubmitter {
           credentials.addSecretKey(new Text(ent.getKey()), ent.getValue()
               .getBytes(Charsets.UTF_8));
         }
-      } catch (JsonMappingException e) {
-        json_error = true;
-      } catch (JsonParseException e) {
-        json_error = true;
-      }
-      if(json_error)
-        LOG.warn("couldn't parse Token Cache JSON file with user secret keys");
+      } catch (JsonMappingException|JsonParseException e) {
+          LOG.warn("couldn't parse Token Cache JSON file with user secret keys");
+      } 
     }
   }
 

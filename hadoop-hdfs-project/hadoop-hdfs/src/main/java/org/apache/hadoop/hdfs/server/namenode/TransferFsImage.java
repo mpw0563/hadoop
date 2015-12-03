@@ -43,7 +43,11 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSUtil;
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.server.common.Storage;
 import org.apache.hadoop.hdfs.server.common.Storage.StorageDirectory;
@@ -70,7 +74,37 @@ import org.mortbay.jetty.EofException;
  */
 @InterfaceAudience.Private
 public class TransferFsImage {
+<<<<<<< HEAD
   
+=======
+
+  public enum TransferResult{
+    SUCCESS(HttpServletResponse.SC_OK, false),
+    AUTHENTICATION_FAILURE(HttpServletResponse.SC_FORBIDDEN, true),
+    NOT_ACTIVE_NAMENODE_FAILURE(HttpServletResponse.SC_EXPECTATION_FAILED, false),
+    OLD_TRANSACTION_ID_FAILURE(HttpServletResponse.SC_CONFLICT, false),
+    UNEXPECTED_FAILURE(-1, true);
+
+    private final int response;
+    private final boolean shouldReThrowException;
+
+    private TransferResult(int response, boolean rethrow) {
+      this.response = response;
+      this.shouldReThrowException = rethrow;
+    }
+
+    public static TransferResult getResultForCode(int code){
+      TransferResult ret = UNEXPECTED_FAILURE;
+      for(TransferResult result:TransferResult.values()){
+        if(result.response == code){
+          return result;
+        }
+      }
+      return ret;
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public final static String CONTENT_LENGTH = "Content-Length";
   public final static String FILE_LENGTH = "File-Length";
   public final static String MD5_HEADER = "X-MD5-Digest";
@@ -89,7 +123,11 @@ public class TransferFsImage {
     connectionFactory = URLConnectionFactory
         .newDefaultURLConnectionFactory(conf);
     isSpnegoEnabled = UserGroupInformation.isSecurityEnabled();
+<<<<<<< HEAD
     IO_FILE_BUFFER_SIZE = DFSUtil.getIoFileBufferSize(conf);
+=======
+    IO_FILE_BUFFER_SIZE = DFSUtilClient.getIoFileBufferSize(conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static final Log LOG = LogFactory.getLog(TransferFsImage.class);
@@ -102,9 +140,16 @@ public class TransferFsImage {
   }
 
   public static MD5Hash downloadImageToStorage(URL fsName, long imageTxId,
+<<<<<<< HEAD
       Storage dstStorage, boolean needDigest) throws IOException {
     String fileid = ImageServlet.getParamStringForImage(null,
         imageTxId, dstStorage);
+=======
+      Storage dstStorage, boolean needDigest, boolean isBootstrapStandby)
+      throws IOException {
+    String fileid = ImageServlet.getParamStringForImage(null,
+        imageTxId, dstStorage, isBootstrapStandby);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     String fileName = NNStorage.getCheckpointImageFileName(imageTxId);
     
     List<File> dstFiles = dstStorage.getFiles(
@@ -198,9 +243,15 @@ public class TransferFsImage {
    * @param txid the transaction ID of the image to be uploaded
    * @throws IOException if there is an I/O error
    */
+<<<<<<< HEAD
   public static void uploadImageFromStorage(URL fsName, Configuration conf,
       NNStorage storage, NameNodeFile nnf, long txid) throws IOException {
     uploadImageFromStorage(fsName, conf, storage, nnf, txid, null);
+=======
+  public static TransferResult uploadImageFromStorage(URL fsName, Configuration conf,
+      NNStorage storage, NameNodeFile nnf, long txid) throws IOException {
+    return uploadImageFromStorage(fsName, conf, storage, nnf, txid, null);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -215,7 +266,11 @@ public class TransferFsImage {
    * @param canceler optional canceler to check for abort of upload
    * @throws IOException if there is an I/O error or cancellation
    */
+<<<<<<< HEAD
   public static void uploadImageFromStorage(URL fsName, Configuration conf,
+=======
+  public static TransferResult uploadImageFromStorage(URL fsName, Configuration conf,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       NNStorage storage, NameNodeFile nnf, long txid, Canceler canceler)
       throws IOException {
     URL url = new URL(fsName, ImageServlet.PATH_SPEC);
@@ -223,6 +278,7 @@ public class TransferFsImage {
     try {
       uploadImage(url, conf, storage, nnf, txid, canceler);
     } catch (HttpPutFailedException e) {
+<<<<<<< HEAD
       if (e.getResponseCode() == HttpServletResponse.SC_CONFLICT) {
         // this is OK - this means that a previous attempt to upload
         // this checkpoint succeeded even though we thought it failed.
@@ -233,11 +289,23 @@ public class TransferFsImage {
       } else {
         throw e;
       }
+=======
+      // translate the error code to a result, which is a bit more obvious in usage
+      TransferResult result = TransferResult.getResultForCode(e.getResponseCode());
+      if (result.shouldReThrowException) {
+        throw e;
+      }
+      return result;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     double xferSec = Math.max(
         ((float) (Time.monotonicNow() - startTime)) / 1000.0, 0.001);
     LOG.info("Uploaded image with txid " + txid + " to namenode at " + fsName
         + " in " + xferSec + " seconds");
+<<<<<<< HEAD
+=======
+    return TransferResult.SUCCESS;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /*

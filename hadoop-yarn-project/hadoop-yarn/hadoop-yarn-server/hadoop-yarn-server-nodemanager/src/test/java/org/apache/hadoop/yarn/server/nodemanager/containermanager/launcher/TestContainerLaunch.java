@@ -125,7 +125,11 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
   @Before
   public void setup() throws IOException {
     conf.setClass(
+<<<<<<< HEAD
         YarnConfiguration.NM_CONTAINER_MON_RESOURCE_CALCULATOR,
+=======
+        YarnConfiguration.NM_MON_RESOURCE_CALCULATOR,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         LinuxResourceCalculatorPlugin.class, ResourceCalculatorPlugin.class);
     super.setup();
   }
@@ -978,7 +982,11 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
     Assume.assumeTrue(Shell.WINDOWS);
 
     // The tests are built on assuming 8191 max command line length
+<<<<<<< HEAD
     assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGHT);
+=======
+    assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGTH);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ShellScriptBuilder builder = ShellScriptBuilder.create();
 
@@ -987,11 +995,19 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
         org.apache.commons.lang.StringUtils.repeat("A", 1024)));
     builder.command(Arrays.asList(
         org.apache.commons.lang.StringUtils.repeat(
+<<<<<<< HEAD
             "E", Shell.WINDOWS_MAX_SHELL_LENGHT - callCmd.length())));
     try {
       builder.command(Arrays.asList(
           org.apache.commons.lang.StringUtils.repeat(
               "X", Shell.WINDOWS_MAX_SHELL_LENGHT -callCmd.length() + 1)));
+=======
+            "E", Shell.WINDOWS_MAX_SHELL_LENGTH - callCmd.length())));
+    try {
+      builder.command(Arrays.asList(
+          org.apache.commons.lang.StringUtils.repeat(
+              "X", Shell.WINDOWS_MAX_SHELL_LENGTH -callCmd.length() + 1)));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fail("longCommand was expected to throw");
     } catch(IOException e) {
       assertThat(e.getMessage(), containsString(expectedMessage));
@@ -1026,17 +1042,28 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
     Assume.assumeTrue(Shell.WINDOWS);
 
     // The tests are built on assuming 8191 max command line length
+<<<<<<< HEAD
     assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGHT);
+=======
+    assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGTH);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ShellScriptBuilder builder = ShellScriptBuilder.create();
 
     // test env
     builder.env("somekey", org.apache.commons.lang.StringUtils.repeat("A", 1024));
     builder.env("somekey", org.apache.commons.lang.StringUtils.repeat(
+<<<<<<< HEAD
         "A", Shell.WINDOWS_MAX_SHELL_LENGHT - ("@set somekey=").length()));
     try {
       builder.env("somekey", org.apache.commons.lang.StringUtils.repeat(
           "A", Shell.WINDOWS_MAX_SHELL_LENGHT - ("@set somekey=").length()) + 1);
+=======
+        "A", Shell.WINDOWS_MAX_SHELL_LENGTH - ("@set somekey=").length()));
+    try {
+      builder.env("somekey", org.apache.commons.lang.StringUtils.repeat(
+          "A", Shell.WINDOWS_MAX_SHELL_LENGTH - ("@set somekey=").length()) + 1);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fail("long env was expected to throw");
     } catch(IOException e) {
       assertThat(e.getMessage(), containsString(expectedMessage));
@@ -1051,17 +1078,28 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
     Assume.assumeTrue(Shell.WINDOWS);
 
     // The tests are built on assuming 8191 max command line length
+<<<<<<< HEAD
     assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGHT);
+=======
+    assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGTH);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ShellScriptBuilder builder = ShellScriptBuilder.create();
 
     // test mkdir
     builder.mkdir(new Path(org.apache.commons.lang.StringUtils.repeat("A", 1024)));
     builder.mkdir(new Path(org.apache.commons.lang.StringUtils.repeat(
+<<<<<<< HEAD
         "E", (Shell.WINDOWS_MAX_SHELL_LENGHT - mkDirCmd.length())/2)));
     try {
       builder.mkdir(new Path(org.apache.commons.lang.StringUtils.repeat(
           "X", (Shell.WINDOWS_MAX_SHELL_LENGHT - mkDirCmd.length())/2 +1)));
+=======
+        "E", (Shell.WINDOWS_MAX_SHELL_LENGTH - mkDirCmd.length())/2)));
+    try {
+      builder.mkdir(new Path(org.apache.commons.lang.StringUtils.repeat(
+          "X", (Shell.WINDOWS_MAX_SHELL_LENGTH - mkDirCmd.length())/2 +1)));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fail("long mkdir was expected to throw");
     } catch(IOException e) {
       assertThat(e.getMessage(), containsString(expectedMessage));
@@ -1072,11 +1110,18 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
   public void testWindowsShellScriptBuilderLink() throws IOException {
     // Test is only relevant on Windows
     Assume.assumeTrue(Shell.WINDOWS);
+<<<<<<< HEAD
 
     String linkCmd = "@" +Shell.WINUTILS + " symlink \"\" \"\"";
 
     // The tests are built on assuming 8191 max command line length
     assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGHT);
+=======
+    String linkCmd = "@" + Shell.getWinUtilsPath() + " symlink \"\" \"\"";
+
+    // The tests are built on assuming 8191 max command line length
+    assertEquals(8191, Shell.WINDOWS_MAX_SHELL_LENGTH);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     ShellScriptBuilder builder = ShellScriptBuilder.create();
 
@@ -1085,6 +1130,7 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
         new Path(org.apache.commons.lang.StringUtils.repeat("B", 1024)));
     builder.link(
         new Path(org.apache.commons.lang.StringUtils.repeat(
+<<<<<<< HEAD
             "E", (Shell.WINDOWS_MAX_SHELL_LENGHT - linkCmd.length())/2)),
         new Path(org.apache.commons.lang.StringUtils.repeat(
             "F", (Shell.WINDOWS_MAX_SHELL_LENGHT - linkCmd.length())/2)));
@@ -1094,6 +1140,17 @@ public class TestContainerLaunch extends BaseContainerManagerTest {
               "X", (Shell.WINDOWS_MAX_SHELL_LENGHT - linkCmd.length())/2 + 1)),
           new Path(org.apache.commons.lang.StringUtils.repeat(
               "Y", (Shell.WINDOWS_MAX_SHELL_LENGHT - linkCmd.length())/2) + 1));
+=======
+            "E", (Shell.WINDOWS_MAX_SHELL_LENGTH - linkCmd.length())/2)),
+        new Path(org.apache.commons.lang.StringUtils.repeat(
+            "F", (Shell.WINDOWS_MAX_SHELL_LENGTH - linkCmd.length())/2)));
+    try {
+      builder.link(
+          new Path(org.apache.commons.lang.StringUtils.repeat(
+              "X", (Shell.WINDOWS_MAX_SHELL_LENGTH - linkCmd.length())/2 + 1)),
+          new Path(org.apache.commons.lang.StringUtils.repeat(
+              "Y", (Shell.WINDOWS_MAX_SHELL_LENGTH - linkCmd.length())/2) + 1));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fail("long link was expected to throw");
     } catch(IOException e) {
       assertThat(e.getMessage(), containsString(expectedMessage));

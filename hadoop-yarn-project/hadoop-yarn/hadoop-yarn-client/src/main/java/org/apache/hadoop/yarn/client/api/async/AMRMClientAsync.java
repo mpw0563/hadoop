@@ -56,11 +56,25 @@ import com.google.common.annotations.VisibleForTesting;
  * It should be used by implementing a CallbackHandler:
  * <pre>
  * {@code
+<<<<<<< HEAD
  * class MyCallbackHandler implements AMRMClientAsync.CallbackHandler {
  *   public void onContainersAllocated(List<Container> containers) {
  *     [run tasks on the containers]
  *   }
  *   
+=======
+ * class MyCallbackHandler extends AMRMClientAsync.AbstractCallbackHandler {
+ *   public void onContainersAllocated(List<Container> containers) {
+ *     [run tasks on the containers]
+ *   }
+ *
+ *   public void onContainersResourceChanged(List<Container> containers) {
+ *     [determine if resource allocation of containers have been increased in
+ *      the ResourceManager, and if so, inform the NodeManagers to increase the
+ *      resource monitor/enforcement on the containers]
+ *   }
+ *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  *   public void onContainersCompleted(List<ContainerStatus> statuses) {
  *     [update progress, check whether app is done]
  *   }
@@ -100,23 +114,94 @@ extends AbstractService {
   protected final CallbackHandler handler;
   protected final AtomicInteger heartbeatIntervalMs = new AtomicInteger();
 
+<<<<<<< HEAD
+=======
+  /**
+   * <p>Create a new instance of AMRMClientAsync.</p>
+   *
+   * @param intervalMs heartbeat interval in milliseconds between AM and RM
+   * @param callbackHandler callback handler that processes responses from
+   *                        the <code>ResourceManager</code>
+   */
+  public static <T extends ContainerRequest> AMRMClientAsync<T>
+      createAMRMClientAsync(
+      int intervalMs, AbstractCallbackHandler callbackHandler) {
+    return new AMRMClientAsyncImpl<T>(intervalMs, callbackHandler);
+  }
+
+  /**
+   * <p>Create a new instance of AMRMClientAsync.</p>
+   *
+   * @param client the AMRMClient instance
+   * @param intervalMs heartbeat interval in milliseconds between AM and RM
+   * @param callbackHandler callback handler that processes responses from
+   *                        the <code>ResourceManager</code>
+   */
+  public static <T extends ContainerRequest> AMRMClientAsync<T>
+      createAMRMClientAsync(
+      AMRMClient<T> client, int intervalMs,
+      AbstractCallbackHandler callbackHandler) {
+    return new AMRMClientAsyncImpl<T>(client, intervalMs, callbackHandler);
+  }
+
+  protected AMRMClientAsync(
+      int intervalMs, AbstractCallbackHandler callbackHandler) {
+    this(new AMRMClientImpl<T>(), intervalMs, callbackHandler);
+  }
+
+  @Private
+  @VisibleForTesting
+  protected AMRMClientAsync(AMRMClient<T> client, int intervalMs,
+      AbstractCallbackHandler callbackHandler) {
+    super(AMRMClientAsync.class.getName());
+    this.client = client;
+    this.heartbeatIntervalMs.set(intervalMs);
+    this.handler = callbackHandler;
+  }
+
+  /**
+   *
+   * @deprecated Use {@link #createAMRMClientAsync(int,
+   *             AMRMClientAsync.AbstractCallbackHandler)} instead.
+   */
+  @Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static <T extends ContainerRequest> AMRMClientAsync<T>
       createAMRMClientAsync(int intervalMs, CallbackHandler callbackHandler) {
     return new AMRMClientAsyncImpl<T>(intervalMs, callbackHandler);
   }
+<<<<<<< HEAD
   
+=======
+
+  /**
+   *
+   * @deprecated Use {@link #createAMRMClientAsync(AMRMClient,
+   *             int, AMRMClientAsync.AbstractCallbackHandler)} instead.
+   */
+  @Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static <T extends ContainerRequest> AMRMClientAsync<T>
       createAMRMClientAsync(AMRMClient<T> client, int intervalMs,
           CallbackHandler callbackHandler) {
     return new AMRMClientAsyncImpl<T>(client, intervalMs, callbackHandler);
   }
+<<<<<<< HEAD
   
+=======
+
+  @Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected AMRMClientAsync(int intervalMs, CallbackHandler callbackHandler) {
     this(new AMRMClientImpl<T>(), intervalMs, callbackHandler);
   }
   
   @Private
   @VisibleForTesting
+<<<<<<< HEAD
+=======
+  @Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected AMRMClientAsync(AMRMClient<T> client, int intervalMs,
       CallbackHandler callbackHandler) {
     super(AMRMClientAsync.class.getName());
@@ -172,6 +257,28 @@ extends AbstractService {
   public abstract void removeContainerRequest(T req);
 
   /**
+<<<<<<< HEAD
+=======
+   * Request container resource change before calling <code>allocate</code>.
+   * Any previous pending resource change request of the same container will be
+   * removed.
+   *
+   * Application that calls this method is expected to maintain the
+   * <code>Container</code>s that are returned from previous successful
+   * allocations or resource changes. By passing in the existing container and a
+   * target resource capability to this method, the application requests the
+   * ResourceManager to change the existing resource allocation to the target
+   * resource allocation.
+   *
+   * @param container The container returned from the last successful resource
+   *                  allocation or resource change
+   * @param capability  The target resource capability of the container
+   */
+  public abstract void requestContainerResourceChange(
+      Container container, Resource capability);
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Release containers assigned by the Resource Manager. If the app cannot use
    * the container or wants to give up the container then it can release them.
    * The app needs to make new requests for the released resource capability if
@@ -264,37 +371,122 @@ extends AbstractService {
     } while (true);
   }
 
+<<<<<<< HEAD
   public interface CallbackHandler {
     
+=======
+  /**
+   * <p>
+   * The callback abstract class. The callback functions need to be implemented
+   * by {@link AMRMClientAsync} users. The APIs are called when responses from
+   * the <code>ResourceManager</code> are available.
+   * </p>
+   */
+  public abstract static class AbstractCallbackHandler
+      implements CallbackHandler {
+
     /**
      * Called when the ResourceManager responds to a heartbeat with completed
      * containers. If the response contains both completed containers and
      * allocated containers, this will be called before containersAllocated.
      */
-    public void onContainersCompleted(List<ContainerStatus> statuses);
-    
+    public abstract void onContainersCompleted(List<ContainerStatus> statuses);
+
     /**
      * Called when the ResourceManager responds to a heartbeat with allocated
      * containers. If the response containers both completed containers and
      * allocated containers, this will be called after containersCompleted.
      */
-    public void onContainersAllocated(List<Container> containers);
-    
+    public abstract void onContainersAllocated(List<Container> containers);
+
+    /**
+     * Called when the ResourceManager responds to a heartbeat with containers
+     * whose resource allocation has been changed.
+     */
+    public abstract void onContainersResourceChanged(
+        List<Container> containers);
+
     /**
      * Called when the ResourceManager wants the ApplicationMaster to shutdown
      * for being out of sync etc. The ApplicationMaster should not unregister
      * with the RM unless the ApplicationMaster wants to be the last attempt.
      */
-    public void onShutdownRequest();
-    
+    public abstract void onShutdownRequest();
+
     /**
      * Called when nodes tracked by the ResourceManager have changed in health,
      * availability etc.
      */
+    public abstract void onNodesUpdated(List<NodeReport> updatedNodes);
+
+    public abstract float getProgress();
+
+    /**
+     * Called when error comes from RM communications as well as from errors in
+     * the callback itself from the app. Calling
+     * stop() is the recommended action.
+     */
+    public abstract void onError(Throwable e);
+  }
+
+  /**
+   * @deprecated Use {@link AMRMClientAsync.AbstractCallbackHandler} instead.
+   */
+  @Deprecated
+  public interface CallbackHandler {
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    /**
+     * Called when the ResourceManager responds to a heartbeat with completed
+     * containers. If the response contains both completed containers and
+     * allocated containers, this will be called before containersAllocated.
+     */
+<<<<<<< HEAD
+    public void onContainersCompleted(List<ContainerStatus> statuses);
+    
+=======
+    void onContainersCompleted(List<ContainerStatus> statuses);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    /**
+     * Called when the ResourceManager responds to a heartbeat with allocated
+     * containers. If the response containers both completed containers and
+     * allocated containers, this will be called after containersCompleted.
+     */
+<<<<<<< HEAD
+    public void onContainersAllocated(List<Container> containers);
+    
+=======
+    void onContainersAllocated(List<Container> containers);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    /**
+     * Called when the ResourceManager wants the ApplicationMaster to shutdown
+     * for being out of sync etc. The ApplicationMaster should not unregister
+     * with the RM unless the ApplicationMaster wants to be the last attempt.
+     */
+<<<<<<< HEAD
+    public void onShutdownRequest();
+    
+=======
+    void onShutdownRequest();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    /**
+     * Called when nodes tracked by the ResourceManager have changed in health,
+     * availability etc.
+     */
+<<<<<<< HEAD
     public void onNodesUpdated(List<NodeReport> updatedNodes);
     
     public float getProgress();
     
+=======
+    void onNodesUpdated(List<NodeReport> updatedNodes);
+
+    float getProgress();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     /**
      * Called when error comes from RM communications as well as from errors in
      * the callback itself from the app. Calling
@@ -302,6 +494,10 @@ extends AbstractService {
      *
      * @param e
      */
+<<<<<<< HEAD
     public void onError(Throwable e);
+=======
+    void onError(Throwable e);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

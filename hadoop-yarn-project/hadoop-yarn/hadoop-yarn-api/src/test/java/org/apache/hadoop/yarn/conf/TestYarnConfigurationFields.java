@@ -86,6 +86,11 @@ public class TestYarnConfigurationFields extends TestConfigurationFieldsBase {
         .add(YarnConfiguration.DEFAULT_SCM_APP_CHECKER_CLASS);
     configurationPropsToSkipCompare
         .add(YarnConfiguration.DEFAULT_SHARED_CACHE_CHECKSUM_ALGO_IMPL);
+<<<<<<< HEAD
+=======
+    configurationPropsToSkipCompare
+        .add(YarnConfiguration.DEFAULT_AMRM_PROXY_INTERCEPTOR_CLASS_PIPELINE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Ignore all YARN Application Timeline Service (version 1) properties
     configurationPrefixToSkipCompare.add("yarn.timeline-service.");

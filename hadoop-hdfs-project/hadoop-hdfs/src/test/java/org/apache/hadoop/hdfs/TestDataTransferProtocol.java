@@ -37,13 +37,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.protocol.DatanodeID;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.DatanodeReportType;
 import org.apache.hadoop.hdfs.protocol.datatransfer.BlockConstructionStage;
 import org.apache.hadoop.hdfs.protocol.datatransfer.DataTransferProtoUtil;
@@ -58,7 +61,10 @@ import org.apache.hadoop.hdfs.protocol.proto.DataTransferProtos.BlockOpResponseP
 import org.apache.hadoop.hdfs.protocol.proto.DataTransferProtos.ReadOpChecksumInfoProto;
 import org.apache.hadoop.hdfs.protocol.proto.DataTransferProtos.Status;
 import org.apache.hadoop.hdfs.security.token.block.BlockTokenSecretManager;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.CachingStrategy;
 import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
 import org.apache.hadoop.io.IOUtils;
@@ -108,9 +114,15 @@ public class TestDataTransferProtocol {
           StringUtils.byteToHexString(sendBuf.toByteArray()));
       
       sock = new Socket();
+<<<<<<< HEAD
       sock.connect(dnAddr, HdfsServerConstants.READ_TIMEOUT);
       sock.setSoTimeout(HdfsServerConstants.READ_TIMEOUT);
       
+=======
+      sock.connect(dnAddr, HdfsConstants.READ_TIMEOUT);
+      sock.setSoTimeout(HdfsConstants.READ_TIMEOUT);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       OutputStream out = sock.getOutputStream();
       // Should we excuse 
       byte[] retBuf = new byte[recvBuf.size()];
@@ -141,13 +153,6 @@ public class TestDataTransferProtocol {
     } finally {
       IOUtils.closeSocket(sock);
     }
-  }
-  
-  void createFile(FileSystem fs, Path path, int fileLen) throws IOException {
-    byte [] arr = new byte[fileLen];
-    FSDataOutputStream out = fs.create(path);
-    out.write(arr);
-    out.close();
   }
   
   void readFile(FileSystem fs, Path path, int fileLen) throws IOException {
@@ -357,7 +362,9 @@ public class TestDataTransferProtocol {
     
     int fileLen = Math.min(conf.getInt(DFSConfigKeys.DFS_BLOCK_SIZE_KEY, 4096), 4096);
     
-    createFile(fileSys, file, fileLen);
+      DFSTestUtil.createFile(fileSys, file, fileLen, fileLen,
+          fileSys.getDefaultBlockSize(file),
+          fileSys.getDefaultReplication(file), 0L);
 
     // get the first blockid for the file
     final ExtendedBlock firstBlock = DFSTestUtil.getFirstBlock(fileSys, file);

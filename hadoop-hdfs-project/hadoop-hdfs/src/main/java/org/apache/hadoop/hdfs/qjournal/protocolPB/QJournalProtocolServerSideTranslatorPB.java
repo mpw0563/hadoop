@@ -266,6 +266,7 @@ public class QJournalProtocolServerSideTranslatorPB implements QJournalProtocolP
           reqInfo.getCommittedTxId() : HdfsServerConstants.INVALID_TXID);
   }
 
+<<<<<<< HEAD
   @Override
   public DiscardSegmentsResponseProto discardSegments(
       RpcController controller, DiscardSegmentsRequestProto request)
@@ -278,6 +279,8 @@ public class QJournalProtocolServerSideTranslatorPB implements QJournalProtocolP
     }
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @Override
   public DoPreUpgradeResponseProto doPreUpgrade(RpcController controller,
@@ -341,6 +344,21 @@ public class QJournalProtocolServerSideTranslatorPB implements QJournalProtocolP
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public DiscardSegmentsResponseProto discardSegments(
+      RpcController controller, DiscardSegmentsRequestProto request)
+      throws ServiceException {
+    try {
+      impl.discardSegments(convert(request.getJid()), request.getStartTxId());
+      return DiscardSegmentsResponseProto.getDefaultInstance();
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public GetJournalCTimeResponseProto getJournalCTime(RpcController controller,
       GetJournalCTimeRequestProto request) throws ServiceException {
     try {

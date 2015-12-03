@@ -983,6 +983,7 @@ public class TestFileUtil {
     file.delete();
     Assert.assertFalse(file.exists());
 
+<<<<<<< HEAD
     if (Shell.WINDOWS && !Shell.isJava7OrAbove()) {
       // On Java6 on Windows, we copied the file
       Assert.assertEquals(data.length, link.length());
@@ -990,6 +991,9 @@ public class TestFileUtil {
       // Otherwise, the target file size is zero
       Assert.assertEquals(0, link.length());
     }
+=======
+    Assert.assertEquals(0, link.length());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     link.delete();
     Assert.assertFalse(link.exists());

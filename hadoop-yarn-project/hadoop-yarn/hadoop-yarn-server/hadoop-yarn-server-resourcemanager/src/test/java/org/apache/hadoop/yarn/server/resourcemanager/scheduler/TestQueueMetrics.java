@@ -198,6 +198,56 @@ public class TestQueueMetrics {
     checkApps(userSource, 1, 0, 0, 1, 0, 0, true);
   }
 
+<<<<<<< HEAD
+=======
+
+  @Test public void testNodeTypeMetrics() {
+    String parentQueueName = "root";
+    String leafQueueName = "root.leaf";
+    String user = "alice";
+
+    QueueMetrics parentMetrics =
+      QueueMetrics.forQueue(ms, parentQueueName, null, true, conf);
+    Queue parentQueue = make(stub(Queue.class).returning(parentMetrics).
+        from.getMetrics());
+    QueueMetrics metrics =
+      QueueMetrics.forQueue(ms, leafQueueName, parentQueue, true, conf);
+    MetricsSource parentQueueSource = queueSource(ms, parentQueueName);
+    MetricsSource queueSource = queueSource(ms, leafQueueName);
+    //AppSchedulingInfo app = mockApp(user);
+
+    metrics.submitApp(user);
+    MetricsSource userSource = userSource(ms, leafQueueName, user);
+    MetricsSource parentUserSource = userSource(ms, parentQueueName, user);
+
+    metrics.incrNodeTypeAggregations(user, NodeType.NODE_LOCAL);
+    checkAggregatedNodeTypes(queueSource,1L,0L,0L);
+    checkAggregatedNodeTypes(parentQueueSource,1L,0L,0L);
+    checkAggregatedNodeTypes(userSource,1L,0L,0L);
+    checkAggregatedNodeTypes(parentUserSource,1L,0L,0L);
+
+    metrics.incrNodeTypeAggregations(user, NodeType.RACK_LOCAL);
+    checkAggregatedNodeTypes(queueSource,1L,1L,0L);
+    checkAggregatedNodeTypes(parentQueueSource,1L,1L,0L);
+    checkAggregatedNodeTypes(userSource,1L,1L,0L);
+    checkAggregatedNodeTypes(parentUserSource,1L,1L,0L);
+
+    metrics.incrNodeTypeAggregations(user, NodeType.OFF_SWITCH);
+    checkAggregatedNodeTypes(queueSource,1L,1L,1L);
+    checkAggregatedNodeTypes(parentQueueSource,1L,1L,1L);
+    checkAggregatedNodeTypes(userSource,1L,1L,1L);
+    checkAggregatedNodeTypes(parentUserSource,1L,1L,1L);
+
+    metrics.incrNodeTypeAggregations(user, NodeType.OFF_SWITCH);
+    checkAggregatedNodeTypes(queueSource,1L,1L,2L);
+    checkAggregatedNodeTypes(parentQueueSource,1L,1L,2L);
+    checkAggregatedNodeTypes(userSource,1L,1L,2L);
+    checkAggregatedNodeTypes(parentUserSource,1L,1L,2L);
+
+  }
+
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test public void testTwoLevelWithUserMetrics() {
     String parentQueueName = "root";
     String leafQueueName = "root.leaf";
@@ -367,6 +417,17 @@ public class TestQueueMetrics {
     assertGauge("ReservedContainers", reservedCtnrs, rb);
   }
 
+<<<<<<< HEAD
+=======
+  public static void checkAggregatedNodeTypes(MetricsSource source,
+      long nodeLocal, long rackLocal, long offSwitch) {
+    MetricsRecordBuilder rb = getMetrics(source);
+    assertCounter("AggregateNodeLocalContainersAllocated", nodeLocal, rb);
+    assertCounter("AggregateRackLocalContainersAllocated", rackLocal, rb);
+    assertCounter("AggregateOffSwitchContainersAllocated", offSwitch, rb);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static AppSchedulingInfo mockApp(String user) {
     AppSchedulingInfo app = mock(AppSchedulingInfo.class);
     when(app.getUser()).thenReturn(user);

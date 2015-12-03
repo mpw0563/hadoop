@@ -63,6 +63,10 @@ import org.apache.hadoop.ipc.Server;
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.util.StopWatch;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.util.Time;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
@@ -132,6 +136,11 @@ public class Journal implements Closeable {
 
   private final JournalMetrics metrics;
 
+<<<<<<< HEAD
+=======
+  private long lastJournalTimestamp = 0;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Time threshold for sync calls, beyond which a warning should be logged to the console.
    */
@@ -151,7 +160,11 @@ public class Journal implements Closeable {
     
     EditLogFile latest = scanStorageForLatestEdits();
     if (latest != null) {
+<<<<<<< HEAD
       highestWrittenTxId = latest.getLastTxId();
+=======
+      updateHighestWrittenTxId(latest.getLastTxId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -189,7 +202,11 @@ public class Journal implements Closeable {
     
     while (!files.isEmpty()) {
       EditLogFile latestLog = files.remove(files.size() - 1);
+<<<<<<< HEAD
       latestLog.scanLog();
+=======
+      latestLog.scanLog(Long.MAX_VALUE, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LOG.info("Latest log is " + latestLog);
       if (latestLog.getLastTxId() == HdfsServerConstants.INVALID_TXID) {
         // the log contains no transactions
@@ -253,7 +270,15 @@ public class Journal implements Closeable {
   synchronized long getCommittedTxnIdForTests() throws IOException {
     return committedTxnId.get();
   }
+<<<<<<< HEAD
   
+=======
+
+  synchronized long getLastJournalTimestamp() {
+    return lastJournalTimestamp;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   synchronized long getCurrentLagTxns() throws IOException {
     long committed = committedTxnId.get();
     if (committed == 0) {
@@ -266,7 +291,21 @@ public class Journal implements Closeable {
   synchronized long getHighestWrittenTxId() {
     return highestWrittenTxId;
   }
+<<<<<<< HEAD
   
+=======
+
+  /**
+   * Update the highest Tx ID that has been written to the journal. Also update
+   * the {@link FileJournalManager#lastReadableTxId} of the underlying fjm.
+   * @param val The new value
+   */
+  private void updateHighestWrittenTxId(long val) {
+    highestWrittenTxId = val;
+    fjm.setLastReadableTxId(val);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @VisibleForTesting
   JournalMetrics getMetricsForTests() {
     return metrics;
@@ -399,8 +438,14 @@ public class Journal implements Closeable {
     metrics.bytesWritten.incr(records.length);
     metrics.txnsWritten.incr(numTxns);
     
+<<<<<<< HEAD
     highestWrittenTxId = lastTxnId;
     nextTxId = lastTxnId + 1;
+=======
+    updateHighestWrittenTxId(lastTxnId);
+    nextTxId = lastTxnId + 1;
+    lastJournalTimestamp = Time.now();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public void heartbeat(RequestInfo reqInfo) throws IOException {
@@ -524,7 +569,11 @@ public class Journal implements Closeable {
       // If it's in-progress, it should only contain one transaction,
       // because the "startLogSegment" transaction is written alone at the
       // start of each segment. 
+<<<<<<< HEAD
       existing.scanLog();
+=======
+      existing.scanLog(Long.MAX_VALUE, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (existing.getLastTxId() != existing.getFirstTxId()) {
         throw new IllegalStateException("The log file " +
             existing + " seems to contain valid transactions");
@@ -587,7 +636,11 @@ public class Journal implements Closeable {
       if (needsValidation) {
         LOG.info("Validating log segment " + elf.getFile() + " about to be " +
             "finalized");
+<<<<<<< HEAD
         elf.scanLog();
+=======
+        elf.scanLog(Long.MAX_VALUE, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
         checkSync(elf.getLastTxId() == endTxId,
             "Trying to finalize in-progress log segment %s to end at " +
@@ -675,7 +728,11 @@ public class Journal implements Closeable {
       return null;
     }
     if (elf.isInProgress()) {
+<<<<<<< HEAD
       elf.scanLog();
+=======
+      elf.scanLog(Long.MAX_VALUE, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     if (elf.getLastTxId() == HdfsServerConstants.INVALID_TXID) {
       LOG.info("Edit log file " + elf + " appears to be empty. " +
@@ -782,8 +839,13 @@ public class Journal implements Closeable {
             ": no current segment in place");
         
         // Update the highest txid for lag metrics
+<<<<<<< HEAD
         highestWrittenTxId = Math.max(segment.getEndTxId(),
             highestWrittenTxId);
+=======
+        updateHighestWrittenTxId(Math.max(segment.getEndTxId(),
+            highestWrittenTxId));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else {
         LOG.info("Synchronizing log " + TextFormat.shortDebugString(segment) +
             ": old segment " + TextFormat.shortDebugString(currentSegment) +
@@ -812,7 +874,11 @@ public class Journal implements Closeable {
         // If we're shortening the log, update our highest txid
         // used for lag metrics.
         if (txnRange(currentSegment).containsLong(highestWrittenTxId)) {
+<<<<<<< HEAD
           highestWrittenTxId = segment.getEndTxId();
+=======
+          updateHighestWrittenTxId(segment.getEndTxId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
       syncedFile = syncLog(reqInfo, segment, fromUrl);
@@ -991,12 +1057,15 @@ public class Journal implements Closeable {
     }
   }
 
+<<<<<<< HEAD
   synchronized void discardSegments(long startTxId) throws IOException {
     storage.getJournalManager().discardSegments(startTxId);
     // we delete all the segments after the startTxId. let's reset committedTxnId 
     committedTxnId.set(startTxId - 1);
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized void doPreUpgrade() throws IOException {
     // Do not hold file lock on committedTxnId, because the containing
     // directory will be renamed.  It will be reopened lazily on next access.
@@ -1068,6 +1137,15 @@ public class Journal implements Closeable {
     storage.getJournalManager().doRollback();
   }
 
+<<<<<<< HEAD
+=======
+  synchronized void discardSegments(long startTxId) throws IOException {
+    storage.getJournalManager().discardSegments(startTxId);
+    // we delete all the segments after the startTxId. let's reset committedTxnId 
+    committedTxnId.set(startTxId - 1);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public Long getJournalCTime() throws IOException {
     return storage.getJournalManager().getJournalCTime();
   }

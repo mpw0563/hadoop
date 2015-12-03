@@ -72,6 +72,7 @@ public class TestMetadataVersionOutput {
     final PrintStream origOut = System.out;
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final PrintStream stdOut = new PrintStream(baos);
+<<<<<<< HEAD
     System.setOut(stdOut);
     try {
       NameNode.createNameNode(new String[] { "-metadataVersion" }, conf);
@@ -85,5 +86,23 @@ public class TestMetadataVersionOutput {
     assertTrue(baos.toString("UTF-8").
       contains("Software format version: " + verNumStr));
     System.setOut(origOut);
+=======
+    try {
+      System.setOut(stdOut);
+      try {
+        NameNode.createNameNode(new String[] { "-metadataVersion" }, conf);
+      } catch (Exception e) {
+        assertExceptionContains("ExitException", e);
+      }
+    /* Check if meta data version is printed correctly. */
+      final String verNumStr = HdfsServerConstants.NAMENODE_LAYOUT_VERSION + "";
+      assertTrue(baos.toString("UTF-8").
+          contains("HDFS Image Version: " + verNumStr));
+      assertTrue(baos.toString("UTF-8").
+          contains("Software format version: " + verNumStr));
+    } finally {
+      System.setOut(origOut);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

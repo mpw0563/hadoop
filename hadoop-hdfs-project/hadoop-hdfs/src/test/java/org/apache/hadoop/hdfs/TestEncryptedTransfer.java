@@ -77,7 +77,11 @@ public class TestEncryptedTransfer {
     conf.setBoolean(DFSConfigKeys.DFS_ENCRYPT_DATA_TRANSFER_KEY, true);
     conf.setBoolean(DFSConfigKeys.DFS_BLOCK_ACCESS_TOKEN_ENABLE_KEY, true);
     if (resolverClazz != null){
+<<<<<<< HEAD
       conf.set(DFSConfigKeys.DFS_TRUSTEDCHANNEL_RESOLVER_CLASS, resolverClazz);
+=======
+      conf.set(HdfsClientConfigKeys.DFS_TRUSTEDCHANNEL_RESOLVER_CLASS, resolverClazz);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
   
@@ -209,7 +213,11 @@ public class TestEncryptedTransfer {
     MiniDFSCluster cluster = null;
     try {
       Configuration conf = new Configuration();
+<<<<<<< HEAD
       conf.set(DFSConfigKeys.DFS_ENCRYPT_DATA_TRANSFER_CIPHER_SUITES_KEY,
+=======
+      conf.set(HdfsClientConfigKeys.DFS_ENCRYPT_DATA_TRANSFER_CIPHER_SUITES_KEY,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           "AES/CTR/NoPadding");
       cluster = new MiniDFSCluster.Builder(conf).build();
 

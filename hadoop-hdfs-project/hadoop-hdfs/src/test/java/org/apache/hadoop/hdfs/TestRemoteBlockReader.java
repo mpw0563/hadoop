@@ -17,11 +17,20 @@
  */
 package org.apache.hadoop.hdfs;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 public class TestRemoteBlockReader extends TestBlockReaderBase {
 
   HdfsConfiguration createConf() {
     HdfsConfiguration conf = new HdfsConfiguration();
+<<<<<<< HEAD
     conf.setBoolean(DFSConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADER, true);
+=======
+    conf.setBoolean(HdfsClientConfigKeys.DFS_CLIENT_USE_LEGACY_BLOCKREADER, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return conf;
   }
 }

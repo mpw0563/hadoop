@@ -19,11 +19,19 @@
   <parent>
     <artifactId>hadoop-yarn</artifactId>
     <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>hadoop-yarn-registry</artifactId>
   <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>hadoop-yarn-registry</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>Apache Hadoop YARN Registry</name>
 
   <properties>
@@ -187,6 +195,7 @@
         </environmentVariables>
         <systemPropertyVariables>
 
+<<<<<<< HEAD
 
           <!-- TODO: all references in testcases should be updated to this default -->
           <test.build.dir>${test.build.dir}</test.build.dir>
@@ -199,6 +208,20 @@
 
           <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
           <java.security.krb5.conf>${basedir}/src/test/resources/krb5.conf</java.security.krb5.conf>
+=======
+          <hadoop.log.dir>${project.build.directory}/log</hadoop.log.dir>
+          <hadoop.tmp.dir>${project.build.directory}/tmp</hadoop.tmp.dir>
+
+          <!-- TODO: all references in testcases should be updated to this default -->
+          <test.build.dir>${test.build.dir}</test.build.dir>
+          <test.build.data>${test.build.data}</test.build.data>
+          <test.build.webapps>${test.build.webapps}</test.build.webapps>
+          <test.cache.data>${test.cache.data}</test.cache.data>
+          <test.build.classes>${test.build.classes}</test.build.classes>
+
+          <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+          <java.security.krb5.conf>${project.build.directory}/test-classes/krb5.conf</java.security.krb5.conf>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           <java.security.egd>${java.security.egd}</java.security.egd>
           <require.test.libhadoop>${require.test.libhadoop}</require.test.libhadoop>
         </systemPropertyVariables>

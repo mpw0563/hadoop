@@ -173,6 +173,7 @@ public class Snapshot implements Comparable<byte[]> {
     public INode getChild(byte[] name, int snapshotId) {
       return getParent().getChild(name, snapshotId);
     }
+<<<<<<< HEAD
     
     @Override
     public ContentSummaryComputationContext computeContentSummary(
@@ -181,10 +182,30 @@ public class Snapshot implements Comparable<byte[]> {
       return computeDirectoryContentSummary(summary, snapshotId);
     }
     
+=======
+
+    @Override
+    public ContentSummaryComputationContext computeContentSummary(
+        int snapshotId, ContentSummaryComputationContext summary) {
+      return computeDirectoryContentSummary(summary, snapshotId);
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @Override
     public String getFullPathName() {
       return getSnapshotPath(getParent().getFullPathName(), getLocalName());
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * Get the full path name of the root directory of this snapshot.
+     * @return full path to the root directory of the snapshot
+     */
+    public String getRootFullPathName() {
+      return getParent().getFullPathName();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /** Snapshot ID. */

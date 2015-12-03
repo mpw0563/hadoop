@@ -108,6 +108,11 @@ import org.apache.hadoop.mapreduce.v2.app.rm.RMCommunicator;
 import org.apache.hadoop.mapreduce.v2.app.rm.RMContainerAllocator;
 import org.apache.hadoop.mapreduce.v2.app.rm.RMContainerRequestor;
 import org.apache.hadoop.mapreduce.v2.app.rm.RMHeartbeatHandler;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.AMPreemptionPolicy;
+import org.apache.hadoop.mapreduce.v2.app.rm.preemption.NoopAMPreemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.v2.app.speculate.DefaultSpeculator;
 import org.apache.hadoop.mapreduce.v2.app.speculate.Speculator;
 import org.apache.hadoop.mapreduce.v2.app.speculate.SpeculatorEvent;
@@ -198,8 +203,8 @@ public class MRAppMaster extends CompositeService {
   private ContainerLauncher containerLauncher;
   private EventHandler<CommitterEvent> committerEventHandler;
   private Speculator speculator;
-  private TaskAttemptListener taskAttemptListener;
-  private JobTokenSecretManager jobTokenSecretManager =
+  protected TaskAttemptListener taskAttemptListener;
+  protected JobTokenSecretManager jobTokenSecretManager =
       new JobTokenSecretManager();
   private JobId jobId;
   private boolean newApiCommitter;
@@ -208,6 +213,10 @@ public class MRAppMaster extends CompositeService {
   private JobEventDispatcher jobEventDispatcher;
   private JobHistoryEventHandler jobHistoryEventHandler;
   private SpeculatorEventDispatcher speculatorEventDispatcher;
+<<<<<<< HEAD
+=======
+  private AMPreemptionPolicy preemptionPolicy;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private byte[] encryptedSpillKey;
 
   // After a task attempt completes from TaskUmbilicalProtocol's point of view,
@@ -301,10 +310,18 @@ public class MRAppMaster extends CompositeService {
     }
     
     boolean copyHistory = false;
+<<<<<<< HEAD
+=======
+    committer = createOutputCommitter(conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       String user = UserGroupInformation.getCurrentUser().getShortUserName();
       Path stagingDir = MRApps.getStagingAreaDir(conf, user);
       FileSystem fs = getFileSystem(conf);
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       boolean stagingExists = fs.exists(stagingDir);
       Path startCommitFile = MRApps.getStartJobCommitFile(conf, user, jobId);
       boolean commitStarted = fs.exists(startCommitFile);
@@ -341,17 +358,36 @@ public class MRAppMaster extends CompositeService {
               "before it crashed. Not retrying.";
           forcedState = JobStateInternal.FAILED;
         } else {
+<<<<<<< HEAD
           //The commit is still pending, commit error
           shutDownMessage =
               "Job commit from a prior MRAppMaster attempt is " +
               "potentially in progress. Preventing multiple commit executions";
           forcedState = JobStateInternal.ERROR;
+=======
+          if (isCommitJobRepeatable()) {
+            // cleanup previous half done commits if committer supports
+            // repeatable job commit.
+            errorHappenedShutDown = false;
+            cleanupInterruptedCommit(conf, fs, startCommitFile);
+          } else {
+            //The commit is still pending, commit error
+            shutDownMessage =
+                "Job commit from a prior MRAppMaster attempt is " +
+                "potentially in progress. Preventing multiple commit executions";
+            forcedState = JobStateInternal.ERROR;
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
     } catch (IOException e) {
       throw new YarnRuntimeException("Error while initializing", e);
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (errorHappenedShutDown) {
       NoopEventHandler eater = new NoopEventHandler();
       //We do not have a JobEventDispatcher in this path
@@ -367,6 +403,7 @@ public class MRAppMaster extends CompositeService {
         dispatcher.register(org.apache.hadoop.mapreduce.jobhistory.EventType.class,
             eater);
       }
+<<<<<<< HEAD
 
       if (copyHistory) {
         // Now that there's a FINISHING state for application on RM to give AMs
@@ -399,6 +436,39 @@ public class MRAppMaster extends CompositeService {
     } else {
       committer = createOutputCommitter(conf);
 
+=======
+
+      if (copyHistory) {
+        // Now that there's a FINISHING state for application on RM to give AMs
+        // plenty of time to clean up after unregister it's safe to clean staging
+        // directory after unregistering with RM. So, we start the staging-dir
+        // cleaner BEFORE the ContainerAllocator so that on shut-down,
+        // ContainerAllocator unregisters first and then the staging-dir cleaner
+        // deletes staging directory.
+        addService(createStagingDirCleaningService());
+      }
+
+      // service to allocate containers from RM (if non-uber) or to fake it (uber)
+      containerAllocator = createContainerAllocator(null, context);
+      addIfService(containerAllocator);
+      dispatcher.register(ContainerAllocator.EventType.class, containerAllocator);
+
+      if (copyHistory) {
+        // Add the JobHistoryEventHandler last so that it is properly stopped first.
+        // This will guarantee that all history-events are flushed before AM goes
+        // ahead with shutdown.
+        // Note: Even though JobHistoryEventHandler is started last, if any
+        // component creates a JobHistoryEvent in the meanwhile, it will be just be
+        // queued inside the JobHistoryEventHandler 
+        addIfService(historyService);
+
+        JobHistoryCopyService cpHist = new JobHistoryCopyService(appAttemptID,
+            dispatcher.getEventHandler());
+        addIfService(cpHist);
+      }
+    } else {
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       //service to handle requests from JobClient
       clientService = createClientService(context);
       // Init ClientService separately so that we stop it separately, since this
@@ -411,9 +481,24 @@ public class MRAppMaster extends CompositeService {
       //service to handle the output committer
       committerEventHandler = createCommitterEventHandler(context, committer);
       addIfService(committerEventHandler);
+<<<<<<< HEAD
 
       //service to handle requests to TaskUmbilicalProtocol
       taskAttemptListener = createTaskAttemptListener(context);
+=======
+
+      //policy handling preemption requests from RM
+      callWithJobClassLoader(conf, new Action<Void>() {
+        public Void call(Configuration conf) {
+          preemptionPolicy = createPreemptionPolicy(conf);
+          preemptionPolicy.init(context);
+          return null;
+        }
+      });
+
+      //service to handle requests to TaskUmbilicalProtocol
+      taskAttemptListener = createTaskAttemptListener(context, preemptionPolicy);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       addIfService(taskAttemptListener);
 
       //service to log job history events
@@ -473,6 +558,7 @@ public class MRAppMaster extends CompositeService {
   protected Dispatcher createDispatcher() {
     return new AsyncDispatcher();
   }
+<<<<<<< HEAD
 
   private OutputCommitter createOutputCommitter(Configuration conf) {
     return callWithJobClassLoader(conf, new Action<OutputCommitter>() {
@@ -547,6 +633,120 @@ public class MRAppMaster extends CompositeService {
             " " + jobTempDir);
         fs.delete(jobTempDirPath, true);
       }
+=======
+
+  private boolean isCommitJobRepeatable() throws IOException {
+    boolean isRepeatable = false;
+    Configuration conf = getConfig();
+    if (committer != null) {
+      final JobContext jobContext = getJobContextFromConf(conf);
+
+      isRepeatable = callWithJobClassLoader(conf,
+          new ExceptionAction<Boolean>() {
+            public Boolean call(Configuration conf) throws IOException {
+              return committer.isCommitJobRepeatable(jobContext);
+            }
+          });
+    }
+    return isRepeatable;
+  }
+
+  private JobContext getJobContextFromConf(Configuration conf) {
+    if (newApiCommitter) {
+      return new JobContextImpl(conf, TypeConverter.fromYarn(getJobId()));
+    } else {
+      return new org.apache.hadoop.mapred.JobContextImpl(
+          new JobConf(conf), TypeConverter.fromYarn(getJobId()));
+    }
+  }
+
+  private void cleanupInterruptedCommit(Configuration conf,
+      FileSystem fs, Path startCommitFile) throws IOException {
+    LOG.info("Delete startJobCommitFile in case commit is not finished as " +
+        "successful or failed.");
+    fs.delete(startCommitFile, false);
+  }
+
+  private OutputCommitter createOutputCommitter(Configuration conf) {
+    return callWithJobClassLoader(conf, new Action<OutputCommitter>() {
+      public OutputCommitter call(Configuration conf) {
+        OutputCommitter committer = null;
+
+        LOG.info("OutputCommitter set in config "
+            + conf.get("mapred.output.committer.class"));
+
+        if (newApiCommitter) {
+          org.apache.hadoop.mapreduce.v2.api.records.TaskId taskID =
+              MRBuilderUtils.newTaskId(jobId, 0, TaskType.MAP);
+          org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId attemptID =
+              MRBuilderUtils.newTaskAttemptId(taskID, 0);
+          TaskAttemptContext taskContext = new TaskAttemptContextImpl(conf,
+              TypeConverter.fromYarn(attemptID));
+          OutputFormat outputFormat;
+          try {
+            outputFormat = ReflectionUtils.newInstance(taskContext
+                .getOutputFormatClass(), conf);
+            committer = outputFormat.getOutputCommitter(taskContext);
+          } catch (Exception e) {
+            throw new YarnRuntimeException(e);
+          }
+        } else {
+          committer = ReflectionUtils.newInstance(conf.getClass(
+              "mapred.output.committer.class", FileOutputCommitter.class,
+              org.apache.hadoop.mapred.OutputCommitter.class), conf);
+        }
+        LOG.info("OutputCommitter is " + committer.getClass().getName());
+        return committer;
+      }
+    });
+  }
+
+  protected AMPreemptionPolicy createPreemptionPolicy(Configuration conf) {
+    return ReflectionUtils.newInstance(conf.getClass(
+          MRJobConfig.MR_AM_PREEMPTION_POLICY,
+          NoopAMPreemptionPolicy.class, AMPreemptionPolicy.class), conf);
+  }
+
+  protected boolean keepJobFiles(JobConf conf) {
+    return (conf.getKeepTaskFilesPattern() != null || conf
+        .getKeepFailedTaskFiles());
+  }
+  
+  /**
+   * Create the default file System for this job.
+   * @param conf the conf object
+   * @return the default filesystem for this job
+   * @throws IOException
+   */
+  protected FileSystem getFileSystem(Configuration conf) throws IOException {
+    return FileSystem.get(conf);
+  }
+
+  protected Credentials getCredentials() {
+    return jobCredentials;
+  }
+
+  /**
+   * clean up staging directories for the job.
+   * @throws IOException
+   */
+  public void cleanupStagingDir() throws IOException {
+    /* make sure we clean the staging files */
+    String jobTempDir = null;
+    FileSystem fs = getFileSystem(getConfig());
+    try {
+      if (!keepJobFiles(new JobConf(getConfig()))) {
+        jobTempDir = getConfig().get(MRJobConfig.MAPREDUCE_JOB_DIR);
+        if (jobTempDir == null) {
+          LOG.warn("Job Staging directory is null");
+          return;
+        }
+        Path jobTempDirPath = new Path(jobTempDir);
+        LOG.info("Deleting staging directory " + FileSystem.getDefaultUri(getConfig()) +
+            " " + jobTempDir);
+        fs.delete(jobTempDirPath, true);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch(IOException io) {
       LOG.error("Failed to cleanup staging dir " + jobTempDir, io);
     }
@@ -766,10 +966,18 @@ public class MRAppMaster extends CompositeService {
     });
   }
 
+<<<<<<< HEAD
   protected TaskAttemptListener createTaskAttemptListener(AppContext context) {
     TaskAttemptListener lis =
         new TaskAttemptListenerImpl(context, jobTokenSecretManager,
             getRMHeartbeatHandler(), encryptedSpillKey);
+=======
+  protected TaskAttemptListener createTaskAttemptListener(AppContext context,
+      AMPreemptionPolicy preemptionPolicy) {
+    TaskAttemptListener lis =
+        new TaskAttemptListenerImpl(context, jobTokenSecretManager,
+            getRMHeartbeatHandler(), preemptionPolicy, encryptedSpillKey);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return lis;
   }
 
@@ -853,6 +1061,7 @@ public class MRAppMaster extends CompositeService {
   public Boolean isLastAMRetry() {
     return isLastAMRetry;
   }
+<<<<<<< HEAD
 
   /**
    * By the time life-cycle of this router starts, job-init would have already
@@ -958,6 +1167,113 @@ public class MRAppMaster extends CompositeService {
     }
   }
 
+=======
+
+  /**
+   * By the time life-cycle of this router starts, job-init would have already
+   * happened.
+   */
+  private final class ContainerAllocatorRouter extends AbstractService
+      implements ContainerAllocator, RMHeartbeatHandler {
+    private final ClientService clientService;
+    private final AppContext context;
+    private ContainerAllocator containerAllocator;
+
+    ContainerAllocatorRouter(ClientService clientService,
+        AppContext context) {
+      super(ContainerAllocatorRouter.class.getName());
+      this.clientService = clientService;
+      this.context = context;
+    }
+
+    @Override
+    protected void serviceStart() throws Exception {
+      if (job.isUber()) {
+        MRApps.setupDistributedCacheLocal(getConfig());
+        this.containerAllocator = new LocalContainerAllocator(
+            this.clientService, this.context, nmHost, nmPort, nmHttpPort
+            , containerID);
+      } else {
+        this.containerAllocator = new RMContainerAllocator(
+            this.clientService, this.context, preemptionPolicy);
+      }
+      ((Service)this.containerAllocator).init(getConfig());
+      ((Service)this.containerAllocator).start();
+      super.serviceStart();
+    }
+
+    @Override
+    protected void serviceStop() throws Exception {
+      ServiceOperations.stop((Service) this.containerAllocator);
+      super.serviceStop();
+    }
+
+    @Override
+    public void handle(ContainerAllocatorEvent event) {
+      this.containerAllocator.handle(event);
+    }
+
+    public void setSignalled(boolean isSignalled) {
+      ((RMCommunicator) containerAllocator).setSignalled(isSignalled);
+    }
+    
+    public void setShouldUnregister(boolean shouldUnregister) {
+      ((RMCommunicator) containerAllocator).setShouldUnregister(shouldUnregister);
+    }
+
+    @Override
+    public long getLastHeartbeatTime() {
+      return ((RMCommunicator) containerAllocator).getLastHeartbeatTime();
+    }
+
+    @Override
+    public void runOnNextHeartbeat(Runnable callback) {
+      ((RMCommunicator) containerAllocator).runOnNextHeartbeat(callback);
+    }
+  }
+
+  /**
+   * By the time life-cycle of this router starts, job-init would have already
+   * happened.
+   */
+  private final class ContainerLauncherRouter extends AbstractService
+      implements ContainerLauncher {
+    private final AppContext context;
+    private ContainerLauncher containerLauncher;
+
+    ContainerLauncherRouter(AppContext context) {
+      super(ContainerLauncherRouter.class.getName());
+      this.context = context;
+    }
+
+    @Override
+    protected void serviceStart() throws Exception {
+      if (job.isUber()) {
+        this.containerLauncher = new LocalContainerLauncher(context,
+            (TaskUmbilicalProtocol) taskAttemptListener, jobClassLoader);
+        ((LocalContainerLauncher) this.containerLauncher)
+                .setEncryptedSpillKey(encryptedSpillKey);
+      } else {
+        this.containerLauncher = new ContainerLauncherImpl(context);
+      }
+      ((Service)this.containerLauncher).init(getConfig());
+      ((Service)this.containerLauncher).start();
+      super.serviceStart();
+    }
+
+    @Override
+    public void handle(ContainerLauncherEvent event) {
+        this.containerLauncher.handle(event);
+    }
+
+    @Override
+    protected void serviceStop() throws Exception {
+      ServiceOperations.stop((Service) this.containerLauncher);
+      super.serviceStop();
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final class StagingDirCleaningService extends AbstractService {
     StagingDirCleaningService() {
       super(StagingDirCleaningService.class.getName());
@@ -1193,6 +1509,7 @@ public class MRAppMaster extends CompositeService {
     boolean isSupported = false;
     Configuration conf = getConfig();
     if (committer != null) {
+<<<<<<< HEAD
       final JobContext _jobContext;
       if (newApiCommitter) {
          _jobContext = new JobContextImpl(
@@ -1201,6 +1518,9 @@ public class MRAppMaster extends CompositeService {
           _jobContext = new org.apache.hadoop.mapred.JobContextImpl(
                 new JobConf(conf), TypeConverter.fromYarn(getJobId()));
       }
+=======
+      final JobContext _jobContext = getJobContextFromConf(conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       isSupported = callWithJobClassLoader(conf,
           new ExceptionAction<Boolean>() {
             public Boolean call(Configuration conf) throws IOException {
@@ -1493,8 +1813,13 @@ public class MRAppMaster extends CompositeService {
       ApplicationAttemptId applicationAttemptId =
           containerId.getApplicationAttemptId();
       long appSubmitTime = Long.parseLong(appSubmitTimeStr);
+<<<<<<< HEAD
       
       
+=======
+      
+      
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       MRAppMaster appMaster =
           new MRAppMaster(applicationAttemptId, containerId, nodeHostString,
               Integer.parseInt(nodePortString),
@@ -1579,6 +1904,7 @@ public class MRAppMaster extends CompositeService {
       if (token.getKind().equals(AMRMTokenIdentifier.KIND_NAME)) {
         iter.remove();
       }
+<<<<<<< HEAD
     }
     conf.getCredentials().addAll(credentials);
     appMasterUgi.doAs(new PrivilegedExceptionAction<Object>() {
@@ -1677,6 +2003,106 @@ public class MRAppMaster extends CompositeService {
         MRApps.setClassLoader(currentClassLoader, conf);
       }
     }
+=======
+    }
+    conf.getCredentials().addAll(credentials);
+    appMasterUgi.doAs(new PrivilegedExceptionAction<Object>() {
+      @Override
+      public Object run() throws Exception {
+        appMaster.init(conf);
+        appMaster.start();
+        if(appMaster.errorHappenedShutDown) {
+          throw new IOException("Was asked to shut down.");
+        }
+        return null;
+      }
+    });
+  }
+
+  /**
+   * Creates a job classloader based on the configuration if the job classloader
+   * is enabled. It is a no-op if the job classloader is not enabled.
+   */
+  private void createJobClassLoader(Configuration conf) throws IOException {
+    jobClassLoader = MRApps.createJobClassLoader(conf);
+  }
+
+  /**
+   * Executes the given action with the job classloader set as the configuration
+   * classloader as well as the thread context class loader if the job
+   * classloader is enabled. After the call, the original classloader is
+   * restored.
+   *
+   * If the job classloader is enabled and the code needs to load user-supplied
+   * classes via configuration or thread context classloader, this method should
+   * be used in order to load them.
+   *
+   * @param conf the configuration on which the classloader will be set
+   * @param action the callable action to be executed
+   */
+  <T> T callWithJobClassLoader(Configuration conf, Action<T> action) {
+    // if the job classloader is enabled, we may need it to load the (custom)
+    // classes; we make the job classloader available and unset it once it is
+    // done
+    ClassLoader currentClassLoader = conf.getClassLoader();
+    boolean setJobClassLoader =
+        jobClassLoader != null && currentClassLoader != jobClassLoader;
+    if (setJobClassLoader) {
+      MRApps.setClassLoader(jobClassLoader, conf);
+    }
+    try {
+      return action.call(conf);
+    } finally {
+      if (setJobClassLoader) {
+        // restore the original classloader
+        MRApps.setClassLoader(currentClassLoader, conf);
+      }
+    }
+  }
+
+  /**
+   * Executes the given action that can throw a checked exception with the job
+   * classloader set as the configuration classloader as well as the thread
+   * context class loader if the job classloader is enabled. After the call, the
+   * original classloader is restored.
+   *
+   * If the job classloader is enabled and the code needs to load user-supplied
+   * classes via configuration or thread context classloader, this method should
+   * be used in order to load them.
+   *
+   * @param conf the configuration on which the classloader will be set
+   * @param action the callable action to be executed
+   * @throws IOException if the underlying action throws an IOException
+   * @throws YarnRuntimeException if the underlying action throws an exception
+   * other than an IOException
+   */
+  <T> T callWithJobClassLoader(Configuration conf, ExceptionAction<T> action)
+      throws IOException {
+    // if the job classloader is enabled, we may need it to load the (custom)
+    // classes; we make the job classloader available and unset it once it is
+    // done
+    ClassLoader currentClassLoader = conf.getClassLoader();
+    boolean setJobClassLoader =
+        jobClassLoader != null && currentClassLoader != jobClassLoader;
+    if (setJobClassLoader) {
+      MRApps.setClassLoader(jobClassLoader, conf);
+    }
+    try {
+      return action.call(conf);
+    } catch (IOException e) {
+      throw e;
+    } catch (YarnRuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      // wrap it with a YarnRuntimeException
+      throw new YarnRuntimeException(e);
+    } finally {
+      if (setJobClassLoader) {
+        // restore the original classloader
+        MRApps.setClassLoader(currentClassLoader, conf);
+      }
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**

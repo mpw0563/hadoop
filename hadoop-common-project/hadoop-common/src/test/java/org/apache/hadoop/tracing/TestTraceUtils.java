@@ -18,10 +18,22 @@
 package org.apache.hadoop.tracing;
 
 import static org.junit.Assert.assertEquals;
+<<<<<<< HEAD
 import java.util.LinkedList;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.tracing.SpanReceiverInfo.ConfigurationPair;
 import org.apache.htrace.HTraceConfiguration;
+=======
+
+import java.net.URI;
+import java.util.LinkedList;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocalFileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.tracing.SpanReceiverInfo.ConfigurationPair;
+import org.apache.htrace.core.HTraceConfiguration;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Test;
 
 public class TestTraceUtils {
@@ -50,4 +62,20 @@ public class TestTraceUtils {
     HTraceConfiguration wrapped = TraceUtils.wrapHadoopConf(TEST_PREFIX, conf, extraConfig);
     assertEquals(newValue, wrapped.get(key));
   }
+<<<<<<< HEAD
+=======
+
+  /**
+   * Test tracing the globber.  This is a regression test for HDFS-9187.
+   */
+  @Test
+  public void testTracingGlobber() throws Exception {
+    // Bypass the normal FileSystem object creation path by just creating an
+    // instance of a subclass.
+    FileSystem fs = new LocalFileSystem();
+    fs.initialize(new URI("file:///"), new Configuration());
+    fs.globStatus(new Path("/"));
+    fs.close();
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

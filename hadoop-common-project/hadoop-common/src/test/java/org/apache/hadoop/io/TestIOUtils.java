@@ -74,6 +74,36 @@ public class TestIOUtils {
   }
 
   @Test
+  public void testCopyBytesShouldCloseInputSteamWhenOutputStreamCloseThrowsRunTimeException()
+      throws Exception {
+    InputStream inputStream = Mockito.mock(InputStream.class);
+    OutputStream outputStream = Mockito.mock(OutputStream.class);
+    Mockito.doReturn(-1).when(inputStream).read(new byte[1]);
+    Mockito.doThrow(new RuntimeException()).when(outputStream).close();
+    try {
+      IOUtils.copyBytes(inputStream, outputStream, 1, true);
+      fail("Didn't throw exception");
+    } catch (RuntimeException e) {
+    }
+    Mockito.verify(outputStream, Mockito.atLeastOnce()).close();
+  }
+
+  @Test
+  public void testCopyBytesShouldCloseInputSteamWhenInputStreamCloseThrowsRunTimeException()
+      throws Exception {
+    InputStream inputStream = Mockito.mock(InputStream.class);
+    OutputStream outputStream = Mockito.mock(OutputStream.class);
+    Mockito.doReturn(-1).when(inputStream).read(new byte[1]);
+    Mockito.doThrow(new RuntimeException()).when(inputStream).close();
+    try {
+      IOUtils.copyBytes(inputStream, outputStream, 1, true);
+      fail("Didn't throw exception");
+    } catch (RuntimeException e) {
+    }
+    Mockito.verify(inputStream, Mockito.atLeastOnce()).close();
+  }
+
+  @Test
   public void testCopyBytesShouldNotCloseStreamsWhenCloseIsFalse()
       throws Exception {
     InputStream inputStream = Mockito.mock(InputStream.class);
@@ -83,7 +113,7 @@ public class TestIOUtils {
     Mockito.verify(inputStream, Mockito.atMost(0)).close();
     Mockito.verify(outputStream, Mockito.atMost(0)).close();
   }
-  
+
   @Test
   public void testCopyBytesWithCountShouldCloseStreamsWhenCloseIsTrue()
       throws Exception {
@@ -124,7 +154,11 @@ public class TestIOUtils {
     Mockito.verify(inputStream, Mockito.atLeastOnce()).close();
     Mockito.verify(outputStream, Mockito.atLeastOnce()).close();
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testWriteFully() throws IOException {
     final int INPUT_BUFFER_LEN = 10000;
@@ -155,6 +189,10 @@ public class TestIOUtils {
       for (int i = HALFWAY; i < input.length; i++) {
         assertEquals(input[i - HALFWAY], output[i]);
       }
+<<<<<<< HEAD
+=======
+      raf.close();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       File f = new File(TEST_FILE_NAME);
       if (f.exists()) {
@@ -184,7 +222,11 @@ public class TestIOUtils {
           "Error while reading compressed data", ioe);
     }
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testSkipFully() throws IOException {
     byte inArray[] = new byte[] {0, 1, 2, 3, 4};

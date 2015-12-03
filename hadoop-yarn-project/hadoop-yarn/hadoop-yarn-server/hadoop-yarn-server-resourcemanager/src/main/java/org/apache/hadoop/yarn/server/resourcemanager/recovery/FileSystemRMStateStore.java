@@ -718,7 +718,11 @@ public class FileSystemRMStateStore extends RMStateStore {
     new FSAction<Void>() {
       @Override
       public Void run() throws Exception {
+<<<<<<< HEAD
         fs.close();
+=======
+        IOUtils.closeStream(fs);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return null;
       }
     }.runWithRetries();
@@ -866,6 +870,7 @@ public class FileSystemRMStateStore extends RMStateStore {
   }
 
   @Override
+<<<<<<< HEAD
   protected void updateReservationState(
       ReservationAllocationStateProto reservationAllocation, String planName,
       String reservationIdName) throws Exception {
@@ -878,6 +883,8 @@ public class FileSystemRMStateStore extends RMStateStore {
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected void removeReservationState(
       String planName, String reservationIdName) throws Exception {
     Path planCreatePath = getNodePath(reservationRoot, planName);

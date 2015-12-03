@@ -313,9 +313,15 @@ public abstract class INodeReference extends INode {
   }
 
   @Override
+<<<<<<< HEAD
   public ContentSummaryComputationContext computeContentSummary(
       ContentSummaryComputationContext summary) {
     return referred.computeContentSummary(summary);
+=======
+  public ContentSummaryComputationContext computeContentSummary(int snapshotId,
+      ContentSummaryComputationContext summary) {
+    return referred.computeContentSummary(snapshotId, summary);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -502,11 +508,19 @@ public abstract class INodeReference extends INode {
     
     @Override
     public final ContentSummaryComputationContext computeContentSummary(
+<<<<<<< HEAD
         ContentSummaryComputationContext summary) {
       // only count storagespace for WithName
       final QuotaCounts q = computeQuotaUsage(
           summary.getBlockStoragePolicySuite(), getStoragePolicyID(), false,
           lastSnapshotId);
+=======
+        int snapshotId, ContentSummaryComputationContext summary) {
+      final int s = snapshotId < lastSnapshotId ? snapshotId : lastSnapshotId;
+      // only count storagespace for WithName
+      final QuotaCounts q = computeQuotaUsage(
+          summary.getBlockStoragePolicySuite(), getStoragePolicyID(), false, s);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       summary.getCounts().addContent(Content.DISKSPACE, q.getStorageSpace());
       summary.getCounts().addTypeSpaces(q.getTypeSpaces());
       return summary;

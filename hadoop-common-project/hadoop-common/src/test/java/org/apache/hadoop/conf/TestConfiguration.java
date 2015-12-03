@@ -42,6 +42,7 @@ import static java.util.concurrent.TimeUnit.*;
 
 import junit.framework.TestCase;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration.IntegerRanges;
@@ -49,9 +50,15 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.net.NetUtils;
 import static org.apache.hadoop.util.PlatformName.IBM_JAVA;
+<<<<<<< HEAD
 import static org.junit.Assert.fail;
 
 import org.codehaus.jackson.map.ObjectMapper;
+=======
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.mockito.Mockito;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 public class TestConfiguration extends TestCase {
 
@@ -150,36 +157,36 @@ public class TestConfiguration extends TestCase {
   }
 
   public void testVariableSubstitution() throws IOException {
+    // stubbing only environment dependent functions
+    Configuration mock = Mockito.spy(conf);
+    Mockito.when(mock.getProperty("user.name")).thenReturn("hadoop_user");
+    Mockito.when(mock.getenv("FILE_NAME")).thenReturn("hello");
+
     out=new BufferedWriter(new FileWriter(CONFIG));
     startConfig();
     declareProperty("my.int", "${intvar}", "42");
     declareProperty("intvar", "42", "42");
-    declareProperty("my.base", "/tmp/${user.name}", UNSPEC);
-    declareProperty("my.file", "hello", "hello");
+    declareProperty("my.base", "/tmp/${user.name}", "/tmp/hadoop_user");
+    declareProperty("my.file", "${env.FILE_NAME}", "hello");
     declareProperty("my.suffix", ".txt", ".txt");
     declareProperty("my.relfile", "${my.file}${my.suffix}", "hello.txt");
-    declareProperty("my.fullfile", "${my.base}/${my.file}${my.suffix}", UNSPEC);
+    declareProperty("my.fullfile", "${my.base}/${my.file}${my.suffix}", "/tmp/hadoop_user/hello.txt");
     // check that undefined variables are returned as-is
     declareProperty("my.failsexpand", "a${my.undefvar}b", "a${my.undefvar}b");
     endConfig();
     Path fileResource = new Path(CONFIG);
-    conf.addResource(fileResource);
+    mock.addResource(fileResource);
 
     for (Prop p : props) {
       System.out.println("p=" + p.name);
-      String gotVal = conf.get(p.name);
-      String gotRawVal = conf.getRaw(p.name);
+      String gotVal = mock.get(p.name);
+      String gotRawVal = mock.getRaw(p.name);
       assertEq(p.val, gotRawVal);
-      if (p.expectEval == UNSPEC) {
-        // expansion is system-dependent (uses System properties)
-        // can't do exact match so just check that all variables got expanded
-        assertTrue(gotVal != null && -1 == gotVal.indexOf("${"));
-      } else {
-        assertEq(p.expectEval, gotVal);
-      }
+      assertEq(p.expectEval, gotVal);
     }
       
     // check that expansion also occurs for getInt()
+<<<<<<< HEAD
     assertTrue(conf.getInt("intvar", -1) == 42);
     assertTrue(conf.getInt("my.int", -1) == 42);
 
@@ -190,6 +197,50 @@ public class TestConfiguration extends TestCase {
     assertEquals(-1, results.get("my.relfile").indexOf("${"));
     assertEquals(-1, results.get("my.fullfile").indexOf("${"));
     assertEquals(-1, results.get("my.file").indexOf("${"));
+=======
+    assertTrue(mock.getInt("intvar", -1) == 42);
+    assertTrue(mock.getInt("my.int", -1) == 42);
+  }
+
+  public void testEnvDefault() throws IOException {
+    Configuration mock = Mockito.spy(conf);
+    Mockito.when(mock.getenv("NULL_VALUE")).thenReturn(null);
+    Mockito.when(mock.getenv("EMPTY_VALUE")).thenReturn("");
+    Mockito.when(mock.getenv("SOME_VALUE")).thenReturn("some value");
+
+    out=new BufferedWriter(new FileWriter(CONFIG));
+    startConfig();
+
+    // if var is unbound, literal ${var} is returned
+    declareProperty("null1", "${env.NULL_VALUE}", "${env.NULL_VALUE}");
+    declareProperty("null2", "${env.NULL_VALUE-a}", "a");
+    declareProperty("null3", "${env.NULL_VALUE:-b}", "b");
+    declareProperty("empty1", "${env.EMPTY_VALUE}", "");
+    declareProperty("empty2", "${env.EMPTY_VALUE-c}", "");
+    declareProperty("empty3", "${env.EMPTY_VALUE:-d}", "d");
+    declareProperty("some1", "${env.SOME_VALUE}", "some value");
+    declareProperty("some2", "${env.SOME_VALUE-e}", "some value");
+    declareProperty("some3", "${env.SOME_VALUE:-f}", "some value");
+
+    // some edge cases
+    declareProperty("edge1", "${env.NULL_VALUE-g-h}", "g-h");
+    declareProperty("edge2", "${env.NULL_VALUE:-i:-j}", "i:-j");
+    declareProperty("edge3", "${env.NULL_VALUE-}", "");
+    declareProperty("edge4", "${env.NULL_VALUE:-}", "");
+    declareProperty("edge5", "${env.NULL_VALUE:}", "${env.NULL_VALUE:}");
+
+    endConfig();
+    Path fileResource = new Path(CONFIG);
+    mock.addResource(fileResource);
+
+    for (Prop p : props) {
+      System.out.println("p=" + p.name);
+      String gotVal = mock.get(p.name);
+      String gotRawVal = mock.getRaw(p.name);
+      assertEq(p.val, gotRawVal);
+      assertEq(p.expectEval, gotVal);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public void testFinalParam() throws IOException {
@@ -213,6 +264,31 @@ public class TestConfiguration extends TestCase {
     assertNull("my var is not final", conf2.get("my.var"));
   }
 
+  public void testCompactFormat() throws IOException {
+    out=new BufferedWriter(new FileWriter(CONFIG));
+    startConfig();
+    appendCompactFormatProperty("a", "b");
+    appendCompactFormatProperty("c", "d", true);
+    appendCompactFormatProperty("e", "f", false, "g");
+    endConfig();
+    Path fileResource = new Path(CONFIG);
+    Configuration conf = new Configuration(false);
+    conf.addResource(fileResource);
+
+    assertEquals("b", conf.get("a"));
+
+    assertEquals("d", conf.get("c"));
+    Set<String> s = conf.getFinalParameters();
+    assertEquals(1, s.size());
+    assertTrue(s.contains("c"));
+
+    assertEquals("f", conf.get("e"));
+    String[] sources = conf.getPropertySources("e");
+    assertEquals(2, sources.length);
+    assertEquals("g", sources[0]);
+    assertEquals(fileResource.toString(), sources[1]);
+  }
+
   public static void assertEq(Object a, Object b) {
     System.out.println("assertEq: " + a + ", " + b);
     assertEquals(a, b);
@@ -224,7 +300,6 @@ public class TestConfiguration extends TestCase {
     String expectEval;
   }
 
-  final String UNSPEC = null;
   ArrayList<Prop> props = new ArrayList<Prop>();
 
   void declareProperty(String name, String val, String expectEval)
@@ -268,6 +343,36 @@ public class TestConfiguration extends TestCase {
     out.write("</property>\n");
   }
   
+  void appendCompactFormatProperty(String name, String val) throws IOException {
+    appendCompactFormatProperty(name, val, false);
+  }
+
+  void appendCompactFormatProperty(String name, String val, boolean isFinal)
+    throws IOException {
+    appendCompactFormatProperty(name, val, isFinal, null);
+  }
+
+  void appendCompactFormatProperty(String name, String val, boolean isFinal,
+      String source)
+    throws IOException {
+    out.write("<property ");
+    out.write("name=\"");
+    out.write(name);
+    out.write("\" ");
+    out.write("value=\"");
+    out.write(val);
+    out.write("\" ");
+    if (isFinal) {
+      out.write("final=\"true\" ");
+    }
+    if (source != null) {
+      out.write("source=\"");
+      out.write(source);
+      out.write("\" ");
+    }
+    out.write("/>\n");
+  }
+
   public void testOverlay() throws IOException{
     out=new BufferedWriter(new FileWriter(CONFIG));
     startConfig();
@@ -692,7 +797,7 @@ public class TestConfiguration extends TestCase {
     assertArrayEquals(expectedNames, extractClassNames(classes2));
   }
   
-  public void testGetStringCollection() throws IOException {
+  public void testGetStringCollection() {
     Configuration c = new Configuration();
     c.set("x", " a, b\n,\nc ");
     Collection<String> strs = c.getTrimmedStringCollection("x");
@@ -709,7 +814,7 @@ public class TestConfiguration extends TestCase {
     strs.add("z");
   }
 
-  public void testGetTrimmedStringCollection() throws IOException {
+  public void testGetTrimmedStringCollection() {
     Configuration c = new Configuration();
     c.set("x", "a, b, c");
     Collection<String> strs = c.getStringCollection("x");
@@ -736,7 +841,7 @@ public class TestConfiguration extends TestCase {
   
   enum Dingo { FOO, BAR };
   enum Yak { RAB, FOO };
-  public void testEnum() throws IOException {
+  public void testEnum() {
     Configuration conf = new Configuration();
     conf.setEnum("test.enum", Dingo.FOO);
     assertSame(Dingo.FOO, conf.getEnum("test.enum", Dingo.BAR));
@@ -745,7 +850,7 @@ public class TestConfiguration extends TestCase {
     boolean fail = false;
     try {
       conf.setEnum("test.enum", Dingo.BAR);
-      Yak y = conf.getEnum("test.enum", Yak.FOO);
+      conf.getEnum("test.enum", Yak.FOO);
     } catch (IllegalArgumentException e) {
       fail = true;
     }
@@ -846,8 +951,13 @@ public class TestConfiguration extends TestCase {
         fileResource,
         new Path(sources[0]));
     assertArrayEquals("Resource string returned for a set() property must be " +
+<<<<<<< HEAD
     		"\"programatically\"",
         new String[]{"programatically"},
+=======
+        "\"programmatically\"",
+        new String[]{"programmatically"},
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         conf.getPropertySources("fs.defaultFS"));
     assertEquals("Resource string returned for an unset property must be null",
         null, conf.getPropertySources("fs.defaultFoo"));
@@ -872,7 +982,11 @@ public class TestConfiguration extends TestCase {
         new Path(sources[3]));
   }
 
+<<<<<<< HEAD
   public void testSocketAddress() throws IOException {
+=======
+  public void testSocketAddress() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Configuration conf = new Configuration();
     final String defaultAddr = "host:1";
     final int defaultPort = 2;
@@ -908,7 +1022,11 @@ public class TestConfiguration extends TestCase {
     }
   }
 
+<<<<<<< HEAD
   public void testSetSocketAddress() throws IOException {
+=======
+  public void testSetSocketAddress() {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Configuration conf = new Configuration();
     NetUtils.addStaticResolution("host", "127.0.0.1");
     final String defaultAddr = "host:1";
@@ -970,14 +1088,14 @@ public class TestConfiguration extends TestCase {
     assertEquals("value5", conf.get("test.key4"));
   }
 
-  public void testSize() throws IOException {
+  public void testSize() {
     Configuration conf = new Configuration(false);
     conf.set("a", "A");
     conf.set("b", "B");
     assertEquals(2, conf.size());
   }
 
-  public void testClear() throws IOException {
+  public void testClear() {
     Configuration conf = new Configuration(false);
     conf.set("a", "A");
     conf.set("b", "B");
@@ -1130,7 +1248,11 @@ public class TestConfiguration extends TestCase {
       confDump.put(prop.getKey(), prop);
     }
     assertEquals("value5",confDump.get("test.key6").getValue());
+<<<<<<< HEAD
     assertEquals("programatically", confDump.get("test.key4").getResource());
+=======
+    assertEquals("programmatically", confDump.get("test.key4").getResource());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     outWriter.close();
   }
   
@@ -1336,6 +1458,246 @@ public class TestConfiguration extends TestCase {
       @Override
       public void run() {
         for (int i = 0; i < 100000; i++) {
+          config.set("some.config.value-" + prefix + i, "value");
+        }
+      }
+    }
+
+    ArrayList<ConfigModifyThread> threads = new ArrayList<>();
+    for (int i = 0; i < 100; i++) {
+      threads.add(new ConfigModifyThread(conf, String.valueOf(i)));
+    }
+    for (Thread t: threads) {
+      t.start();
+    }
+    for (Thread t: threads) {
+      t.join();
+    }
+    // If this test completes without going into infinite loop,
+    // it's expected behaviour.
+  }
+
+  public void testNullValueProperties() throws Exception {
+    Configuration conf = new Configuration();
+    conf.setAllowNullValueProperties(true);
+    out = new BufferedWriter(new FileWriter(CONFIG));
+    startConfig();
+    appendProperty("attr", "value", true);
+    appendProperty("attr", "", true);
+    endConfig();
+    Path fileResource = new Path(CONFIG);
+    conf.addResource(fileResource);
+    assertEquals("value", conf.get("attr"));
+  }
+
+  public void testGetClassesShouldReturnDefaultValue() throws Exception {
+    Configuration config = new Configuration();
+    Class<?>[] classes = 
+      config.getClasses("testClassName", Configuration.class);
+    assertEquals(
+        "Not returning expected number of classes. Number of returned classes ="
+            + classes.length, 1, classes.length);
+    assertEquals("Not returning the default class Name", Configuration.class,
+        classes[0]);
+  }
+
+  public void testGetClassesShouldReturnEmptyArray()
+      throws Exception {
+    Configuration config = new Configuration();
+    config.set("testClassName", "");
+    Class<?>[] classes = config.getClasses("testClassName", Configuration.class);
+    assertEquals(
+        "Not returning expected number of classes. Number of returned classes ="
+            + classes.length, 0, classes.length);
+  }
+  
+  public void testSettingValueNull() throws Exception {
+    Configuration config = new Configuration();
+    try {
+      config.set("testClassName", null);
+      fail("Should throw an IllegalArgumentException exception ");
+    } catch (Exception e) {
+      assertTrue(e instanceof IllegalArgumentException);
+      assertEquals(e.getMessage(),
+          "The value of property testClassName must not be null");
+    }
+  }
+
+  public void testSettingKeyNull() throws Exception {
+    Configuration config = new Configuration();
+    try {
+      config.set(null, "test");
+      fail("Should throw an IllegalArgumentException exception ");
+    } catch (Exception e) {
+      assertTrue(e instanceof IllegalArgumentException);
+      assertEquals(e.getMessage(), "Property name must not be null");
+    }
+  }
+
+  public void testInvalidSubstitutation() {
+    final Configuration configuration = new Configuration(false);
+
+    // 2-var loops
+    //
+    final String key = "test.random.key";
+    for (String keyExpression : Arrays.asList(
+        "${" + key + "}",
+        "foo${" + key + "}",
+        "foo${" + key + "}bar",
+        "${" + key + "}bar")) {
+      configuration.set(key, keyExpression);
+      assertEquals("Unexpected value", keyExpression, configuration.get(key));
+    }
+
+    //
+    // 3-variable loops
+    //
+
+    final String expVal1 = "${test.var2}";
+    String testVar1 = "test.var1";
+    configuration.set(testVar1, expVal1);
+    configuration.set("test.var2", "${test.var3}");
+    configuration.set("test.var3", "${test.var1}");
+    assertEquals("Unexpected value", expVal1, configuration.get(testVar1));
+
+    // 3-variable loop with non-empty value prefix/suffix
+    //
+    final String expVal2 = "foo2${test.var2}bar2";
+    configuration.set(testVar1, expVal2);
+    configuration.set("test.var2", "foo3${test.var3}bar3");
+    configuration.set("test.var3", "foo1${test.var1}bar1");
+    assertEquals("Unexpected value", expVal2, configuration.get(testVar1));
+  }
+
+  public void testIncompleteSubbing() {
+    Configuration configuration = new Configuration(false);
+    String key = "test.random.key";
+    for (String keyExpression : Arrays.asList(
+        "{}",
+        "${}",
+        "{" + key,
+        "${" + key,
+        "foo${" + key,
+        "foo${" + key + "bar",
+        "foo{" + key + "}bar",
+        "${" + key + "bar")) {
+      configuration.set(key, keyExpression);
+      String value = configuration.get(key);
+      assertTrue("Unexpected value " + value, value.equals(keyExpression));
+    }
+  }
+
+  public void testBoolean() {
+    boolean value = true;
+    Configuration configuration = new Configuration();
+    configuration.setBoolean("value", value);
+    assertEquals(value, configuration.getBoolean("value", false));
+  }
+
+  public void testBooleanIfUnset() {
+    boolean value = true;
+    Configuration configuration = new Configuration();
+    configuration.setBooleanIfUnset("value", value);
+    assertEquals(value, configuration.getBoolean("value", false));
+    configuration.setBooleanIfUnset("value", false);
+    assertEquals(value, configuration.getBoolean("value", false));
+  }
+
+  public void testFloat() {
+    float value = 1.0F;
+    Configuration configuration = new Configuration();
+    configuration.setFloat("value", value);
+    assertEquals(value, configuration.getFloat("value", 0.0F));
+  }
+  
+  public void testDouble() {
+    double value = 1.0D;
+    Configuration configuration = new Configuration();
+    configuration.setDouble("value", value);
+    assertEquals(value, configuration.getDouble("value", 0.0D));
+  }
+
+  public void testInt() {
+    int value = 1;
+    Configuration configuration = new Configuration();
+    configuration.setInt("value", value);
+    assertEquals(value, configuration.getInt("value", 0));
+  }
+
+  public void testLong() {
+    long value = 1L;
+    Configuration configuration = new Configuration();
+    configuration.setLong("value", value);
+    assertEquals(value, configuration.getLong("value", 0L));
+  }
+
+  public void testStrings() {
+    String [] strings = {"FOO","BAR"};
+    Configuration configuration = new Configuration();
+    configuration.setStrings("strings", strings);
+    String [] returnStrings = configuration.getStrings("strings");
+    for(int i=0;i<returnStrings.length;i++) {
+       assertEquals(strings[i], returnStrings[i]);
+    }
+  }
+  
+  public void testSetPattern() {
+    Pattern testPattern = Pattern.compile("a+b");
+    Configuration configuration = new Configuration();
+    configuration.setPattern("testPattern", testPattern);
+    assertEquals(testPattern.pattern(),
+        configuration.getPattern("testPattern", Pattern.compile("")).pattern());
+  }
+  
+  public void testGetClassByNameOrNull() throws Exception {
+   Configuration config = new Configuration();
+   Class<?> clazz = config.getClassByNameOrNull("java.lang.Object");
+   assertNotNull(clazz);
+  }
+
+  public void testGetFinalParameters() throws Exception {
+    out=new BufferedWriter(new FileWriter(CONFIG));
+    startConfig();
+    declareProperty("my.var", "x", "x", true);
+    endConfig();
+    Path fileResource = new Path(CONFIG);
+    Configuration conf = new Configuration();
+    Set<String> finalParameters = conf.getFinalParameters();
+    assertFalse("my.var already exists", finalParameters.contains("my.var"));
+    conf.addResource(fileResource);
+    assertEquals("my.var is undefined", "x", conf.get("my.var"));
+    assertFalse("finalparams not copied", finalParameters.contains("my.var"));
+    finalParameters = conf.getFinalParameters();
+    assertTrue("my.var is not final", finalParameters.contains("my.var"));
+  }
+
+  /**
+   * A test to check whether this thread goes into infinite loop because of
+   * destruction of data structure by resize of Map. This problem was reported
+   * by SPARK-2546.
+   * @throws Exception
+   */
+  public void testConcurrentAccesses() throws Exception {
+    out = new BufferedWriter(new FileWriter(CONFIG));
+    startConfig();
+    declareProperty("some.config", "xyz", "xyz", false);
+    endConfig();
+    Path fileResource = new Path(CONFIG);
+    Configuration conf = new Configuration();
+    conf.addResource(fileResource);
+
+    class ConfigModifyThread extends Thread {
+      final private Configuration config;
+      final private String prefix;
+
+      public ConfigModifyThread(Configuration conf, String prefix) {
+        config = conf;
+        this.prefix = prefix;
+      }
+
+      @Override
+      public void run() {
+        for (int i = 0; i < 10000; i++) {
           config.set("some.config.value-" + prefix + i, "value");
         }
       }

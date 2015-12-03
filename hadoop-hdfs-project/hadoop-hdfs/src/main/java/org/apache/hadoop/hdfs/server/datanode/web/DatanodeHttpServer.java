@@ -21,6 +21,10 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFactory;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+<<<<<<< HEAD
+=======
+import io.netty.channel.ChannelOption;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -30,19 +34,35 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.permission.FsPermission;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSConfigKeys;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.server.common.JspHelper;
 import org.apache.hadoop.hdfs.server.datanode.BlockScanner;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.namenode.FileChecksumServlets;
 import org.apache.hadoop.hdfs.server.namenode.StreamFile;
 import org.apache.hadoop.http.HttpConfig;
 import org.apache.hadoop.http.HttpServer2;
 import org.apache.hadoop.net.NetUtils;
+=======
+import org.apache.hadoop.hdfs.server.datanode.ObjectStoreHandler;
+import org.apache.hadoop.http.HttpConfig;
+import org.apache.hadoop.http.HttpServer2;
+import org.apache.hadoop.net.NetUtils;
+import org.apache.hadoop.ozone.web.netty.ObjectStoreJerseyContainer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.authorize.AccessControlList;
 import org.apache.hadoop.security.ssl.SSLFactory;
 
@@ -78,10 +98,24 @@ public class DatanodeHttpServer implements Closeable {
 
   public DatanodeHttpServer(final Configuration conf,
       final DataNode datanode,
+<<<<<<< HEAD
       final ServerSocketChannel externalHttpChannel)
     throws IOException {
     this.conf = conf;
 
+=======
+      final ServerSocketChannel externalHttpChannel,
+      final ObjectStoreHandler objectStoreHandler) throws IOException {
+    this.conf = conf;
+
+    final ObjectStoreJerseyContainer finalContainer;
+    if (objectStoreHandler != null) {
+      finalContainer = objectStoreHandler.getObjectStoreJerseyContainer();
+    } else {
+      finalContainer = null;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Configuration confForInfoServer = new Configuration(conf);
     confForInfoServer.setInt(HttpServer2.HTTP_MAX_THREADS, 10);
     HttpServer2.Builder builder = new HttpServer2.Builder()
@@ -94,10 +128,13 @@ public class DatanodeHttpServer implements Closeable {
 
     this.infoServer = builder.build();
 
+<<<<<<< HEAD
     this.infoServer.addInternalServlet(null, "/streamFile/*", StreamFile.class);
     this.infoServer.addInternalServlet(null, "/getFileChecksum/*",
         FileChecksumServlets.GetServlet.class);
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.infoServer.setAttribute("datanode", datanode);
     this.infoServer.setAttribute(JspHelper.CURRENT_CONF, conf);
     this.infoServer.addServlet(null, "/blockScannerReport",
@@ -120,9 +157,28 @@ public class DatanodeHttpServer implements Closeable {
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
           ch.pipeline().addLast(new PortUnificationServerHandler(jettyAddr,
+<<<<<<< HEAD
               conf, confForCreate));
         }
       });
+=======
+              conf, confForCreate,
+              finalContainer));
+        }
+      });
+
+      this.httpServer.childOption(
+          ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK,
+          conf.getInt(
+              DFSConfigKeys.DFS_WEBHDFS_NETTY_HIGH_WATERMARK,
+              DFSConfigKeys.DFS_WEBHDFS_NETTY_HIGH_WATERMARK_DEFAULT));
+      this.httpServer.childOption(
+          ChannelOption.WRITE_BUFFER_LOW_WATER_MARK,
+          conf.getInt(
+              DFSConfigKeys.DFS_WEBHDFS_NETTY_LOW_WATERMARK,
+              DFSConfigKeys.DFS_WEBHDFS_NETTY_LOW_WATERMARK_DEFAULT));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (externalHttpChannel == null) {
         httpServer.channel(NioServerSocketChannel.class);
       } else {
@@ -160,7 +216,12 @@ public class DatanodeHttpServer implements Closeable {
               new HttpRequestDecoder(),
               new HttpResponseEncoder(),
               new ChunkedWriteHandler(),
+<<<<<<< HEAD
               new URLDispatcher(jettyAddr, conf, confForCreate));
+=======
+              new URLDispatcher(jettyAddr, conf, confForCreate,
+                  finalContainer));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
         });
     } else {

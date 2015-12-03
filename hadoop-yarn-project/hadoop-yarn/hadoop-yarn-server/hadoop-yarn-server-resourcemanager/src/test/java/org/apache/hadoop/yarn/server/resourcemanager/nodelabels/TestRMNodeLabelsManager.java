@@ -17,6 +17,14 @@
  */
 
 package org.apache.hadoop.yarn.server.resourcemanager.nodelabels;
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +39,24 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.nodelabels.CommonNodeLabelsManager;
 import org.apache.hadoop.yarn.nodelabels.RMNodeLabel;
 import org.apache.hadoop.yarn.nodelabels.NodeLabelTestBase;
 import org.apache.hadoop.yarn.server.resourcemanager.MockRM;
+=======
+import org.apache.hadoop.yarn.event.Dispatcher;
+import org.apache.hadoop.yarn.event.EventHandler;
+import org.apache.hadoop.yarn.event.InlineDispatcher;
+import org.apache.hadoop.yarn.nodelabels.CommonNodeLabelsManager;
+import org.apache.hadoop.yarn.nodelabels.NodeLabelTestBase;
+import org.apache.hadoop.yarn.nodelabels.RMNodeLabel;
+import org.apache.hadoop.yarn.server.resourcemanager.MockRM;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.NodeLabelsUpdateSchedulerEvent;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.SchedulerEvent;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.SchedulerEventType;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.util.resource.Resources;
 import org.junit.After;
 import org.junit.Assert;
@@ -434,7 +456,92 @@ public class TestRMNodeLabelsManager extends NodeLabelTestBase {
       Assert.fail("IOException from removeLabelsFromNode " + e);
     }
   }
+<<<<<<< HEAD
   
+=======
+
+  private static class SchedulerEventHandler
+      implements EventHandler<SchedulerEvent> {
+    Map<NodeId, Set<String>> updatedNodeToLabels = new HashMap<>();
+    boolean receivedEvent;
+
+    @Override
+    public void handle(SchedulerEvent event) {
+      switch (event.getType()) {
+      case NODE_LABELS_UPDATE:
+        receivedEvent = true;
+        updatedNodeToLabels =
+            ((NodeLabelsUpdateSchedulerEvent) event).getUpdatedNodeToLabels();
+        break;
+      default:
+        break;
+      }
+    }
+  }
+
+  @Test
+  public void testReplaceLabelsFromNode() throws Exception {
+    RMContext rmContext = mock(RMContext.class);
+    Dispatcher syncDispatcher = new InlineDispatcher();
+    SchedulerEventHandler schedEventsHandler = new SchedulerEventHandler();
+    syncDispatcher.register(SchedulerEventType.class, schedEventsHandler);
+    when(rmContext.getDispatcher()).thenReturn(syncDispatcher);
+    mgr.setRMContext(rmContext);
+
+    mgr.addToCluserNodeLabelsWithDefaultExclusivity(toSet("p1", "p2", "p3"));
+    mgr.activateNode(NodeId.newInstance("n1", 1), SMALL_RESOURCE);
+    mgr.activateNode(NodeId.newInstance("n2", 1), SMALL_RESOURCE);
+    mgr.activateNode(NodeId.newInstance("n3", 1), SMALL_RESOURCE);
+
+    mgr.replaceLabelsOnNode(ImmutableMap.of(toNodeId("n1:1"), toSet("p1"),
+        toNodeId("n2:1"), toSet("p2"), toNodeId("n3"), toSet("p3")));
+    assertTrue("Event should be sent when there is change in labels",
+        schedEventsHandler.receivedEvent);
+    assertEquals("3 node label mapping modified", 3,
+        schedEventsHandler.updatedNodeToLabels.size());
+    ImmutableMap<NodeId, Set<String>> modifiedMap =
+        ImmutableMap.of(toNodeId("n1:1"), toSet("p1"), toNodeId("n2:1"),
+            toSet("p2"), toNodeId("n3:1"), toSet("p3"));
+    assertEquals("Node label mapping is not matching", modifiedMap,
+        schedEventsHandler.updatedNodeToLabels);
+    schedEventsHandler.receivedEvent = false;
+
+    mgr.replaceLabelsOnNode(ImmutableMap.of(toNodeId("n1:1"), toSet("p1")));
+    assertFalse("No event should be sent when there is no change in labels",
+        schedEventsHandler.receivedEvent);
+    schedEventsHandler.receivedEvent = false;
+
+    mgr.replaceLabelsOnNode(ImmutableMap.of(toNodeId("n2:1"), toSet("p1"),
+        toNodeId("n3"), toSet("p3")));
+    assertTrue("Event should be sent when there is change in labels",
+        schedEventsHandler.receivedEvent);
+    assertEquals("Single node label mapping modified", 1,
+        schedEventsHandler.updatedNodeToLabels.size());
+    assertCollectionEquals(toSet("p1"),
+        schedEventsHandler.updatedNodeToLabels.get(toNodeId("n2:1")));
+    schedEventsHandler.receivedEvent = false;
+
+    mgr.replaceLabelsOnNode(ImmutableMap.of(toNodeId("n3"), toSet("p2")));
+    assertTrue("Event should be sent when there is change in labels @ HOST",
+        schedEventsHandler.receivedEvent);
+    assertEquals("Single node label mapping modified", 1,
+        schedEventsHandler.updatedNodeToLabels.size());
+    assertCollectionEquals(toSet("p2"),
+        schedEventsHandler.updatedNodeToLabels.get(toNodeId("n3:1")));
+    schedEventsHandler.receivedEvent = false;
+
+    mgr.replaceLabelsOnNode(ImmutableMap.of(toNodeId("n1"), toSet("p2")));
+    assertTrue(
+        "Event should be sent when labels are modified at host though labels were set @ NM level",
+        schedEventsHandler.receivedEvent);
+    assertEquals("Single node label mapping modified", 1,
+        schedEventsHandler.updatedNodeToLabels.size());
+    assertCollectionEquals(toSet("p2"),
+        schedEventsHandler.updatedNodeToLabels.get(toNodeId("n1:1")));
+    schedEventsHandler.receivedEvent = false;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test(timeout = 5000)
   public void testGetLabelsOnNodesWhenNodeActiveDeactive() throws Exception {
     mgr.addToCluserNodeLabelsWithDefaultExclusivity(toSet("p1", "p2", "p3"));
@@ -445,6 +552,7 @@ public class TestRMNodeLabelsManager extends NodeLabelTestBase {
     // Active/Deactive a node directly assigned label, should not remove from
     // node->label map
     mgr.activateNode(toNodeId("n1:1"), SMALL_RESOURCE);
+<<<<<<< HEAD
     assertCollectionEquals(mgr.getNodeLabels().get(toNodeId("n1:1")),
         toSet("p1"));
     mgr.deactivateNode(toNodeId("n1:1"));
@@ -465,12 +573,35 @@ public class TestRMNodeLabelsManager extends NodeLabelTestBase {
     assertCollectionEquals(mgr.getNodeLabels().get(toNodeId("n1")),
         toSet("p2"));
     
+=======
+    assertCollectionEquals(toSet("p1"),
+        mgr.getNodeLabels().get(toNodeId("n1:1")));
+    mgr.deactivateNode(toNodeId("n1:1"));
+    assertCollectionEquals(toSet("p1"),
+        mgr.getNodeLabels().get(toNodeId("n1:1")));
+    // Host will not affected
+    assertCollectionEquals(toSet("p2"),
+        mgr.getNodeLabels().get(toNodeId("n1")));
+
+    // Active/Deactive a node doesn't directly assigned label, should remove
+    // from node->label map
+    mgr.activateNode(toNodeId("n1:2"), SMALL_RESOURCE);
+    assertCollectionEquals(toSet("p2"),
+        mgr.getNodeLabels().get(toNodeId("n1:2")));
+    mgr.deactivateNode(toNodeId("n1:2"));
+    Assert.assertNull(mgr.getNodeLabels().get(toNodeId("n1:2")));
+    // Host will not affected too
+    assertCollectionEquals(toSet("p2"),
+        mgr.getNodeLabels().get(toNodeId("n1")));
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // When we change label on the host after active a node without directly
     // assigned label, such node will still be removed after deactive
     // Active/Deactive a node doesn't directly assigned label, should remove
     // from node->label map
     mgr.activateNode(toNodeId("n1:2"), SMALL_RESOURCE);
     mgr.replaceLabelsOnNode(ImmutableMap.of(toNodeId("n1"), toSet("p3")));
+<<<<<<< HEAD
     assertCollectionEquals(mgr.getNodeLabels().get(toNodeId("n1:2")),
         toSet("p3"));
     mgr.deactivateNode(toNodeId("n1:2"));
@@ -479,6 +610,15 @@ public class TestRMNodeLabelsManager extends NodeLabelTestBase {
     assertCollectionEquals(mgr.getNodeLabels().get(toNodeId("n1")),
         toSet("p3"));
     
+=======
+    assertCollectionEquals(toSet("p3"),
+        mgr.getNodeLabels().get(toNodeId("n1:2")));
+    mgr.deactivateNode(toNodeId("n1:2"));
+    Assert.assertNull(mgr.getNodeLabels().get(toNodeId("n1:2")));
+    // Host will not affected too
+    assertCollectionEquals(toSet("p3"),
+        mgr.getNodeLabels().get(toNodeId("n1")));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   private void checkNodeLabelInfo(List<RMNodeLabel> infos, String labelName, int activeNMs, int memory) {
@@ -581,5 +721,8 @@ public class TestRMNodeLabelsManager extends NodeLabelTestBase {
     assertLabelsToNodesEquals(
         mgr.getLabelsToNodes(), transposeNodeToLabels(mgr.getNodeLabels()));
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

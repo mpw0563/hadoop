@@ -27,6 +27,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+<<<<<<< HEAD
+=======
+import java.net.ConnectException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -76,6 +80,10 @@ public class TestWebAppProxyServlet {
   private static int numberOfHeaders = 0;
   private static final String UNKNOWN_HEADER = "Unknown-Header";
   private static boolean hasUnknownHeader = false;
+<<<<<<< HEAD
+=======
+  Configuration configuration = new Configuration();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 
   /**
@@ -137,8 +145,11 @@ public class TestWebAppProxyServlet {
 
   @Test(timeout=5000)
   public void testWebAppProxyServlet() throws Exception {
+<<<<<<< HEAD
 
     Configuration configuration = new Configuration();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     configuration.set(YarnConfiguration.PROXY_ADDRESS, "localhost:9090");
     // overriding num of web server threads, see HttpServer.HTTP_MAXTHREADS 
     configuration.setInt("hadoop.http.max.threads", 5);
@@ -166,6 +177,10 @@ public class TestWebAppProxyServlet {
       proxyConn.connect();
       assertEquals(HttpURLConnection.HTTP_INTERNAL_ERROR,
           proxyConn.getResponseCode());
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // set true Application ID in url
       URL url = new URL("http://localhost:" + proxyPort + "/proxy/application_00_0");
       proxyConn = (HttpURLConnection) url.openConnection();
@@ -220,13 +235,77 @@ public class TestWebAppProxyServlet {
       LOG.info("ProxyConn.getHeaderField(): " +  proxyConn.getHeaderField(ProxyUtils.LOCATION));
       assertEquals("http://localhost:" + originalPort
           + "/foo/bar/test/tez?a=b&x=y&h=p#main", proxyConn.getURL().toString());
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       proxy.close();
     }
   }
 
   @Test(timeout=5000)
+<<<<<<< HEAD
+=======
+  public void testAppReportForEmptyTrackingUrl() throws Exception {
+    configuration.set(YarnConfiguration.PROXY_ADDRESS, "localhost:9090");
+    // overriding num of web server threads, see HttpServer.HTTP_MAXTHREADS
+    configuration.setInt("hadoop.http.max.threads", 5);
+    WebAppProxyServerForTest proxy = new WebAppProxyServerForTest();
+    proxy.init(configuration);
+    proxy.start();
+
+    int proxyPort = proxy.proxy.proxyServer.getConnectorAddress(0).getPort();
+    AppReportFetcherForTest appReportFetcher = proxy.proxy.appReportFetcher;
+
+    try {
+    //set AHS_ENBALED = false to simulate getting the app report from RM
+    configuration.setBoolean(YarnConfiguration.APPLICATION_HISTORY_ENABLED,
+        false);
+    ApplicationId app = ApplicationId.newInstance(0, 0);
+    appReportFetcher.answer = 6;
+    URL url = new URL("http://localhost:" + proxyPort +
+        "/proxy/" + app.toString());
+    HttpURLConnection proxyConn = (HttpURLConnection) url.openConnection();
+    proxyConn.connect();
+    try {
+      proxyConn.getResponseCode();
+    } catch (ConnectException e) {
+      // Connection Exception is expected as we have set
+      // appReportFetcher.answer = 6, which does not set anything for
+      // original tracking url field in the app report.
+    }
+    String appAddressInRm =
+        WebAppUtils.getResolvedRMWebAppURLWithScheme(configuration) +
+        "/cluster" + "/app/" + app.toString();
+    assertTrue("Webapp proxy servlet should have redirected to RM",
+        proxyConn.getURL().toString().equals(appAddressInRm));
+
+    //set AHS_ENBALED = true to simulate getting the app report from AHS
+    configuration.setBoolean(YarnConfiguration.APPLICATION_HISTORY_ENABLED,
+        true);
+    proxyConn = (HttpURLConnection) url.openConnection();
+    proxyConn.connect();
+    try {
+      proxyConn.getResponseCode();
+    } catch (ConnectException e) {
+      // Connection Exception is expected as we have set
+      // appReportFetcher.answer = 6, which does not set anything for
+      // original tracking url field in the app report.
+    }
+    String appAddressInAhs = WebAppUtils.getHttpSchemePrefix(configuration) +
+        WebAppUtils.getAHSWebAppURLWithoutScheme(configuration) +
+        "/applicationhistory" + "/apps/" + app.toString();
+    assertTrue("Webapp proxy servlet should have redirected to AHS",
+        proxyConn.getURL().toString().equals(appAddressInAhs));
+    }
+    finally {
+      proxy.close();
+    }
+  }
+
+  @Test(timeout=5000)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testWebAppProxyPassThroughHeaders() throws Exception {
     Configuration configuration = new Configuration();
     configuration.set(YarnConfiguration.PROXY_ADDRESS, "localhost:9091");
@@ -398,41 +477,70 @@ public class TestWebAppProxyServlet {
   }
 
   private class AppReportFetcherForTest extends AppReportFetcher {
+<<<<<<< HEAD
     
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int answer = 0;
     
     public AppReportFetcherForTest(Configuration conf) {
       super(conf);
     }
 
+<<<<<<< HEAD
     public ApplicationReport getApplicationReport(ApplicationId appId)
+=======
+    public FetchedAppReport getApplicationReport(ApplicationId appId)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         throws YarnException {
       if (answer == 0) {
         return getDefaultApplicationReport(appId);
       } else if (answer == 1) {
         return null;
       } else if (answer == 2) {
+<<<<<<< HEAD
         ApplicationReport result = getDefaultApplicationReport(appId);
         result.setUser("user");
         return result;
       } else if (answer == 3) {
         ApplicationReport result =  getDefaultApplicationReport(appId);
         result.setYarnApplicationState(YarnApplicationState.KILLED);
+=======
+        FetchedAppReport result = getDefaultApplicationReport(appId);
+        result.getApplicationReport().setUser("user");
+        return result;
+      } else if (answer == 3) {
+        FetchedAppReport result =  getDefaultApplicationReport(appId);
+        result.getApplicationReport().
+            setYarnApplicationState(YarnApplicationState.KILLED);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return result;
       } else if (answer == 4) {
         throw new ApplicationNotFoundException("Application is not found");
       } else if (answer == 5) {
         // test user-provided path and query parameter can be appended to the
         // original tracking url
+<<<<<<< HEAD
         ApplicationReport result = getDefaultApplicationReport(appId);
         result.setOriginalTrackingUrl("localhost:" + originalPort
             + "/foo/bar?a=b#main");
         result.setYarnApplicationState(YarnApplicationState.FINISHED);
         return result;
+=======
+        FetchedAppReport result = getDefaultApplicationReport(appId);
+        result.getApplicationReport().setOriginalTrackingUrl("localhost:"
+            + originalPort + "/foo/bar?a=b#main");
+        result.getApplicationReport().
+            setYarnApplicationState(YarnApplicationState.FINISHED);
+        return result;
+      } else if (answer == 6) {
+        return getDefaultApplicationReport(appId, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       return null;
     }
 
+<<<<<<< HEAD
     private ApplicationReport getDefaultApplicationReport(ApplicationId appId) {
       ApplicationReport result = new ApplicationReportPBImpl();
       result.setApplicationId(appId);
@@ -442,5 +550,34 @@ public class TestWebAppProxyServlet {
       return result;
     }
     
+=======
+    /*
+     * If this method is called with isTrackingUrl=false, no tracking url
+     * will set in the app report. Hence, there will be a connection exception
+     * when the prxyCon tries to connect.
+     */
+    private FetchedAppReport getDefaultApplicationReport(ApplicationId appId,
+        boolean isTrackingUrl) {
+      FetchedAppReport fetchedReport;
+      ApplicationReport result = new ApplicationReportPBImpl();
+      result.setApplicationId(appId);
+      result.setYarnApplicationState(YarnApplicationState.RUNNING);
+      result.setUser(CommonConfigurationKeys.DEFAULT_HADOOP_HTTP_STATIC_USER);
+      if (isTrackingUrl) {
+        result.setOriginalTrackingUrl("localhost:" + originalPort + "/foo/bar");
+      }
+      if(configuration.getBoolean(YarnConfiguration.
+          APPLICATION_HISTORY_ENABLED, false)) {
+        fetchedReport = new FetchedAppReport(result, AppReportSource.AHS);
+      } else {
+        fetchedReport = new FetchedAppReport(result, AppReportSource.RM);
+      }
+      return fetchedReport;
+    }
+
+    private FetchedAppReport getDefaultApplicationReport(ApplicationId appId) {
+      return getDefaultApplicationReport(appId, true);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

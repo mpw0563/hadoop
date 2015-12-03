@@ -55,9 +55,13 @@ final class TokenAspect<T extends FileSystem & Renewable> {
 
     @Override
     public boolean handleKind(Text kind) {
+<<<<<<< HEAD
       return kind.equals(WebHdfsConstants.HFTP_TOKEN_KIND)
           || kind.equals(WebHdfsConstants.HSFTP_TOKEN_KIND)
           || kind.equals(WebHdfsConstants.WEBHDFS_TOKEN_KIND)
+=======
+      return kind.equals(WebHdfsConstants.WEBHDFS_TOKEN_KIND)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           || kind.equals(WebHdfsConstants.SWEBHDFS_TOKEN_KIND);
     }
 
@@ -87,11 +91,15 @@ final class TokenAspect<T extends FileSystem & Renewable> {
     }
 
     private static String getSchemeByKind(Text kind) {
+<<<<<<< HEAD
       if (kind.equals(WebHdfsConstants.HFTP_TOKEN_KIND)) {
         return WebHdfsConstants.HFTP_SCHEME;
       } else if (kind.equals(WebHdfsConstants.HSFTP_TOKEN_KIND)) {
         return WebHdfsConstants.HSFTP_SCHEME;
       } else if (kind.equals(WebHdfsConstants.WEBHDFS_TOKEN_KIND)) {
+=======
+      if (kind.equals(WebHdfsConstants.WEBHDFS_TOKEN_KIND)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         return WebHdfsConstants.WEBHDFS_SCHEME;
       } else if (kind.equals(WebHdfsConstants.SWEBHDFS_TOKEN_KIND)) {
         return WebHdfsConstants.SWEBHDFS_SCHEME;
@@ -140,9 +148,13 @@ final class TokenAspect<T extends FileSystem & Renewable> {
       if (token != null) {
         fs.setDelegationToken(token);
         addRenewAction(fs);
+<<<<<<< HEAD
         if (LOG.isDebugEnabled()) {
           LOG.debug("Created new DT for {}", token.getService());
         }
+=======
+        LOG.debug("Created new DT for {}", token.getService());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       hasInitedToken = true;
     }
@@ -155,9 +167,13 @@ final class TokenAspect<T extends FileSystem & Renewable> {
   synchronized void initDelegationToken(UserGroupInformation ugi) {
     Token<?> token = selectDelegationToken(ugi);
     if (token != null) {
+<<<<<<< HEAD
       if (LOG.isDebugEnabled()) {
         LOG.debug("Found existing DT for {}", token.getService());
       }
+=======
+      LOG.debug("Found existing DT for {}", token.getService());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fs.setDelegationToken(token);
       hasInitedToken = true;
     }

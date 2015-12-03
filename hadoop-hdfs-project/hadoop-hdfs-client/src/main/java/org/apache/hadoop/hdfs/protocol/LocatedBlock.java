@@ -20,6 +20,10 @@ package org.apache.hadoop.hdfs.protocol;
 import java.util.Arrays;
 import java.util.List;
 
+<<<<<<< HEAD
+=======
+import com.google.common.base.Preconditions;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.fs.StorageType;
@@ -49,14 +53,22 @@ public class LocatedBlock {
   // else false. If block has few corrupt replicas, they are filtered and
   // their locations are not part of this object
   private boolean corrupt;
+<<<<<<< HEAD
   private Token<BlockTokenIdentifier> blockToken = new Token<BlockTokenIdentifier>();
+=======
+  private Token<BlockTokenIdentifier> blockToken = new Token<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * List of cached datanode locations
    */
   private DatanodeInfo[] cachedLocs;
 
   // Used when there are no locations
+<<<<<<< HEAD
   private static final DatanodeInfoWithStorage[] EMPTY_LOCS =
+=======
+  static final DatanodeInfoWithStorage[] EMPTY_LOCS =
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       new DatanodeInfoWithStorage[0];
 
   public LocatedBlock(ExtendedBlock b, DatanodeInfo[] locs) {
@@ -65,13 +77,22 @@ public class LocatedBlock {
   }
 
   public LocatedBlock(ExtendedBlock b, DatanodeInfo[] locs,
+<<<<<<< HEAD
                       String[] storageIDs, StorageType[] storageTypes) {
+=======
+      String[] storageIDs, StorageType[] storageTypes) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this(b, locs, storageIDs, storageTypes, -1, false, EMPTY_LOCS);
   }
 
   public LocatedBlock(ExtendedBlock b, DatanodeInfo[] locs, String[] storageIDs,
+<<<<<<< HEAD
                       StorageType[] storageTypes, long startOffset,
                       boolean corrupt, DatanodeInfo[] cachedLocs) {
+=======
+      StorageType[] storageTypes, long startOffset,
+      boolean corrupt, DatanodeInfo[] cachedLocs) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.b = b;
     this.offset = startOffset;
     this.corrupt = corrupt;
@@ -184,6 +205,12 @@ public class LocatedBlock {
     }
     // Not present in loc, add it and go
     cachedList.add(loc);
+<<<<<<< HEAD
+=======
+    Preconditions.checkArgument(cachedLocs != EMPTY_LOCS,
+        "Cached locations should only be added when having a backing"
+            + " disk replica!", loc, locs.length, Arrays.toString(locs));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     cachedLocs = cachedList.toArray(cachedLocs);
   }
 
@@ -203,4 +230,11 @@ public class LocatedBlock {
         + "; locs=" + Arrays.asList(locs)
         + "}";
   }
+<<<<<<< HEAD
+=======
+
+  public boolean isStriped() {
+    return false;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

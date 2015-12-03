@@ -128,14 +128,22 @@ public class TestKeyShell {
     rc = ks.run(args2);
     assertEquals(0, rc);
     assertTrue(outContent.toString().contains("key1 has been successfully " +
+<<<<<<< HEAD
 		"rolled."));
+=======
+    		"rolled."));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     deleteKey(ks, keyName);
 
     listOut = listKeys(ks, false);
     assertFalse(listOut, listOut.contains(keyName));
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /* HADOOP-10586 KeyShell didn't allow -description. */
   @Test
   public void testKeySuccessfulCreationWithDescription() throws Exception {
@@ -185,27 +193,40 @@ public class TestKeyShell {
   public void testInvalidProvider() throws Exception {
     final String[] args1 = {"create", "key1", "-cipher", "AES", "-provider",
       "sdff://file/tmp/keystore.jceks"};
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int rc = 0;
     KeyShell ks = new KeyShell();
     ks.setConf(new Configuration());
     rc = ks.run(args1);
     assertEquals(1, rc);
     assertTrue(outContent.toString().contains("There are no valid " +
+<<<<<<< HEAD
 		"KeyProviders configured."));
+=======
+    		"KeyProviders configured."));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
   public void testTransientProviderWarning() throws Exception {
     final String[] args1 = {"create", "key1", "-cipher", "AES", "-provider",
       "user:///"};
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int rc = 0;
     KeyShell ks = new KeyShell();
     ks.setConf(new Configuration());
     rc = ks.run(args1);
     assertEquals(0, rc);
     assertTrue(outContent.toString().contains("WARNING: you are modifying a " +
+<<<<<<< HEAD
 		"transient provider."));
   }
 
@@ -213,6 +234,15 @@ public class TestKeyShell {
   public void testTransientProviderOnlyConfig() throws Exception {
     final String[] args1 = {"create", "key1"};
 
+=======
+    		"transient provider."));
+  }
+  
+  @Test
+  public void testTransientProviderOnlyConfig() throws Exception {
+    final String[] args1 = {"create", "key1"};
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int rc = 0;
     KeyShell ks = new KeyShell();
     Configuration config = new Configuration();
@@ -221,7 +251,11 @@ public class TestKeyShell {
     rc = ks.run(args1);
     assertEquals(1, rc);
     assertTrue(outContent.toString().contains("There are no valid " +
+<<<<<<< HEAD
 		"KeyProviders configured."));
+=======
+    		"KeyProviders configured."));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
@@ -229,7 +263,11 @@ public class TestKeyShell {
     final String keyName = "key1";
     final String[] args1 = {"create", keyName, "-cipher", "AES/CBC/pkcs5Padding",
         "-provider", jceksProvider};
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int rc = 0;
     KeyShell ks = new KeyShell();
     ks.setConf(new Configuration());

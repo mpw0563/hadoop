@@ -39,9 +39,15 @@ public class DelegationTokenSelector
 
   /**
    * Select the delegation token for hdfs.  The port will be rewritten to
+<<<<<<< HEAD
    * the port of hdfs.service.host_$nnAddr, or the default rpc namenode port. 
    * This method should only be called by non-hdfs filesystems that do not
    * use the rpc port to acquire tokens.  Ex. webhdfs, hftp 
+=======
+   * the port of hdfs.service.host_$nnAddr, or the default rpc namenode port.
+   * This method should only be called by non-hdfs filesystems that do not
+   * use the rpc port to acquire tokens.  Ex. webhdfs
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param nnUri of the remote namenode
    * @param tokens as a collection
    * @param conf hadoop configuration
@@ -56,15 +62,26 @@ public class DelegationTokenSelector
     // and correctly determine the value
     Text serviceName = SecurityUtil.buildTokenService(nnUri);
     final String nnServiceName = conf.get(SERVICE_NAME_KEY + serviceName);
+<<<<<<< HEAD
     
     int nnRpcPort = HdfsClientConfigKeys.DFS_NAMENODE_RPC_PORT_DEFAULT;
     if (nnServiceName != null) {
       nnRpcPort = NetUtils.createSocketAddr(nnServiceName, nnRpcPort).getPort(); 
+=======
+
+    int nnRpcPort = HdfsClientConfigKeys.DFS_NAMENODE_RPC_PORT_DEFAULT;
+    if (nnServiceName != null) {
+      nnRpcPort = NetUtils.createSocketAddr(nnServiceName, nnRpcPort).getPort();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     // use original hostname from the uri to avoid unintentional host resolving
     serviceName = SecurityUtil.buildTokenService(
     		NetUtils.createSocketAddrForHost(nnUri.getHost(), nnRpcPort));
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return selectToken(serviceName, tokens);
   }
 

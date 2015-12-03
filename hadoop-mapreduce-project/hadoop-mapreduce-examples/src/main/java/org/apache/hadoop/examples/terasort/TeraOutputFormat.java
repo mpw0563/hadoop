@@ -77,7 +77,11 @@ public class TeraOutputFormat extends FileOutputFormat<Text,Text> {
     
     public void close(TaskAttemptContext context) throws IOException {
       if (finalSync) {
+<<<<<<< HEAD
         out.sync();
+=======
+        out.hsync();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       out.close();
     }

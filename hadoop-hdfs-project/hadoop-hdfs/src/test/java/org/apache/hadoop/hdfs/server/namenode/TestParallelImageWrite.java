@@ -112,7 +112,11 @@ public class TestParallelImageWrite {
       files.cleanup(fs, dir);
       files.createFiles(fs, dir);
       fsn.setSafeMode(SafeModeAction.SAFEMODE_ENTER);
+<<<<<<< HEAD
       cluster.getNameNodeRpc().saveNamespace();
+=======
+      cluster.getNameNodeRpc().saveNamespace(0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final String checkAfterModify = checkImages(fsn, numNamenodeDirs);
       assertFalse("Modified namespace should change fsimage contents. " +
           "was: " + checkAfterRestart + " now: " + checkAfterModify,

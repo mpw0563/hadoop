@@ -106,6 +106,8 @@ public class TestDataNodeMetrics {
       String sec = interval + "s";
       assertQuantileGauges("SendDataPacketBlockedOnNetworkNanos" + sec, rb);
       assertQuantileGauges("SendDataPacketTransferNanos" + sec, rb);
+<<<<<<< HEAD
+=======
     } finally {
       if (cluster != null) {cluster.shutdown();}
     }
@@ -140,11 +142,49 @@ public class TestDataNodeMetrics {
       String sec = interval + "s";
       assertQuantileGauges("FlushNanos" + sec, dnMetrics);
       assertQuantileGauges("FsyncNanos" + sec, dnMetrics);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       if (cluster != null) {cluster.shutdown();}
     }
   }
 
+<<<<<<< HEAD
+  @Test
+  public void testReceivePacketMetrics() throws Exception {
+    Configuration conf = new HdfsConfiguration();
+    final int interval = 1;
+    conf.set(DFSConfigKeys.DFS_METRICS_PERCENTILES_INTERVALS_KEY, "" + interval);
+    MiniDFSCluster cluster = new MiniDFSCluster.Builder(conf).build();
+    try {
+      cluster.waitActive();
+      DistributedFileSystem fs = cluster.getFileSystem();
+
+      Path testFile = new Path("/testFlushNanosMetric.txt");
+      FSDataOutputStream fout = fs.create(testFile);
+      fout.write(new byte[1]);
+      fout.hsync();
+      fout.close();
+      List<DataNode> datanodes = cluster.getDataNodes();
+      DataNode datanode = datanodes.get(0);
+      MetricsRecordBuilder dnMetrics = getMetrics(datanode.getMetrics().name());
+      // Expect two flushes, 1 for the flush that occurs after writing, 
+      // 1 that occurs on closing the data and metadata files.
+      assertCounter("FlushNanosNumOps", 2L, dnMetrics);
+      // Expect two syncs, one from the hsync, one on close.
+      assertCounter("FsyncNanosNumOps", 2L, dnMetrics);
+      // Wait for at least 1 rollover
+      Thread.sleep((interval + 1) * 1000);
+      // Check the receivePacket percentiles that should be non-zero
+      String sec = interval + "s";
+      assertQuantileGauges("FlushNanos" + sec, dnMetrics);
+      assertQuantileGauges("FsyncNanos" + sec, dnMetrics);
+    } finally {
+      if (cluster != null) {cluster.shutdown();}
+    }
+  }
+
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Tests that round-trip acks in a datanode write pipeline are correctly 
    * measured. 
@@ -277,13 +317,22 @@ public class TestDataNodeMetrics {
       }
 
       for (int x =0; x < 50; x++) {
+<<<<<<< HEAD
         String s = DFSTestUtil.readFile(fs, new Path("/time.txt." + x));
+=======
+        DFSTestUtil.readFile(fs, new Path("/time.txt." + x));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       MetricsRecordBuilder rbNew = getMetrics(datanode.getMetrics().name());
       long endWriteValue = getLongCounter("TotalWriteTime", rbNew);
       long endReadValue = getLongCounter("TotalReadTime", rbNew);
+<<<<<<< HEAD
 
+=======
+      // Lets Metric system update latest metrics
+      Thread.sleep(100);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       assertTrue(endReadValue > startReadValue);
       assertTrue(endWriteValue > startWriteValue);
     } finally {

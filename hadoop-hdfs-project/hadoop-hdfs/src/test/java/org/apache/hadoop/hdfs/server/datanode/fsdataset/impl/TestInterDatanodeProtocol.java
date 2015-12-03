@@ -46,6 +46,10 @@ import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.ReplicaState;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
 import org.apache.hadoop.hdfs.server.datanode.FinalizedReplica;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.datanode.Replica;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.ReplicaInfo;
 import org.apache.hadoop.hdfs.server.datanode.ReplicaUnderRecovery;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
@@ -354,12 +358,21 @@ public class TestInterDatanodeProtocol {
           new RecoveringBlock(b, null, recoveryid));
 
       //check replica
+<<<<<<< HEAD
       final ReplicaInfo replica = FsDatasetTestUtil.fetchReplicaInfo(
           fsdataset, bpid, b.getBlockId());
       Assert.assertEquals(ReplicaState.RUR, replica.getState());
 
       //check meta data before update
       FsDatasetImpl.checkReplicaFiles(replica);
+=======
+      final Replica replica =
+          cluster.getFsDatasetTestUtils(datanode).fetchReplica(b);
+      Assert.assertEquals(ReplicaState.RUR, replica.getState());
+
+      //check meta data before update
+      cluster.getFsDatasetTestUtils(datanode).checkStoredReplica(replica);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       //case "THIS IS NOT SUPPOSED TO HAPPEN"
       //with (block length) != (stored replica's on disk length). 

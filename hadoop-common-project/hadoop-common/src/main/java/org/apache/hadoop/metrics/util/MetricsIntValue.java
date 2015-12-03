@@ -28,7 +28,9 @@ import org.apache.commons.logging.LogFactory;
  * Each time its value is set, it is published only *once* at the next update
  * call.
  *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.LimitedPrivate({"HDFS", "MapReduce"})
 public class MetricsIntValue extends MetricsBase {  
 
@@ -90,6 +92,7 @@ public class MetricsIntValue extends MetricsBase {
    *
    * @param mr
    */
+  @Override
   public synchronized void pushMetric(final MetricsRecord mr) {
     if (changed) {
       try {

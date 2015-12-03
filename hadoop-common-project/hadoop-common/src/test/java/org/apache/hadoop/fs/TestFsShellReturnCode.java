@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +36,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.shell.CommandFactory;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.shell.FsCommand;
 import org.apache.hadoop.fs.shell.PathData;
 import org.apache.hadoop.io.IOUtils;
@@ -471,6 +476,121 @@ public class TestFsShellReturnCode {
     assertIllegalArguments(chgrp, ":gr%oup", "/path");
   }
   
+  @Test (timeout = 30000)
+  public void testInterrupt() throws Exception {
+    MyFsShell shell = new MyFsShell();
+    shell.setConf(new Configuration());
+    final Path d = new Path(TEST_ROOT_DIR, "testInterrupt");
+    final Path f1 = new Path(d, "f1");
+    final Path f2 = new Path(d, "f2");
+    assertTrue(fileSys.mkdirs(d));
+    writeFile(fileSys, f1);
+    assertTrue(fileSys.isFile(f1));
+    writeFile(fileSys, f2);
+    assertTrue(fileSys.isFile(f2));
+
+    int exitCode = shell.run(
+        new String[]{ "-testInterrupt", f1.toString(), f2.toString() });
+    // processing a file throws an interrupt, it should blow on first file
+    assertEquals(1, InterruptCommand.processed);
+    assertEquals(130, exitCode);
+
+    exitCode = shell.run(
+        new String[]{ "-testInterrupt", d.toString() });
+    // processing a file throws an interrupt, it should blow on file
+    // after descent into dir
+    assertEquals(2, InterruptCommand.processed);
+    assertEquals(130, exitCode);
+  }
+
+  /**
+   * Faked Chown class for {@link testChownUserAndGroupValidity()}.
+   *
+   * The test only covers argument parsing, so override to skip processing.
+   */
+  private static class FakeChown extends FsShellPermissions.Chown {
+    public static String NAME = "chown";
+    @Override
+    protected void processArgument(PathData item) {
+    }
+  }
+
+  /**
+   * Tests combinations of valid and invalid user and group arguments to chown.
+   */
+  @Test
+  public void testChownUserAndGroupValidity() {
+    testChownUserAndGroupValidity(true);
+    testChownUserAndGroupValidity(false);
+  }
+
+  private void testChownUserAndGroupValidity(boolean enableWarning) {
+    Configuration conf = new Configuration();
+    conf.setBoolean(
+        HADOOP_SHELL_MISSING_DEFAULT_FS_WARNING_KEY, enableWarning);
+    FsCommand chown = new FakeChown();
+    chown.setConf(conf);
+
+    // The following are valid (no exception expected).
+    chown.run("user", "/path");
+    chown.run("user:group", "/path");
+    chown.run(":group", "/path");
+
+    // The following are valid only on Windows.
+    assertValidArgumentsOnWindows(chown, "User With Spaces", "/path");
+    assertValidArgumentsOnWindows(chown, "User With Spaces:group", "/path");
+    assertValidArgumentsOnWindows(chown, "User With Spaces:Group With Spaces",
+      "/path");
+    assertValidArgumentsOnWindows(chown, "user:Group With Spaces", "/path");
+    assertValidArgumentsOnWindows(chown, ":Group With Spaces", "/path");
+
+    // The following are invalid (exception expected).
+    assertIllegalArguments(chown, "us!er", "/path");
+    assertIllegalArguments(chown, "us^er", "/path");
+    assertIllegalArguments(chown, "user:gr#oup", "/path");
+    assertIllegalArguments(chown, "user:gr%oup", "/path");
+    assertIllegalArguments(chown, ":gr#oup", "/path");
+    assertIllegalArguments(chown, ":gr%oup", "/path");
+  }
+
+  /**
+   * Faked Chgrp class for {@link testChgrpGroupValidity()}.
+   * The test only covers argument parsing, so override to skip processing.
+   */
+  private static class FakeChgrp extends FsShellPermissions.Chgrp {
+    public static String NAME = "chgrp";
+    @Override
+    protected void processArgument(PathData item) {
+    }
+  }
+
+  /**
+   * Tests valid and invalid group arguments to chgrp.
+   */
+  @Test
+  public void testChgrpGroupValidity() {
+    testChgrpGroupValidity(true);
+    testChgrpGroupValidity(false);
+  }
+
+  private void testChgrpGroupValidity(boolean enableWarning) {
+    Configuration conf = new Configuration();
+    conf.setBoolean(
+        HADOOP_SHELL_MISSING_DEFAULT_FS_WARNING_KEY, enableWarning);
+    FsShellPermissions.Chgrp chgrp = new FakeChgrp();
+    chgrp.setConf(conf);
+
+    // The following are valid (no exception expected).
+    chgrp.run("group", "/path");
+
+    // The following are valid only on Windows.
+    assertValidArgumentsOnWindows(chgrp, "Group With Spaces", "/path");
+
+    // The following are invalid (exception expected).
+    assertIllegalArguments(chgrp, ":gr#oup", "/path");
+    assertIllegalArguments(chgrp, ":gr%oup", "/path");
+  }
+  
   static class LocalFileSystemExtn extends LocalFileSystem {
     public LocalFileSystemExtn() {
       super(new RawLocalFileSystemExtn());
@@ -519,6 +639,33 @@ public class TestFsShellReturnCode {
       return stat;
     }
   }
+<<<<<<< HEAD
+=======
+  
+  static class MyFsShell extends FsShell {
+    @Override
+    protected void registerCommands(CommandFactory factory) {
+      factory.addClass(InterruptCommand.class, "-testInterrupt");
+    }
+  }
+
+  static class InterruptCommand extends FsCommand {
+    static int processed = 0;
+    InterruptCommand() {
+      processed = 0;
+      setRecursive(true);
+    }
+    @Override
+    protected void processPath(PathData item) throws IOException {
+      System.out.println("processing: "+item);
+      processed++;
+      if (item.stat.isFile()) {
+        System.out.println("throw interrupt");
+        throw new InterruptedIOException();
+      }
+    }
+  }  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Asserts that for the given command, the given arguments are considered

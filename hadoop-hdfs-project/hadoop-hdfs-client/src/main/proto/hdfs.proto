@@ -41,7 +41,11 @@ message ExtendedBlockProto {
   required uint64 blockId = 2;  // the local id within a pool
   required uint64 generationStamp = 3;
   optional uint64 numBytes = 4 [default = 0];  // len does not belong in ebid 
+<<<<<<< HEAD
                                                // here for historical reasons
+=======
+  // here for historical reasons
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 /**
@@ -51,9 +55,15 @@ message DatanodeIDProto {
   required string ipAddr = 1;    // IP address
   required string hostName = 2;  // hostname
   required string datanodeUuid = 3;     // UUID assigned to the Datanode. For
+<<<<<<< HEAD
                                         // upgraded clusters this is the same
                                         // as the original StorageID of the
                                         // Datanode.
+=======
+  // upgraded clusters this is the same
+  // as the original StorageID of the
+  // Datanode.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   required uint32 xferPort = 4;  // data streaming port
   required uint32 infoPort = 5;  // datanode http port
   required uint32 ipcPort = 6;   // ipc server port
@@ -98,6 +108,10 @@ message DatanodeInfoProto {
   optional uint64 cacheCapacity = 11 [default = 0];
   optional uint64 cacheUsed = 12 [default = 0];
   optional uint64 lastUpdateMonotonic = 13 [default = 0];
+<<<<<<< HEAD
+=======
+  optional string upgradeDomain = 14;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 /**
@@ -156,8 +170,13 @@ message StorageTypeQuotaInfoProto {
  *
  */
 message CorruptFileBlocksProto {
+<<<<<<< HEAD
  repeated string files = 1;
  required string   cookie = 2;
+=======
+  repeated string files = 1;
+  required string   cookie = 2;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 /**
@@ -198,6 +217,7 @@ message BlockStoragePolicyProto {
   optional StorageTypesProto replicationFallbackPolicy = 5;
 }
 
+<<<<<<< HEAD
 /**
  * A list of storage IDs. 
  */
@@ -208,18 +228,36 @@ message StorageUuidsProto {
 /**
  * A LocatedBlock gives information about a block and its location.
  */ 
+=======
+
+/**
+ * A LocatedBlock gives information about a block and its location.
+ */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 message LocatedBlockProto {
   required ExtendedBlockProto b  = 1;
   required uint64 offset = 2;           // offset of first byte of block in the file
   repeated DatanodeInfoProto locs = 3;  // Locations ordered by proximity to client ip
   required bool corrupt = 4;            // true if all replicas of a block are corrupt, else false
+<<<<<<< HEAD
                                         // If block has few corrupt replicas, they are filtered and 
                                         // their locations are not part of this object
+=======
+  // If block has few corrupt replicas, they are filtered and
+  // their locations are not part of this object
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   required hadoop.common.TokenProto blockToken = 5;
   repeated bool isCached = 6 [packed=true]; // if a location in locs is cached
   repeated StorageTypeProto storageTypes = 7;
   repeated string storageIDs = 8;
+<<<<<<< HEAD
+=======
+
+  // striped block related fields
+  repeated uint32 blockIndex = 9; // used for striped block to indicate block index for each storage
+  repeated hadoop.common.TokenProto blockTokens = 10; // each internal block has a block token
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 message DataEncryptionKeyProto {
@@ -235,16 +273,26 @@ message DataEncryptionKeyProto {
  * Cipher suite.
  */
 enum CipherSuiteProto {
+<<<<<<< HEAD
     UNKNOWN = 1;
     AES_CTR_NOPADDING = 2;
+=======
+  UNKNOWN = 1;
+  AES_CTR_NOPADDING = 2;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 /**
  * Crypto protocol version used to access encrypted files.
  */
 enum CryptoProtocolVersionProto {
+<<<<<<< HEAD
     UNKNOWN_PROTOCOL_VERSION = 1;
     ENCRYPTION_ZONES = 2;
+=======
+  UNKNOWN_PROTOCOL_VERSION = 1;
+  ENCRYPTION_ZONES = 2;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 /**
@@ -300,6 +348,36 @@ message LocatedBlocksProto {
   optional LocatedBlockProto lastBlock = 4;
   required bool isLastBlockComplete = 5;
   optional FileEncryptionInfoProto fileEncryptionInfo = 6;
+<<<<<<< HEAD
+=======
+
+  // Optional field for erasure coding
+  optional ErasureCodingPolicyProto ecPolicy = 7;
+}
+
+/**
+ * ECSchema options entry
+ */
+message ECSchemaOptionEntryProto {
+  required string key = 1;
+  required string value = 2;
+}
+
+/**
+ * ECSchema for erasurecoding
+ */
+message ECSchemaProto {
+  required string codecName = 1;
+  required uint32 dataUnits = 2;
+  required uint32 parityUnits = 3;
+  repeated ECSchemaOptionEntryProto options = 4;
+}
+
+message ErasureCodingPolicyProto {
+  required string name = 1;
+  required ECSchemaProto schema = 2;
+  required uint32 cellSize = 3;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 /**
@@ -336,7 +414,14 @@ message HdfsFileStatusProto {
   optional FileEncryptionInfoProto fileEncryptionInfo = 15;
 
   optional uint32 storagePolicy = 16 [default = 0]; // block storage policy id
+<<<<<<< HEAD
 } 
+=======
+
+  // Optional field for erasure coding
+  optional ErasureCodingPolicyProto ecPolicy = 17;
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * Checksum algorithms/types used in HDFS
@@ -414,6 +499,7 @@ message SnapshotDiffReportProto {
 }
 
 /**
+<<<<<<< HEAD
  * Common node information shared by all the nodes in the cluster
  */
 message StorageInfoProto {
@@ -476,6 +562,8 @@ message CheckpointCommandProto {
 }
 
 /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * Block information
  *
  * Please be wary of adding additional fields here, since INodeFiles
@@ -491,6 +579,7 @@ message BlockProto {
 }
 
 /**
+<<<<<<< HEAD
  * Block and datanodes where is it located
  */
 message BlockWithLocationsProto {
@@ -589,6 +678,8 @@ message VersionResponseProto {
 }
 
 /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  * Information related to a snapshot
  * TODO: add more information
  */
@@ -609,3 +700,13 @@ message RollingUpgradeStatusProto {
   required string blockPoolId = 1;
   optional bool finalized = 2 [default = false];
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * A list of storage IDs.
+ */
+message StorageUuidsProto {
+  repeated string storageUuids = 1;
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

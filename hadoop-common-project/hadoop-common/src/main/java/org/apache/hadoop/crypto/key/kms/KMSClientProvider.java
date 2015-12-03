@@ -143,7 +143,11 @@ public class KMSClientProvider extends KeyProvider implements CryptoExtension,
   public static class KMSEncryptedKeyVersion extends EncryptedKeyVersion {
     public KMSEncryptedKeyVersion(String keyName, String keyVersionName,
         byte[] iv, String encryptedVersionName, byte[] keyMaterial) {
+<<<<<<< HEAD
       super(keyName, keyVersionName, iv, new KMSKeyVersion(null,
+=======
+      super(keyName, keyVersionName, iv, new KMSKeyVersion(null, 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           encryptedVersionName, keyMaterial));
     }
   }

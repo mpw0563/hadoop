@@ -23,10 +23,13 @@ import org.apache.hadoop.io.Text;
 
 @InterfaceAudience.Private
 public class WebHdfsConstants {
+<<<<<<< HEAD
   public static final String HFTP_SCHEME = "hftp";
   public static final Text HFTP_TOKEN_KIND = new Text("HFTP delegation");
   public static final Text HSFTP_TOKEN_KIND = new Text("HSFTP delegation");
   public static final String HSFTP_SCHEME = "hsftp";
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static final String WEBHDFS_SCHEME = "webhdfs";
   public static final String SWEBHDFS_SCHEME = "swebhdfs";
   public static final Text WEBHDFS_TOKEN_KIND = new Text("WEBHDFS delegation");

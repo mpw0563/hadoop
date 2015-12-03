@@ -24,6 +24,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.HashMap;
+import java.util.HashSet;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -209,6 +214,12 @@ public class JobControl implements Runnable {
    *  	Submit the jobs in ready state
    */
   public void run() {
+<<<<<<< HEAD
+=======
+    if (isCircular(jobsInProgress)) {
+      throw new IllegalArgumentException("job control has circular dependency");
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       this.runnerState = ThreadState.RUNNING;
       while (true) {
@@ -266,6 +277,8 @@ public class JobControl implements Runnable {
       LOG.error("Error while trying to run jobs.",t);
       //Mark all jobs as failed because we got something bad.
       failAllJobs(t);
+<<<<<<< HEAD
+=======
     }
     this.runnerState = ThreadState.STOPPED;
   }
@@ -287,5 +300,86 @@ public class JobControl implements Runnable {
         it.remove();
       }
     }
+  }
+
+ /**
+   * Uses topological sorting algorithm for finding circular dependency
+   */
+  private boolean isCircular(final List<ControlledJob> jobList) {
+    boolean cyclePresent = false;
+    HashSet<ControlledJob> SourceSet = new HashSet<ControlledJob>();
+    HashMap<ControlledJob, List<ControlledJob>> processedMap =
+	new HashMap<ControlledJob, List<ControlledJob>>();
+    for (ControlledJob n : jobList) {
+      processedMap.put(n, new ArrayList<ControlledJob>());
+    }
+    for (ControlledJob n : jobList) {
+      if (!hasInComingEdge(n, jobList, processedMap)) {
+	SourceSet.add(n);
+      }
+    }
+    while (!SourceSet.isEmpty()) {
+      ControlledJob controlledJob = SourceSet.iterator().next();
+      SourceSet.remove(controlledJob);
+      if (controlledJob.getDependentJobs() != null) {
+	for (int i = 0; i < controlledJob.getDependentJobs().size(); i++) {
+	  ControlledJob depenControlledJob =
+	      controlledJob.getDependentJobs().get(i);
+	  processedMap.get(controlledJob).add(depenControlledJob);
+	  if (!hasInComingEdge(controlledJob, jobList, processedMap)) {
+	    SourceSet.add(depenControlledJob);
+	  }
+	}
+      }
+    }
+
+    for (ControlledJob controlledJob : jobList) {
+      if (controlledJob.getDependentJobs() != null
+	  && controlledJob.getDependentJobs().size() != processedMap.get(
+	      controlledJob).size()) {
+	cyclePresent = true;
+	LOG.error("Job control has circular dependency for the  job "
+	    + controlledJob.getJobName());
+	break;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    }
+    return cyclePresent;
+  }
+
+<<<<<<< HEAD
+  synchronized private void failAllJobs(Throwable t) {
+    String message = "Unexpected System Error Occured: "+
+    StringUtils.stringifyException(t);
+    Iterator<ControlledJob> it = jobsInProgress.iterator();
+    while(it.hasNext()) {
+      ControlledJob j = it.next();
+      try {
+        j.failJob(message);
+      } catch (IOException e) {
+        LOG.error("Error while tyring to clean up "+j.getJobName(), e);
+      } catch (InterruptedException e) {
+        LOG.error("Error while tyring to clean up "+j.getJobName(), e);
+      } finally {
+        failedJobs.add(j);
+        it.remove();
+      }
+    }
+=======
+  private boolean hasInComingEdge(ControlledJob controlledJob,
+      List<ControlledJob> controlledJobList,
+      HashMap<ControlledJob, List<ControlledJob>> processedMap) {
+    boolean hasIncomingEdge = false;
+    for (ControlledJob k : controlledJobList) {
+      if (k != controlledJob && k.getDependentJobs() != null
+	  && !processedMap.get(k).contains(controlledJob)
+	  && k.getDependentJobs().contains(controlledJob)) {
+	hasIncomingEdge = true;
+	break;
+      }
+    }
+    return hasIncomingEdge;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

@@ -203,7 +203,10 @@ public class FilterFileSystem extends FileSystem {
 
 
   @Override
+<<<<<<< HEAD
   @Deprecated
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public FSDataOutputStream createNonRecursive(Path f, FsPermission permission,
       EnumSet<CreateFlag> flags, int bufferSize, short replication, long blockSize,
       Progressable progress) throws IOException {
@@ -390,7 +393,17 @@ public class FilterFileSystem extends FileSystem {
   public long getUsed() throws IOException{
     return fs.getUsed();
   }
+<<<<<<< HEAD
   
+=======
+
+  /** Return the total size of all files from a specified path.*/
+  @Override
+  public long getUsed(Path path) throws IOException {
+    return fs.getUsed(path);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public long getDefaultBlockSize() {
     return fs.getDefaultBlockSize();

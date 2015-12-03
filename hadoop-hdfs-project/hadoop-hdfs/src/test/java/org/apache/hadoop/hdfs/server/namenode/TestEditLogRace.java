@@ -32,7 +32,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.permission.FsPermission;
@@ -47,6 +50,10 @@ import org.apache.hadoop.hdfs.server.common.Storage.StorageDirectory;
 import org.apache.hadoop.hdfs.server.namenode.JournalSet.JournalAndStream;
 import org.apache.hadoop.hdfs.server.namenode.NNStorage.NameNodeDirType;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.Time;
 import org.apache.log4j.Level;
 import org.junit.Test;
@@ -59,7 +66,7 @@ import org.mockito.stubbing.Answer;
  */
 public class TestEditLogRace {
   static {
-    ((Log4JLogger)FSEditLog.LOG).getLogger().setLevel(Level.ALL);
+    GenericTestUtils.setLogLevel(FSEditLog.LOG, Level.ALL);
   }
 
   private static final Log LOG = LogFactory.getLog(TestEditLogRace.class);
@@ -291,7 +298,7 @@ public class TestEditLogRace {
 
 
         LOG.info("Save " + i + ": saving namespace");
-        namesystem.saveNamespace();
+        namesystem.saveNamespace(0, 0);
         LOG.info("Save " + i + ": leaving safemode");
 
         long savedImageTxId = fsimage.getStorage().getMostRecentCheckpointTxId();
@@ -421,7 +428,7 @@ public class TestEditLogRace {
       assertTrue(et - st > (BLOCK_TIME - 1)*1000);
 
       // Once we're in safe mode, save namespace.
-      namesystem.saveNamespace();
+      namesystem.saveNamespace(0, 0);
 
       LOG.info("Joining on edit thread...");
       doAnEditThread.join();
@@ -515,7 +522,7 @@ public class TestEditLogRace {
       assertTrue(et - st > (BLOCK_TIME - 1)*1000);
 
       // Once we're in safe mode, save namespace.
-      namesystem.saveNamespace();
+      namesystem.saveNamespace(0, 0);
 
       LOG.info("Joining on edit thread...");
       doAnEditThread.join();

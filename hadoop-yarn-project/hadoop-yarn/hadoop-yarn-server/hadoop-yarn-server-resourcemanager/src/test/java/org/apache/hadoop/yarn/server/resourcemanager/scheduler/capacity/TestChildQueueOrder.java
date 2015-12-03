@@ -94,8 +94,11 @@ public class TestChildQueueOrder {
         Resources.createResource(16*GB, 32));
     when(csContext.getClusterResource()).
     thenReturn(Resources.createResource(100 * 16 * GB, 100 * 32));
+<<<<<<< HEAD
     when(csContext.getApplicationComparator()).
     thenReturn(CapacityScheduler.applicationComparator);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(csContext.getNonPartitionedQueueComparator()).
     thenReturn(CapacityScheduler.nonPartitionedQueueComparator);
     when(csContext.getResourceCalculator()).
@@ -134,11 +137,19 @@ public class TestChildQueueOrder {
         final Resource allocatedResource = Resources.createResource(allocation);
         if (queue instanceof ParentQueue) {
           ((ParentQueue)queue).allocateResource(clusterResource, 
+<<<<<<< HEAD
               allocatedResource, RMNodeLabelsManager.NO_LABEL);
         } else {
           FiCaSchedulerApp app1 = getMockApplication(0, "");
           ((LeafQueue)queue).allocateResource(clusterResource, app1, 
               allocatedResource, null, null);
+=======
+              allocatedResource, RMNodeLabelsManager.NO_LABEL, false);
+        } else {
+          FiCaSchedulerApp app1 = getMockApplication(0, "");
+          ((LeafQueue)queue).allocateResource(clusterResource, app1, 
+              allocatedResource, null, null, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
 
         // Next call - nothing

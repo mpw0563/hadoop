@@ -121,6 +121,7 @@ public class TestNameNodeOptionParsing {
     }
 
     {
+<<<<<<< HEAD
       final String[] args = {"-rollingUpgrade", "downgrade"};
       final StartupOption opt = NameNode.parseArguments(args);
       assertEquals(StartupOption.ROLLINGUPGRADE, opt);
@@ -129,6 +130,8 @@ public class TestNameNodeOptionParsing {
     }
 
     {
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final String[] args = {"-rollingUpgrade", "rollback"};
       final StartupOption opt = NameNode.parseArguments(args);
       assertEquals(StartupOption.ROLLINGUPGRADE, opt);

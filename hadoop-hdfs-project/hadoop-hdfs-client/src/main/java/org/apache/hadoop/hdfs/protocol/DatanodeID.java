@@ -38,6 +38,11 @@ import com.google.common.annotations.VisibleForTesting;
 @InterfaceStability.Evolving
 public class DatanodeID implements Comparable<DatanodeID> {
   public static final DatanodeID[] EMPTY_ARRAY = {};
+<<<<<<< HEAD
+=======
+  public static final DatanodeID EMPTY_DATANODE_ID = new DatanodeID("null",
+      "null", "null", 0, 0, 0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private String ipAddr;     // IP address
   private String hostName;   // hostname claimed by datanode
@@ -233,6 +238,7 @@ public class DatanodeID implements Comparable<DatanodeID> {
 
   @Override
   public boolean equals(Object to) {
+<<<<<<< HEAD
     if (this == to) {
       return true;
     }
@@ -241,6 +247,12 @@ public class DatanodeID implements Comparable<DatanodeID> {
     }
     return (getXferAddr().equals(((DatanodeID)to).getXferAddr()) &&
         datanodeUuid.equals(((DatanodeID)to).getDatanodeUuid()));
+=======
+    return this == to ||
+        (to instanceof DatanodeID &&
+            getXferAddr().equals(((DatanodeID) to).getXferAddr()) &&
+            datanodeUuid.equals(((DatanodeID) to).getDatanodeUuid()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override

@@ -39,6 +39,7 @@ import org.apache.hadoop.fs.permission.PermissionStatus;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.fs.XAttr;
 import org.apache.hadoop.hdfs.protocol.Block;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos.BlockProto;
 import org.apache.hadoop.hdfs.protocolPB.PBHelper;
@@ -46,6 +47,17 @@ import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+=======
+import org.apache.hadoop.hdfs.protocol.ErasureCodingPolicy;
+import org.apache.hadoop.hdfs.protocol.HdfsConstants;
+import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos.BlockProto;
+import org.apache.hadoop.hdfs.protocolPB.PBHelperClient;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguous;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoStriped;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.FSImageFormatProtobuf.LoaderContext;
 import org.apache.hadoop.hdfs.server.namenode.FSImageFormatProtobuf.SaverContext;
 import org.apache.hadoop.hdfs.server.namenode.FsImageProto.FileSummary;
@@ -74,7 +86,10 @@ public final class FSImageFormatPBINode {
   private final static long USER_GROUP_STRID_MASK = (1 << 24) - 1;
   private final static int USER_STRID_OFFSET = 40;
   private final static int GROUP_STRID_OFFSET = 16;
+<<<<<<< HEAD
   private static final Log LOG = LogFactory.getLog(FSImageFormatPBINode.class);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private static final int ACL_ENTRY_NAME_MASK = (1 << 24) - 1;
   private static final int ACL_ENTRY_NAME_OFFSET = 6;
@@ -102,6 +117,11 @@ public final class FSImageFormatPBINode {
       XAttr.NameSpace.values();
   
 
+<<<<<<< HEAD
+=======
+  private static final Log LOG = LogFactory.getLog(FSImageFormatPBINode.class);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public final static class Loader {
     public static PermissionStatus loadPermission(long id,
         final String[] stringTable) {
@@ -129,9 +149,15 @@ public final class FSImageFormatPBINode {
       return b.build();
     }
     
+<<<<<<< HEAD
     public static ImmutableList<XAttr> loadXAttrs(
         XAttrFeatureProto proto, final String[] stringTable) {
       ImmutableList.Builder<XAttr> b = ImmutableList.builder();
+=======
+    public static List<XAttr> loadXAttrs(
+        XAttrFeatureProto proto, final String[] stringTable) {
+      List<XAttr> b = new ArrayList<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       for (XAttrCompactProto xAttrCompactProto : proto.getXAttrsList()) {
         int v = xAttrCompactProto.getName();
         int nid = (v >> XATTR_NAME_OFFSET) & XATTR_NAME_MASK;
@@ -147,14 +173,22 @@ public final class FSImageFormatPBINode {
             .setName(name).setValue(value).build());
       }
       
+<<<<<<< HEAD
       return b.build();
+=======
+      return b;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     public static ImmutableList<QuotaByStorageTypeEntry> loadQuotaByStorageTypeEntries(
       QuotaByStorageTypeFeatureProto proto) {
       ImmutableList.Builder<QuotaByStorageTypeEntry> b = ImmutableList.builder();
       for (QuotaByStorageTypeEntryProto quotaEntry : proto.getQuotasList()) {
+<<<<<<< HEAD
         StorageType type = PBHelper.convertStorageType(quotaEntry.getStorageType());
+=======
+        StorageType type = PBHelperClient.convertStorageType(quotaEntry.getStorageType());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         long quota = quotaEntry.getQuota();
         b.add(new QuotaByStorageTypeEntry.Builder().setStorageType(type)
             .setQuota(quota).build());
@@ -217,7 +251,11 @@ public final class FSImageFormatPBINode {
       final BlockInfo[] blocks = file.getBlocks();
       if (blocks != null) {
         for (int i = 0; i < blocks.length; i++) {
+<<<<<<< HEAD
           file.setBlock(i, bm.addBlockCollection(blocks[i], file));
+=======
+          file.setBlock(i, bm.addBlockCollectionWithCheck(blocks[i], file));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
     }
@@ -330,6 +368,7 @@ public final class FSImageFormatPBINode {
       INodeSection.INodeFile f = n.getFile();
       List<BlockProto> bp = f.getBlocksList();
       short replication = (short) f.getReplication();
+<<<<<<< HEAD
       LoaderContext state = parent.getLoaderContext();
 
       BlockInfo[] blocks = new BlockInfo[bp.size()];
@@ -337,20 +376,45 @@ public final class FSImageFormatPBINode {
         blocks[i] =
             new BlockInfoContiguous(PBHelper.convert(bp.get(i)), replication);
       }
+=======
+      boolean isStriped = f.getIsStriped();
+      LoaderContext state = parent.getLoaderContext();
+      ErasureCodingPolicy ecPolicy = ErasureCodingPolicyManager.getSystemDefaultPolicy();
+
+      BlockInfo[] blocks = new BlockInfo[bp.size()];
+      for (int i = 0; i < bp.size(); ++i) {
+        BlockProto b = bp.get(i);
+        if (isStriped) {
+          blocks[i] = new BlockInfoStriped(PBHelperClient.convert(b), ecPolicy);
+        } else {
+          blocks[i] = new BlockInfoContiguous(PBHelperClient.convert(b),
+              replication);
+        }
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final PermissionStatus permissions = loadPermission(f.getPermission(),
           parent.getLoaderContext().getStringTable());
 
       final INodeFile file = new INodeFile(n.getId(),
           n.getName().toByteArray(), permissions, f.getModificationTime(),
           f.getAccessTime(), blocks, replication, f.getPreferredBlockSize(),
+<<<<<<< HEAD
           (byte)f.getStoragePolicyID());
+=======
+          (byte)f.getStoragePolicyID(), isStriped);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       if (f.hasAcl()) {
         int[] entries = AclEntryStatusFormat.toInt(loadAclEntries(
             f.getAcl(), state.getStringTable()));
         file.addAclFeature(new AclFeature(entries));
       }
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (f.hasXAttrs()) {
         file.addXAttrFeature(new XAttrFeature(
             loadXAttrs(f.getXAttrs(), state.getStringTable())));
@@ -363,8 +427,22 @@ public final class FSImageFormatPBINode {
         if (blocks.length > 0) {
           BlockInfo lastBlk = file.getLastBlock();
           // replace the last block of file
+<<<<<<< HEAD
           file.setBlock(file.numBlocks() - 1, new BlockInfoContiguousUnderConstruction(
               lastBlk, replication));
+=======
+          final BlockInfo ucBlk;
+          if (isStriped) {
+            BlockInfoStriped striped = (BlockInfoStriped) lastBlk;
+            ucBlk = new BlockInfoStriped(striped, ecPolicy);
+          } else {
+            ucBlk = new BlockInfoContiguous(lastBlk,
+                replication);
+          }
+          ucBlk.convertToBlockUnderConstruction(
+              HdfsServerConstants.BlockUCState.UNDER_CONSTRUCTION, null);
+          file.setBlock(file.numBlocks() - 1, ucBlk);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
       return file;
@@ -376,9 +454,17 @@ public final class FSImageFormatPBINode {
       INodeSection.INodeSymlink s = n.getSymlink();
       final PermissionStatus permissions = loadPermission(s.getPermission(),
           parent.getLoaderContext().getStringTable());
+<<<<<<< HEAD
       INodeSymlink sym = new INodeSymlink(n.getId(), n.getName().toByteArray(),
           permissions, s.getModificationTime(), s.getAccessTime(),
           s.getTarget().toStringUtf8());
+=======
+
+      INodeSymlink sym = new INodeSymlink(n.getId(), n.getName().toByteArray(),
+          permissions, s.getModificationTime(), s.getAccessTime(),
+          s.getTarget().toStringUtf8());
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return sym;
     }
 
@@ -396,6 +482,13 @@ public final class FSImageFormatPBINode {
       }
       dir.rootDir.cloneModificationTime(root);
       dir.rootDir.clonePermissionStatus(root);
+<<<<<<< HEAD
+=======
+      final AclFeature af = root.getFeature(AclFeature.class);
+      if (af != null) {
+        dir.rootDir.addAclFeature(af);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // root dir supports having extended attributes according to POSIX
       final XAttrFeature f = root.getXAttrFeature();
       if (f != null) {
@@ -444,7 +537,11 @@ public final class FSImageFormatPBINode {
             XATTR_NAMESPACE_EXT_OFFSET);
         xAttrCompactBuilder.setName(v);
         if (a.getValue() != null) {
+<<<<<<< HEAD
           xAttrCompactBuilder.setValue(PBHelper.getByteString(a.getValue()));
+=======
+          xAttrCompactBuilder.setValue(PBHelperClient.getByteString(a.getValue()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         b.addXAttrs(xAttrCompactBuilder.build());
       }
@@ -460,7 +557,11 @@ public final class FSImageFormatPBINode {
         if (q.getTypeSpace(t) >= 0) {
           QuotaByStorageTypeEntryProto.Builder eb =
               QuotaByStorageTypeEntryProto.newBuilder().
+<<<<<<< HEAD
               setStorageType(PBHelper.convertStorageType(t)).
+=======
+              setStorageType(PBHelperClient.convertStorageType(t)).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               setQuota(q.getTypeSpace(t));
           b.addQuotas(eb);
         }
@@ -476,7 +577,12 @@ public final class FSImageFormatPBINode {
           .setPermission(buildPermissionStatus(file, state.getStringMap()))
           .setPreferredBlockSize(file.getPreferredBlockSize())
           .setReplication(file.getFileReplication())
+<<<<<<< HEAD
           .setStoragePolicyID(file.getLocalStoragePolicyID());
+=======
+          .setStoragePolicyID(file.getLocalStoragePolicyID())
+          .setIsStriped(file.isStriped());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       AclFeature f = file.getAclFeature();
       if (f != null) {
@@ -630,10 +736,18 @@ public final class FSImageFormatPBINode {
     private void save(OutputStream out, INodeFile n) throws IOException {
       INodeSection.INodeFile.Builder b = buildINodeFile(n,
           parent.getSaverContext());
+<<<<<<< HEAD
 
       if (n.getBlocks() != null) {
         for (Block block : n.getBlocks()) {
           b.addBlocks(PBHelper.convert(block));
+=======
+      BlockInfo[] blocks = n.getBlocks();
+
+      if (blocks != null) {
+        for (Block block : n.getBlocks()) {
+          b.addBlocks(PBHelperClient.convert(block));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
 
@@ -665,7 +779,11 @@ public final class FSImageFormatPBINode {
       r.writeDelimitedTo(out);
     }
 
+<<<<<<< HEAD
     private final INodeSection.INode.Builder buildINodeCommon(INode n) {
+=======
+    private INodeSection.INode.Builder buildINodeCommon(INode n) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return INodeSection.INode.newBuilder()
           .setId(n.getId())
           .setName(ByteString.copyFrom(n.getLocalNameBytes()));

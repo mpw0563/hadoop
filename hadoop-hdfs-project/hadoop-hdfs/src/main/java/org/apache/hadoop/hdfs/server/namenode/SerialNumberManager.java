@@ -17,11 +17,14 @@
  */
 package org.apache.hadoop.hdfs.server.namenode;
 
+<<<<<<< HEAD
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /** Manage name-to-serial-number maps for users and groups. */
 class SerialNumberManager {
   /** This is the only instance of {@link SerialNumberManager}.*/
@@ -41,6 +44,7 @@ class SerialNumberManager {
     getUserSerialNumber(null);
     getGroupSerialNumber(null);
   }
+<<<<<<< HEAD
 
   private static class SerialNumberMap<T> {
     private final AtomicInteger max = new AtomicInteger(1);
@@ -80,4 +84,6 @@ class SerialNumberManager {
       return "max=" + max + ",\n  t2i=" + t2i + ",\n  i2t=" + i2t;
     }
   }
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

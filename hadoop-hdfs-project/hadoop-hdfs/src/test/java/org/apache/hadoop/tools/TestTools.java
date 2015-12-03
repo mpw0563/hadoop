@@ -103,6 +103,11 @@ public class TestTools {
   private void checkOutput(String[] args, String pattern, PrintStream out,
       Class<?> clazz) {       
     ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
+<<<<<<< HEAD
+=======
+    PrintStream oldOut = System.out;
+    PrintStream oldErr = System.err;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       PipedOutputStream pipeOut = new PipedOutputStream();
       PipedInputStream pipeIn = new PipedInputStream(pipeOut, PIPE_BUFFER_SIZE);
@@ -125,6 +130,12 @@ public class TestTools {
       assertTrue(new String(outBytes.toByteArray()).contains(pattern));            
     } catch (Exception ex) {
       fail("checkOutput error " + ex);
+<<<<<<< HEAD
+=======
+    } finally {
+      System.setOut(oldOut);
+      System.setErr(oldErr);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 

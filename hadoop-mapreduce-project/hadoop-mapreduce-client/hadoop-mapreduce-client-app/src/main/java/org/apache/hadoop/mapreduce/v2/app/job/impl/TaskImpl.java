@@ -979,10 +979,17 @@ public abstract class TaskImpl implements Task, EventHandler<TaskEvent> {
 
   private static class KillWaitAttemptKilledTransition implements
       MultipleArcTransition<TaskImpl, TaskEvent, TaskStateInternal> {
+<<<<<<< HEAD
 
     protected TaskStateInternal finalState = TaskStateInternal.KILLED;
     protected final TaskAttemptCompletionEventStatus taCompletionEventStatus;
 
+=======
+
+    protected TaskStateInternal finalState = TaskStateInternal.KILLED;
+    protected final TaskAttemptCompletionEventStatus taCompletionEventStatus;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public KillWaitAttemptKilledTransition() {
       this(TaskAttemptCompletionEventStatus.KILLED);
     }
@@ -1057,9 +1064,27 @@ public abstract class TaskImpl implements Task, EventHandler<TaskEvent> {
             TaskAttemptCompletionEventStatus.FAILED);
         // we don't need a new event if we already have a spare
         task.inProgressAttempts.remove(taskAttemptId);
+<<<<<<< HEAD
         if (task.inProgressAttempts.size() == 0
             && task.successfulAttempt == null) {
           task.addAndScheduleAttempt(Avataar.VIRGIN);
+=======
+        if (task.successfulAttempt == null) {
+          boolean shouldAddNewAttempt = true;
+          if (task.inProgressAttempts.size() > 0) {
+            // if not all of the inProgressAttempts are hanging for resource
+            for (TaskAttemptId attemptId : task.inProgressAttempts) {
+              if (((TaskAttemptImpl) task.getAttempt(attemptId))
+                  .isContainerAssigned()) {
+                shouldAddNewAttempt = false;
+                break;
+              }
+            }
+          }
+          if (shouldAddNewAttempt) {
+            task.addAndScheduleAttempt(Avataar.VIRGIN);
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       } else {
         task.handleTaskAttemptCompletion(
@@ -1080,7 +1105,7 @@ public abstract class TaskImpl implements Task, EventHandler<TaskEvent> {
             taskFailedEvent));
         } else {
           LOG.debug("Not generating HistoryFinish event since start event not" +
-          		" generated for task: " + task.getID());
+              " generated for task: " + task.getID());
         }
         task.eventHandler.handle(
             new JobTaskEvent(task.taskId, TaskState.FAILED));

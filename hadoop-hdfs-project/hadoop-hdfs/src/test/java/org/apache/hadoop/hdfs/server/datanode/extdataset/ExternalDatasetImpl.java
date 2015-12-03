@@ -27,8 +27,13 @@ import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.BlockListAsLongs;
 import org.apache.hadoop.hdfs.protocol.BlockLocalPathInfo;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsBlocksMetadata;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.ReplicaState;
+=======
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.ReplicaState;
+import org.apache.hadoop.hdfs.server.common.Storage;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.*;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeSpi;
@@ -56,11 +61,24 @@ public class ExternalDatasetImpl implements FsDatasetSpi<ExternalVolumeImpl> {
   }
 
   @Override
+<<<<<<< HEAD
   public void addVolume(StorageLocation location, List<NamespaceInfo> nsInfos) throws IOException {
+=======
+  public void addVolume(final StorageLocation location,
+                        final Storage.StorageDirectory sd,
+                        final List<NamespaceInfo> nsInfos) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void recordFailedVolume(StorageLocation location) {
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void removeVolumes(Set<File> volumes, boolean clearFailure) {
   }
 
@@ -166,13 +184,21 @@ public class ExternalDatasetImpl implements FsDatasetSpi<ExternalVolumeImpl> {
 
   @Override
   public ReplicaHandler append(ExtendedBlock b, long newGS,
+<<<<<<< HEAD
                                long expectedBlockLen) throws IOException {
+=======
+      long expectedBlockLen) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new ReplicaHandler(new ExternalReplicaInPipeline(), null);
   }
 
   @Override
   public ReplicaHandler recoverAppend(ExtendedBlock b, long newGS,
+<<<<<<< HEAD
                                       long expectedBlockLen) throws IOException {
+=======
+      long expectedBlockLen) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return new ReplicaHandler(new ExternalReplicaInPipeline(), null);
   }
 
@@ -229,6 +255,14 @@ public class ExternalDatasetImpl implements FsDatasetSpi<ExternalVolumeImpl> {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public boolean isCachingSupported() {
+    return false;
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void cache(String bpid, long[] blockIds) {
   }
 
@@ -296,11 +330,14 @@ public class ExternalDatasetImpl implements FsDatasetSpi<ExternalVolumeImpl> {
   }
 
   @Override
+<<<<<<< HEAD
   public HdfsBlocksMetadata getHdfsBlocksMetadata(String bpid, long[] blockIds) throws IOException {
     return new HdfsBlocksMetadata(null, null, null, null);
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void enableTrash(String bpid) {
 
   }
@@ -356,7 +393,11 @@ public class ExternalDatasetImpl implements FsDatasetSpi<ExternalVolumeImpl> {
   }
 
   @Override
+<<<<<<< HEAD
   public long getCapacity() {
+=======
+  public long getCapacity() throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return 0;
   }
 

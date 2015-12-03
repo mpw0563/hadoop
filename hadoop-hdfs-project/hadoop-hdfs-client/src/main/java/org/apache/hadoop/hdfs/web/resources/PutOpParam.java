@@ -22,7 +22,11 @@ import java.net.HttpURLConnection;
 /** Http POST operation parameter. */
 public class PutOpParam extends HttpOpParam<PutOpParam.Op> {
   /** Put operations. */
+<<<<<<< HEAD
   public static enum Op implements HttpOpParam.Op {
+=======
+  public enum Op implements HttpOpParam.Op {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     CREATE(true, HttpURLConnection.HTTP_CREATED),
 
     MKDIRS(false, HttpURLConnection.HTTP_OK),
@@ -46,6 +50,11 @@ public class PutOpParam extends HttpOpParam<PutOpParam.Op> {
     SETXATTR(false, HttpURLConnection.HTTP_OK),
     REMOVEXATTR(false, HttpURLConnection.HTTP_OK),
 
+<<<<<<< HEAD
+=======
+    ALLOWSNAPSHOT(false, HttpURLConnection.HTTP_OK),
+    DISALLOWSNAPSHOT(false, HttpURLConnection.HTTP_OK),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     CREATESNAPSHOT(false, HttpURLConnection.HTTP_OK),
     RENAMESNAPSHOT(false, HttpURLConnection.HTTP_OK),
 
@@ -60,7 +69,11 @@ public class PutOpParam extends HttpOpParam<PutOpParam.Op> {
     }
 
     Op(final boolean doOutputAndRedirect, final int expectedHttpResponseCode,
+<<<<<<< HEAD
        final boolean requireAuth) {
+=======
+        final boolean requireAuth) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.doOutputAndRedirect = doOutputAndRedirect;
       this.expectedHttpResponseCode = expectedHttpResponseCode;
       this.requireAuth = requireAuth;
@@ -97,7 +110,11 @@ public class PutOpParam extends HttpOpParam<PutOpParam.Op> {
     }
   }
 
+<<<<<<< HEAD
   private static final Domain<Op> DOMAIN = new Domain<Op>(NAME, Op.class);
+=======
+  private static final Domain<Op> DOMAIN = new Domain<>(NAME, Op.class);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * Constructor.
@@ -111,4 +128,8 @@ public class PutOpParam extends HttpOpParam<PutOpParam.Op> {
   public String getName() {
     return NAME;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

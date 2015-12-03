@@ -44,11 +44,19 @@ public abstract class KeyProviderExtension
     this.keyProvider = keyProvider;
     this.extension = extensions;
   }
+<<<<<<< HEAD
 
   protected E getExtension() {
     return extension;
   }
 
+=======
+  
+  protected E getExtension() {
+    return extension;
+  }
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected KeyProvider getKeyProvider() {
     return keyProvider;
   }

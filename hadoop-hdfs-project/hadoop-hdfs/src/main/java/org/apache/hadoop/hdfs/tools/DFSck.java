@@ -41,7 +41,10 @@ import org.apache.hadoop.hdfs.server.namenode.NamenodeFsck;
 import org.apache.hadoop.hdfs.web.URLConnectionFactory;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.client.AuthenticationException;
+<<<<<<< HEAD
 import org.apache.hadoop.util.StringUtils;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -79,7 +82,11 @@ public class DFSck extends Configured implements Tool {
       + "[-list-corruptfileblocks | "
       + "[-move | -delete | -openforwrite] "
       + "[-files [-blocks [-locations | -racks | -replicaDetails]]]] "
+<<<<<<< HEAD
       + "[-includeSnapshots] "
+=======
+      + "[-includeSnapshots] [-showprogress] "
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       + "[-storagepolicies] [-blockId <blk_Id>]\n"
       + "\t<path>\tstart checking from this path\n"
       + "\t-move\tmove corrupted files to /lost+found\n"
@@ -97,6 +104,10 @@ public class DFSck extends Configured implements Tool {
       + "\tprint out network topology for data-node locations\n"
       + "\t-files -blocks -replicaDetails\tprint out each replica details \n"
       + "\t-storagepolicies\tprint out storage policy summary for the blocks\n"
+<<<<<<< HEAD
+=======
+      + "\t-showprogress\tshow progress in output. Default is OFF (no progress)\n"
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       + "\t-blockId\tprint out which file this blockId belongs to, locations"
       + " (nodes, racks) of this block, and other diagnostics info"
       + " (under replicated, corrupted or not, etc)\n\n"
@@ -274,6 +285,10 @@ public class DFSck extends Configured implements Tool {
         url.append("&replicadetails=1");
       }
       else if (args[idx].equals("-storagepolicies")) { url.append("&storagepolicies=1"); }
+<<<<<<< HEAD
+=======
+      else if (args[idx].equals("-showprogress")) { url.append("&showprogress=1"); }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       else if (args[idx].equals("-list-corruptfileblocks")) {
         url.append("&listcorruptfileblocks=1");
         doListCorruptFileBlocks = true;
@@ -315,7 +330,11 @@ public class DFSck extends Configured implements Tool {
       namenodeAddress = getCurrentNamenodeAddress(dirpath);
     } catch (IOException ioe) {
       System.err.println("FileSystem is inaccessible due to:\n"
+<<<<<<< HEAD
           + StringUtils.stringifyException(ioe));
+=======
+          + ioe.toString());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     if (namenodeAddress == null) {

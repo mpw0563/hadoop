@@ -26,14 +26,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.conf.Configuration;
+<<<<<<< HEAD
 import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
 import org.apache.hadoop.metrics2.source.JvmMetrics;
 import org.apache.hadoop.security.AuthenticationFilterInitializer;
+=======
+import org.apache.hadoop.http.HttpServer2;
+import org.apache.hadoop.metrics2.lib.DefaultMetricsSystem;
+import org.apache.hadoop.metrics2.source.JvmMetrics;
+import org.apache.hadoop.security.AuthenticationFilterInitializer;
+import org.apache.hadoop.security.HttpCrossOriginFilterInitializer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.security.SecurityUtil;
 import org.apache.hadoop.service.CompositeService;
 import org.apache.hadoop.service.Service;
 import org.apache.hadoop.util.ExitUtil;
 import org.apache.hadoop.util.GenericOptionsParser;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.util.JvmPauseMonitor;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.ShutdownHookManager;
 import org.apache.hadoop.util.StringUtils;
@@ -53,6 +65,11 @@ import org.apache.hadoop.yarn.server.timeline.webapp.CrossOriginFilterInitialize
 import org.apache.hadoop.yarn.webapp.WebApp;
 import org.apache.hadoop.yarn.webapp.WebApps;
 import org.apache.hadoop.yarn.webapp.util.WebAppUtils;
+<<<<<<< HEAD
+=======
+import org.mortbay.jetty.servlet.FilterHolder;
+import org.mortbay.jetty.webapp.WebAppContext;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -73,6 +90,10 @@ public class ApplicationHistoryServer extends CompositeService {
   private TimelineDelegationTokenSecretManagerService secretManagerService;
   private TimelineDataManager timelineDataManager;
   private WebApp webApp;
+<<<<<<< HEAD
+=======
+  private JvmPauseMonitor pauseMonitor;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public ApplicationHistoryServer() {
     super(ApplicationHistoryServer.class.getName());
@@ -96,7 +117,13 @@ public class ApplicationHistoryServer extends CompositeService {
     addService((Service) historyManager);
 
     DefaultMetricsSystem.initialize("ApplicationHistoryServer");
+<<<<<<< HEAD
     JvmMetrics.initSingleton("ApplicationHistoryServer", null);
+=======
+    JvmMetrics jm = JvmMetrics.initSingleton("ApplicationHistoryServer", null);
+    pauseMonitor = new JvmPauseMonitor(conf);
+    jm.setPauseMonitor(pauseMonitor);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     super.serviceInit(conf);
   }
 
@@ -107,6 +134,13 @@ public class ApplicationHistoryServer extends CompositeService {
     } catch(IOException ie) {
       throw new YarnRuntimeException("Failed to login", ie);
     }
+<<<<<<< HEAD
+=======
+
+    if (pauseMonitor != null) {
+      pauseMonitor.start();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     super.serviceStart();
     startWebApp();
   }
@@ -116,7 +150,13 @@ public class ApplicationHistoryServer extends CompositeService {
     if (webApp != null) {
       webApp.stop();
     }
+<<<<<<< HEAD
 
+=======
+    if (pauseMonitor != null) {
+      pauseMonitor.stop();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     DefaultMetricsSystem.shutdown();
     super.serviceStop();
   }
@@ -127,6 +167,19 @@ public class ApplicationHistoryServer extends CompositeService {
     return this.ahsClientService;
   }
 
+<<<<<<< HEAD
+=======
+  private InetSocketAddress getListenerAddress() {
+    return this.webApp.httpServer().getConnectorAddress(0);
+  }
+
+  @Private
+  @VisibleForTesting
+  public int getPort() {
+    return this.getListenerAddress().getPort();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * @return ApplicationTimelineStore
    */
@@ -213,6 +266,10 @@ public class ApplicationHistoryServer extends CompositeService {
         timelineStore, new TimelineACLsManager(conf));
   }
 
+<<<<<<< HEAD
+=======
+  @SuppressWarnings("unchecked")
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void startWebApp() {
     Configuration conf = getConfig();
     TimelineAuthenticationFilter.setTimelineDelegationTokenSecretManager(
@@ -232,17 +289,38 @@ public class ApplicationHistoryServer extends CompositeService {
       if(conf.getBoolean(YarnConfiguration
           .TIMELINE_SERVICE_HTTP_CROSS_ORIGIN_ENABLED, YarnConfiguration
               .TIMELINE_SERVICE_HTTP_CROSS_ORIGIN_ENABLED_DEFAULT)) {
+<<<<<<< HEAD
         initializers = CrossOriginFilterInitializer.class.getName() + ","
             + initializers;
+=======
+        if (initializers.contains(HttpCrossOriginFilterInitializer.class.getName())) {
+          initializers =
+            initializers.replaceAll(HttpCrossOriginFilterInitializer.class.getName(),
+              CrossOriginFilterInitializer.class.getName());
+        }
+        else {
+          if (initializers.length() != 0) {
+            initializers += ",";
+          }
+          initializers += CrossOriginFilterInitializer.class.getName();
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         modifiedInitializers = true;
       }
     }
 
     if (!initializers.contains(TimelineAuthenticationFilterInitializer.class
       .getName())) {
+<<<<<<< HEAD
       initializers =
           TimelineAuthenticationFilterInitializer.class.getName() + ","
               + initializers;
+=======
+      if (initializers.length() != 0) {
+        initializers += ",";
+      }
+      initializers += TimelineAuthenticationFilterInitializer.class.getName();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       modifiedInitializers = true;
     }
 
@@ -265,14 +343,56 @@ public class ApplicationHistoryServer extends CompositeService {
     String bindAddress = WebAppUtils.getWebAppBindURL(conf,
                           YarnConfiguration.TIMELINE_SERVICE_BIND_HOST,
                           WebAppUtils.getAHSWebAppURLWithoutScheme(conf));
+<<<<<<< HEAD
     LOG.info("Instantiating AHSWebApp at " + bindAddress);
     try {
+=======
+    try {
+      AHSWebApp ahsWebApp = new AHSWebApp(timelineDataManager, ahsClientService);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       webApp =
           WebApps
             .$for("applicationhistory", ApplicationHistoryClientService.class,
                 ahsClientService, "ws")
+<<<<<<< HEAD
             .with(conf).at(bindAddress).start(
                 new AHSWebApp(timelineDataManager, ahsClientService));
+=======
+             .with(conf).withAttribute(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+                 conf.get(YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS)).at(bindAddress).build(ahsWebApp);
+       HttpServer2 httpServer = webApp.httpServer();
+
+       String[] names = conf.getTrimmedStrings(YarnConfiguration.TIMELINE_SERVICE_UI_NAMES);
+       WebAppContext webAppContext = httpServer.getWebAppContext();
+
+       for (String name : names) {
+         String webPath = conf.get(
+             YarnConfiguration.TIMELINE_SERVICE_UI_WEB_PATH_PREFIX + name);
+         String onDiskPath = conf.get(
+             YarnConfiguration.TIMELINE_SERVICE_UI_ON_DISK_PATH_PREFIX + name);
+         WebAppContext uiWebAppContext = new WebAppContext();
+         uiWebAppContext.setContextPath(webPath);
+         uiWebAppContext.setWar(onDiskPath);
+         final String[] ALL_URLS = { "/*" };
+         FilterHolder[] filterHolders =
+           webAppContext.getServletHandler().getFilters();
+         for (FilterHolder filterHolder: filterHolders) {
+           if (!"guice".equals(filterHolder.getName())) {
+             HttpServer2.defineFilter(uiWebAppContext, filterHolder.getName(),
+                 filterHolder.getClassName(), filterHolder.getInitParameters(),
+                 ALL_URLS);
+           }
+         }
+         LOG.info("Hosting " + name + " from " + onDiskPath + " at " + webPath);
+         httpServer.addContext(uiWebAppContext, true);
+       }
+       httpServer.start();
+       conf.updateConnectAddr(YarnConfiguration.TIMELINE_SERVICE_BIND_HOST,
+         YarnConfiguration.TIMELINE_SERVICE_WEBAPP_ADDRESS,
+         YarnConfiguration.DEFAULT_TIMELINE_SERVICE_WEBAPP_ADDRESS,
+         this.getListenerAddress());
+       LOG.info("Instantiating AHSWebApp at " + getPort());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (Exception e) {
       String msg = "AHSWebApp failed to start.";
       LOG.error(msg, e);

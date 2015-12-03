@@ -229,7 +229,11 @@ public class ResourceLocalizationService extends CompositeService
   public void serviceInit(Configuration conf) throws Exception {
     this.validateConf(conf);
     this.publicRsrc = new LocalResourcesTrackerImpl(null, null, dispatcher,
+<<<<<<< HEAD
         true, conf, stateStore);
+=======
+        true, conf, stateStore, dirsHandler);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.recordFactory = RecordFactoryProvider.getRecordFactory(conf);
 
     try {
@@ -830,7 +834,12 @@ public class ResourceLocalizationService extends CompositeService
                     + ContainerLocalizer.FILECACHE,
                   ContainerLocalizer.getEstimatedSize(resource), true);
             Path publicDirDestPath =
+<<<<<<< HEAD
                 publicRsrc.getPathForLocalization(key, publicRootPath);
+=======
+                publicRsrc.getPathForLocalization(key, publicRootPath,
+                    delService);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             if (!publicDirDestPath.getParent().equals(publicRootPath)) {
               DiskChecker.checkDir(new File(publicDirDestPath.toUri().getPath()));
             }
@@ -1116,7 +1125,11 @@ public class ResourceLocalizationService extends CompositeService
           dirsHandler.getLocalPathForWrite(cacheDirectory,
             ContainerLocalizer.getEstimatedSize(rsrc), false);
       return tracker.getPathForLocalization(new LocalResourceRequest(rsrc),
+<<<<<<< HEAD
           dirPath);
+=======
+          dirPath, delService);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     @Override
@@ -1164,9 +1177,28 @@ public class ResourceLocalizationService extends CompositeService
           dispatcher.getEventHandler().handle(new ContainerResourceFailedEvent(
               cId, null, exception.getMessage()));
         }
+<<<<<<< HEAD
         for (LocalizerResourceRequestEvent event : scheduled.values()) {
           event.getResource().unlock();
         }
+=======
+        List<Path> paths = new ArrayList<Path>();
+        for (LocalizerResourceRequestEvent event : scheduled.values()) {
+          // This means some resources were in downloading state. Schedule
+          // deletion task for localization dir and tmp dir used for downloading
+          Path locRsrcPath = event.getResource().getLocalPath();
+          if (locRsrcPath != null) {
+            Path locRsrcDirPath = locRsrcPath.getParent();
+            paths.add(locRsrcDirPath);
+            paths.add(new Path(locRsrcDirPath + "_tmp"));
+          }
+          event.getResource().unlock();
+        }
+        if (!paths.isEmpty()) {
+          delService.delete(context.getUser(),
+              null, paths.toArray(new Path[paths.size()]));
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         delService.delete(null, nmPrivateCTokensPath, new Path[] {});
       }
     }

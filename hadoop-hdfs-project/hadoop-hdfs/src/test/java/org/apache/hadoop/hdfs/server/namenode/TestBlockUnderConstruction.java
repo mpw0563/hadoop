@@ -18,6 +18,7 @@
 package org.apache.hadoop.hdfs.server.namenode;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -36,7 +37,11 @@ import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfo;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockInfoContiguousUnderConstruction;
+=======
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.BlockUCState;
 import org.apache.hadoop.hdfs.server.protocol.NamenodeProtocols;
 import org.junit.AfterClass;
@@ -156,6 +161,10 @@ public class TestBlockUnderConstruction {
   @Test
   public void testGetBlockLocations() throws IOException {
     final NamenodeProtocols namenode = cluster.getNameNodeRpc();
+<<<<<<< HEAD
+=======
+    final BlockManager blockManager = cluster.getNamesystem().getBlockManager();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final Path p = new Path(BASE_DIR, "file2.dat");
     final String src = p.toString();
     final FSDataOutputStream out = TestFileCreation.createFile(hdfs, p, 3);
@@ -170,7 +179,11 @@ public class TestBlockUnderConstruction {
       final List<LocatedBlock> blocks = lb.getLocatedBlocks();
       assertEquals(i, blocks.size());
       final Block b = blocks.get(blocks.size() - 1).getBlock().getLocalBlock();
+<<<<<<< HEAD
       assertTrue(b instanceof BlockInfoContiguousUnderConstruction);
+=======
+      assertFalse(blockManager.getStoredBlock(b).isComplete());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       if (++i < NUM_BLOCKS) {
         // write one more block

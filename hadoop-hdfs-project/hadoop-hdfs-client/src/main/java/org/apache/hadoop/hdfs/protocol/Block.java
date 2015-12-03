@@ -25,6 +25,11 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.io.*;
 
+<<<<<<< HEAD
+=======
+import javax.annotation.Nonnull;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**************************************************
  * A Block is a Hadoop FS primitive, identified by a
  * long.
@@ -36,12 +41,19 @@ public class Block implements Writable, Comparable<Block> {
   public static final String BLOCK_FILE_PREFIX = "blk_";
   public static final String METADATA_EXTENSION = ".meta";
   static {                                      // register a ctor
+<<<<<<< HEAD
     WritableFactories.setFactory
       (Block.class,
        new WritableFactory() {
          @Override
          public Writable newInstance() { return new Block(); }
        });
+=======
+    WritableFactories.setFactory(Block.class, new WritableFactory() {
+      @Override
+      public Writable newInstance() { return new Block(); }
+    });
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public static final Pattern blockFilePattern = Pattern
@@ -153,10 +165,28 @@ public class Block implements Writable, Comparable<Block> {
   }
 
   /**
+<<<<<<< HEAD
    */
   @Override
   public String toString() {
     return getBlockName() + "_" + getGenerationStamp();
+=======
+   * A helper method to output the string representation of the Block portion of
+   * a derived class' instance.
+   *
+   * @param b the target object
+   * @return the string representation of the block
+   */
+  public static String toString(final Block b) {
+    return b.getBlockName() + "_" + b.getGenerationStamp();
+  }
+
+  /**
+   */
+  @Override
+  public String toString() {
+    return toString(this);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public void appendStringTo(StringBuilder sb) {
@@ -208,13 +238,20 @@ public class Block implements Writable, Comparable<Block> {
   }
 
   @Override // Comparable
+<<<<<<< HEAD
   public int compareTo(Block b) {
     return blockId < b.blockId ? -1 :
            blockId > b.blockId ? 1 : 0;
+=======
+  public int compareTo(@Nonnull Block b) {
+    return blockId < b.blockId ? -1 :
+        blockId > b.blockId ? 1 : 0;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override // Object
   public boolean equals(Object o) {
+<<<<<<< HEAD
     if (this == o) {
       return true;
     }
@@ -222,6 +259,9 @@ public class Block implements Writable, Comparable<Block> {
       return false;
     }
     return compareTo((Block)o) == 0;
+=======
+    return this == o || o instanceof Block && compareTo((Block) o) == 0;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   /**
@@ -230,9 +270,16 @@ public class Block implements Writable, Comparable<Block> {
    */
   public static boolean matchingIdAndGenStamp(Block a, Block b) {
     if (a == b) return true; // same block, or both null
+<<<<<<< HEAD
     if (a == null || b == null) return false; // only one null
     return a.blockId == b.blockId &&
            a.generationStamp == b.generationStamp;
+=======
+    // only one null
+    return !(a == null || b == null) &&
+        a.blockId == b.blockId &&
+        a.generationStamp == b.generationStamp;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override // Object

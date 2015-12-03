@@ -462,6 +462,10 @@ public class TestCount {
 
   // mock content system
   static class MockContentSummary extends ContentSummary {
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     @SuppressWarnings("deprecation")
     // suppress warning on the usage of deprecated ContentSummary constructor
     public MockContentSummary() {

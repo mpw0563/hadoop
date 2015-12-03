@@ -26,6 +26,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
 import org.junit.Test;
 
@@ -41,7 +45,11 @@ public class TestDataNodeInitStorage {
   public static final Log LOG = LogFactory.getLog(TestDataNodeInitStorage.class);
 
   static private class SimulatedFsDatasetVerifier extends SimulatedFSDataset {
+<<<<<<< HEAD
     static class Factory extends FsDatasetSpi.Factory<SimulatedFSDataset> {
+=======
+    static class Factory extends FsDatasetSpi.Factory {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       @Override
       public SimulatedFsDatasetVerifier newInstance(
           DataNode datanode, DataStorage storage,

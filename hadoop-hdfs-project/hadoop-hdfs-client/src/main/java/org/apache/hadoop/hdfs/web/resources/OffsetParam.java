@@ -51,4 +51,8 @@ public class OffsetParam extends LongParam {
     Long offset = getValue();
     return (offset == null) ? Long.valueOf(0) : offset;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

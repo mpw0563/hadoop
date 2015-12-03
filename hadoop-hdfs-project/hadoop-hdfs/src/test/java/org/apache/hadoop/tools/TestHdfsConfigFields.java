@@ -22,6 +22,10 @@ import java.util.HashSet;
 
 import org.apache.hadoop.conf.TestConfigurationFieldsBase;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 /**
  * Unit test class to compare the following MR Configuration classes:
@@ -39,7 +43,12 @@ public class TestHdfsConfigFields extends TestConfigurationFieldsBase {
   @Override
   public void initializeMemberVariables() {
     xmlFilename = new String("hdfs-default.xml");
+<<<<<<< HEAD
     configurationClasses = new Class[] { DFSConfigKeys.class };
+=======
+    configurationClasses = new Class[] { HdfsClientConfigKeys.class,
+        DFSConfigKeys.class};
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Set error modes
     errorIfMissingConfigProps = true;
@@ -77,8 +86,14 @@ public class TestHdfsConfigFields extends TestConfigurationFieldsBase {
     // Some properties have moved to HdfsClientConfigKeys
     xmlPropsToSkipCompare.add("dfs.client.short.circuit.replica.stale.threshold.ms");
 
+<<<<<<< HEAD
     // Ignore SpanReceiveHost properties
     xmlPropsToSkipCompare.add("dfs.htrace.spanreceiver.classes");
     xmlPropsToSkipCompare.add("dfs.client.htrace.spanreceiver.classes");
+=======
+    // Ignore HTrace properties
+    xmlPropsToSkipCompare.add("fs.client.htrace");
+    xmlPropsToSkipCompare.add("hadoop.htrace");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

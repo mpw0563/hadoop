@@ -50,6 +50,10 @@ import org.apache.hadoop.mapreduce.v2.jobhistory.JHAdminConfig;
  */
 public class TestMapreduceConfigFields extends TestConfigurationFieldsBase {
 
+<<<<<<< HEAD
+=======
+  @SuppressWarnings("deprecation")
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public void initializeMemberVariables() {
     xmlFilename = new String("mapred-default.xml");
@@ -60,7 +64,10 @@ public class TestMapreduceConfigFields extends TestConfigurationFieldsBase {
 
     // Initialize used variables
     configurationPropsToSkipCompare = new HashSet<String>();
+<<<<<<< HEAD
     xmlPropsToSkipCompare = new HashSet<String>();
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Set error modes
     errorIfMissingConfigProps = true;
@@ -71,6 +78,7 @@ public class TestMapreduceConfigFields extends TestConfigurationFieldsBase {
             .add(JobConf.MAPRED_JOB_MAP_MEMORY_MB_PROPERTY);
     configurationPropsToSkipCompare
             .add(JobConf.MAPRED_JOB_REDUCE_MEMORY_MB_PROPERTY);
+<<<<<<< HEAD
 
     // Obsolete entries listed in MAPREDUCE-6057 were removed from trunk
     // but not removed from branch-2.
@@ -78,6 +86,8 @@ public class TestMapreduceConfigFields extends TestConfigurationFieldsBase {
     xmlPropsToSkipCompare.add("mapreduce.reduce.skip.proc.count.autoincr");
     xmlPropsToSkipCompare.add("mapreduce.map.skip.proc.count.autoincr");
     xmlPropsToSkipCompare.add("mapreduce.local.clientfactory.class.name");
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
 }

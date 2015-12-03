@@ -120,6 +120,10 @@ import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.event.EventHandler;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.apache.hadoop.yarn.state.InvalidStateTransitionException;
@@ -129,6 +133,10 @@ import org.apache.hadoop.yarn.state.StateMachine;
 import org.apache.hadoop.yarn.state.StateMachineFactory;
 import org.apache.hadoop.yarn.util.Clock;
 
+<<<<<<< HEAD
+=======
+import com.google.common.annotations.VisibleForTesting;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /** Implementation of Job interface. Maintains the state machines of Job.
@@ -284,6 +292,7 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
               JobEventType.JOB_KILL,
               new KillInitedJobTransition())
           .addTransition(JobStateInternal.INITED, JobStateInternal.ERROR,
+<<<<<<< HEAD
               JobEventType.INTERNAL_ERROR,
               INTERNAL_ERROR_TRANSITION)
           .addTransition(JobStateInternal.INITED, JobStateInternal.REBOOT,
@@ -311,6 +320,35 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
           .addTransition(JobStateInternal.SETUP, JobStateInternal.ERROR,
               JobEventType.INTERNAL_ERROR,
               INTERNAL_ERROR_TRANSITION)
+=======
+              JobEventType.INTERNAL_ERROR,
+              INTERNAL_ERROR_TRANSITION)
+          .addTransition(JobStateInternal.INITED, JobStateInternal.REBOOT,
+              JobEventType.JOB_AM_REBOOT,
+              INTERNAL_REBOOT_TRANSITION)
+          // Ignore-able events
+          .addTransition(JobStateInternal.INITED, JobStateInternal.INITED,
+              JobEventType.JOB_UPDATED_NODES)
+
+          // Transitions from SETUP state
+          .addTransition(JobStateInternal.SETUP, JobStateInternal.SETUP,
+              JobEventType.JOB_DIAGNOSTIC_UPDATE,
+              DIAGNOSTIC_UPDATE_TRANSITION)
+          .addTransition(JobStateInternal.SETUP, JobStateInternal.SETUP,
+              JobEventType.JOB_COUNTER_UPDATE, COUNTER_UPDATE_TRANSITION)
+          .addTransition(JobStateInternal.SETUP, JobStateInternal.RUNNING,
+              JobEventType.JOB_SETUP_COMPLETED,
+              new SetupCompletedTransition())
+          .addTransition(JobStateInternal.SETUP, JobStateInternal.FAIL_ABORT,
+              JobEventType.JOB_SETUP_FAILED,
+              new SetupFailedTransition())
+          .addTransition(JobStateInternal.SETUP, JobStateInternal.KILL_ABORT,
+              JobEventType.JOB_KILL,
+              new KilledDuringSetupTransition())
+          .addTransition(JobStateInternal.SETUP, JobStateInternal.ERROR,
+              JobEventType.INTERNAL_ERROR,
+              INTERNAL_ERROR_TRANSITION)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           .addTransition(JobStateInternal.SETUP, JobStateInternal.REBOOT,
               JobEventType.JOB_AM_REBOOT,
               INTERNAL_REBOOT_TRANSITION)
@@ -577,6 +615,7 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
           .addTransition(
               JobStateInternal.ERROR,
               JobStateInternal.ERROR,
+<<<<<<< HEAD
               EnumSet.of(JobEventType.JOB_INIT,
                   JobEventType.JOB_KILL,
                   JobEventType.JOB_TASK_COMPLETED,
@@ -599,6 +638,8 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
           .addTransition(
               JobStateInternal.REBOOT,
               JobStateInternal.REBOOT,
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               EnumSet.of(JobEventType.JOB_INIT,
                   JobEventType.JOB_KILL,
                   JobEventType.JOB_TASK_COMPLETED,
@@ -614,6 +655,31 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
                   JobEventType.JOB_ABORT_COMPLETED,
                   JobEventType.INTERNAL_ERROR,
                   JobEventType.JOB_AM_REBOOT))
+<<<<<<< HEAD
+=======
+          .addTransition(JobStateInternal.ERROR, JobStateInternal.ERROR,
+              JobEventType.JOB_COUNTER_UPDATE, COUNTER_UPDATE_TRANSITION)
+
+          // No transitions from AM_REBOOT state. Ignore all.
+          .addTransition(
+              JobStateInternal.REBOOT,
+              JobStateInternal.REBOOT,
+              EnumSet.of(JobEventType.JOB_INIT,
+                  JobEventType.JOB_KILL,
+                  JobEventType.JOB_TASK_COMPLETED,
+                  JobEventType.JOB_TASK_ATTEMPT_COMPLETED,
+                  JobEventType.JOB_MAP_TASK_RESCHEDULED,
+                  JobEventType.JOB_DIAGNOSTIC_UPDATE,
+                  JobEventType.JOB_UPDATED_NODES,
+                  JobEventType.JOB_TASK_ATTEMPT_FETCH_FAILURE,
+                  JobEventType.JOB_SETUP_COMPLETED,
+                  JobEventType.JOB_SETUP_FAILED,
+                  JobEventType.JOB_COMMIT_COMPLETED,
+                  JobEventType.JOB_COMMIT_FAILED,
+                  JobEventType.JOB_ABORT_COMPLETED,
+                  JobEventType.INTERNAL_ERROR,
+                  JobEventType.JOB_AM_REBOOT))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           .addTransition(JobStateInternal.REBOOT, JobStateInternal.REBOOT,
               JobEventType.JOB_COUNTER_UPDATE, COUNTER_UPDATE_TRANSITION)
 
@@ -652,6 +718,11 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
 
   private JobState lastNonFinalState = JobState.NEW;
 
+<<<<<<< HEAD
+=======
+  private volatile Priority jobPriority = Priority.newInstance(0);
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public JobImpl(JobId jobId, ApplicationAttemptId applicationAttemptId,
       Configuration conf, EventHandler eventHandler,
       TaskAttemptListener taskAttemptListener,
@@ -864,6 +935,7 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
       StringBuilder diagsb = new StringBuilder();
       for (String s : getDiagnostics()) {
         diagsb.append(s).append("\n");
+<<<<<<< HEAD
       }
 
       if (getInternalState() == JobStateInternal.NEW) {
@@ -872,12 +944,27 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
             0.0f, cleanupProgress, jobFile, amInfos, isUber, diagsb.toString());
       }
 
+=======
+      }
+
+      if (getInternalState() == JobStateInternal.NEW) {
+        return MRBuilderUtils.newJobReport(jobId, jobName, reporterUserName,
+            state, appSubmitTime, startTime, finishTime, setupProgress, 0.0f,
+            0.0f, cleanupProgress, jobFile, amInfos, isUber, diagsb.toString());
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       computeProgress();
       JobReport report = MRBuilderUtils.newJobReport(jobId, jobName,
           reporterUserName,
           state, appSubmitTime, startTime, finishTime, setupProgress,
           this.mapProgress, this.reduceProgress,
+<<<<<<< HEAD
           cleanupProgress, jobFile, amInfos, isUber, diagsb.toString());
+=======
+          cleanupProgress, jobFile, amInfos, isUber, diagsb.toString(),
+          jobPriority);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return report;
     } finally {
       readLock.unlock();
@@ -887,6 +974,7 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
   @Override
   public float getProgress() {
     this.readLock.lock();
+<<<<<<< HEAD
     try {
       computeProgress();
       return (this.setupProgress * this.setupWeight + this.cleanupProgress
@@ -900,6 +988,21 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
   private void computeProgress() {
     this.readLock.lock();
     try {
+=======
+    try {
+      computeProgress();
+      return (this.setupProgress * this.setupWeight + this.cleanupProgress
+          * this.cleanupWeight + this.mapProgress * this.mapWeight + this.reduceProgress
+          * this.reduceWeight);
+    } finally {
+      this.readLock.unlock();
+    }
+  }
+
+  private void computeProgress() {
+    this.readLock.lock();
+    try {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       float mapProgress = 0f;
       float reduceProgress = 0f;
       for (Task task : this.tasks.values()) {
@@ -908,6 +1011,7 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
         } else {
           reduceProgress += (task.isFinished() ? 1f : task.getProgress());
         }
+<<<<<<< HEAD
       }
       if (this.numMapTasks != 0) {
         mapProgress = mapProgress / this.numMapTasks;
@@ -915,6 +1019,15 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
       if (this.numReduceTasks != 0) {
         reduceProgress = reduceProgress / this.numReduceTasks;
       }
+=======
+      }
+      if (this.numMapTasks != 0) {
+        mapProgress = mapProgress / this.numMapTasks;
+      }
+      if (this.numReduceTasks != 0) {
+        reduceProgress = reduceProgress / this.numReduceTasks;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       this.mapProgress = mapProgress;
       this.reduceProgress = reduceProgress;
     } finally {
@@ -1289,6 +1402,11 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
         msg.append(" too much CPU;");
       if (!smallMemory)
         msg.append(" too much RAM;");
+<<<<<<< HEAD
+=======
+      if (!smallCpu)
+          msg.append(" too much CPU;");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (!notChainJob)
         msg.append(" chainjob;");
       LOG.info(msg.toString());
@@ -1328,6 +1446,7 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
   
   private void actOnUnusableNode(NodeId nodeId, NodeState nodeState) {
     // rerun previously successful map tasks
+<<<<<<< HEAD
     List<TaskAttemptId> taskAttemptIdList = nodesToSucceededTaskAttempts.get(nodeId);
     if(taskAttemptIdList != null) {
       String mesg = "TaskAttempt killed because it ran on unusable node "
@@ -1337,6 +1456,23 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
           // reschedule only map tasks because their outputs maybe unusable
           LOG.info(mesg + ". AttemptId:" + id);
           eventHandler.handle(new TaskAttemptKillEvent(id, mesg));
+=======
+    // do this only if the job is still in the running state and there are
+    // running reducers
+    if (getInternalState() == JobStateInternal.RUNNING &&
+        !allReducersComplete()) {
+      List<TaskAttemptId> taskAttemptIdList =
+          nodesToSucceededTaskAttempts.get(nodeId);
+      if (taskAttemptIdList != null) {
+        String mesg = "TaskAttempt killed because it ran on unusable node "
+            + nodeId;
+        for (TaskAttemptId id : taskAttemptIdList) {
+          if (TaskType.MAP == id.getTaskId().getTaskType()) {
+            // reschedule only map tasks because their outputs maybe unusable
+            LOG.info(mesg + ". AttemptId:" + id);
+            eventHandler.handle(new TaskAttemptKillEvent(id, mesg));
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
       }
     }
@@ -1344,6 +1480,13 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
     // RMContainerAllocator
   }
 
+<<<<<<< HEAD
+=======
+  private boolean allReducersComplete() {
+    return numReduceTasks == 0 || numReduceTasks == getCompletedReduces();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /*
   private int getBlockSize() {
     String inputClassName = conf.get(MRJobConfig.INPUT_FORMAT_CLASS_ATTR);
@@ -2039,6 +2182,49 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
     @Override
     public JobStateInternal transition(JobImpl job, JobEvent event) {
       return job.checkReadyForCommit();
+<<<<<<< HEAD
+    }
+  }
+
+  private static class CommitSucceededTransition implements
+      SingleArcTransition<JobImpl, JobEvent> {
+    @Override
+    public void transition(JobImpl job, JobEvent event) {
+      job.logJobHistoryFinishedEvent();
+      job.finished(JobStateInternal.SUCCEEDED);
+    }
+  }
+
+  private static class CommitFailedTransition implements
+      SingleArcTransition<JobImpl, JobEvent> {
+    @Override
+    public void transition(JobImpl job, JobEvent event) {
+      JobCommitFailedEvent jcfe = (JobCommitFailedEvent)event;
+      job.addDiagnostic("Job commit failed: " + jcfe.getMessage());
+      job.eventHandler.handle(new CommitterJobAbortEvent(job.jobId,
+          job.jobContext,
+          org.apache.hadoop.mapreduce.JobStatus.State.FAILED));
+    }
+  }
+
+  private static class KilledDuringCommitTransition implements
+      SingleArcTransition<JobImpl, JobEvent> {
+    @Override
+    public void transition(JobImpl job, JobEvent event) {
+      job.setFinishTime();
+      job.eventHandler.handle(new CommitterJobAbortEvent(job.jobId,
+          job.jobContext,
+          org.apache.hadoop.mapreduce.JobStatus.State.KILLED));
+    }
+  }
+
+  private static class KilledDuringAbortTransition implements
+      SingleArcTransition<JobImpl, JobEvent> {
+    @Override
+    public void transition(JobImpl job, JobEvent event) {
+      job.unsuccessfulFinish(JobStateInternal.KILLED);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -2082,13 +2268,18 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
     }
   }
 
+  @VisibleForTesting
+  void decrementSucceededMapperCount() {
+    completedTaskCount--;
+    succeededMapTaskCount--;
+  }
+
   private static class MapTaskRescheduledTransition implements
       SingleArcTransition<JobImpl, JobEvent> {
     @Override
     public void transition(JobImpl job, JobEvent event) {
       //succeeded map task is restarted back
-      job.completedTaskCount--;
-      job.succeededMapTaskCount--;
+      job.decrementSucceededMapperCount();
     }
   }
 
@@ -2130,12 +2321,44 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
           .getCounterUpdates()) {
         job.jobCounters.findCounter(ci.getCounterKey()).increment(
           ci.getIncrementValue());
+<<<<<<< HEAD
+      }
+    }
+  }
+  
+  private static class UpdatedNodesTransition implements
+=======
       }
     }
   }
   
   private static class UpdatedNodesTransition implements
       SingleArcTransition<JobImpl, JobEvent> {
+    @Override
+    public void transition(JobImpl job, JobEvent event) {
+      JobUpdatedNodesEvent updateEvent = (JobUpdatedNodesEvent) event;
+      for(NodeReport nr: updateEvent.getUpdatedNodes()) {
+        NodeState nodeState = nr.getNodeState();
+        if(nodeState.isUnusable()) {
+          // act on the updates
+          job.actOnUnusableNode(nr.getNodeId(), nodeState);
+        }
+      }
+    }
+  }
+
+  private static class InternalTerminationTransition implements
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+      SingleArcTransition<JobImpl, JobEvent> {
+    JobStateInternal terminationState = null;
+    String jobHistoryString = null;
+    public InternalTerminationTransition(JobStateInternal stateInternal,
+        String jobHistoryString) {
+      this.terminationState = stateInternal;
+      //mostly a hack for jbhistoryserver
+      this.jobHistoryString = jobHistoryString;
+    }
+
     @Override
     public void transition(JobImpl job, JobEvent event) {
       JobUpdatedNodesEvent updateEvent = (JobUpdatedNodesEvent) event;
@@ -2170,6 +2393,7 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
               jobHistoryString, job.diagnostics);
       job.eventHandler.handle(new JobHistoryEvent(job.jobId, failedEvent));
       job.finished(terminationState);
+<<<<<<< HEAD
     }
   }
 
@@ -2179,6 +2403,17 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
     }
   }
 
+=======
+    }
+  }
+
+  private static class InternalErrorTransition extends InternalTerminationTransition {
+    public InternalErrorTransition(){
+      super(JobStateInternal.ERROR, JobStateInternal.ERROR.toString());
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static class InternalRebootTransition extends InternalTerminationTransition  {
     public InternalRebootTransition(){
       super(JobStateInternal.REBOOT, JobStateInternal.ERROR.toString());
@@ -2201,4 +2436,12 @@ public class JobImpl implements org.apache.hadoop.mapreduce.v2.app.job.Job,
   public int getMaxFetchFailuresNotifications() {
     return maxFetchFailuresNotifications;
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public void setJobPriority(Priority priority) {
+    this.jobPriority = priority;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

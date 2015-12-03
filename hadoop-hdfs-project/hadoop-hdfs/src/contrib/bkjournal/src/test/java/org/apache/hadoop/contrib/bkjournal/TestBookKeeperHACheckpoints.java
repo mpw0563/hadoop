@@ -32,6 +32,13 @@ import org.junit.BeforeClass;
  * using a bookkeeper journal manager as the shared directory
  */
 public class TestBookKeeperHACheckpoints extends TestStandbyCheckpoints {
+<<<<<<< HEAD
+=======
+  //overwrite the nn count
+ static{
+   TestStandbyCheckpoints.NUM_NNS = 2;
+ }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static BKJMUtil bkutil = null;
   static int numBookies = 3;
   static int journalCount = 0;
@@ -57,8 +64,12 @@ public class TestBookKeeperHACheckpoints extends TestStandbyCheckpoints {
       .build();
     cluster.waitActive();
 
+<<<<<<< HEAD
     nn0 = cluster.getNameNode(0);
     nn1 = cluster.getNameNode(1);
+=======
+    setNNs();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     fs = HATestUtil.configureFailoverFs(cluster, conf);
 
     cluster.transitionToActive(0);

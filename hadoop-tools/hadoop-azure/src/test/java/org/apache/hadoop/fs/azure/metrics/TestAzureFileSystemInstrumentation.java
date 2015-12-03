@@ -48,6 +48,10 @@ import org.apache.hadoop.fs.azure.AzureBlobStorageTestAccount;
 import org.apache.hadoop.fs.azure.AzureException;
 import org.apache.hadoop.fs.azure.AzureNativeFileSystemStore;
 import org.apache.hadoop.fs.azure.NativeAzureFileSystem;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.io.IOUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.metrics2.MetricsRecordBuilder;
 import org.apache.hadoop.metrics2.MetricsTag;
 import org.hamcrest.BaseMatcher;
@@ -405,6 +409,7 @@ public class TestAzureFileSystemInstrumentation {
 
   @Test
   public void testClientErrorMetrics() throws Exception {
+<<<<<<< HEAD
     String directoryName = "metricsTestDirectory_ClientError";
     Path directoryPath = new Path("/" + directoryName);
     assertTrue(fs.mkdirs(directoryPath));
@@ -416,11 +421,36 @@ public class TestAzureFileSystemInstrumentation {
       } catch (AzureException ex) {
         assertTrue("Unexpected exception: " + ex,
             ex.getMessage().contains("lease"));
+=======
+    String fileName = "metricsTestFile_ClientError";
+    Path filePath = new Path("/"+fileName);
+    final int FILE_SIZE = 100;
+    OutputStream outputStream = null;
+    String leaseID = null;
+    try {
+      // Create a file
+      outputStream = fs.create(filePath);
+      leaseID = testAccount.acquireShortLease(fileName);
+      try {
+        outputStream.write(new byte[FILE_SIZE]);
+        outputStream.close();
+        assertTrue("Should've thrown", false);
+      } catch (AzureException ex) {
+        assertTrue("Unexpected exception: " + ex,
+          ex.getMessage().contains("lease"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       assertEquals(1, AzureMetricsTestUtil.getLongCounterValue(getInstrumentation(), WASB_CLIENT_ERRORS));
       assertEquals(0, AzureMetricsTestUtil.getLongCounterValue(getInstrumentation(), WASB_SERVER_ERRORS));
     } finally {
+<<<<<<< HEAD
       testAccount.releaseLease(leaseID, directoryName);
+=======
+      if(leaseID != null){
+        testAccount.releaseLease(leaseID, fileName);
+      }
+      IOUtils.closeStream(outputStream);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 

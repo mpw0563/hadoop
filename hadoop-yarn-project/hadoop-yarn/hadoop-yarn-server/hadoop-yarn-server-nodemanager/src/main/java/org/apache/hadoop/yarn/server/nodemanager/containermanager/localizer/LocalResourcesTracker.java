@@ -33,7 +33,12 @@ interface LocalResourcesTracker
 
   boolean remove(LocalizedResource req, DeletionService delService);
 
+<<<<<<< HEAD
   Path getPathForLocalization(LocalResourceRequest req, Path localDirPath);
+=======
+  Path getPathForLocalization(LocalResourceRequest req, Path localDirPath,
+      DeletionService delService);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   String getUser();
 

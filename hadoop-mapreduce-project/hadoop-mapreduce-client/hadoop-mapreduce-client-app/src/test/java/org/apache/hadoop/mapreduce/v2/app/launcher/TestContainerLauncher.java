@@ -30,6 +30,11 @@ import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.protocolrecords.IncreaseContainersResourceRequest;
+import org.apache.hadoop.yarn.api.protocolrecords.IncreaseContainersResourceResponse;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Assert;
 
 import org.apache.commons.logging.Log;
@@ -449,5 +454,17 @@ public class TestContainerLauncher {
           "Dummy function cause"));
       throw new IOException(e);
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public IncreaseContainersResourceResponse increaseContainersResource(
+        IncreaseContainersResourceRequest request) throws IOException,
+        IOException {
+      Exception e = new Exception("Dummy function", new Exception(
+          "Dummy function cause"));
+      throw new IOException(e);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

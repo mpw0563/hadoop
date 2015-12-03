@@ -21,7 +21,10 @@ package org.apache.hadoop.mapred.lib;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
+<<<<<<< HEAD
 import org.apache.hadoop.io.WritableComparable;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Partitioner;
@@ -32,7 +35,7 @@ import org.apache.hadoop.mapred.Partitioner;
  */
 @InterfaceAudience.Public
 @InterfaceStability.Stable
-public class TotalOrderPartitioner<K extends WritableComparable<?>,V>
+public class TotalOrderPartitioner<K ,V>
     extends org.apache.hadoop.mapreduce.lib.partition.TotalOrderPartitioner<K, V>
     implements Partitioner<K,V> {
 

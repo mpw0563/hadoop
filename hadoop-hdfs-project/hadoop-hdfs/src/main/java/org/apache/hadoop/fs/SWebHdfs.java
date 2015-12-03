@@ -46,6 +46,23 @@ public class SWebHdfs extends DelegateToFileSystem {
    */
   SWebHdfs(URI theUri, Configuration conf)
       throws IOException, URISyntaxException {
+<<<<<<< HEAD
     super(theUri, new SWebHdfsFileSystem(), conf, SCHEME, false);
+=======
+    super(theUri, createSWebHdfsFileSystem(conf), conf, SCHEME, false);
+  }
+
+  /**
+   * Returns a new {@link SWebHdfsFileSystem}, with the given configuration.
+   *
+   * @param conf configuration
+   * @return new SWebHdfsFileSystem
+   */
+  private static SWebHdfsFileSystem createSWebHdfsFileSystem(
+      Configuration conf) {
+    SWebHdfsFileSystem fs = new SWebHdfsFileSystem();
+    fs.setConf(conf);
+    return fs;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

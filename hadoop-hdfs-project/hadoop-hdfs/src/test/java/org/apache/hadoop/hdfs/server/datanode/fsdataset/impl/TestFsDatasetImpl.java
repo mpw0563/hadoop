@@ -180,7 +180,11 @@ public class TestFsDatasetImpl {
           anyListOf(NamespaceInfo.class)))
           .thenReturn(builder);
 
+<<<<<<< HEAD
       dataset.addVolume(loc, nsInfos);
+=======
+      dataset.addVolume(loc, builder.getStorageDirectory(), nsInfos);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     assertEquals(totalVolumes, getNumVolumes());
@@ -259,7 +263,11 @@ public class TestFsDatasetImpl {
         anyListOf(NamespaceInfo.class)))
         .thenReturn(builder);
 
+<<<<<<< HEAD
     dataset.addVolume(loc, nsInfos);
+=======
+    dataset.addVolume(loc, sd, nsInfos);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals(numExistingVolumes + 1, getNumVolumes());
 
     when(storage.getNumStorageDirs()).thenReturn(numExistingVolumes + 1);
@@ -355,7 +363,11 @@ public class TestFsDatasetImpl {
     }
 
     try {
+<<<<<<< HEAD
       spyDataset.addVolume(location, nsInfos);
+=======
+      spyDataset.addVolume(location, sd, nsInfos);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fail("Expect to throw MultipleIOException");
     } catch (MultipleIOException e) {
     }
@@ -365,12 +377,22 @@ public class TestFsDatasetImpl {
   
   @Test
   public void testDeletingBlocks() throws IOException {
+<<<<<<< HEAD
     MiniDFSCluster cluster = new MiniDFSCluster.Builder(new HdfsConfiguration()).build();
+=======
+    HdfsConfiguration conf = new HdfsConfiguration();
+    MiniDFSCluster cluster = new MiniDFSCluster.Builder(conf).build();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       cluster.waitActive();
       DataNode dn = cluster.getDataNodes().get(0);
       
+<<<<<<< HEAD
       FsDatasetImpl ds = (FsDatasetImpl) DataNodeTestUtils.getFSDataset(dn);
+=======
+      FsDatasetSpi<?> ds = DataNodeTestUtils.getFSDataset(dn);
+      ds.addBlockPool(BLOCKPOOL, conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       FsVolumeImpl vol;
       try (FsDatasetSpi.FsVolumeReferences volumes = ds.getFsVolumeReferences()) {
         vol = (FsVolumeImpl)volumes.get(0);
@@ -378,6 +400,7 @@ public class TestFsDatasetImpl {
 
       ExtendedBlock eb;
       ReplicaInfo info;
+<<<<<<< HEAD
       List<Block> blockList = new ArrayList<Block>();
       for (int i = 1; i <= 63; i++) {
         eb = new ExtendedBlock(BLOCKPOOL, i, 1, 1000 + i);
@@ -387,6 +410,13 @@ public class TestFsDatasetImpl {
         info.getBlockFile().createNewFile();
         info.getMetaFile().createNewFile();
         blockList.add(info);
+=======
+      List<Block> blockList = new ArrayList<>();
+      for (int i = 1; i <= 63; i++) {
+        eb = new ExtendedBlock(BLOCKPOOL, i, 1, 1000 + i);
+        cluster.getFsDatasetTestUtils(0).createFinalizedReplica(eb);
+        blockList.add(eb.getLocalBlock());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       ds.invalidate(BLOCKPOOL, blockList.toArray(new Block[0]));
       try {
@@ -398,12 +428,17 @@ public class TestFsDatasetImpl {
 
       blockList.clear();
       eb = new ExtendedBlock(BLOCKPOOL, 64, 1, 1064);
+<<<<<<< HEAD
       info = new FinalizedReplica(
           eb.getLocalBlock(), vol, vol.getCurrentDir().getParentFile());
       ds.volumeMap.add(BLOCKPOOL, info);
       info.getBlockFile().createNewFile();
       info.getMetaFile().createNewFile();
       blockList.add(info);
+=======
+      cluster.getFsDatasetTestUtils(0).createFinalizedReplica(eb);
+      blockList.add(eb.getLocalBlock());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ds.invalidate(BLOCKPOOL, blockList.toArray(new Block[0]));
       try {
         Thread.sleep(1000);

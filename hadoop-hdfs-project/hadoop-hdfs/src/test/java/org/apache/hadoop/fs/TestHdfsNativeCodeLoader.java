@@ -17,7 +17,10 @@
  */
 package org.apache.hadoop.fs;
 
+<<<<<<< HEAD
 import org.junit.Ignore;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,7 +39,10 @@ public class TestHdfsNativeCodeLoader {
   }
 
   @Test
+<<<<<<< HEAD
   @Ignore
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void testNativeCodeLoaded() {
     if (requireTestJni() == false) {
       LOG.info("TestNativeCodeLoader: libhadoop.so testing is not required.");

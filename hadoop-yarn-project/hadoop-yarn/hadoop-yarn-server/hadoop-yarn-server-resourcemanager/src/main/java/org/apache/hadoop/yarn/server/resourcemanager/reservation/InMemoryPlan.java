@@ -32,6 +32,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.hadoop.yarn.api.records.ReservationId;
 import org.apache.hadoop.yarn.api.records.Resource;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.exceptions.PlanningException;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.planning.Planner;
 import org.apache.hadoop.yarn.server.resourcemanager.reservation.planning.ReservationAgent;
@@ -53,6 +58,10 @@ public class InMemoryPlan implements Plan {
   private static final Logger LOG = LoggerFactory.getLogger(InMemoryPlan.class);
 
   private static final Resource ZERO_RESOURCE = Resource.newInstance(0, 0);
+<<<<<<< HEAD
+=======
+  private final RMStateStore rmStateStore;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private TreeMap<ReservationInterval, Set<InMemoryReservationAllocation>> currentReservations =
       new TreeMap<ReservationInterval, Set<InMemoryReservationAllocation>>();
@@ -85,15 +94,28 @@ public class InMemoryPlan implements Plan {
   public InMemoryPlan(QueueMetrics queueMetrics, SharingPolicy policy,
       ReservationAgent agent, Resource totalCapacity, long step,
       ResourceCalculator resCalc, Resource minAlloc, Resource maxAlloc,
+<<<<<<< HEAD
       String queueName, Planner replanner, boolean getMoveOnExpiry) {
     this(queueMetrics, policy, agent, totalCapacity, step, resCalc, minAlloc,
         maxAlloc, queueName, replanner, getMoveOnExpiry, new UTCClock());
+=======
+      String queueName, Planner replanner, boolean getMoveOnExpiry,
+      RMContext rmContext) {
+    this(queueMetrics, policy, agent, totalCapacity, step, resCalc, minAlloc,
+        maxAlloc, queueName, replanner, getMoveOnExpiry, rmContext,
+        new UTCClock());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public InMemoryPlan(QueueMetrics queueMetrics, SharingPolicy policy,
       ReservationAgent agent, Resource totalCapacity, long step,
       ResourceCalculator resCalc, Resource minAlloc, Resource maxAlloc,
+<<<<<<< HEAD
       String queueName, Planner replanner, boolean getMoveOnExpiry, Clock clock) {
+=======
+      String queueName, Planner replanner, boolean getMoveOnExpiry,
+      RMContext rmContext, Clock clock) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.queueMetrics = queueMetrics;
     this.policy = policy;
     this.agent = agent;
@@ -107,6 +129,10 @@ public class InMemoryPlan implements Plan {
     this.replanner = replanner;
     this.getMoveOnExpiry = getMoveOnExpiry;
     this.clock = clock;
+<<<<<<< HEAD
+=======
+    this.rmStateStore = rmContext.getStateStore();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Override
@@ -168,8 +194,13 @@ public class InMemoryPlan implements Plan {
   }
 
   @Override
+<<<<<<< HEAD
   public boolean addReservation(ReservationAllocation reservation)
       throws PlanningException {
+=======
+  public boolean addReservation(ReservationAllocation reservation,
+      boolean isRecovering) throws PlanningException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Verify the allocation is memory based otherwise it is not supported
     InMemoryReservationAllocation inMemReservation =
         (InMemoryReservationAllocation) reservation;
@@ -192,9 +223,22 @@ public class InMemoryPlan implements Plan {
       }
       // Validate if we can accept this reservation, throws exception if
       // validation fails
+<<<<<<< HEAD
       policy.validate(this, inMemReservation);
       // we record here the time in which the allocation has been accepted
       reservation.setAcceptanceTimestamp(clock.getTime());
+=======
+      if (!isRecovering) {
+        policy.validate(this, inMemReservation);
+        // we record here the time in which the allocation has been accepted
+        reservation.setAcceptanceTimestamp(clock.getTime());
+        if (rmStateStore != null) {
+          rmStateStore.storeNewReservation(
+              ReservationSystemUtil.buildStateProto(inMemReservation),
+              getQueueName(), inMemReservation.getReservationId().toString());
+        }
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ReservationInterval searchInterval =
           new ReservationInterval(inMemReservation.getStartTime(),
               inMemReservation.getEndTime());
@@ -244,7 +288,11 @@ public class InMemoryPlan implements Plan {
         return result;
       }
       try {
+<<<<<<< HEAD
         result = addReservation(reservation);
+=======
+        result = addReservation(reservation, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } catch (PlanningException e) {
         LOG.error("Unable to update reservation: {} from plan due to {}.",
             reservation.getReservationId(), e.getMessage());
@@ -255,7 +303,11 @@ public class InMemoryPlan implements Plan {
         return result;
       } else {
         // rollback delete
+<<<<<<< HEAD
         addReservation(currReservation);
+=======
+        addReservation(currReservation, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         LOG.info("Rollbacked update reservation: {} from plan.",
             reservation.getReservationId());
         return result;
@@ -273,6 +325,13 @@ public class InMemoryPlan implements Plan {
     Set<InMemoryReservationAllocation> reservations =
         currentReservations.get(searchInterval);
     if (reservations != null) {
+<<<<<<< HEAD
+=======
+      if (rmStateStore != null) {
+        rmStateStore.removeReservation(getQueueName(),
+            reservation.getReservationId().toString());
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (!reservations.remove(reservation)) {
         LOG.error("Unable to remove reservation: {} from plan.",
             reservation.getReservationId());

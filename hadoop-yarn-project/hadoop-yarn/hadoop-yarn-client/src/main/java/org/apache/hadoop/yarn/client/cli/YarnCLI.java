@@ -33,19 +33,37 @@ public abstract class YarnCLI extends Configured implements Tool {
   public static final String STATUS_CMD = "status";
   public static final String LIST_CMD = "list";
   public static final String KILL_CMD = "kill";
+<<<<<<< HEAD
   public static final String MOVE_TO_QUEUE_CMD = "movetoqueue";
   public static final String HELP_CMD = "help";
+=======
+  public static final String FAIL_CMD = "fail";
+  public static final String MOVE_TO_QUEUE_CMD = "movetoqueue";
+  public static final String HELP_CMD = "help";
+  public static final String SIGNAL_CMD = "signal";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected PrintStream sysout;
   protected PrintStream syserr;
   protected YarnClient client;
 
   public YarnCLI() {
     super(new YarnConfiguration());
+<<<<<<< HEAD
     client = YarnClient.createYarnClient();
+=======
+    client = createYarnClient();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     client.init(getConf());
     client.start();
   }
 
+<<<<<<< HEAD
+=======
+  protected YarnClient createYarnClient() {
+    return YarnClient.createYarnClient();
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void setSysOutPrintStream(PrintStream sysout) {
     this.sysout = sysout;
   }

@@ -18,8 +18,11 @@
 package org.apache.hadoop.hdfs.protocolPB;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.Map;
 
 import com.google.common.base.Optional;
@@ -29,9 +32,16 @@ import org.apache.hadoop.conf.ReconfigurationUtil.PropertyChange;
 import org.apache.hadoop.hdfs.client.BlockReportOptions;
 import org.apache.hadoop.hdfs.protocol.BlockLocalPathInfo;
 import org.apache.hadoop.hdfs.protocol.ClientDatanodeProtocol;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.HdfsBlocksMetadata;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.DeleteBlockPoolRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.DeleteBlockPoolResponseProto;
+=======
+import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.DeleteBlockPoolRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.DeleteBlockPoolResponseProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetBalancerBandwidthRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetBalancerBandwidthResponseProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetBlockLocalPathInfoRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetBlockLocalPathInfoResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetDatanodeInfoRequestProto;
@@ -39,9 +49,12 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetDat
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetReconfigurationStatusConfigChangeProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetReconfigurationStatusRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetReconfigurationStatusResponseProto;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetHdfsBlockLocationsRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetHdfsBlockLocationsResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetHdfsBlockLocationsResponseProto.Builder;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetReplicaVisibleLengthRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.GetReplicaVisibleLengthResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.ListReconfigurablePropertiesRequestProto;
@@ -54,12 +67,16 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.StartR
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.StartReconfigurationResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.TriggerBlockReportRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientDatanodeProtocolProtos.TriggerBlockReportResponseProto;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.security.token.block.BlockTokenIdentifier;
 import org.apache.hadoop.security.proto.SecurityProtos.TokenProto;
 import org.apache.hadoop.security.token.Token;
 
 import com.google.common.primitives.Longs;
 import com.google.protobuf.ByteString;
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
 
@@ -95,7 +112,11 @@ public class ClientDatanodeProtocolServerSideTranslatorPB implements
       throws ServiceException {
     long len;
     try {
+<<<<<<< HEAD
       len = impl.getReplicaVisibleLength(PBHelper.convert(request.getBlock()));
+=======
+      len = impl.getReplicaVisibleLength(PBHelperClient.convert(request.getBlock()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (IOException e) {
       throw new ServiceException(e);
     }
@@ -132,17 +153,28 @@ public class ClientDatanodeProtocolServerSideTranslatorPB implements
       throws ServiceException {
     BlockLocalPathInfo resp;
     try {
+<<<<<<< HEAD
       resp = impl.getBlockLocalPathInfo(PBHelper.convert(request.getBlock()), PBHelper.convert(request.getToken()));
+=======
+      resp = impl.getBlockLocalPathInfo(
+                 PBHelperClient.convert(request.getBlock()),
+                 PBHelperClient.convert(request.getToken()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (IOException e) {
       throw new ServiceException(e);
     }
     return GetBlockLocalPathInfoResponseProto.newBuilder()
+<<<<<<< HEAD
         .setBlock(PBHelper.convert(resp.getBlock()))
+=======
+        .setBlock(PBHelperClient.convert(resp.getBlock()))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .setLocalPath(resp.getBlockPath()).setLocalMetaPath(resp.getMetaPath())
         .build();
   }
 
   @Override
+<<<<<<< HEAD
   public GetHdfsBlockLocationsResponseProto getHdfsBlockLocations(
       RpcController controller, GetHdfsBlockLocationsRequestProto request)
       throws ServiceException {
@@ -175,6 +207,8 @@ public class ClientDatanodeProtocolServerSideTranslatorPB implements
   }
 
   @Override
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public ShutdownDatanodeResponseProto shutdownDatanode(
       RpcController unused, ShutdownDatanodeRequestProto request)
       throws ServiceException {
@@ -191,7 +225,11 @@ public class ClientDatanodeProtocolServerSideTranslatorPB implements
     GetDatanodeInfoResponseProto res;
     try {
       res = GetDatanodeInfoResponseProto.newBuilder()
+<<<<<<< HEAD
           .setLocalInfo(PBHelper.convert(impl.getDatanodeInfo())).build();
+=======
+          .setLocalInfo(PBHelperClient.convert(impl.getDatanodeInfo())).build();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (IOException e) {
       throw new ServiceException(e);
     }
@@ -274,4 +312,21 @@ public class ClientDatanodeProtocolServerSideTranslatorPB implements
     }
     return TRIGGER_BLOCK_REPORT_RESP;
   }
+<<<<<<< HEAD
+=======
+
+  @Override
+  public GetBalancerBandwidthResponseProto getBalancerBandwidth(
+      RpcController controller, GetBalancerBandwidthRequestProto request)
+      throws ServiceException {
+    long bandwidth;
+    try {
+      bandwidth = impl.getBalancerBandwidth();
+    } catch (IOException e) {
+      throw new ServiceException(e);
+    }
+    return GetBalancerBandwidthResponseProto.newBuilder()
+        .setBandwidth(bandwidth).build();
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

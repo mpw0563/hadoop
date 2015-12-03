@@ -55,7 +55,12 @@ Required software for Linux include:
 
 1.  Java™ must be installed. Recommended Java versions are described at [HadoopJavaVersions](http://wiki.apache.org/hadoop/HadoopJavaVersions).
 
+<<<<<<< HEAD
 2.  ssh must be installed and sshd must be running to use the Hadoop scripts that manage remote Hadoop daemons.
+=======
+2.  ssh must be installed and sshd must be running to use the Hadoop scripts that manage remote Hadoop daemons if the optional start and stop scripts are to be used. Additionally, it is recommmended that pdsh also be installed for better ssh resource management.
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 $H3 Installing Software
 
 If your cluster doesn't have the requisite software you will need to install it.
@@ -63,7 +68,11 @@ If your cluster doesn't have the requisite software you will need to install it.
 For example on Ubuntu Linux:
 
       $ sudo apt-get install ssh
+<<<<<<< HEAD
       $ sudo apt-get install rsync
+=======
+      $ sudo apt-get install pdsh
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Download
 --------
@@ -139,7 +148,11 @@ If you cannot ssh to localhost without a passphrase, execute the following comma
 
       $ ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
       $ cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
+<<<<<<< HEAD
       $ export HADOOP\_PREFIX=/usr/local/hadoop
+=======
+      $ chmod 0600 ~/.ssh/authorized_keys
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 $H3 Execution
 

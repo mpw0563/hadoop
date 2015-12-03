@@ -54,9 +54,13 @@ import com.google.common.collect.Lists;
 public class NetworkTopology {
   public final static String DEFAULT_RACK = "/default-rack";
   public final static int DEFAULT_HOST_LEVEL = 2;
-  public static final Log LOG = 
+  public static final Log LOG =
     LogFactory.getLog(NetworkTopology.class);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public static class InvalidTopologyException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     public InvalidTopologyException(String msg) {
@@ -166,10 +170,11 @@ public class NetworkTopology {
      * @return true if the node is added; false otherwise
      */
     boolean add(Node n) {
-      if (!isAncestor(n))
-        throw new IllegalArgumentException(n.getName()+", which is located at "
-                +n.getNetworkLocation()+", is not a decendent of "
-                +getPath(this));
+      if (!isAncestor(n)) {
+        throw new IllegalArgumentException(n.getName()
+            + ", which is located at " + n.getNetworkLocation()
+            + ", is not a descendent of " + getPath(this));
+      }
       if (isParent(n)) {
         // this node is the parent of n; add n directly
         n.setParent(this);
@@ -227,12 +232,11 @@ public class NetworkTopology {
      * @return true if the node is deleted; false otherwise
      */
     boolean remove(Node n) {
-      String parent = n.getNetworkLocation();
-      String currentPath = getPath(this);
-      if (!isAncestor(n))
+      if (!isAncestor(n)) {
         throw new IllegalArgumentException(n.getName()
-                                           +", which is located at "
-                                           +parent+", is not a descendent of "+currentPath);
+            + ", which is located at " + n.getNetworkLocation()
+            + ", is not a descendent of " + getPath(this));
+      }
       if (isParent(n)) {
         // this node is the parent of n; remove n directly
         if (childrenMap.containsKey(n.getName())) {
@@ -250,15 +254,8 @@ public class NetworkTopology {
       } else {
         // find the next ancestor node: the parent node
         String parentName = getNextAncestorName(n);
-        InnerNode parentNode = null;
-        int i;
-        for(i=0; i<children.size(); i++) {
-          if (children.get(i).getName().equals(parentName)) {
-            parentNode = (InnerNode)children.get(i);
-            break;
-          }
-        }
-        if (parentNode==null) {
+        InnerNode parentNode = (InnerNode)childrenMap.get(parentName);
+        if (parentNode == null) {
           return false;
         }
         // remove n from the parent node
@@ -266,8 +263,18 @@ public class NetworkTopology {
         // if the parent node has no children, remove the parent node too
         if (isRemoved) {
           if (parentNode.getNumOfChildren() == 0) {
+<<<<<<< HEAD
             Node prev = children.remove(i);
             childrenMap.remove(prev.getName());
+=======
+            for(int i=0; i < children.size(); i++) {
+              if (children.get(i).getName().equals(parentName)) {
+                children.remove(i);
+                childrenMap.remove(parentName);
+                break;
+              }
+            }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           }
           numOfLeaves--;
         }
@@ -381,6 +388,16 @@ public class NetworkTopology {
   private int depthOfAllLeaves = -1;
   /** rack counter */
   protected int numOfRacks = 0;
+<<<<<<< HEAD
+=======
+
+  /**
+   * Whether or not this cluster has ever consisted of more than 1 rack,
+   * according to the NetworkTopology.
+   */
+  private boolean clusterEverBeenMultiRack = false;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /** the lock used to manage access */
   protected ReadWriteLock netlock = new ReentrantReadWriteLock();
 
@@ -419,7 +436,12 @@ public class NetworkTopology {
       if (clusterMap.add(node)) {
         LOG.info("Adding a new node: "+NodeBase.getPath(node));
         if (rack == null) {
-          numOfRacks++;
+          incrementRacks();
+        }
+        if (!(node instanceof InnerNode)) {
+          if (depthOfAllLeaves == -1) {
+            depthOfAllLeaves = node.getLevel();
+          }
         }
         if (!(node instanceof InnerNode)) {
           if (depthOfAllLeaves == -1) {
@@ -434,7 +456,18 @@ public class NetworkTopology {
       netlock.writeLock().unlock();
     }
   }
+<<<<<<< HEAD
   
+=======
+
+  protected void incrementRacks() {
+    numOfRacks++;
+    if (!clusterEverBeenMultiRack && numOfRacks > 1) {
+      clusterEverBeenMultiRack = true;
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Return a reference to the node given its string representation.
    * Default implementation delegates to {@link #getNode(String)}.
@@ -542,10 +575,25 @@ public class NetworkTopology {
       netlock.readLock().unlock();
     }
   }
+<<<<<<< HEAD
   
   /** Given a string representation of a rack for a specific network
    *  location
    * 
+=======
+
+  /**
+   * @return true if this cluster has ever consisted of multiple racks, even if
+   *         it is not now a multi-rack cluster.
+   */
+  public boolean hasClusterEverBeenMultiRack() {
+    return clusterEverBeenMultiRack;
+  }
+
+  /** Given a string representation of a rack for a specific network
+   *  location
+   *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * To be overridden in subclasses for specific NetworkTopology 
    * implementations, as alternative to overriding the full 
    * {@link #getRack(String)} method.
@@ -776,6 +824,15 @@ public class NetworkTopology {
         node = getNode(NodeBase.getPath(node));
         if (node == null) {
           continue;
+<<<<<<< HEAD
+=======
+        }
+        if ((NodeBase.getPath(node) + NodeBase.PATH_SEPARATOR_STR)
+            .startsWith(scope + NodeBase.PATH_SEPARATOR_STR)) {
+          excludedCountInScope++;
+        } else {
+          excludedCountOffScope++;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         if ((NodeBase.getPath(node) + NodeBase.PATH_SEPARATOR_STR)
             .startsWith(scope + NodeBase.PATH_SEPARATOR_STR)) {
@@ -789,6 +846,14 @@ public class NetworkTopology {
       if (n != null) {
         scopeNodeCount++;
       }
+<<<<<<< HEAD
+=======
+      Node n = getNode(scope);
+      int scopeNodeCount = 0;
+      if (n != null) {
+        scopeNodeCount++;
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (n instanceof InnerNode) {
         scopeNodeCount=((InnerNode)n).getNumOfLeaves();
       }

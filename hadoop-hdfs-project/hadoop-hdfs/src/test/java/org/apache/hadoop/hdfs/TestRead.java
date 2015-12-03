@@ -21,6 +21,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Assert;
 
 import org.apache.hadoop.conf.Configuration;
@@ -58,7 +62,11 @@ public class TestRead {
         new ShortCircuitTestContext("testEOFWithBlockReaderLocal");
     try {
       final Configuration conf = testContext.newConfiguration();
+<<<<<<< HEAD
       conf.setLong(DFSConfigKeys.DFS_CLIENT_CACHE_READAHEAD, BLOCK_SIZE);
+=======
+      conf.setLong(HdfsClientConfigKeys.DFS_CLIENT_CACHE_READAHEAD, BLOCK_SIZE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       MiniDFSCluster cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1)
           .format(true).build();
       testEOF(cluster, 1);
@@ -73,7 +81,11 @@ public class TestRead {
   @Test(timeout=60000)
   public void testEOFWithRemoteBlockReader() throws Exception {
     final Configuration conf = new Configuration();
+<<<<<<< HEAD
     conf.setLong(DFSConfigKeys.DFS_CLIENT_CACHE_READAHEAD, BLOCK_SIZE);
+=======
+    conf.setLong(HdfsClientConfigKeys.DFS_CLIENT_CACHE_READAHEAD, BLOCK_SIZE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MiniDFSCluster cluster = new MiniDFSCluster.Builder(conf).numDataNodes(1)
         .format(true).build();
     testEOF(cluster, 1);

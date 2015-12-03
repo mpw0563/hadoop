@@ -499,6 +499,15 @@ class FSDirRenameOp {
           + error);
       throw new IOException(error);
     }
+<<<<<<< HEAD
+=======
+
+    if (FSDirectory.isExactReservedName(src)
+        || FSDirectory.isExactReservedName(dst)) {
+      error = "Cannot rename to or from /.reserved";
+      throw new InvalidPathException(error);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private static void validateOverwrite(
@@ -729,8 +738,13 @@ class FSDirRenameOp {
       Preconditions.checkState(oldDstChild != null);
       List<INode> removedINodes = new ChunkedArrayList<>();
       List<Long> removedUCFiles = new ChunkedArrayList<>();
+<<<<<<< HEAD
       INode.ReclaimContext context = new INode.ReclaimContext(bsps,
           collectedBlocks, removedINodes, removedUCFiles);
+=======
+      INode.ReclaimContext context = new INode.ReclaimContext(
+          bsps, collectedBlocks, removedINodes, removedUCFiles);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       final boolean filesDeleted;
       if (!oldDstChild.isInLatestSnapshot(dstIIP.getLatestSnapshotId())) {
         oldDstChild.destroyAndCollectBlocks(context);
@@ -740,6 +754,12 @@ class FSDirRenameOp {
             dstIIP.getLatestSnapshotId());
         filesDeleted = context.quotaDelta().getNsDelta() >= 0;
       }
+<<<<<<< HEAD
+=======
+      fsd.updateReplicationFactor(context.collectedBlocks()
+                                      .toUpdateReplicationInfo());
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       fsd.getFSNamesystem().removeLeasesAndINodes(
           removedUCFiles, removedINodes, false);
       return filesDeleted;

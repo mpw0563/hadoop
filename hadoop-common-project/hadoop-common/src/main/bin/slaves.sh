@@ -27,14 +27,21 @@
 #   HADOOP_SSH_OPTS Options passed to ssh when running remote commands.
 ##
 
-usage="Usage: slaves.sh [--config confdir] command..."
+function hadoop_usage
+{
+  echo "Usage: slaves.sh [--config confdir] command..."
+}
 
-# if no args specified, show usage
-if [ $# -le 0 ]; then
-  echo $usage
-  exit 1
+# let's locate libexec...
+if [[ -n "${HADOOP_PREFIX}" ]]; then
+  HADOOP_DEFAULT_LIBEXEC_DIR="${HADOOP_PREFIX}/libexec"
+else
+  this="${BASH_SOURCE-$0}"
+  bin=$(cd -P -- "$(dirname -- "${this}")" >/dev/null && pwd -P)
+  HADOOP_DEFAULT_LIBEXEC_DIR="${bin}/../libexec"
 fi
 
+<<<<<<< HEAD
 bin=`dirname "${BASH_SOURCE-$0}"`
 bin=`cd "$bin"; pwd`
 
@@ -44,24 +51,22 @@ HADOOP_LIBEXEC_DIR=${HADOOP_LIBEXEC_DIR:-$DEFAULT_LIBEXEC_DIR}
 
 if [ -f "${HADOOP_CONF_DIR}/hadoop-env.sh" ]; then
   . "${HADOOP_CONF_DIR}/hadoop-env.sh"
-fi
-
-# Where to start the script, see hadoop-config.sh
-# (it set up the variables based on command line options)
-if [ "$HADOOP_SLAVE_NAMES" != '' ] ; then
-  SLAVE_NAMES=$HADOOP_SLAVE_NAMES
+=======
+HADOOP_LIBEXEC_DIR="${HADOOP_LIBEXEC_DIR:-$HADOOP_DEFAULT_LIBEXEC_DIR}"
+# shellcheck disable=SC2034
+HADOOP_NEW_CONFIG=true
+if [[ -f "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh" ]]; then
+  . "${HADOOP_LIBEXEC_DIR}/hadoop-config.sh"
 else
-  SLAVE_FILE=${HADOOP_SLAVES:-${HADOOP_CONF_DIR}/slaves}
-  SLAVE_NAMES=$(cat "$SLAVE_FILE" | sed  's/#.*$//;/^$/d')
+  echo "ERROR: Cannot execute ${HADOOP_LIBEXEC_DIR}/hadoop-config.sh." 2>&1
+  exit 1
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 fi
 
-# start the daemons
-for slave in $SLAVE_NAMES ; do
- ssh $HADOOP_SSH_OPTS $slave $"${@// /\\ }" \
-   2>&1 | sed "s/^/$slave: /" &
- if [ "$HADOOP_SLAVE_SLEEP" != "" ]; then
-   sleep $HADOOP_SLAVE_SLEEP
- fi
-done
+# if no args specified, show usage
+if [[ $# -le 0 ]]; then
+  hadoop_exit_with_usage 1
+fi
 
-wait
+hadoop_connect_to_hosts "$@"
+

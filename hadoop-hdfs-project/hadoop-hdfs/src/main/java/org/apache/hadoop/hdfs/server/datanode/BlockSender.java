@@ -34,10 +34,18 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.fs.ChecksumException;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.DFSUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.protocol.datatransfer.PacketHeader;
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+import org.apache.hadoop.hdfs.HdfsConfiguration;
+import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+import org.apache.hadoop.hdfs.protocol.datatransfer.PacketHeader;
+import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsVolumeReference;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.LengthInputStream;
 import org.apache.hadoop.hdfs.util.DataTransferThrottler;
@@ -47,9 +55,14 @@ import org.apache.hadoop.io.ReadaheadPool.ReadaheadRequest;
 import org.apache.hadoop.io.nativeio.NativeIO;
 import org.apache.hadoop.net.SocketOutputStream;
 import org.apache.hadoop.util.DataChecksum;
+<<<<<<< HEAD
 import org.apache.htrace.Sampler;
 import org.apache.htrace.Trace;
 import org.apache.htrace.TraceScope;
+=======
+import org.apache.htrace.core.Sampler;
+import org.apache.htrace.core.TraceScope;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import static org.apache.hadoop.io.nativeio.NativeIO.POSIX.POSIX_FADV_DONTNEED;
 import static org.apache.hadoop.io.nativeio.NativeIO.POSIX.POSIX_FADV_SEQUENTIAL;
@@ -111,7 +124,11 @@ class BlockSender implements java.io.Closeable {
   private static final int IO_FILE_BUFFER_SIZE;
   static {
     HdfsConfiguration conf = new HdfsConfiguration();
+<<<<<<< HEAD
     IO_FILE_BUFFER_SIZE = DFSUtil.getIoFileBufferSize(conf);
+=======
+    IO_FILE_BUFFER_SIZE = DFSUtilClient.getIoFileBufferSize(conf);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   private static final int TRANSFERTO_BUFFER_SIZE = Math.max(
       IO_FILE_BUFFER_SIZE, MIN_BUFFER_WITH_TRANSFERTO);
@@ -150,6 +167,10 @@ class BlockSender implements java.io.Closeable {
   private final String clientTraceFmt;
   private volatile ChunkChecksum lastChunkChecksum = null;
   private DataNode datanode;
+<<<<<<< HEAD
+=======
+  private final FsDatasetSpi<?> dataset;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   /** The file descriptor of the block being sent */
   private FileDescriptor blockInFd;
@@ -193,7 +214,12 @@ class BlockSender implements java.io.Closeable {
    */
   BlockSender(ExtendedBlock block, long startOffset, long length,
               boolean corruptChecksumOk, boolean verifyChecksum,
+<<<<<<< HEAD
               boolean sendChecksum, DataNode datanode, String clientTraceFmt,
+=======
+              boolean sendChecksum, DataNode datanode,
+              final FsDatasetSpi<?> dataset, String clientTraceFmt,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               CachingStrategy cachingStrategy)
       throws IOException {
     try {
@@ -230,12 +256,17 @@ class BlockSender implements java.io.Closeable {
         this.readaheadLength = cachingStrategy.getReadahead().longValue();
       }
       this.datanode = datanode;
+<<<<<<< HEAD
+=======
+      this.dataset = dataset;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       
       if (verifyChecksum) {
         // To simplify implementation, callers may not specify verification
         // without sending.
         Preconditions.checkArgument(sendChecksum,
             "If verifying checksum, currently must also send it.");
+<<<<<<< HEAD
       }
       
       final Replica replica;
@@ -244,6 +275,16 @@ class BlockSender implements java.io.Closeable {
         replica = getReplica(block, datanode);
         replicaVisibleLength = replica.getVisibleLength();
       }
+=======
+      }
+      
+      final Replica replica;
+      final long replicaVisibleLength;
+      synchronized(dataset) {
+        replica = getReplica(block, datanode);
+        replicaVisibleLength = replica.getVisibleLength();
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // if there is a write in progress
       ChunkChecksum chunkChecksum = null;
       if (replica instanceof ReplicaBeingWritten) {
@@ -277,7 +318,11 @@ class BlockSender implements java.io.Closeable {
         (!is32Bit || length <= Integer.MAX_VALUE);
 
       // Obtain a reference before reading data
+<<<<<<< HEAD
       this.volumeRef = datanode.data.getVolume(block).obtainReference();
+=======
+      this.volumeRef = dataset.getVolume(block).obtainReference();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       /* 
        * (corruptChecksumOK, meta_file_exist): operation
@@ -291,7 +336,11 @@ class BlockSender implements java.io.Closeable {
         LengthInputStream metaIn = null;
         boolean keepMetaInOpen = false;
         try {
+<<<<<<< HEAD
           metaIn = datanode.data.getMetaDataInputStream(block);
+=======
+          metaIn = dataset.getMetaDataInputStream(block);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           if (!corruptChecksumOk || metaIn != null) {
             if (metaIn == null) {
               //need checksum but meta-data not found
@@ -390,7 +439,11 @@ class BlockSender implements java.io.Closeable {
       if (DataNode.LOG.isDebugEnabled()) {
         DataNode.LOG.debug("replica=" + replica);
       }
+<<<<<<< HEAD
       blockIn = datanode.data.getBlockInputStream(block, offset); // seek to offset
+=======
+      blockIn = dataset.getBlockInputStream(block, offset); // seek to offset
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (blockIn instanceof FileInputStream) {
         blockInFd = ((FileInputStream)blockIn).getFD();
       } else {
@@ -453,8 +506,15 @@ class BlockSender implements java.io.Closeable {
   
   private static Replica getReplica(ExtendedBlock block, DataNode datanode)
       throws ReplicaNotFoundException {
+<<<<<<< HEAD
     Replica replica = datanode.data.getReplica(block.getBlockPoolId(),
         block.getBlockId());
+=======
+    final FsDatasetSpi<?> dataset =
+        (FsDatasetSpi<?>) datanode.getDataset(block.getBlockPoolId());
+    Replica replica =
+        dataset.getReplica(block.getBlockPoolId(), block.getBlockId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (replica == null) {
       throw new ReplicaNotFoundException(block);
     }
@@ -645,7 +705,11 @@ class BlockSender implements java.io.Closeable {
     try {
       checksumIn.readFully(buf, checksumOffset, checksumLen);
     } catch (IOException e) {
+<<<<<<< HEAD
       LOG.warn(" Could not read or failed to veirfy checksum for data"
+=======
+      LOG.warn(" Could not read or failed to verify checksum for data"
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           + " at offset " + offset + " for block " + block, e);
       IOUtils.closeStream(checksumIn);
       checksumIn = null;
@@ -708,8 +772,13 @@ class BlockSender implements java.io.Closeable {
    */
   long sendBlock(DataOutputStream out, OutputStream baseStream, 
                  DataTransferThrottler throttler) throws IOException {
+<<<<<<< HEAD
     TraceScope scope =
         Trace.startSpan("sendBlock_" + block.getBlockId(), Sampler.NEVER);
+=======
+    final TraceScope scope = datanode.getTracer().
+        newScope("sendBlock_" + block.getBlockId());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       return doSendBlock(out, baseStream, throttler);
     } finally {

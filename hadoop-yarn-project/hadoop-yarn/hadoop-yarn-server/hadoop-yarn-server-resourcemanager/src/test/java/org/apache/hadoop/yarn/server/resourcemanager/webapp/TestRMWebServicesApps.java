@@ -1305,19 +1305,47 @@ public class TestRMWebServicesApps extends JerseyTestBase {
           WebServicesTestUtils.getXmlInt(element, "allocatedMB"),
           WebServicesTestUtils.getXmlInt(element, "allocatedVCores"),
           WebServicesTestUtils.getXmlInt(element, "runningContainers"),
+<<<<<<< HEAD
+=======
+          WebServicesTestUtils.getXmlFloat(element, "queueUsagePercentage"),
+          WebServicesTestUtils.getXmlFloat(element, "clusterUsagePercentage"),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           WebServicesTestUtils.getXmlInt(element, "preemptedResourceMB"),
           WebServicesTestUtils.getXmlInt(element, "preemptedResourceVCores"),
           WebServicesTestUtils.getXmlInt(element, "numNonAMContainerPreempted"),
           WebServicesTestUtils.getXmlInt(element, "numAMContainerPreempted"),
           WebServicesTestUtils.getXmlString(element, "logAggregationStatus"),
+<<<<<<< HEAD
           WebServicesTestUtils.getXmlBoolean(element, "unmanagedApplication"));
+=======
+          WebServicesTestUtils.getXmlBoolean(element, "unmanagedApplication"),
+          WebServicesTestUtils.getXmlString(element, "appNodeLabelExpression"),
+          WebServicesTestUtils.getXmlString(element, "amNodeLabelExpression"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
   public void verifyAppInfo(JSONObject info, RMApp app) throws JSONException,
       Exception {
 
+<<<<<<< HEAD
     assertEquals("incorrect number of elements", 30, info.length());
+=======
+    int expectedNumberOfElements = 32;
+    String appNodeLabelExpression = null;
+    String amNodeLabelExpression = null;
+    if (app.getApplicationSubmissionContext()
+        .getNodeLabelExpression() != null) {
+      expectedNumberOfElements++;
+      appNodeLabelExpression = info.getString("appNodeLabelExpression");
+    }
+    if (app.getAMResourceRequest().getNodeLabelExpression() != null) {
+      expectedNumberOfElements++;
+      amNodeLabelExpression = info.getString("amNodeLabelExpression");
+    }
+    assertEquals("incorrect number of elements", expectedNumberOfElements,
+        info.length());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     verifyAppInfoGeneric(app, info.getString("id"), info.getString("user"),
         info.getString("name"), info.getString("applicationType"),
@@ -1329,12 +1357,23 @@ public class TestRMWebServicesApps extends JerseyTestBase {
         info.getLong("elapsedTime"), info.getString("amHostHttpAddress"),
         info.getString("amContainerLogs"), info.getInt("allocatedMB"),
         info.getInt("allocatedVCores"), info.getInt("runningContainers"),
+<<<<<<< HEAD
+=======
+        (float) info.getDouble("queueUsagePercentage"),
+        (float) info.getDouble("clusterUsagePercentage"),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         info.getInt("preemptedResourceMB"),
         info.getInt("preemptedResourceVCores"),
         info.getInt("numNonAMContainerPreempted"),
         info.getInt("numAMContainerPreempted"),
         info.getString("logAggregationStatus"),
+<<<<<<< HEAD
         info.getBoolean("unmanagedApplication"));
+=======
+        info.getBoolean("unmanagedApplication"),
+        appNodeLabelExpression,
+        amNodeLabelExpression);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public void verifyAppInfoGeneric(RMApp app, String id, String user,
@@ -1343,9 +1382,17 @@ public class TestRMWebServicesApps extends JerseyTestBase {
       String diagnostics, long clusterId, long startedTime, long finishedTime,
       long elapsedTime, String amHostHttpAddress, String amContainerLogs,
       int allocatedMB, int allocatedVCores, int numContainers,
+<<<<<<< HEAD
       int preemptedResourceMB, int preemptedResourceVCores,
       int numNonAMContainerPreempted, int numAMContainerPreempted,
       String logAggregationStatus, boolean unmanagedApplication)
+=======
+      float queueUsagePerc, float clusterUsagePerc,
+      int preemptedResourceMB, int preemptedResourceVCores,
+      int numNonAMContainerPreempted, int numAMContainerPreempted,
+      String logAggregationStatus, boolean unmanagedApplication,
+      String appNodeLabelExpression, String amNodeLabelExpression)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       throws JSONException,
       Exception {
 
@@ -1381,6 +1428,11 @@ public class TestRMWebServicesApps extends JerseyTestBase {
         amContainerLogs.endsWith("/" + app.getUser()));
     assertEquals("allocatedMB doesn't match", 1024, allocatedMB);
     assertEquals("allocatedVCores doesn't match", 1, allocatedVCores);
+<<<<<<< HEAD
+=======
+    assertEquals("queueUsagePerc doesn't match", 50.0f, queueUsagePerc, 0.01f);
+    assertEquals("clusterUsagePerc doesn't match", 50.0f, clusterUsagePerc, 0.01f);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals("numContainers doesn't match", 1, numContainers);
     assertEquals("preemptedResourceMB doesn't match", app
         .getRMAppMetrics().getResourcePreempted().getMemory(),
@@ -1400,6 +1452,15 @@ public class TestRMWebServicesApps extends JerseyTestBase {
     assertEquals("unmanagedApplication doesn't match", app
         .getApplicationSubmissionContext().getUnmanagedAM(),
         unmanagedApplication);
+<<<<<<< HEAD
+=======
+    assertEquals("unmanagedApplication doesn't match",
+        app.getApplicationSubmissionContext().getNodeLabelExpression(),
+        appNodeLabelExpression);
+    assertEquals("unmanagedApplication doesn't match",
+        app.getAMResourceRequest().getNodeLabelExpression(),
+        amNodeLabelExpression);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
@@ -1635,7 +1696,11 @@ public class TestRMWebServicesApps extends JerseyTestBase {
         .getMasterContainer().getNodeHttpAddress(), nodeHttpAddress);
     WebServicesTestUtils.checkStringMatch("nodeId", appAttempt
         .getMasterContainer().getNodeId().toString(), nodeId);
+<<<<<<< HEAD
     assertTrue("logsLink doesn't match", logsLink.startsWith("//"));
+=======
+    assertTrue("logsLink doesn't match ", logsLink.startsWith("http://"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertTrue(
         "logsLink doesn't contain user info", logsLink.endsWith("/"
         + user));

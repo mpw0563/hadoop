@@ -123,7 +123,11 @@ public class TestHAAppend {
 
       if (!isTruncateReady) {
         TestFileTruncate.checkBlockRecovery(fileToTruncate,
+<<<<<<< HEAD
             cluster.getFileSystem(1));
+=======
+            cluster.getFileSystem(1), 300, 200);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       AppendTestUtil.checkFullFile(fs, fileToTruncate, truncatePos[0], data,
           fileToTruncate.toString());

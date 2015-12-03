@@ -25,6 +25,10 @@ import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.hdfs.protocolPB.JournalProtocolPB;
 import org.apache.hadoop.hdfs.protocolPB.PBHelper;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.protocolPB.PBHelperClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.qjournal.protocol.QJournalProtocol;
 import org.apache.hadoop.hdfs.qjournal.protocol.QJournalProtocolProtos;
 import org.apache.hadoop.hdfs.qjournal.protocol.QJournalProtocolProtos.AcceptRecoveryRequestProto;
@@ -161,7 +165,11 @@ public class QJournalProtocolTranslatorPB implements ProtocolMetaInterface,
         .setSegmentTxnId(segmentTxId)
         .setFirstTxnId(firstTxnId)
         .setNumTxns(numTxns)
+<<<<<<< HEAD
         .setRecords(PBHelper.getByteString(records))
+=======
+        .setRecords(PBHelperClient.getByteString(records))
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         .build();
     try {
       rpcProxy.journal(NULL_CONTROLLER, req);
@@ -312,7 +320,11 @@ public class QJournalProtocolTranslatorPB implements ProtocolMetaInterface,
       throw ProtobufHelper.getRemoteException(e);
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public void doFinalize(String jid) throws IOException {
     try {
@@ -356,6 +368,7 @@ public class QJournalProtocolTranslatorPB implements ProtocolMetaInterface,
   }
 
   @Override
+<<<<<<< HEAD
   public Long getJournalCTime(String journalId) throws IOException {
     try {
       GetJournalCTimeResponseProto response = rpcProxy.getJournalCTime(
@@ -364,12 +377,7 @@ public class QJournalProtocolTranslatorPB implements ProtocolMetaInterface,
             .setJid(convertJournalId(journalId))
             .build());
       return response.getResultCTime();
-    } catch (ServiceException e) {
-      throw ProtobufHelper.getRemoteException(e);
-    }
-  }
-
-  @Override
+=======
   public void discardSegments(String journalId, long startTxId)
       throws IOException {
     try {
@@ -377,8 +385,37 @@ public class QJournalProtocolTranslatorPB implements ProtocolMetaInterface,
           DiscardSegmentsRequestProto.newBuilder()
             .setJid(convertJournalId(journalId)).setStartTxId(startTxId)
             .build());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } catch (ServiceException e) {
       throw ProtobufHelper.getRemoteException(e);
     }
   }
+
+  @Override
+<<<<<<< HEAD
+  public void discardSegments(String journalId, long startTxId)
+      throws IOException {
+    try {
+      rpcProxy.discardSegments(NULL_CONTROLLER,
+          DiscardSegmentsRequestProto.newBuilder()
+            .setJid(convertJournalId(journalId)).setStartTxId(startTxId)
+            .build());
+=======
+  public Long getJournalCTime(String journalId) throws IOException {
+    try {
+      GetJournalCTimeResponseProto response = rpcProxy.getJournalCTime(
+          NULL_CONTROLLER,
+          GetJournalCTimeRequestProto.newBuilder()
+            .setJid(convertJournalId(journalId))
+            .build());
+      return response.getResultCTime();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    } catch (ServiceException e) {
+      throw ProtobufHelper.getRemoteException(e);
+    }
+  }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

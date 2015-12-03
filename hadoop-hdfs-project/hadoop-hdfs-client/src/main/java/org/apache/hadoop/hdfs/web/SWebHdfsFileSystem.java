@@ -20,8 +20,11 @@ package org.apache.hadoop.hdfs.web;
 import org.apache.hadoop.hdfs.client.HdfsClientConfigKeys;
 import org.apache.hadoop.io.Text;
 
+<<<<<<< HEAD
 import com.google.common.annotations.VisibleForTesting;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 public class SWebHdfsFileSystem extends WebHdfsFileSystem {
 
   @Override
@@ -39,10 +42,16 @@ public class SWebHdfsFileSystem extends WebHdfsFileSystem {
     return WebHdfsConstants.SWEBHDFS_TOKEN_KIND;
   }
 
+<<<<<<< HEAD
   @VisibleForTesting
   @Override
   public int getDefaultPort() {
     return getConf().getInt(HdfsClientConfigKeys.DFS_NAMENODE_HTTPS_PORT_KEY,
         HdfsClientConfigKeys.DFS_NAMENODE_HTTPS_PORT_DEFAULT);
+=======
+  @Override
+  protected int getDefaultPort() {
+    return HdfsClientConfigKeys.DFS_NAMENODE_HTTPS_PORT_DEFAULT;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

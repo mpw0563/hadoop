@@ -52,6 +52,7 @@ public abstract class SymlinkBaseTest {
   abstract protected String testBaseDir2() throws IOException;
   abstract protected URI testURI();
 
+<<<<<<< HEAD
   // Returns true if the filesystem is emulating symlink support. Certain
   // checks will be bypassed if that is the case.
   //
@@ -59,6 +60,8 @@ public abstract class SymlinkBaseTest {
     return false;
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected IOException unwrapException(IOException e) {
     return e;
   }
@@ -235,7 +238,10 @@ public abstract class SymlinkBaseTest {
   @Test(timeout=10000)
   /** Stat a link to a file */
   public void testStatLinkToFile() throws IOException {
+<<<<<<< HEAD
     assumeTrue(!emulatingSymlinksOnWindows());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path file = new Path(testBaseDir1()+"/file");
     Path linkToFile = new Path(testBaseDir1()+"/linkToFile");
     createAndWriteFile(file);
@@ -362,11 +368,14 @@ public abstract class SymlinkBaseTest {
   private void checkLink(Path linkAbs, Path expectedTarget, Path targetQual)
       throws IOException {
 
+<<<<<<< HEAD
     // If we are emulating symlinks then many of these checks will fail
     // so we skip them.
     //
     assumeTrue(!emulatingSymlinksOnWindows());
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path dir = new Path(testBaseDir1());
     // isFile/Directory
     assertTrue(wrapper.isFile(linkAbs));
@@ -663,7 +672,10 @@ public abstract class SymlinkBaseTest {
   @Test(timeout=10000)
   /** Create symlink through a symlink */
   public void testCreateLinkViaLink() throws IOException {
+<<<<<<< HEAD
     assumeTrue(!emulatingSymlinksOnWindows());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path dir1        = new Path(testBaseDir1());
     Path file        = new Path(testBaseDir1(), "file");
     Path linkToDir   = new Path(testBaseDir2(), "linkToDir");
@@ -706,7 +718,10 @@ public abstract class SymlinkBaseTest {
   @Test(timeout=10000)
   /** Test create symlink using the same path */
   public void testCreateLinkTwice() throws IOException {
+<<<<<<< HEAD
     assumeTrue(!emulatingSymlinksOnWindows());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path file = new Path(testBaseDir1(), "file");
     Path link = new Path(testBaseDir1(), "linkToFile");
     createAndWriteFile(file);
@@ -895,8 +910,12 @@ public abstract class SymlinkBaseTest {
     assertFalse(wrapper.exists(linkViaLink));
     // Check that we didn't rename the link target
     assertTrue(wrapper.exists(file));
+<<<<<<< HEAD
     assertTrue(wrapper.getFileLinkStatus(linkNewViaLink).isSymlink() ||
         emulatingSymlinksOnWindows());
+=======
+    assertTrue(wrapper.getFileLinkStatus(linkNewViaLink).isSymlink());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     readFile(linkNewViaLink);
   }
 
@@ -1034,8 +1053,12 @@ public abstract class SymlinkBaseTest {
     createAndWriteFile(file);
     wrapper.createSymlink(file, link1, false);
     wrapper.rename(link1, link2);
+<<<<<<< HEAD
     assertTrue(wrapper.getFileLinkStatus(link2).isSymlink() ||
         emulatingSymlinksOnWindows());
+=======
+    assertTrue(wrapper.getFileLinkStatus(link2).isSymlink());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     readFile(link2);
     readFile(file);
     assertFalse(wrapper.exists(link1));
@@ -1059,11 +1082,16 @@ public abstract class SymlinkBaseTest {
     }
     wrapper.rename(link, file1, Rename.OVERWRITE);
     assertFalse(wrapper.exists(link));
+<<<<<<< HEAD
 
     if (!emulatingSymlinksOnWindows()) {
       assertTrue(wrapper.getFileLinkStatus(file1).isSymlink());
       assertEquals(file2, wrapper.getLinkTarget(file1));
     }
+=======
+    assertTrue(wrapper.getFileLinkStatus(file1).isSymlink());
+    assertEquals(file2, wrapper.getLinkTarget(file1));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test(timeout=10000)
@@ -1125,7 +1153,10 @@ public abstract class SymlinkBaseTest {
   @Test(timeout=10000)
   /** Rename a symlink */
   public void testRenameSymlink() throws IOException {
+<<<<<<< HEAD
     assumeTrue(!emulatingSymlinksOnWindows());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path file  = new Path(testBaseDir1(), "file");
     Path link1 = new Path(testBaseDir1(), "linkToFile1");
     Path link2 = new Path(testBaseDir1(), "linkToFile2");
@@ -1223,7 +1254,10 @@ public abstract class SymlinkBaseTest {
   @Test(timeout=10000)
   /** Test rename the symlink's target */
   public void testRenameLinkTarget() throws IOException {
+<<<<<<< HEAD
     assumeTrue(!emulatingSymlinksOnWindows());
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     Path file    = new Path(testBaseDir1(), "file");
     Path fileNew = new Path(testBaseDir1(), "fileNew");
     Path link    = new Path(testBaseDir1(), "linkToFile");

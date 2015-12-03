@@ -212,6 +212,7 @@ class DataXceiverServer implements Runnable {
       this.closed = true;
     } catch (IOException ie) {
       LOG.warn(datanode.getDisplayName() + ":DataXceiverServer.kill(): ", ie);
+<<<<<<< HEAD
     }
   }
   
@@ -220,6 +221,16 @@ class DataXceiverServer implements Runnable {
     if (closed) {
       throw new IOException("Server closed.");
     }
+=======
+    }
+  }
+  
+  synchronized void addPeer(Peer peer, Thread t, DataXceiver xceiver)
+      throws IOException {
+    if (closed) {
+      throw new IOException("Server closed.");
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     peers.put(peer, t);
     peersXceiver.put(peer, xceiver);
   }
@@ -278,7 +289,16 @@ class DataXceiverServer implements Runnable {
   synchronized int getNumPeersXceiver() {
     return peersXceiver.size();
   }
+<<<<<<< HEAD
   
+=======
+
+  @VisibleForTesting
+  PeerServer getPeerServer() {
+    return peerServer;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   synchronized void releasePeer(Peer peer) {
     peers.remove(peer);
     peersXceiver.remove(peer);

@@ -18,18 +18,28 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.allocator;
 
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.nodelabels.RMNodeLabelsManager;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceLimits;
+=======
+import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
+import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerState;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ResourceLimits;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CSAssignment;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.SchedulingMode;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.common.fica.FiCaSchedulerApp;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.common.fica.FiCaSchedulerNode;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
 
+<<<<<<< HEAD
 /**
  * For an application, resource limits and resource requests, decide how to
  * allocate container. This is to make application resource allocation logic
@@ -113,3 +123,52 @@ public abstract class ContainerAllocator {
     return result;
   }
 }
+=======
+public class ContainerAllocator extends AbstractContainerAllocator {
+  AbstractContainerAllocator increaseContainerAllocator;
+  AbstractContainerAllocator regularContainerAllocator;
+
+  public ContainerAllocator(FiCaSchedulerApp application,
+      ResourceCalculator rc, RMContext rmContext) {
+    super(application, rc, rmContext);
+
+    increaseContainerAllocator =
+        new IncreaseContainerAllocator(application, rc, rmContext);
+    regularContainerAllocator =
+        new RegularContainerAllocator(application, rc, rmContext);
+  }
+
+  @Override
+  public CSAssignment assignContainers(Resource clusterResource,
+      FiCaSchedulerNode node, SchedulingMode schedulingMode,
+      ResourceLimits resourceLimits, RMContainer reservedContainer) {
+    if (reservedContainer != null) {
+      if (reservedContainer.getState() == RMContainerState.RESERVED) {
+        // It's a regular container
+        return regularContainerAllocator.assignContainers(clusterResource,
+            node, schedulingMode, resourceLimits, reservedContainer);
+      } else {
+        // It's a increase container
+        return increaseContainerAllocator.assignContainers(clusterResource,
+            node, schedulingMode, resourceLimits, reservedContainer);
+      }
+    } else {
+      /*
+       * Try to allocate increase container first, and if we failed to allocate
+       * anything, we will try to allocate regular container
+       */
+      CSAssignment assign =
+          increaseContainerAllocator.assignContainers(clusterResource, node,
+              schedulingMode, resourceLimits, null);
+      if (Resources.greaterThan(rc, clusterResource, assign.getResource(),
+          Resources.none())) {
+        return assign;
+      }
+
+      return regularContainerAllocator.assignContainers(clusterResource, node,
+          schedulingMode, resourceLimits, null);
+    }
+  }
+
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

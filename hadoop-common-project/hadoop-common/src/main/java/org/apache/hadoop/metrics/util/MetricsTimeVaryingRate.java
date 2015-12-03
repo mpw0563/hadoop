@@ -30,7 +30,9 @@ import org.apache.commons.logging.LogFactory;
  * This class also keeps track of the min and max rates along with 
  * a method to reset the min-max.
  *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
  */
+@Deprecated
 @InterfaceAudience.LimitedPrivate({"HDFS", "MapReduce"})
 public class MetricsTimeVaryingRate extends MetricsBase {
 
@@ -142,6 +144,7 @@ public class MetricsTimeVaryingRate extends MetricsBase {
    *
    * @param mr
    */
+  @Override
   public synchronized void pushMetric(final MetricsRecord mr) {
     intervalHeartBeat();
     try {

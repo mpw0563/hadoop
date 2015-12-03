@@ -31,7 +31,12 @@ public class LastBlockWithStatus {
 
   private final HdfsFileStatus fileStatus;
 
+<<<<<<< HEAD
   public LastBlockWithStatus(LocatedBlock lastBlock, HdfsFileStatus fileStatus) {
+=======
+  public LastBlockWithStatus(LocatedBlock lastBlock,
+      HdfsFileStatus fileStatus) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     this.lastBlock = lastBlock;
     this.fileStatus = fileStatus;
   }

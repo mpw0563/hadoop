@@ -20,12 +20,20 @@ package org.apache.hadoop.hdfs.server.blockmanagement;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.hdfs.protocol.Block;
 
+<<<<<<< HEAD
+=======
+import java.util.LinkedList;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * Subclass of {@link BlockInfo}, used for a block with replication scheme.
  */
 @InterfaceAudience.Private
 public class BlockInfoContiguous extends BlockInfo {
+<<<<<<< HEAD
   public static final BlockInfoContiguous[] EMPTY_ARRAY = {};
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   public BlockInfoContiguous(short size) {
     super(size);
@@ -36,6 +44,7 @@ public class BlockInfoContiguous extends BlockInfo {
   }
 
   /**
+<<<<<<< HEAD
    * Copy construction.
    * This is used to convert BlockReplicationInfoUnderConstruction
    * @param from BlockReplicationInfo to copy from.
@@ -45,6 +54,8 @@ public class BlockInfoContiguous extends BlockInfo {
   }
 
   /**
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Ensure that there is enough  space to include num more triplets.
    * @return first free triplet index.
    */
@@ -63,7 +74,11 @@ public class BlockInfoContiguous extends BlockInfo {
   }
 
   @Override
+<<<<<<< HEAD
   boolean addStorage(DatanodeStorageInfo storage) {
+=======
+  boolean addStorage(DatanodeStorageInfo storage, Block reportedBlock) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // find the last null node
     int lastNode = ensureCapacity(1);
     setStorageInfo(lastNode, storage);
@@ -107,6 +122,7 @@ public class BlockInfoContiguous extends BlockInfo {
   }
 
   @Override
+<<<<<<< HEAD
   void replaceBlock(BlockInfo newBlock) {
     assert newBlock instanceof BlockInfoContiguous;
     for (int i = this.numNodes() - 1; i >= 0; i--) {
@@ -119,5 +135,14 @@ public class BlockInfoContiguous extends BlockInfo {
       assert result == DatanodeStorageInfo.AddBlockResult.ADDED :
           "newBlock already exists.";
     }
+=======
+  public final boolean isStriped() {
+    return false;
+  }
+
+  @Override
+  final boolean hasNoStorage() {
+    return getStorageInfo(0) == null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

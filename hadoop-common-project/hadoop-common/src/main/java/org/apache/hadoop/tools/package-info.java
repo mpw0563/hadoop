@@ -15,7 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+<<<<<<< HEAD
 @InterfaceAudience.Private
 package org.apache.hadoop.tools;
 import org.apache.hadoop.classification.InterfaceAudience;
 
+=======
+package org.apache.hadoop.tools;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

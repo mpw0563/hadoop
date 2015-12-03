@@ -65,11 +65,16 @@ This impacted the total availability of the HDFS cluster in two major ways:
 * Planned maintenance events such as software or hardware upgrades on the
   NameNode machine would result in windows of cluster downtime.
 
+<<<<<<< HEAD
 The HDFS High Availability feature addresses the above problems by providing the option of running two redundant NameNodes in the same cluster in an Active/Passive configuration with a hot standby. This allows a fast failover to a new NameNode in the case that a machine crashes, or a graceful administrator-initiated failover for the purpose of planned maintenance.
+=======
+The HDFS High Availability feature addresses the above problems by providing the option of running two (or more, as of Hadoop 3.0.0) redundant NameNodes in the same cluster in an Active/Passive configuration with a hot standby(s). This allows a fast failover to a new NameNode in the case that a machine crashes, or a graceful administrator-initiated failover for the purpose of planned maintenance.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Architecture
 ------------
 
+<<<<<<< HEAD
 In a typical HA cluster, two separate machines are configured as NameNodes. At any point in time, exactly one of the NameNodes is in an *Active* state, and the other is in a *Standby* state. The Active NameNode is responsible for all client operations in the cluster, while the Standby is simply acting as a slave, maintaining enough state to provide a fast failover if necessary.
 
 In order for the Standby node to keep its state synchronized with the Active node, the current implementation requires that the two nodes both have access to a directory on a shared storage device (eg an NFS mount from a NAS). This restriction will likely be relaxed in future versions.
@@ -77,6 +82,15 @@ In order for the Standby node to keep its state synchronized with the Active nod
 When any namespace modification is performed by the Active node, it durably logs a record of the modification to an edit log file stored in the shared directory. The Standby node is constantly watching this directory for edits, and as it sees the edits, it applies them to its own namespace. In the event of a failover, the Standby will ensure that it has read all of the edits from the shared storage before promoting itself to the Active state. This ensures that the namespace state is fully synchronized before a failover occurs.
 
 In order to provide a fast failover, it is also necessary that the Standby node have up-to-date information regarding the location of blocks in the cluster. In order to achieve this, the DataNodes are configured with the location of both NameNodes, and send block location information and heartbeats to both.
+=======
+In a typical HA cluster, two or more separate machines are configured as NameNodes. At any point in time, exactly one of the NameNodes is in an *Active* state, and the others are in a *Standby* state. The Active NameNode is responsible for all client operations in the cluster, while the Standby is simply acting as a slave, maintaining enough state to provide a fast failover if necessary.
+
+In order for the Standby nodes to keep their state synchronized with the Active node, the current implementation requires that the nodes have access to a directory on a shared storage device (eg an NFS mount from a NAS). This restriction will likely be relaxed in future versions.
+
+When any namespace modification is performed by the Active node, it durably logs a record of the modification to an edit log file stored in the shared directory. The Standby nodes are constantly watching this directory for edits, and as it sees the edits, it applies them to its own namespace. In the event of a failover, the Standby will ensure that it has read all of the edits from the shared storage before promoting itself to the Active state. This ensures that the namespace state is fully synchronized before a failover occurs.
+
+In order to provide a fast failover, it is also necessary that the Standby nodes have up-to-date information regarding the location of blocks in the cluster. In order to achieve this, the DataNodes are configured with the location of all NameNodes, and send block location information and heartbeats to all the NameNodes.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 It is vital for the correct operation of an HA cluster that only one of the NameNodes be Active at a time. Otherwise, the namespace state would quickly diverge between the two, risking data loss or other incorrect results. In order to ensure this property and prevent the so-called "split-brain scenario," the administrator must configure at least one *fencing method* for the shared storage. During a failover, if it cannot be verified that the previous Active node has relinquished its Active state, the fencing process is responsible for cutting off the previous Active's access to the shared edits storage. This prevents it from making any further edits to the namespace, allowing the new Active to safely proceed with failover.
 
@@ -87,9 +101,15 @@ In order to deploy an HA cluster, you should prepare the following:
 
 * **NameNode machines** - the machines on which you run the Active and Standby NameNodes should have equivalent hardware to each other, and equivalent hardware to what would be used in a non-HA cluster.
 
+<<<<<<< HEAD
 * **Shared storage** - you will need to have a shared directory which both NameNode machines can have read/write access to. Typically this is a remote filer which supports NFS and is mounted on each of the NameNode machines. Currently only a single shared edits directory is supported. Thus, the availability of the system is limited by the availability of this shared edits directory, and therefore in order to remove all single points of failure there needs to be redundancy for the shared edits directory. Specifically, multiple network paths to the storage, and redundancy in the storage itself (disk, network, and power). Beacuse of this, it is recommended that the shared storage server be a high-quality dedicated NAS appliance rather than a simple Linux server.
 
 Note that, in an HA cluster, the Standby NameNode also performs checkpoints of the namespace state, and thus it is not necessary to run a Secondary NameNode, CheckpointNode, or BackupNode in an HA cluster. In fact, to do so would be an error. This also allows one who is reconfiguring a non-HA-enabled HDFS cluster to be HA-enabled to reuse the hardware which they had previously dedicated to the Secondary NameNode.
+=======
+* **Shared storage** - you will need to have a shared directory which the NameNode machines have read/write access to. Typically this is a remote filer which supports NFS and is mounted on each of the NameNode machines. Currently only a single shared edits directory is supported. Thus, the availability of the system is limited by the availability of this shared edits directory, and therefore in order to remove all single points of failure there needs to be redundancy for the shared edits directory. Specifically, multiple network paths to the storage, and redundancy in the storage itself (disk, network, and power). Beacuse of this, it is recommended that the shared storage server be a high-quality dedicated NAS appliance rather than a simple Linux server.
+
+Note that, in an HA cluster, the Standby NameNodes also perform checkpoints of the namespace state, and thus it is not necessary to run a Secondary NameNode, CheckpointNode, or BackupNode in an HA cluster. In fact, to do so would be an error. This also allows one who is reconfiguring a non-HA-enabled HDFS cluster to be HA-enabled to reuse the hardware which they had previously dedicated to the Secondary NameNode.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Deployment
 ----------
@@ -124,17 +144,28 @@ The order in which you set these configurations is unimportant, but the values y
 
     Configure with a list of comma-separated NameNode IDs. This will be used by
     DataNodes to determine all the NameNodes in the cluster. For example, if you
+<<<<<<< HEAD
     used "mycluster" as the nameservice ID previously, and you wanted to use "nn1"
     and "nn2" as the individual IDs of the NameNodes, you would configure this as
+=======
+    used "mycluster" as the nameservice ID previously, and you wanted to use "nn1","nn2" and "nn3" as the individual IDs of the NameNodes, you would configure this as
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     such:
 
         <property>
           <name>dfs.ha.namenodes.mycluster</name>
+<<<<<<< HEAD
           <value>nn1,nn2</value>
         </property>
 
     **Note:** Currently, only a maximum of two NameNodes may be configured per
     nameservice.
+=======
+          <value>nn1,nn2,nn3</value>
+        </property>
+
+    **Note:** The minimum number of NameNodes for HA is two, but you can configure more. Its suggested to not exceed 5 - with a recommended 3 NameNodes - due to communication overheads.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 *   **dfs.namenode.rpc-address.[nameservice ID].[name node ID]** - the fully-qualified RPC address for each NameNode to listen on
 
@@ -150,6 +181,13 @@ The order in which you set these configurations is unimportant, but the values y
           <name>dfs.namenode.rpc-address.mycluster.nn2</name>
           <value>machine2.example.com:8020</value>
         </property>
+<<<<<<< HEAD
+=======
+        <property>
+          <name>dfs.namenode.rpc-address.mycluster.nn3</name>
+          <value>machine3.example.com:8020</value>
+        </property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     **Note:** You may similarly configure the "**servicerpc-address**" setting if
     you so desire.
@@ -167,6 +205,13 @@ The order in which you set these configurations is unimportant, but the values y
           <name>dfs.namenode.http-address.mycluster.nn2</name>
           <value>machine2.example.com:50070</value>
         </property>
+<<<<<<< HEAD
+=======
+        <property>
+          <name>dfs.namenode.http-address.mycluster.nn3</name>
+          <value>machine3.example.com:50070</value>
+        </property>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     **Note:** If you have Hadoop's security features enabled, you should also set
     the *https-address* similarly for each NameNode.
@@ -174,9 +219,15 @@ The order in which you set these configurations is unimportant, but the values y
 *   **dfs.namenode.shared.edits.dir** - the location of the shared storage directory
 
     This is where one configures the path to the remote shared edits directory
+<<<<<<< HEAD
     which the Standby NameNode uses to stay up-to-date with all the file system
     changes the Active NameNode makes. **You should only configure one of these
     directories.** This directory should be mounted r/w on both NameNode machines.
+=======
+    which the Standby NameNodes use to stay up-to-date with all the file system
+    changes the Active NameNode makes. **You should only configure one of these
+    directories.** This directory should be mounted r/w on the NameNode machines.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     The value of this setting should be the absolute path to this directory on the
     NameNode machines. For example:
 
@@ -206,7 +257,11 @@ The order in which you set these configurations is unimportant, but the values y
     It is critical for correctness of the system that only one NameNode be in the
     Active state at any given time. Thus, during a failover, we first ensure that
     the Active NameNode is either in the Standby state, or the process has
+<<<<<<< HEAD
     terminated, before transitioning the other NameNode to the Active state. In
+=======
+    terminated, before transitioning another NameNode to the Active state. In
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     order to do this, you must configure at least one **fencing method.** These are
     configured as a carriage-return-separated list, which will be attempted in order
     until one indicates that fencing has succeeded. There are two methods which
@@ -323,7 +378,11 @@ After all of the necessary configuration options have been set, one must initial
 * If you have already formatted the NameNode, or are converting a
   non-HA-enabled cluster to be HA-enabled, you should now copy over the
   contents of your NameNode metadata directories to the other, unformatted
+<<<<<<< HEAD
   NameNode by running the command "*hdfs namenode -bootstrapStandby*" on the
+=======
+  NameNodes by running the command "*hdfs namenode -bootstrapStandby*" on the
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   unformatted NameNode. Running this command will also ensure that the shared
   edits directory (as configured by **dfs.namenode.shared.edits.dir**) contains
   sufficient edits transactions to be able to start both NameNodes.
@@ -332,7 +391,11 @@ After all of the necessary configuration options have been set, one must initial
   command "*hdfs -initializeSharedEdits*", which will initialize the shared
   edits directory with the edits data from the local NameNode edits directories.
 
+<<<<<<< HEAD
 At this point you may start both of your HA NameNodes as you normally would start a NameNode.
+=======
+At this point you may start all of your HA NameNodes as you normally would start a NameNode.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 You can visit each of the NameNodes' web pages separately by browsing to their configured HTTP addresses. You should notice that next to the configured address will be the HA state of the NameNode (either "standby" or "active".) Whenever an HA NameNode starts, it is initially in the Standby state.
 
@@ -481,7 +544,11 @@ Since automatic failover has been enabled in the configuration, the `start-dfs.s
 
 If you manually manage the services on your cluster, you will need to manually start the `zkfc` daemon on each of the machines that runs a NameNode. You can start the daemon by running:
 
+<<<<<<< HEAD
     [hdfs]$ $HADOOP_PREFIX/sbin/hadoop-daemon.sh --script $HADOOP_PREFIX/bin/hdfs start zkfc
+=======
+    [hdfs]$ $HADOOP_PREFIX/bin/hdfs --daemon start zkfc
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 ### Securing access to ZooKeeper
 

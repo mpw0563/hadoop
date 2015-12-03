@@ -57,4 +57,8 @@ public class ReplicationParam extends ShortParam {
     return getValue() != null? getValue()
         : (short)conf.getInt(DFS_REPLICATION_KEY, DFS_REPLICATION_DEFAULT);
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

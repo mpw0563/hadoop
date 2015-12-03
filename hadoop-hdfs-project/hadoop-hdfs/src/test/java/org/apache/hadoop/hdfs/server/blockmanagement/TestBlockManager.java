@@ -17,6 +17,10 @@
  */
 package org.apache.hadoop.hdfs.server.blockmanagement;
 
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.hdfs.server.common.HdfsServerConstants.BlockUCState.UNDER_CONSTRUCTION;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -50,6 +54,10 @@ import org.apache.hadoop.hdfs.server.datanode.DataNodeTestUtils;
 import org.apache.hadoop.hdfs.server.datanode.FinalizedReplica;
 import org.apache.hadoop.hdfs.server.datanode.ReplicaBeingWritten;
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.namenode.INodeId;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.namenode.NameNodeAdapter;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeRegistration;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeStorage;
@@ -88,6 +96,7 @@ public class TestBlockManager {
 
   private FSNamesystem fsn;
   private BlockManager bm;
+  private long mockINodeId;
 
   @Before
   public void setupMockCluster() throws IOException {
@@ -96,6 +105,8 @@ public class TestBlockManager {
              "need to set a dummy value here so it assumes a multi-rack cluster");
     fsn = Mockito.mock(FSNamesystem.class);
     Mockito.doReturn(true).when(fsn).hasWriteLock();
+    Mockito.doReturn(true).when(fsn).hasReadLock();
+    Mockito.doReturn(true).when(fsn).isRunning();
     bm = new BlockManager(fsn, conf);
     final String[] racks = {
         "/rackA",
@@ -108,6 +119,10 @@ public class TestBlockManager {
     nodes = Arrays.asList(DFSTestUtil.toDatanodeDescriptor(storages));
     rackA = nodes.subList(0, 3);
     rackB = nodes.subList(3, 6);
+<<<<<<< HEAD
+=======
+    mockINodeId = INodeId.ROOT_INODE_ID + 1;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private void addNodes(Iterable<DatanodeDescriptor> nodesToAdd) {
@@ -368,9 +383,14 @@ public class TestBlockManager {
       List<DatanodeDescriptor> origNodes)
       throws Exception {
     assertEquals(0, bm.numOfUnderReplicatedBlocks());
+<<<<<<< HEAD
     addBlockOnNodes(testIndex, origNodes);
     bm.processMisReplicatedBlocks();
     assertEquals(0, bm.numOfUnderReplicatedBlocks());
+=======
+    BlockInfo block = addBlockOnNodes(testIndex, origNodes);
+    assertFalse(bm.isNeededReplication(block, bm.countLiveNodes(block)));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   
@@ -383,7 +403,11 @@ public class TestBlockManager {
     for (int i = 1; i < pipeline.length; i++) {
       DatanodeStorageInfo storage = pipeline[i];
       bm.addBlock(storage, blockInfo, null);
+<<<<<<< HEAD
       blockInfo.addStorage(storage);
+=======
+      blockInfo.addStorage(storage, blockInfo);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -393,7 +417,11 @@ public class TestBlockManager {
 
     for (DatanodeDescriptor dn : nodes) {
       for (DatanodeStorageInfo storage : dn.getStorageInfos()) {
+<<<<<<< HEAD
         blockInfo.addStorage(storage);
+=======
+        blockInfo.addStorage(storage, blockInfo);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
     return blockInfo;
@@ -432,10 +460,21 @@ public class TestBlockManager {
   }
   
   private BlockInfo addBlockOnNodes(long blockId, List<DatanodeDescriptor> nodes) {
+<<<<<<< HEAD
     BlockCollection bc = Mockito.mock(BlockCollection.class);
     Mockito.doReturn((short)3).when(bc).getPreferredBlockReplication();
     BlockInfo blockInfo = blockOnNodes(blockId, nodes);
 
+=======
+    long inodeId = ++mockINodeId;
+    BlockCollection bc = Mockito.mock(BlockCollection.class);
+    Mockito.doReturn(inodeId).when(bc).getId();
+    Mockito.doReturn(bc).when(fsn).getBlockCollection(inodeId);
+    BlockInfo blockInfo = blockOnNodes(blockId, nodes);
+
+    blockInfo.setReplication((short) 3);
+    blockInfo.setBlockCollectionId(inodeId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     bm.blocksMap.addBlockCollection(blockInfo, bc);
     return blockInfo;
   }
@@ -453,8 +492,13 @@ public class TestBlockManager {
     assertEquals("Block not initially pending replication", 0,
         bm.pendingReplications.getNumReplicas(block));
     assertEquals(
+<<<<<<< HEAD
         "computeReplicationWork should indicate replication is needed", 1,
         bm.computeReplicationWorkForBlocks(list_all));
+=======
+        "computeBlockRecoveryWork should indicate replication is needed", 1,
+        bm.computeRecoveryWorkForBlocks(list_all));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertTrue("replication is pending after work is computed",
         bm.pendingReplications.getNumReplicas(block) > 0);
 
@@ -508,6 +552,7 @@ public class TestBlockManager {
     assertNotNull("Chooses source node for a highest-priority replication"
         + " even if all available source nodes have reached their replication"
         + " limits below the hard limit.",
+<<<<<<< HEAD
         bm.chooseSourceDatanode(
             aBlock,
             cntNodes,
@@ -524,11 +569,32 @@ public class TestBlockManager {
             liveNodes,
             new NumberReplicas(),
             UnderReplicatedBlocks.QUEUE_VERY_UNDER_REPLICATED));
+=======
+        bm.chooseSourceDatanodes(
+            bm.getStoredBlock(aBlock),
+            cntNodes,
+            liveNodes,
+            new NumberReplicas(),
+            new ArrayList<Short>(),
+            UnderReplicatedBlocks.QUEUE_HIGHEST_PRIORITY)[0]);
+
+    assertEquals("Does not choose a source node for a less-than-highest-priority"
+            + " replication since all available source nodes have reached"
+            + " their replication limits.", 0,
+        bm.chooseSourceDatanodes(
+            bm.getStoredBlock(aBlock),
+            cntNodes,
+            liveNodes,
+            new NumberReplicas(),
+            new ArrayList<Short>(),
+            UnderReplicatedBlocks.QUEUE_VERY_UNDER_REPLICATED).length);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Increase the replication count to test replication count > hard limit
     DatanodeStorageInfo targets[] = { origNodes.get(1).getStorageInfos()[0] };
     origNodes.get(0).addBlockToBeReplicated(aBlock, targets);
 
+<<<<<<< HEAD
     assertNull("Does not choose a source node for a highest-priority"
         + " replication when all available nodes exceed the hard limit.",
         bm.chooseSourceDatanode(
@@ -537,6 +603,17 @@ public class TestBlockManager {
             liveNodes,
             new NumberReplicas(),
             UnderReplicatedBlocks.QUEUE_HIGHEST_PRIORITY));
+=======
+    assertEquals("Does not choose a source node for a highest-priority"
+            + " replication when all available nodes exceed the hard limit.", 0,
+        bm.chooseSourceDatanodes(
+            bm.getStoredBlock(aBlock),
+            cntNodes,
+            liveNodes,
+            new NumberReplicas(),
+            new ArrayList<Short>(),
+            UnderReplicatedBlocks.QUEUE_HIGHEST_PRIORITY).length);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test
@@ -557,18 +634,28 @@ public class TestBlockManager {
     assertNotNull("Chooses decommissioning source node for a normal replication"
         + " if all available source nodes have reached their replication"
         + " limits below the hard limit.",
+<<<<<<< HEAD
         bm.chooseSourceDatanode(
             aBlock,
             cntNodes,
             liveNodes,
             new NumberReplicas(),
             UnderReplicatedBlocks.QUEUE_UNDER_REPLICATED));
+=======
+        bm.chooseSourceDatanodes(
+            bm.getStoredBlock(aBlock),
+            cntNodes,
+            liveNodes,
+            new NumberReplicas(), new LinkedList<Short>(),
+            UnderReplicatedBlocks.QUEUE_UNDER_REPLICATED)[0]);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 
     // Increase the replication count to test replication count > hard limit
     DatanodeStorageInfo targets[] = { origNodes.get(1).getStorageInfos()[0] };
     origNodes.get(0).addBlockToBeReplicated(aBlock, targets);
 
+<<<<<<< HEAD
     assertNull("Does not choose a source decommissioning node for a normal"
         + " replication when all available nodes exceed the hard limit.",
         bm.chooseSourceDatanode(
@@ -581,11 +668,27 @@ public class TestBlockManager {
 
 
 
+=======
+    assertEquals("Does not choose a source decommissioning node for a normal"
+        + " replication when all available nodes exceed the hard limit.", 0,
+        bm.chooseSourceDatanodes(
+            bm.getStoredBlock(aBlock),
+            cntNodes,
+            liveNodes,
+            new NumberReplicas(), new LinkedList<Short>(),
+            UnderReplicatedBlocks.QUEUE_UNDER_REPLICATED).length);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Test
   public void testSafeModeIBR() throws Exception {
     DatanodeDescriptor node = spy(nodes.get(0));
     DatanodeStorageInfo ds = node.getStorageInfos()[0];
+<<<<<<< HEAD
     node.isAlive = true;
+=======
+    node.setAlive(true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     DatanodeRegistration nodeReg =
         new DatanodeRegistration(node, null, null, "");
@@ -630,7 +733,11 @@ public class TestBlockManager {
     DatanodeDescriptor node = spy(nodes.get(0));
     DatanodeStorageInfo ds = node.getStorageInfos()[0];
 
+<<<<<<< HEAD
     node.isAlive = true;
+=======
+    node.setAlive(true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     DatanodeRegistration nodeReg =
         new DatanodeRegistration(node, null, null, "");
@@ -662,7 +769,11 @@ public class TestBlockManager {
 
     DatanodeDescriptor node = nodes.get(0);
     DatanodeStorageInfo ds = node.getStorageInfos()[0];
+<<<<<<< HEAD
     node.isAlive = true;
+=======
+    node.setAlive(true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     DatanodeRegistration nodeReg =  new DatanodeRegistration(node, null, null, "");
 
     // register new node
@@ -726,8 +837,13 @@ public class TestBlockManager {
     // verify the storage info is correct
     assertTrue(bm.getStoredBlock(new Block(receivedBlockId)).findStorageInfo
         (ds) >= 0);
+<<<<<<< HEAD
     assertTrue(((BlockInfoContiguousUnderConstruction) bm.
         getStoredBlock(new Block(receivingBlockId))).getNumExpectedLocations() > 0);
+=======
+    assertTrue(bm.getStoredBlock(new Block(receivingBlockId))
+        .getUnderConstructionFeature().getNumExpectedLocations() > 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertTrue(bm.getStoredBlock(new Block(receivingReceivedBlockId))
         .findStorageInfo(ds) >= 0);
     assertNull(bm.getStoredBlock(new Block(ReceivedDeletedBlockId)));
@@ -740,18 +856,35 @@ public class TestBlockManager {
     BlockInfo blockInfo =
         new BlockInfoContiguous(block, (short) 3);
     BlockCollection bc = Mockito.mock(BlockCollection.class);
+<<<<<<< HEAD
     Mockito.doReturn((short) 3).when(bc).getPreferredBlockReplication();
     bm.blocksMap.addBlockCollection(blockInfo, bc);
+=======
+    long inodeId = ++mockINodeId;
+    doReturn(inodeId).when(bc).getId();
+    bm.blocksMap.addBlockCollection(blockInfo, bc);
+    doReturn(bc).when(fsn).getBlockCollection(inodeId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return blockInfo;
   }
 
   private BlockInfo addUcBlockToBM(long blkId) {
     Block block = new Block(blkId);
+<<<<<<< HEAD
     BlockInfoContiguousUnderConstruction blockInfo =
         new BlockInfoContiguousUnderConstruction(block, (short) 3);
     BlockCollection bc = Mockito.mock(BlockCollection.class);
     Mockito.doReturn((short) 3).when(bc).getPreferredBlockReplication();
     bm.blocksMap.addBlockCollection(blockInfo, bc);
+=======
+    BlockInfo blockInfo = new BlockInfoContiguous(block, (short) 3);
+    blockInfo.convertToBlockUnderConstruction(UNDER_CONSTRUCTION, null);
+    BlockCollection bc = Mockito.mock(BlockCollection.class);
+    long inodeId = ++mockINodeId;
+    doReturn(inodeId).when(bc).getId();
+    bm.blocksMap.addBlockCollection(blockInfo, bc);
+    doReturn(bc).when(fsn).getBlockCollection(inodeId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return blockInfo;
   }
   
@@ -807,6 +940,7 @@ public class TestBlockManager {
     DatanodeStorageInfo delHint = new DatanodeStorageInfo(
         DFSTestUtil.getLocalDatanodeDescriptor(), new DatanodeStorage("id"));
     List<DatanodeStorageInfo> moreThan1Racks = Arrays.asList(delHint);
+<<<<<<< HEAD
     List<StorageType> excessTypes = new ArrayList<StorageType>();
 
     excessTypes.add(StorageType.DEFAULT);
@@ -816,5 +950,17 @@ public class TestBlockManager {
     excessTypes.add(StorageType.SSD);
     Assert.assertFalse(BlockManager.useDelHint(true, delHint, null,
         moreThan1Racks, excessTypes));
+=======
+    List<StorageType> excessTypes = new ArrayList<>();
+    BlockPlacementPolicyDefault policyDefault =
+        (BlockPlacementPolicyDefault) bm.getBlockPlacementPolicy();
+    excessTypes.add(StorageType.DEFAULT);
+    Assert.assertTrue(policyDefault.useDelHint(delHint, null, moreThan1Racks,
+        null, excessTypes));
+    excessTypes.remove(0);
+    excessTypes.add(StorageType.SSD);
+    Assert.assertFalse(policyDefault.useDelHint(delHint, null, moreThan1Racks,
+        null, excessTypes));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

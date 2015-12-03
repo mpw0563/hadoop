@@ -20,11 +20,15 @@ package org.apache.hadoop.hdfs.server.blockmanagement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+<<<<<<< HEAD
 import java.io.File;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Set;
 
@@ -99,6 +103,47 @@ public class TestReplicationPolicyConsiderLoad {
           BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[i]),
           0L, 0L, 0, 0, null);
     }
+=======
+import java.util.Set;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hdfs.DFSTestUtil;
+import org.apache.hadoop.hdfs.TestBlockStoragePolicy;
+import org.apache.hadoop.hdfs.server.namenode.NameNode;
+import org.apache.hadoop.hdfs.DFSConfigKeys;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+@RunWith(Parameterized.class)
+public class TestReplicationPolicyConsiderLoad
+    extends BaseReplicationPolicyTest {
+
+  public TestReplicationPolicyConsiderLoad(String blockPlacementPolicy) {
+    this.blockPlacementPolicy = blockPlacementPolicy;
+  }
+
+  @Parameterized.Parameters
+  public static Iterable<Object[]> data() {
+    return Arrays.asList(new Object[][] {
+        { BlockPlacementPolicyDefault.class.getName() },
+        { BlockPlacementPolicyWithUpgradeDomain.class.getName() } });
+  }
+
+  @Override
+  DatanodeDescriptor[] getDatanodeDescriptors(Configuration conf) {
+    conf.setDouble(DFSConfigKeys
+        .DFS_NAMENODE_REPLICATION_CONSIDERLOAD_FACTOR, 1.2);
+    final String[] racks = {
+        "/rack1",
+        "/rack1",
+        "/rack2",
+        "/rack2",
+        "/rack3",
+        "/rack3"};
+    storages = DFSTestUtil.createDatanodeStorageInfos(racks);
+    return DFSTestUtil.toDatanodeDescriptor(storages);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private final double EPSILON = 0.0001;
@@ -110,6 +155,7 @@ public class TestReplicationPolicyConsiderLoad {
   public void testChooseTargetWithDecomNodes() throws IOException {
     namenode.getNamesystem().writeLock();
     try {
+<<<<<<< HEAD
       String blockPoolId = namenode.getNamesystem().getBlockPoolId();
       dnManager.handleHeartbeat(dnrList.get(3),
           BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[3]),
@@ -130,19 +176,45 @@ public class TestReplicationPolicyConsiderLoad {
       final int load = 2 + 4 + 4;
       
       FSNamesystem fsn = namenode.getNamesystem();
+=======
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[3],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[3]),
+          dataNodes[3].getCacheCapacity(),
+          dataNodes[3].getCacheUsed(),
+          2, 0, null);
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[4],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[4]),
+          dataNodes[4].getCacheCapacity(),
+          dataNodes[4].getCacheUsed(),
+          4, 0, null);
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[5],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[5]),
+          dataNodes[5].getCacheCapacity(),
+          dataNodes[5].getCacheUsed(),
+          4, 0, null);
+
+      // value in the above heartbeats
+      final int load = 2 + 4 + 4;
+      
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       assertEquals((double)load/6, dnManager.getFSClusterStats()
         .getInServiceXceiverAverage(), EPSILON);
       
       // Decommission DNs so BlockPlacementPolicyDefault.isGoodTarget()
       // returns false
       for (int i = 0; i < 3; i++) {
+<<<<<<< HEAD
         DatanodeDescriptor d = dnManager.getDatanode(dnrList.get(i));
+=======
+        DatanodeDescriptor d = dataNodes[i];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         dnManager.getDecomManager().startDecommission(d);
         d.setDecommissioned();
       }
       assertEquals((double)load/3, dnManager.getFSClusterStats()
         .getInServiceXceiverAverage(), EPSILON);
 
+<<<<<<< HEAD
       // update references of writer DN to update the de-commissioned state
       List<DatanodeDescriptor> liveNodes = new ArrayList<DatanodeDescriptor>();
       dnManager.fetchDatanodes(liveNodes, null, false);
@@ -150,6 +222,9 @@ public class TestReplicationPolicyConsiderLoad {
       if (liveNodes.contains(dataNodes[0])) {
         writerDn = liveNodes.get(liveNodes.indexOf(dataNodes[0]));
       }
+=======
+      DatanodeDescriptor writerDn = dataNodes[0];
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Call chooseTarget()
       DatanodeStorageInfo[] targets = namenode.getNamesystem().getBlockManager()
@@ -158,7 +233,11 @@ public class TestReplicationPolicyConsiderLoad {
               1024, TestBlockStoragePolicy.DEFAULT_STORAGE_POLICY);
 
       assertEquals(3, targets.length);
+<<<<<<< HEAD
       Set<DatanodeStorageInfo> targetSet = new HashSet<DatanodeStorageInfo>(
+=======
+      Set<DatanodeStorageInfo> targetSet = new HashSet<>(
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           Arrays.asList(targets));
       for (int i = 3; i < storages.length; i++) {
         assertTrue(targetSet.contains(storages[i]));
@@ -169,6 +248,7 @@ public class TestReplicationPolicyConsiderLoad {
       dataNodes[2].stopDecommission();
       namenode.getNamesystem().writeUnlock();
     }
+<<<<<<< HEAD
   }
 
   @AfterClass
@@ -176,4 +256,61 @@ public class TestReplicationPolicyConsiderLoad {
     if (namenode != null) namenode.stop();
   }
 
+=======
+    NameNode.LOG.info("Done working on it");
+  }
+
+  @Test
+  public void testConsiderLoadFactor() throws IOException {
+    namenode.getNamesystem().writeLock();
+    try {
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[0],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[0]),
+          dataNodes[0].getCacheCapacity(),
+          dataNodes[0].getCacheUsed(),
+          5, 0, null);
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[1],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[1]),
+          dataNodes[1].getCacheCapacity(),
+          dataNodes[1].getCacheUsed(),
+          10, 0, null);
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[2],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[2]),
+          dataNodes[2].getCacheCapacity(),
+          dataNodes[2].getCacheUsed(),
+          5, 0, null);
+
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[3],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[3]),
+          dataNodes[3].getCacheCapacity(),
+          dataNodes[3].getCacheUsed(),
+          10, 0, null);
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[4],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[4]),
+          dataNodes[4].getCacheCapacity(),
+          dataNodes[4].getCacheUsed(),
+          15, 0, null);
+      dnManager.getHeartbeatManager().updateHeartbeat(dataNodes[5],
+          BlockManagerTestUtil.getStorageReportsForDatanode(dataNodes[5]),
+          dataNodes[5].getCacheCapacity(),
+          dataNodes[5].getCacheUsed(),
+          15, 0, null);
+      //Add values in above heartbeats
+      double load = 5 + 10 + 15 + 10 + 15 + 5;
+      // Call chooseTarget()
+      DatanodeDescriptor writerDn = dataNodes[0];
+      DatanodeStorageInfo[] targets = namenode.getNamesystem().getBlockManager()
+          .getBlockPlacementPolicy().chooseTarget("testFile.txt", 3, writerDn,
+              new ArrayList<DatanodeStorageInfo>(), false, null,
+              1024, TestBlockStoragePolicy.DEFAULT_STORAGE_POLICY);
+      for(DatanodeStorageInfo info : targets) {
+        assertTrue("The node "+info.getDatanodeDescriptor().getName()+
+                " has higher load and should not have been picked!",
+            info.getDatanodeDescriptor().getXceiverCount() <= (load/6)*1.2);
+      }
+    } finally {
+      namenode.getNamesystem().writeUnlock();
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

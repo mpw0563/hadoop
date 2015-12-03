@@ -34,6 +34,10 @@ import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.Resource;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnProtos.LocalResourceProto;
 import org.apache.hadoop.yarn.proto.YarnServerNodemanagerRecoveryProtos.ContainerManagerApplicationProto;
 import org.apache.hadoop.yarn.proto.YarnServerNodemanagerRecoveryProtos.DeletionServiceDeleteTaskProto;
@@ -74,6 +78,10 @@ public abstract class NMStateStoreService extends AbstractService {
     boolean killed = false;
     String diagnostics = "";
     StartContainerRequest startRequest;
+<<<<<<< HEAD
+=======
+    Resource capability;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     public RecoveredContainerStatus getStatus() {
       return status;
@@ -94,6 +102,13 @@ public abstract class NMStateStoreService extends AbstractService {
     public StartContainerRequest getStartRequest() {
       return startRequest;
     }
+<<<<<<< HEAD
+=======
+
+    public Resource getCapability() {
+      return capability;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public static class LocalResourceTrackerState {
@@ -284,6 +299,18 @@ public abstract class NMStateStoreService extends AbstractService {
       throws IOException;
 
   /**
+<<<<<<< HEAD
+=======
+   * Record that a container resource has been changed
+   * @param containerId the container ID
+   * @param capability the container resource capability
+   * @throws IOException
+   */
+  public abstract void storeContainerResourceChanged(ContainerId containerId,
+      Resource capability) throws IOException;
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * Record that a container has completed
    * @param containerId the container ID
    * @param exitCode the exit code from the container

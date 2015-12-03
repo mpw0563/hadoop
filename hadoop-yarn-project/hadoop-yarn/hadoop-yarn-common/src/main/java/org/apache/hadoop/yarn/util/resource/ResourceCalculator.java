@@ -171,4 +171,12 @@ public abstract class ResourceCalculator {
    */
   public abstract Resource divideAndCeil(Resource numerator, int denominator);
   
+<<<<<<< HEAD
+=======
+  /**
+   * Check if a smaller resource can be contained by bigger resource.
+   */
+  public abstract boolean fitsIn(Resource cluster,
+      Resource smaller, Resource bigger);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

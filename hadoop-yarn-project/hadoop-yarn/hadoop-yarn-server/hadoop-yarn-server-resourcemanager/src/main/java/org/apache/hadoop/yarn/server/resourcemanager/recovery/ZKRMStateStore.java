@@ -282,8 +282,14 @@ public class ZKRMStateStore extends RMStateStore {
     // ensure root dirs exist
     createRootDirRecursively(znodeWorkingPath);
     create(zkRootNodePath);
+<<<<<<< HEAD
     if (HAUtil.isHAEnabled(getConfig())){
       fence();
+=======
+    setRootNodeAcls();
+    delete(fencingNodePath);
+    if (HAUtil.isHAEnabled(getConfig())) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       verifyActiveStatusThread = new VerifyActiveStatusThread();
       verifyActiveStatusThread.start();
     }
@@ -309,6 +315,7 @@ public class ZKRMStateStore extends RMStateStore {
     LOG.debug(builder.toString());
   }
 
+<<<<<<< HEAD
   private synchronized void fence() throws Exception {
     if (LOG.isTraceEnabled()) {
       logRootNodeAcls("Before fencing\n");
@@ -319,6 +326,21 @@ public class ZKRMStateStore extends RMStateStore {
 
     if (LOG.isTraceEnabled()) {
       logRootNodeAcls("After fencing\n");
+=======
+  private void setRootNodeAcls() throws Exception {
+    if (LOG.isDebugEnabled()) {
+      logRootNodeAcls("Before setting ACLs'\n");
+    }
+
+    if (HAUtil.isHAEnabled(getConfig())) {
+      curatorFramework.setACL().withACL(zkRootNodeAcl).forPath(zkRootNodePath);
+    } else {
+      curatorFramework.setACL().withACL(zkAcl).forPath(zkRootNodePath);
+    }
+
+    if (LOG.isDebugEnabled()) {
+      logRootNodeAcls("After setting ACLs'\n");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   }
 
@@ -841,6 +863,7 @@ public class ZKRMStateStore extends RMStateStore {
     trx.commit();
   }
 
+<<<<<<< HEAD
   @Override
   protected synchronized void updateReservationState(
       ReservationAllocationStateProto reservationAllocation, String planName,
@@ -852,6 +875,8 @@ public class ZKRMStateStore extends RMStateStore {
     trx.commit();
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void addOrUpdateReservationState(
       ReservationAllocationStateProto reservationAllocation, String planName,
       String reservationIdName, SafeTransaction trx, boolean isUpdate)
@@ -933,7 +958,12 @@ public class ZKRMStateStore extends RMStateStore {
     return curatorFramework.getData().forPath(path);
   }
 
+<<<<<<< HEAD
   private List<ACL> getACL(final String path) throws Exception {
+=======
+  @VisibleForTesting
+  List<ACL> getACL(final String path) throws Exception {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return curatorFramework.getACL().forPath(path);
   }
 

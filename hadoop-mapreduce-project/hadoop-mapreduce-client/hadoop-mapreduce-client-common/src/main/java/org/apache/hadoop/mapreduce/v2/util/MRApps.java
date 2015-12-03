@@ -212,6 +212,7 @@ public class MRApps extends Apps {
               : YarnConfiguration.DEFAULT_YARN_APPLICATION_CLASSPATH)) {
         MRApps.addToEnvironment(environment, Environment.CLASSPATH.name(),
           c.trim(), conf);
+<<<<<<< HEAD
       }
     }
 
@@ -227,6 +228,23 @@ public class MRApps extends Apps {
       }
     }
 
+=======
+      }
+    }
+
+    boolean foundFrameworkInClasspath = (frameworkName == null);
+    for (String c : conf.getStrings(MRJobConfig.MAPREDUCE_APPLICATION_CLASSPATH,
+        crossPlatform ?
+            StringUtils.getStrings(MRJobConfig.DEFAULT_MAPREDUCE_CROSS_PLATFORM_APPLICATION_CLASSPATH)
+            : StringUtils.getStrings(MRJobConfig.DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH))) {
+      MRApps.addToEnvironment(environment, Environment.CLASSPATH.name(),
+        c.trim(), conf);
+      if (!foundFrameworkInClasspath) {
+        foundFrameworkInClasspath = c.contains(frameworkName);
+      }
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (!foundFrameworkInClasspath) {
       throw new IllegalArgumentException(
           "Could not locate MapReduce framework name '" + frameworkName
@@ -532,6 +550,7 @@ public class MRApps extends Apps {
     return "cache file (" + MRJobConfig.CACHE_FILES + ") ";
   }
   
+<<<<<<< HEAD
   private static String toString(org.apache.hadoop.yarn.api.records.URL url) {
     StringBuffer b = new StringBuffer();
     b.append(url.getScheme()).append("://").append(url.getHost());
@@ -542,6 +561,8 @@ public class MRApps extends Apps {
     return b.toString();
   }
   
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   // TODO - Move this to MR!
   // Use TaskDistributedCacheManager.CacheFiles.makeCacheFiles(URI[], 
   // long[], boolean[], Path[], FileType)
@@ -579,6 +600,7 @@ public class MRApps extends Apps {
         }
         String linkName = name.toUri().getPath();
         LocalResource orig = localResources.get(linkName);
+<<<<<<< HEAD
         org.apache.hadoop.yarn.api.records.URL url = 
           ConverterUtils.getYarnUrlFromURI(p.toUri());
         if(orig != null && !orig.getResource().equals(url)) {
@@ -588,6 +610,13 @@ public class MRApps extends Apps {
               getResourceDescription(type) + toString(url) + 
               " This will be an error in Hadoop 2.0");
           continue;
+=======
+        if(orig != null && !orig.getResource().equals(
+            ConverterUtils.getYarnUrlFromURI(p.toUri()))) {
+          throw new InvalidJobConfException(
+              getResourceDescription(orig.getType()) + orig.getResource() + 
+              " conflicts with " + getResourceDescription(type) + u);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         localResources.put(linkName, LocalResource.newInstance(ConverterUtils
           .getYarnUrlFromURI(p.toUri()), type, visibilities[i]
@@ -707,6 +736,7 @@ public class MRApps extends Apps {
     }
   }
 
+<<<<<<< HEAD
   public static void setEnvFromInputString(Map<String, String> env,
       String envString, Configuration conf) {
     String classPathSeparator =
@@ -734,6 +764,8 @@ public class MRApps extends Apps {
     return crossPlatform ? env.$$() : env.$();
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Return lines for system property keys and values per configuration.
    *
@@ -763,5 +795,35 @@ public class MRApps extends Apps {
       }
     }
     return null;
+<<<<<<< HEAD
+=======
+  }
+
+  public static void setEnvFromInputString(Map<String, String> env,
+      String envString, Configuration conf) {
+    String classPathSeparator =
+        conf.getBoolean(MRConfig.MAPREDUCE_APP_SUBMISSION_CROSS_PLATFORM,
+          MRConfig.DEFAULT_MAPREDUCE_APP_SUBMISSION_CROSS_PLATFORM)
+            ? ApplicationConstants.CLASS_PATH_SEPARATOR : File.pathSeparator;
+    Apps.setEnvFromInputString(env, envString, classPathSeparator);
+  }
+
+  @Public
+  @Unstable
+  public static void addToEnvironment(Map<String, String> environment,
+      String variable, String value, Configuration conf) {
+    String classPathSeparator =
+        conf.getBoolean(MRConfig.MAPREDUCE_APP_SUBMISSION_CROSS_PLATFORM,
+          MRConfig.DEFAULT_MAPREDUCE_APP_SUBMISSION_CROSS_PLATFORM)
+            ? ApplicationConstants.CLASS_PATH_SEPARATOR : File.pathSeparator;
+    Apps.addToEnvironment(environment, variable, value, classPathSeparator);
+  }
+
+  public static String crossPlatformifyMREnv(Configuration conf, Environment env) {
+    boolean crossPlatform =
+        conf.getBoolean(MRConfig.MAPREDUCE_APP_SUBMISSION_CROSS_PLATFORM,
+            MRConfig.DEFAULT_MAPREDUCE_APP_SUBMISSION_CROSS_PLATFORM);
+    return crossPlatform ? env.$$() : env.$();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

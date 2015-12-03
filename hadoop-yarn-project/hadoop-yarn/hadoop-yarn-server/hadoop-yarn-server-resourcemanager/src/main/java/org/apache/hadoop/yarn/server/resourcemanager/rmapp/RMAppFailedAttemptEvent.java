@@ -22,11 +22,15 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 public class RMAppFailedAttemptEvent extends RMAppEvent {
 
+<<<<<<< HEAD
   private final String diagnostics;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private final boolean transferStateFromPreviousAttempt;
 
   public RMAppFailedAttemptEvent(ApplicationId appId, RMAppEventType event, 
       String diagnostics, boolean transferStateFromPreviousAttempt) {
+<<<<<<< HEAD
     super(appId, event);
     this.diagnostics = diagnostics;
     this.transferStateFromPreviousAttempt = transferStateFromPreviousAttempt;
@@ -36,6 +40,12 @@ public class RMAppFailedAttemptEvent extends RMAppEvent {
     return this.diagnostics;
   }
 
+=======
+    super(appId, event, diagnostics);
+    this.transferStateFromPreviousAttempt = transferStateFromPreviousAttempt;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public boolean getTransferStateFromPreviousAttempt() {
     return transferStateFromPreviousAttempt;
   }

@@ -132,6 +132,13 @@ public class MockContainer implements Container {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void setResource(Resource targetResource) {
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public ContainerTokenIdentifier getContainerTokenIdentifier() {
     return this.containerTokenIdentifier;
   }

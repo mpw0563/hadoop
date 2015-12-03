@@ -27,6 +27,10 @@ import java.util.Vector;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.TaskLog.LogName;
 import org.apache.hadoop.mapreduce.MRJobConfig;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.mapreduce.TaskType;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.mapreduce.TypeConverter;
 import org.apache.hadoop.mapreduce.v2.util.MRApps;
 import org.apache.hadoop.yarn.api.ApplicationConstants;
@@ -99,6 +103,7 @@ public class MapReduceChildJVM {
   }
 
   private static String getChildJavaOpts(JobConf jobConf, boolean isMapTask) {
+<<<<<<< HEAD
     String userClasspath = "";
     String adminClasspath = "";
     if (isMapTask) {
@@ -129,6 +134,9 @@ public class MapReduceChildJVM {
     
     // Add admin classpath first so it can be overridden by user.
     return adminClasspath + " " + userClasspath;
+=======
+    return jobConf.getTaskJavaOpts(isMapTask ? TaskType.MAP : TaskType.REDUCE);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public static List<String> getVMCommand(

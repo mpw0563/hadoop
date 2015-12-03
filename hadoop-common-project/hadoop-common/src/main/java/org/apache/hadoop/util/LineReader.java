@@ -303,7 +303,14 @@ public class LineReader implements Closeable {
         startPosn = bufferPosn = 0;
         bufferLength = fillBuffer(in, buffer, ambiguousByteCount > 0);
         if (bufferLength <= 0) {
+<<<<<<< HEAD
           str.append(recordDelimiterBytes, 0, ambiguousByteCount);
+=======
+          if (ambiguousByteCount > 0) {
+            str.append(recordDelimiterBytes, 0, ambiguousByteCount);
+            bytesConsumed += ambiguousByteCount;
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           break; // EOF
         }
       }
@@ -324,6 +331,12 @@ public class LineReader implements Closeable {
       int appendLength = readLength - delPosn;
       if (appendLength > maxLineLength - txtLength) {
         appendLength = maxLineLength - txtLength;
+      }
+      bytesConsumed += ambiguousByteCount;
+      if (appendLength >= 0 && ambiguousByteCount > 0) {
+        //appending the ambiguous characters (refer case 2.2)
+        str.append(recordDelimiterBytes, 0, ambiguousByteCount);
+        ambiguousByteCount = 0;
       }
       if (appendLength > 0) {
         if (ambiguousByteCount > 0) {

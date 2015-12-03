@@ -43,7 +43,11 @@ public abstract class ApplicationAttemptId implements
   @Unstable
   public static final String appAttemptIdStrPrefix = "appattempt_";
 
+<<<<<<< HEAD
   @Private
+=======
+  @Public
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Unstable
   public static ApplicationAttemptId newInstance(ApplicationId appId,
       int attemptId) {

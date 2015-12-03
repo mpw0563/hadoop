@@ -49,7 +49,12 @@ public class QueueCapacities {
   
   // Usage enum here to make implement cleaner
   private enum CapacityType {
+<<<<<<< HEAD
     USED_CAP(0), ABS_USED_CAP(1), MAX_CAP(2), ABS_MAX_CAP(3), CAP(4), ABS_CAP(5);
+=======
+    USED_CAP(0), ABS_USED_CAP(1), MAX_CAP(2), ABS_MAX_CAP(3), CAP(4), ABS_CAP(5),
+      MAX_AM_PERC(6);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     private int idx;
 
@@ -74,6 +79,10 @@ public class QueueCapacities {
       sb.append("abs_max_cap=" + capacitiesArr[3] + "%, ");
       sb.append("cap=" + capacitiesArr[4] + "%, ");
       sb.append("abs_cap=" + capacitiesArr[5] + "%}");
+<<<<<<< HEAD
+=======
+      sb.append("max_am_perc=" + capacitiesArr[6] + "%}");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return sb.toString();
     }
   }
@@ -213,7 +222,20 @@ public class QueueCapacities {
   public void setAbsoluteMaximumCapacity(String label, float value) {
     _set(label, CapacityType.ABS_MAX_CAP, value);
   }
+<<<<<<< HEAD
   
+=======
+
+  /* Absolute Maximum AM resource percentage Getter and Setter */
+  public float getMaxAMResourcePercentage(String label) {
+    return _get(label, CapacityType.MAX_AM_PERC);
+  }
+
+  public void setMaxAMResourcePercentage(String label, float value) {
+    _set(label, CapacityType.MAX_AM_PERC, value);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Clear configurable fields, like
    * (absolute)capacity/(absolute)maximum-capacity, this will be used by queue

@@ -70,9 +70,16 @@ public class SysInfoWindows extends SysInfo {
   }
 
   String getSystemInfoInfoFromShell() {
+<<<<<<< HEAD
     ShellCommandExecutor shellExecutor = new ShellCommandExecutor(
         new String[] {Shell.WINUTILS, "systeminfo" });
     try {
+=======
+    try {
+      ShellCommandExecutor shellExecutor = new ShellCommandExecutor(
+          new String[] {Shell.getWinUtilsFile().getCanonicalPath(),
+              "systeminfo" });
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       shellExecutor.execute();
       return shellExecutor.getOutput();
     } catch (IOException e) {

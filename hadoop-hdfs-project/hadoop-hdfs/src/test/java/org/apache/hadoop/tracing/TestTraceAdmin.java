@@ -21,6 +21,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.net.unix.TemporarySocketDirectory;
+<<<<<<< HEAD
+=======
+import org.apache.htrace.core.Tracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,9 +47,18 @@ public class TestTraceAdmin {
     try {
       ret = trace.run(cmd);
     } finally {
+<<<<<<< HEAD
       System.out.flush();
       System.setOut(oldStdout);
       System.setErr(oldStderr);
+=======
+      try {
+        System.out.flush();
+      } finally {
+        System.setOut(oldStdout);
+        System.setErr(oldStderr);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
     return "ret:" + ret + ", " + baos.toString();
   }
@@ -58,8 +71,13 @@ public class TestTraceAdmin {
   public void testCreateAndDestroySpanReceiver() throws Exception {
     Configuration conf = new Configuration();
     conf = new Configuration();
+<<<<<<< HEAD
     conf.set(DFSConfigKeys.DFS_SERVER_HTRACE_PREFIX  +
         SpanReceiverHost.SPAN_RECEIVERS_CONF_SUFFIX, "");
+=======
+    conf.set(TraceUtils.DEFAULT_HADOOP_PREFIX +
+        Tracer.SPAN_RECEIVER_CLASSES_KEY, "");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     MiniDFSCluster cluster =
         new MiniDFSCluster.Builder(conf).numDataNodes(3).build();
     cluster.waitActive();
@@ -72,6 +90,7 @@ public class TestTraceAdmin {
       Assert.assertEquals("ret:0, [no span receivers found]" + NEWLINE,
           runTraceCommand(trace, "-list", "-host", getHostPortForNN(cluster)));
       Assert.assertEquals("ret:0, Added trace span receiver 1 with " +
+<<<<<<< HEAD
           "configuration dfs.htrace.local-file-span-receiver.path = " + tracePath + NEWLINE,
           runTraceCommand(trace, "-add", "-host", getHostPortForNN(cluster),
               "-class", "org.apache.htrace.impl.LocalFileSpanReceiver",
@@ -80,16 +99,33 @@ public class TestTraceAdmin {
           runTraceCommand(trace, "-list", "-host", getHostPortForNN(cluster));
       Assert.assertTrue(list.startsWith("ret:0"));
       Assert.assertTrue(list.contains("1   org.apache.htrace.impl.LocalFileSpanReceiver"));
+=======
+          "configuration hadoop.htrace.local.file.span.receiver.path = " + tracePath + NEWLINE,
+          runTraceCommand(trace, "-add", "-host", getHostPortForNN(cluster),
+              "-class", "org.apache.htrace.core.LocalFileSpanReceiver",
+              "-Chadoop.htrace.local.file.span.receiver.path=" + tracePath));
+      String list =
+          runTraceCommand(trace, "-list", "-host", getHostPortForNN(cluster));
+      Assert.assertTrue(list.startsWith("ret:0"));
+      Assert.assertTrue(list.contains("1   org.apache.htrace.core.LocalFileSpanReceiver"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Assert.assertEquals("ret:0, Removed trace span receiver 1" + NEWLINE,
           runTraceCommand(trace, "-remove", "1", "-host",
               getHostPortForNN(cluster)));
       Assert.assertEquals("ret:0, [no span receivers found]" + NEWLINE,
           runTraceCommand(trace, "-list", "-host", getHostPortForNN(cluster)));
       Assert.assertEquals("ret:0, Added trace span receiver 2 with " +
+<<<<<<< HEAD
           "configuration dfs.htrace.local-file-span-receiver.path = " + tracePath + NEWLINE,
           runTraceCommand(trace, "-add", "-host", getHostPortForNN(cluster),
               "-class", "LocalFileSpanReceiver",
               "-Cdfs.htrace.local-file-span-receiver.path=" + tracePath));
+=======
+          "configuration hadoop.htrace.local.file.span.receiver.path = " + tracePath + NEWLINE,
+          runTraceCommand(trace, "-add", "-host", getHostPortForNN(cluster),
+              "-class", "LocalFileSpanReceiver",
+              "-Chadoop.htrace.local.file.span.receiver.path=" + tracePath));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       Assert.assertEquals("ret:0, Removed trace span receiver 2" + NEWLINE,
           runTraceCommand(trace, "-remove", "2", "-host",
               getHostPortForNN(cluster)));

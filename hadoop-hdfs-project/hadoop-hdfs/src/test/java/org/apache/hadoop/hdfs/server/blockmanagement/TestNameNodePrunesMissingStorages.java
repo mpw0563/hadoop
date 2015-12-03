@@ -185,9 +185,18 @@ public class TestNameNodePrunesMissingStorages {
       String datanodeUuid;
       // Find the first storage which this block is in.
       try {
+<<<<<<< HEAD
         Iterator<DatanodeStorageInfo> storageInfoIter =
             cluster.getNamesystem().getBlockManager().
                 getStorages(block.getLocalBlock()).iterator();
+=======
+        BlockInfo storedBlock =
+            cluster.getNamesystem().getBlockManager().
+                getStoredBlock(block.getLocalBlock());
+        Iterator<DatanodeStorageInfo> storageInfoIter =
+            cluster.getNamesystem().getBlockManager().
+                blocksMap.getStorages(storedBlock).iterator();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         assertTrue(storageInfoIter.hasNext());
         DatanodeStorageInfo info = storageInfoIter.next();
         storageIdToRemove = info.getStorageID();

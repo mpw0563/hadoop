@@ -20,14 +20,20 @@ package org.apache.hadoop.hdfs.net;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+<<<<<<< HEAD
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+=======
+import java.net.SocketTimeoutException;
+import java.nio.channels.ServerSocketChannel;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocol.DatanodeID;
 import org.apache.hadoop.hdfs.protocol.datatransfer.sasl.DataEncryptionKeyFactory;
 import org.apache.hadoop.hdfs.protocol.datatransfer.sasl.SaslDataTransferClient;
@@ -36,6 +42,11 @@ import org.apache.hadoop.hdfs.server.datanode.SecureDataNodeStarter.SecureResour
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.ipc.Server;
 import org.apache.hadoop.security.token.Token;
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+import org.apache.hadoop.hdfs.server.datanode.SecureDataNodeStarter.SecureResources;
+import org.apache.hadoop.ipc.Server;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @InterfaceAudience.Private
 public class TcpPeerServer implements PeerServer {
@@ -43,6 +54,7 @@ public class TcpPeerServer implements PeerServer {
 
   private final ServerSocket serverSocket;
 
+<<<<<<< HEAD
   public static Peer peerFromSocket(Socket socket)
       throws IOException {
     Peer peer = null;
@@ -97,6 +109,8 @@ public class TcpPeerServer implements PeerServer {
     }
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Create a non-secure TcpPeerServer.
    *
@@ -135,8 +149,18 @@ public class TcpPeerServer implements PeerServer {
   }
 
   @Override
+<<<<<<< HEAD
   public Peer accept() throws IOException, SocketTimeoutException {
     Peer peer = peerFromSocket(serverSocket.accept());
+=======
+  public int getReceiveBufferSize() throws IOException {
+    return this.serverSocket.getReceiveBufferSize();
+  }
+
+  @Override
+  public Peer accept() throws IOException, SocketTimeoutException {
+    Peer peer = DFSUtilClient.peerFromSocket(serverSocket.accept());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return peer;
   }
 

@@ -67,9 +67,14 @@ import org.apache.hadoop.util.Progressable;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.ShutdownHookManager;
 import org.apache.hadoop.util.StringUtils;
+<<<<<<< HEAD
 import org.apache.htrace.Span;
 import org.apache.htrace.Trace;
 import org.apache.htrace.TraceScope;
+=======
+import org.apache.htrace.core.Tracer;
+import org.apache.htrace.core.TraceScope;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -123,12 +128,16 @@ public abstract class FileSystem extends Configured implements Closeable {
   protected Statistics statistics;
 
   /**
-   * A cache of files that should be deleted when filsystem is closed
+   * A cache of files that should be deleted when filesystem is closed
    * or the JVM is exited.
    */
   private Set<Path> deleteOnExit = new TreeSet<Path>();
   
   boolean resolveSymlinks;
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * This method adds a file system for testing so that we can find it later. It
    * is only for testing.
@@ -1083,9 +1092,13 @@ public abstract class FileSystem extends Configured implements Closeable {
    * @param progress
    * @throws IOException
    * @see #setPermission(Path, FsPermission)
+<<<<<<< HEAD
    * @deprecated API only for 0.20-append
    */
   @Deprecated
+=======
+   */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public FSDataOutputStream createNonRecursive(Path f,
       boolean overwrite,
       int bufferSize, short replication, long blockSize,
@@ -1108,9 +1121,13 @@ public abstract class FileSystem extends Configured implements Closeable {
    * @param progress
    * @throws IOException
    * @see #setPermission(Path, FsPermission)
+<<<<<<< HEAD
    * @deprecated API only for 0.20-append
    */
    @Deprecated
+=======
+   */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    public FSDataOutputStream createNonRecursive(Path f, FsPermission permission,
        boolean overwrite, int bufferSize, short replication, long blockSize,
        Progressable progress) throws IOException {
@@ -1133,9 +1150,13 @@ public abstract class FileSystem extends Configured implements Closeable {
     * @param progress
     * @throws IOException
     * @see #setPermission(Path, FsPermission)
+<<<<<<< HEAD
     * @deprecated API only for 0.20-append
     */
     @Deprecated
+=======
+    */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public FSDataOutputStream createNonRecursive(Path f, FsPermission permission,
         EnumSet<CreateFlag> flags, int bufferSize, short replication, long blockSize,
         Progressable progress) throws IOException {
@@ -1492,16 +1513,26 @@ public abstract class FileSystem extends Configured implements Closeable {
   }
 
   final private static PathFilter DEFAULT_FILTER = new PathFilter() {
+<<<<<<< HEAD
       @Override
       public boolean accept(Path file) {
         return true;
       }     
     };
+=======
+    @Override
+    public boolean accept(Path file) {
+      return true;
+    }
+  };
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     
   /**
    * List the statuses of the files/directories in the given path if the path is
    * a directory.
-   * 
+   * <p>
+   * Does not guarantee to return the List of files/directories status in a
+   * sorted order.
    * @param f given path
    * @return the statuses of the files/directories in the given patch
    * @throws FileNotFoundException when the path does not exist;
@@ -1543,6 +1574,9 @@ public abstract class FileSystem extends Configured implements Closeable {
   /**
    * Filter files/directories in the given path using the user-supplied path
    * filter.
+   * <p>
+   * Does not guarantee to return the List of files/directories status in a
+   * sorted order.
    * 
    * @param f
    *          a path name
@@ -1563,6 +1597,9 @@ public abstract class FileSystem extends Configured implements Closeable {
   /**
    * Filter files/directories in the given list of paths using default
    * path filter.
+   * <p>
+   * Does not guarantee to return the List of files/directories status in a
+   * sorted order.
    * 
    * @param files
    *          a list of paths
@@ -1579,6 +1616,9 @@ public abstract class FileSystem extends Configured implements Closeable {
   /**
    * Filter files/directories in the given list of paths using user-supplied
    * path filter.
+   * <p>
+   * Does not guarantee to return the List of files/directories status in a
+   * sorted order.
    * 
    * @param files
    *          a list of paths
@@ -1660,17 +1700,16 @@ public abstract class FileSystem extends Configured implements Closeable {
   }
   
   /**
-   * Return an array of FileStatus objects whose path names match pathPattern
-   * and is accepted by the user-supplied path filter. Results are sorted by
-   * their path names.
-   * Return null if pathPattern has no glob and the path does not exist.
-   * Return an empty array if pathPattern has a glob and no path matches it. 
+   * Return an array of FileStatus objects whose path names match
+   * {@code pathPattern} and is accepted by the user-supplied path filter.
+   * Results are sorted by their path names.
    * 
-   * @param pathPattern
-   *          a regular expression specifying the path pattern
-   * @param filter
-   *          a user-supplied path filter
-   * @return an array of FileStatus objects
+   * @param pathPattern a regular expression specifying the path pattern
+   * @param filter a user-supplied path filter
+   * @return null if {@code pathPattern} has no glob and the path does not exist
+   *         an empty array if {@code pathPattern} has a glob and no path
+   *         matches it else an array of {@link FileStatus} objects matching the
+   *         pattern
    * @throws IOException if any I/O error occurs when fetching file status
    */
   public FileStatus[] globStatus(Path pathPattern, PathFilter filter)
@@ -1724,7 +1763,7 @@ public abstract class FileSystem extends Configured implements Closeable {
       @Override
       public LocatedFileStatus next() throws IOException {
         if (!hasNext()) {
-          throw new NoSuchElementException("No more entry in " + f);
+          throw new NoSuchElementException("No more entries in " + f);
         }
         FileStatus result = stats[i++];
         BlockLocation[] locs = result.isFile() ?
@@ -1740,6 +1779,11 @@ public abstract class FileSystem extends Configured implements Closeable {
    * while consuming the entries. Each file system implementation should
    * override this method and provide a more efficient implementation, if
    * possible. 
+<<<<<<< HEAD
+=======
+   * Does not guarantee to return the iterator that traverses statuses
+   * of the files in a sorted order.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    *
    * @param p target path
    * @return remote iterator
@@ -1767,6 +1811,8 @@ public abstract class FileSystem extends Configured implements Closeable {
 
   /**
    * List the statuses and block locations of the files in the given path.
+   * Does not guarantee to return the iterator that traverses statuses
+   * of the files in a sorted order.
    * 
    * If the path is a directory, 
    *   if recursive is false, returns files in the directory;
@@ -2071,6 +2117,7 @@ public abstract class FileSystem extends Configured implements Closeable {
     CACHE.remove(this.key, this);
   }
 
+<<<<<<< HEAD
   /** Return the total size of all files in the filesystem.*/
   public long getUsed() throws IOException{
     long used = 0;
@@ -2079,8 +2126,19 @@ public abstract class FileSystem extends Configured implements Closeable {
       used += files.next().getLen();
     }
     return used;
+=======
+  /** Return the total size of all files in the filesystem. */
+  public long getUsed() throws IOException {
+    Path path = new Path("/");
+    return getUsed(path);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
-  
+
+  /** Return the total size of all files from a specified path. */
+  public long getUsed(Path path) throws IOException {
+    return getContentSummary(path).getLength();
+  }
+
   /**
    * Get the block size for a particular file.
    * @param f the filename
@@ -2178,6 +2236,8 @@ public abstract class FileSystem extends Configured implements Closeable {
    * @param stat FileStatus to check
    * @param mode type of access to check
    * @throws IOException for any error
+<<<<<<< HEAD
+=======
    */
   @InterfaceAudience.Private
   static void checkAccessPermissions(FileStatus stat, FsAction mode)
@@ -2291,6 +2351,121 @@ public abstract class FileSystem extends Configured implements Closeable {
    * Set the verify checksum flag. This is only applicable if the 
    * corresponding FileSystem supports checksum. By default doesn't do anything.
    * @param verifyChecksum
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+   */
+  @InterfaceAudience.Private
+  static void checkAccessPermissions(FileStatus stat, FsAction mode)
+      throws IOException {
+    FsPermission perm = stat.getPermission();
+    UserGroupInformation ugi = UserGroupInformation.getCurrentUser();
+    String user = ugi.getShortUserName();
+    List<String> groups = Arrays.asList(ugi.getGroupNames());
+    if (user.equals(stat.getOwner())) {
+      if (perm.getUserAction().implies(mode)) {
+        return;
+      }
+    } else if (groups.contains(stat.getGroup())) {
+      if (perm.getGroupAction().implies(mode)) {
+        return;
+      }
+    } else {
+      if (perm.getOtherAction().implies(mode)) {
+        return;
+      }
+    }
+    throw new AccessControlException(String.format(
+      "Permission denied: user=%s, path=\"%s\":%s:%s:%s%s", user, stat.getPath(),
+      stat.getOwner(), stat.getGroup(), stat.isDirectory() ? "d" : "-", perm));
+  }
+
+  /**
+<<<<<<< HEAD
+   * See {@link FileContext#fixRelativePart}
+   */
+  protected Path fixRelativePart(Path p) {
+    if (p.isUriPathAbsolute()) {
+      return p;
+    } else {
+      return new Path(getWorkingDirectory(), p);
+    }
+  }
+
+  /**
+   * See {@link FileContext#createSymlink(Path, Path, boolean)}
+   */
+  public void createSymlink(final Path target, final Path link,
+      final boolean createParent) throws AccessControlException,
+      FileAlreadyExistsException, FileNotFoundException,
+      ParentNotDirectoryException, UnsupportedFileSystemException, 
+      IOException {
+    // Supporting filesystems should override this method
+    throw new UnsupportedOperationException(
+        "Filesystem does not support symlinks!");
+  }
+
+  /**
+   * See {@link FileContext#getFileLinkStatus(Path)}
+   */
+  public FileStatus getFileLinkStatus(final Path f)
+      throws AccessControlException, FileNotFoundException,
+      UnsupportedFileSystemException, IOException {
+    // Supporting filesystems should override this method
+    return getFileStatus(f);
+  }
+
+  /**
+   * See {@link AbstractFileSystem#supportsSymlinks()}
+   */
+  public boolean supportsSymlinks() {
+    return false;
+  }
+
+  /**
+   * See {@link FileContext#getLinkTarget(Path)}
+   */
+  public Path getLinkTarget(Path f) throws IOException {
+    // Supporting filesystems should override this method
+    throw new UnsupportedOperationException(
+        "Filesystem does not support symlinks!");
+  }
+
+  /**
+   * See {@link AbstractFileSystem#getLinkTarget(Path)}
+   */
+  protected Path resolveLink(Path f) throws IOException {
+    // Supporting filesystems should override this method
+    throw new UnsupportedOperationException(
+        "Filesystem does not support symlinks!");
+  }
+
+  /**
+   * Get the checksum of a file.
+   *
+   * @param f The file path
+   * @return The file checksum.  The default return value is null,
+   *  which indicates that no checksum algorithm is implemented
+   *  in the corresponding FileSystem.
+   */
+  public FileChecksum getFileChecksum(Path f) throws IOException {
+    return getFileChecksum(f, Long.MAX_VALUE);
+  }
+
+  /**
+   * Get the checksum of a file, from the beginning of the file till the
+   * specific length.
+   * @param f The file path
+   * @param length The length of the file range for checksum calculation
+   * @return The file checksum.
+   */
+  public FileChecksum getFileChecksum(Path f, final long length)
+      throws IOException {
+    return null;
+  }
+
+  /**
+   * Set the verify checksum flag. This is only applicable if the 
+   * corresponding FileSystem supports checksum. By default doesn't do anything.
+   * @param verifyChecksum
    */
   public void setVerifyChecksum(boolean verifyChecksum) {
     //doesn't do anything
@@ -2305,6 +2480,16 @@ public abstract class FileSystem extends Configured implements Closeable {
     //doesn't do anything
   }
 
+=======
+   * Set the write checksum flag. This is only applicable if the 
+   * corresponding FileSystem supports checksum. By default doesn't do anything.
+   * @param writeChecksum
+   */
+  public void setWriteChecksum(boolean writeChecksum) {
+    //doesn't do anything
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Returns a status object describing the use and capacity of the
    * file system. If the file system has multiple partitions, the
@@ -2692,11 +2877,17 @@ public abstract class FileSystem extends Configured implements Closeable {
 
   private static FileSystem createFileSystem(URI uri, Configuration conf
       ) throws IOException {
+<<<<<<< HEAD
     TraceScope scope = Trace.startSpan("FileSystem#createFileSystem");
     Span span = scope.getSpan();
     if (span != null) {
       span.addKVAnnotation("scheme", uri.getScheme());
     }
+=======
+    Tracer tracer = FsTracer.get(conf);
+    TraceScope scope = tracer.newScope("FileSystem#createFileSystem");
+    scope.addKVAnnotation("scheme", uri.getScheme());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       Class<?> clazz = getFileSystemClass(uri.getScheme(), conf);
       FileSystem fs = (FileSystem)ReflectionUtils.newInstance(clazz, conf);
@@ -3038,6 +3229,7 @@ public abstract class FileSystem extends Configured implements Closeable {
      * Copy constructor.
      * 
      * @param other    The input Statistics object which is cloned.
+<<<<<<< HEAD
      */
     public Statistics(Statistics other) {
       this.scheme = other.scheme;
@@ -3094,6 +3286,64 @@ public abstract class FileSystem extends Configured implements Closeable {
     /**
      * Background action to act on references being removed.
      */
+=======
+     */
+    public Statistics(Statistics other) {
+      this.scheme = other.scheme;
+      this.rootData = new StatisticsData();
+      other.visitAll(new StatisticsAggregator<Void>() {
+        @Override
+        public void accept(StatisticsData data) {
+          rootData.add(data);
+        }
+
+        public Void aggregate() {
+          return null;
+        }
+      });
+      this.threadData = new ThreadLocal<StatisticsData>();
+      this.allData = new HashSet<StatisticsDataReference>();
+    }
+
+    /**
+     * A phantom reference to a thread that also includes the data associated
+     * with that thread. On the thread being garbage collected, it is enqueued
+     * to the reference queue for clean-up.
+     */
+    private class StatisticsDataReference extends PhantomReference<Thread> {
+      private final StatisticsData data;
+
+      public StatisticsDataReference(StatisticsData data, Thread thread) {
+        super(thread, STATS_DATA_REF_QUEUE);
+        this.data = data;
+      }
+
+      public StatisticsData getData() {
+        return data;
+      }
+
+      /**
+       * Performs clean-up action when the associated thread is garbage
+       * collected.
+       */
+      public void cleanUp() {
+        // use the statistics lock for safety
+        synchronized (Statistics.this) {
+          /*
+           * If the thread that created this thread-local data no longer exists,
+           * remove the StatisticsData from our list and fold the values into
+           * rootData.
+           */
+          rootData.add(data);
+          allData.remove(this);
+        }
+      }
+    }
+
+    /**
+     * Background action to act on references being removed.
+     */
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     private static class StatisticsDataReferenceCleaner implements Runnable {
       @Override
       public void run() {

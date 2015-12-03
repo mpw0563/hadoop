@@ -20,7 +20,10 @@ package org.apache.hadoop.hdfs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+<<<<<<< HEAD
 import java.io.DataOutputStream;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -30,7 +33,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+<<<<<<< HEAD
 import org.apache.commons.logging.impl.Log4JLogger;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ChecksumException;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -42,6 +48,10 @@ import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.apache.hadoop.hdfs.protocol.datatransfer.DataTransferProtocol;
 import org.apache.hadoop.hdfs.server.datanode.SimulatedFSDataset;
 import org.apache.hadoop.io.IOUtils;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.test.GenericTestUtils;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,11 +79,15 @@ public class TestPread {
 
   private void writeFile(FileSystem fileSys, Path name) throws IOException {
     int replication = 3;// We need > 1 blocks to test out the hedged reads.
+<<<<<<< HEAD
     // create and write a file that contains three blocks of data
     DataOutputStream stm = fileSys.create(name, true, 4096,
       (short)replication, blockSize);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // test empty file open and read
-    stm.close();
+    DFSTestUtil.createFile(fileSys, name, fileSize, 0,
+      blockSize, (short)replication, seed);
     FSDataInputStream in = fileSys.open(name);
     byte[] buffer = new byte[fileSize];
     in.readFully(0, buffer, 0, 0);
@@ -212,7 +226,7 @@ public class TestPread {
       return;
     }
     int numBlocks = 1;
-    assertTrue(numBlocks <= DFSConfigKeys.DFS_CLIENT_MAX_BLOCK_ACQUIRE_FAILURES_DEFAULT);
+    assertTrue(numBlocks <= HdfsClientConfigKeys.DFS_CLIENT_MAX_BLOCK_ACQUIRE_FAILURES_DEFAULT);
     byte[] expected = new byte[numBlocks * blockSize];
     Random rand = new Random(seed);
     rand.nextBytes(expected);
@@ -264,7 +278,11 @@ public class TestPread {
   @Test
   public void testPreadDFSNoChecksum() throws IOException {
     Configuration conf = new Configuration();
+<<<<<<< HEAD
     ((Log4JLogger)DataTransferProtocol.LOG).getLogger().setLevel(Level.ALL);
+=======
+    GenericTestUtils.setLogLevel(DataTransferProtocol.LOG, Level.ALL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     dfsPreadTest(conf, false, false);
     dfsPreadTest(conf, true, false);
   }
@@ -295,9 +313,14 @@ public class TestPread {
         hedgedReadTimeoutMillis);
     conf.setInt(HdfsClientConfigKeys.Retry.WINDOW_BASE_KEY, 0);
     // Set up the InjectionHandler
+<<<<<<< HEAD
     DFSClientFaultInjector.instance = Mockito
         .mock(DFSClientFaultInjector.class);
     DFSClientFaultInjector injector = DFSClientFaultInjector.instance;
+=======
+    DFSClientFaultInjector.set(Mockito.mock(DFSClientFaultInjector.class));
+    DFSClientFaultInjector injector = DFSClientFaultInjector.get();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final int sleepMs = 100;
     Mockito.doAnswer(new Answer<Void>() {
       @Override
@@ -371,9 +394,14 @@ public class TestPread {
         initialHedgedReadTimeoutMillis);
 
     // Set up the InjectionHandler
+<<<<<<< HEAD
     DFSClientFaultInjector.instance = Mockito
         .mock(DFSClientFaultInjector.class);
     DFSClientFaultInjector injector = DFSClientFaultInjector.instance;
+=======
+    DFSClientFaultInjector.set(Mockito.mock(DFSClientFaultInjector.class));
+    DFSClientFaultInjector injector = DFSClientFaultInjector.get();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // make preads sleep for 50ms
     Mockito.doAnswer(new Answer<Void>() {
       @Override

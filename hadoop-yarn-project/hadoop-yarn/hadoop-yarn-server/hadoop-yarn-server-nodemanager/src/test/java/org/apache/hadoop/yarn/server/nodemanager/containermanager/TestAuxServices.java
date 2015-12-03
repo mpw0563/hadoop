@@ -87,6 +87,10 @@ public class TestAuxServices {
       this.stoppedApps = new ArrayList<Integer>();
     }
 
+<<<<<<< HEAD
+=======
+    @SuppressWarnings("unchecked")
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     public ArrayList<Integer> getAppIdsStopped() {
       return (ArrayList<Integer>)this.stoppedApps.clone();
     }

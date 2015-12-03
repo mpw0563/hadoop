@@ -142,12 +142,40 @@ public abstract class GenericTestUtils {
         Joiner.on(",").join(expectedSet),
         Joiner.on(",").join(found));
   }
+<<<<<<< HEAD
   
   public static void assertExceptionContains(String string, Throwable t) {
     String msg = t.getMessage();
     Assert.assertTrue(
         "Expected to find '" + string + "' but got unexpected exception:"
         + StringUtils.stringifyException(t), msg.contains(string));
+=======
+
+  static final String E_NULL_THROWABLE = "Null Throwable";
+  static final String E_NULL_THROWABLE_STRING =
+      "Null Throwable.toString() value";
+  static final String E_UNEXPECTED_EXCEPTION = "but got unexpected exception";
+
+  /**
+   * Assert that an exception's <code>toString()</code> value
+   * contained the expected text.
+   * @param string expected string
+   * @param t thrown exception
+   * @throws AssertionError if the expected string is not found
+   */
+  public static void assertExceptionContains(String string, Throwable t) {
+    Assert.assertNotNull(E_NULL_THROWABLE, t);
+    String msg = t.toString();
+    if (msg == null) {
+      throw new AssertionError(E_NULL_THROWABLE_STRING, t);
+    }
+    if (!msg.contains(string)) {
+      throw new AssertionError("Expected to find '" + string + "' "
+          + E_UNEXPECTED_EXCEPTION + ":"
+          + StringUtils.stringifyException(t),
+          t);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }  
 
   public static void waitFor(Supplier<Boolean> check,
@@ -196,6 +224,13 @@ public abstract class GenericTestUtils {
       logger.removeAppender(appender);
 
     }
+<<<<<<< HEAD
+=======
+
+    public void clearOutput() {
+      sw.getBuffer().setLength(0);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   

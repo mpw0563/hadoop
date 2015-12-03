@@ -74,7 +74,11 @@ public class MiniMRYarnCluster extends MiniYARNCluster {
   public MiniMRYarnCluster(String testName, int noOfNMs) {
     this(testName, noOfNMs, false);
   }
+<<<<<<< HEAD
 
+=======
+  @Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public MiniMRYarnCluster(String testName, int noOfNMs, boolean enableAHS) {
     super(testName, 1, noOfNMs, 4, 4, enableAHS);
     historyServerWrapper = new JobHistoryServerWrapper();
@@ -184,12 +188,37 @@ public class MiniMRYarnCluster extends MiniYARNCluster {
     conf.setBoolean(MRJobConfig.JOB_UBERTASK_ENABLE, false);
 
     super.serviceInit(conf);
+<<<<<<< HEAD
+=======
+  }
+
+  @Override
+  protected void serviceStart() throws Exception {
+    super.serviceStart();
+
+    //need to do this because historyServer.init creates a new Configuration
+    getConfig().set(JHAdminConfig.MR_HISTORY_ADDRESS,
+                    historyServer.getConfig().get(JHAdminConfig.MR_HISTORY_ADDRESS));
+    MRWebAppUtil.setJHSWebappURLWithoutScheme(getConfig(),
+        MRWebAppUtil.getJHSWebappURLWithoutScheme(historyServer.getConfig()));
+
+    LOG.info("MiniMRYARN ResourceManager address: " +
+        getConfig().get(YarnConfiguration.RM_ADDRESS));
+    LOG.info("MiniMRYARN ResourceManager web address: " +
+        WebAppUtils.getRMWebAppURLWithoutScheme(getConfig()));
+    LOG.info("MiniMRYARN HistoryServer address: " +
+        getConfig().get(JHAdminConfig.MR_HISTORY_ADDRESS));
+    LOG.info("MiniMRYARN HistoryServer web address: " +
+        getResolvedMRHistoryWebAppURLWithoutScheme(getConfig(),
+            MRWebAppUtil.getJHSHttpPolicy() == HttpConfig.Policy.HTTPS_ONLY));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private class JobHistoryServerWrapper extends AbstractService {
     public JobHistoryServerWrapper() {
       super(JobHistoryServerWrapper.class.getName());
     }
+    private volatile boolean jhsStarted = false;
 
     @Override
     public synchronized void serviceStart() throws Exception {
@@ -211,9 +240,11 @@ public class MiniMRYarnCluster extends MiniYARNCluster {
         new Thread() {
           public void run() {
             historyServer.start();
+            jhsStarted = true;
           };
         }.start();
-        while (historyServer.getServiceState() == STATE.INITED) {
+
+        while (!jhsStarted) {
           LOG.info("Waiting for HistoryServer to start...");
           Thread.sleep(1500);
         }

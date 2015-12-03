@@ -61,7 +61,13 @@ import org.apache.hadoop.yarn.api.records.NodeId;
 import org.apache.hadoop.yarn.api.records.NodeLabel;
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.QueueUserACLInfo;
+=======
+import org.apache.hadoop.yarn.api.records.Priority;
+import org.apache.hadoop.yarn.api.records.QueueUserACLInfo;
+import org.apache.hadoop.yarn.api.records.SignalContainerCommand;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.api.records.YarnClusterMetrics;
 import org.apache.hadoop.yarn.client.ClientRMProxy;
@@ -292,12 +298,27 @@ public class ResourceMgrDelegate extends YarnClient {
   }
 
   @Override
+<<<<<<< HEAD
   public void killApplication(ApplicationId applicationId)
       throws YarnException, IOException {
     client.killApplication(applicationId);
   }
 
   @Override
+=======
+  public void failApplicationAttempt(ApplicationAttemptId attemptId)
+      throws YarnException, IOException {
+    client.failApplicationAttempt(attemptId);
+  }
+
+  @Override
+  public void killApplication(ApplicationId applicationId)
+      throws YarnException, IOException {
+    client.killApplication(applicationId);
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public ApplicationReport getApplicationReport(ApplicationId appId)
       throws YarnException, IOException {
     return client.getApplicationReport(appId);
@@ -465,5 +486,20 @@ public class ResourceMgrDelegate extends YarnClient {
   public List<NodeLabel> getClusterNodeLabels()
       throws YarnException, IOException {
     return client.getClusterNodeLabels();
+<<<<<<< HEAD
+=======
+  }
+
+  @Override
+  public void updateApplicationPriority(ApplicationId applicationId,
+      Priority priority) throws YarnException, IOException {
+    client.updateApplicationPriority(applicationId, priority);
+  }
+
+  @Override
+  public void signalContainer(ContainerId containerId, SignalContainerCommand command)
+      throws YarnException, IOException {
+    client.signalContainer(containerId, command);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

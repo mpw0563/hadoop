@@ -195,6 +195,7 @@ public class AppBlock extends HtmlBlock {
         && webUiType.equals(YarnWebParams.RM_WEB_UI)) {
       LogAggregationStatus status = getLogAggregationStatus();
       if (status == null) {
+<<<<<<< HEAD
         overviewTable._("Log Aggregation Status", "N/A");
       } else if (status == LogAggregationStatus.DISABLED
           || status == LogAggregationStatus.NOT_START
@@ -202,12 +203,30 @@ public class AppBlock extends HtmlBlock {
         overviewTable._("Log Aggregation Status", status.name());
       } else {
         overviewTable._("Log Aggregation Status",
+=======
+        overviewTable._("Log Aggregation Status:", "N/A");
+      } else if (status == LogAggregationStatus.DISABLED
+          || status == LogAggregationStatus.NOT_START
+          || status == LogAggregationStatus.SUCCEEDED) {
+        overviewTable._("Log Aggregation Status:", status.name());
+      } else {
+        overviewTable._("Log Aggregation Status:",
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
             root_url("logaggregationstatus", app.getAppId()), status.name());
       }
     }
     overviewTable._("Diagnostics:",
         app.getDiagnosticsInfo() == null ? "" : app.getDiagnosticsInfo());
     overviewTable._("Unmanaged Application:", app.isUnmanagedApp());
+<<<<<<< HEAD
+=======
+    overviewTable._("Application Node Label expression:",
+        app.getAppNodeLabelExpression() == null ? "<Not set>"
+            : app.getAppNodeLabelExpression());
+    overviewTable._("AM container Node Label expression:",
+        app.getAmNodeLabelExpression() == null ? "<Not set>"
+            : app.getAmNodeLabelExpression());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     Collection<ApplicationAttemptReport> attempts;
     try {

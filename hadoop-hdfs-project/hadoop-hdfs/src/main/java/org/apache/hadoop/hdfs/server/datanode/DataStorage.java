@@ -44,7 +44,10 @@ import org.apache.hadoop.hdfs.server.common.Storage;
 import org.apache.hadoop.hdfs.server.common.StorageInfo;
 import org.apache.hadoop.hdfs.server.protocol.DatanodeStorage;
 import org.apache.hadoop.hdfs.server.protocol.NamespaceInfo;
+<<<<<<< HEAD
 import org.apache.hadoop.io.nativeio.NativeIO;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.util.Daemon;
 import org.apache.hadoop.util.DiskChecker;
 
@@ -98,6 +101,7 @@ public class DataStorage extends Storage {
    * directory exists.
    */
   private Set<String> trashEnabledBpids;
+<<<<<<< HEAD
 
   /**
    * Datanode UUID that this storage is currently attached to. This
@@ -109,6 +113,16 @@ public class DataStorage extends Storage {
 
   // Flag to ensure we only initialize storage once
   private boolean initialized = false;
+=======
+
+  /**
+   * Datanode UUID that this storage is currently attached to. This
+   *  is the same as the legacy StorageID for datanodes that were
+   *  upgraded from a pre-UUID version. For compatibility with prior
+   *  versions of Datanodes we cannot make this field a UUID.
+   */
+  private String datanodeUuid = null;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   
   // Maps block pool IDs to block pool storage
   private final Map<String, BlockPoolSliceStorage> bpStorageMap
@@ -160,6 +174,10 @@ public class DataStorage extends Storage {
    */
   public void enableTrash(String bpid) {
     if (trashEnabledBpids.add(bpid)) {
+<<<<<<< HEAD
+=======
+      getBPStorage(bpid).stopTrashCleaner();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       LOG.info("Enabled trash for bpid " + bpid);
     }
   }
@@ -307,7 +325,11 @@ public class DataStorage extends Storage {
    * Note that if there is IOException, the state of DataStorage is not modified.
    */
   public VolumeBuilder prepareVolume(DataNode datanode, File volume,
+<<<<<<< HEAD
       List<NamespaceInfo> nsInfos) throws IOException {
+=======
+      Collection<NamespaceInfo> nsInfos) throws IOException {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (containsStorageDir(volume)) {
       final String errorMessage = "Storage directory is in use";
       LOG.warn(errorMessage + ".");
@@ -315,10 +337,17 @@ public class DataStorage extends Storage {
     }
 
     StorageDirectory sd = loadStorageDirectory(
+<<<<<<< HEAD
         datanode, nsInfos.get(0), volume, StartupOption.HOTSWAP);
     VolumeBuilder builder =
         new VolumeBuilder(this, sd);
     for (NamespaceInfo nsInfo : nsInfos) {
+=======
+        datanode, nsInfos.iterator().next(), volume, StartupOption.HOTSWAP);
+    VolumeBuilder builder =
+        new VolumeBuilder(this, sd);
+    for (final NamespaceInfo nsInfo : nsInfos) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       List<File> bpDataDirs = Lists.newArrayList();
       bpDataDirs.add(BlockPoolSliceStorage.getBpRoot(
           nsInfo.getBlockPoolID(), new File(volume, STORAGE_DIR_CURRENT)));
@@ -395,6 +424,7 @@ public class DataStorage extends Storage {
         continue;
       }
       successVolumes.add(dataDir);
+<<<<<<< HEAD
     }
     return successVolumes;
   }
@@ -410,8 +440,28 @@ public class DataStorage extends Storage {
       throws IOException {
     if (dirsToRemove.isEmpty()) {
       return;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
+    }
+    return successVolumes;
+  }
+
+<<<<<<< HEAD
+=======
+  /**
+   * Remove storage dirs from DataStorage. All storage dirs are removed even when the
+   * IOException is thrown.
+   *
+   * @param dirsToRemove a set of storage directories to be removed.
+   * @throws IOException if I/O error when unlocking storage directory.
+   */
+  synchronized void removeVolumes(final Set<File> dirsToRemove)
+      throws IOException {
+    if (dirsToRemove.isEmpty()) {
+      return;
     }
 
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     StringBuilder errorMsgBuilder = new StringBuilder();
     for (Iterator<StorageDirectory> it = this.storageDirs.iterator();
          it.hasNext(); ) {
@@ -461,6 +511,7 @@ public class DataStorage extends Storage {
    */
   void recoverTransitionRead(DataNode datanode, NamespaceInfo nsInfo,
       Collection<StorageLocation> dataDirs, StartupOption startOpt) throws IOException {
+<<<<<<< HEAD
     if (this.initialized) {
       LOG.info("DataNode version: " + HdfsServerConstants.DATANODE_LAYOUT_VERSION
           + " and NameNode layout version: " + nsInfo.getLayoutVersion());
@@ -469,6 +520,8 @@ public class DataStorage extends Storage {
       this.initialized = true;
     }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (addStorageLocations(datanode, nsInfo, dataDirs, startOpt).isEmpty()) {
       throw new IOException("All specified directories are failed to load.");
     }
@@ -1046,6 +1099,7 @@ public class DataStorage extends Storage {
             HardLink.createHardLink(cur.src, cur.dst);
           }
           return null;
+<<<<<<< HEAD
         }
       }));
     }
@@ -1095,6 +1149,57 @@ public class DataStorage extends Storage {
         if (!addedPrev) {
           duplicates.add(all.get(i - 1));
         }
+=======
+        }
+      }));
+    }
+    linkWorkers.shutdown();
+    for (Future<Void> f : futures) {
+      Futures.get(f, IOException.class);
+    }
+  }
+
+  /**
+   * Find duplicate entries with an array of LinkArgs.
+   * Duplicate entries are entries with the same last path component.
+   */
+  static ArrayList<LinkArgs> findDuplicateEntries(ArrayList<LinkArgs> all) {
+    // Find duplicates by sorting the list by the final path component.
+    Collections.sort(all, new Comparator<LinkArgs>() {
+      /**
+       * Compare two LinkArgs objects, such that objects with the same
+       * terminal source path components are grouped together.
+       */
+      @Override
+      public int compare(LinkArgs a, LinkArgs b) {
+        return ComparisonChain.start().
+            compare(a.src.getName(), b.src.getName()).
+            compare(a.src, b.src).
+            compare(a.dst, b.dst).
+            result();
+      }
+    });
+    final ArrayList<LinkArgs> duplicates = Lists.newArrayList();
+    Long prevBlockId = null;
+    boolean prevWasMeta = false;
+    boolean addedPrev = false;
+    for (int i = 0; i < all.size(); i++) {
+      LinkArgs args = all.get(i);
+      long blockId = Block.getBlockId(args.src.getName());
+      boolean isMeta = Block.isMetaFilename(args.src.getName());
+      if ((prevBlockId == null) ||
+          (prevBlockId.longValue() != blockId)) {
+        prevBlockId = blockId;
+        addedPrev = false;
+      } else if (isMeta == prevWasMeta) {
+        // If we saw another file for the same block ID previously,
+        // and it had the same meta-ness as this file, we have a
+        // duplicate.
+        duplicates.add(args);
+        if (!addedPrev) {
+          duplicates.add(all.get(i - 1));
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         addedPrev = true;
       } else {
         addedPrev = false;
@@ -1157,6 +1262,7 @@ public class DataStorage extends Storage {
             found = true;
             break;
           }
+<<<<<<< HEAD
         }
         if (!found) {
           LOG.warn("Unexpectedly low genstamp on " +
@@ -1208,6 +1314,59 @@ public class DataStorage extends Storage {
         iter.remove();
       }
     }
+=======
+        }
+        if (!found) {
+          LOG.warn("Unexpectedly low genstamp on " +
+                   duplicate.src.getAbsolutePath() + ".");
+          iter.remove();
+        }
+      }
+    }
+
+    // Find the longest block files
+    // We let the "last guy win" here, since we're only interested in
+    // preserving one block file / metadata file pair.
+    TreeMap<Long, LinkArgs> longestBlockFiles = new TreeMap<Long, LinkArgs>();
+    for (LinkArgs duplicate : duplicates) {
+      if (Block.isMetaFilename(duplicate.src.getName())) {
+        continue;
+      }
+      long blockId = Block.getBlockId(duplicate.src.getName());
+      LinkArgs prevLongest = longestBlockFiles.get(blockId);
+      if (prevLongest == null) {
+        longestBlockFiles.put(blockId, duplicate);
+        continue;
+      }
+      long blockLength = duplicate.src.length();
+      long prevBlockLength = prevLongest.src.length();
+      if (blockLength < prevBlockLength) {
+        LOG.warn("Unexpectedly short length on " +
+            duplicate.src.getAbsolutePath() + ".");
+        continue;
+      }
+      if (blockLength > prevBlockLength) {
+        LOG.warn("Unexpectedly short length on " +
+            prevLongest.src.getAbsolutePath() + ".");
+      }
+      longestBlockFiles.put(blockId, duplicate);
+    }
+
+    // Remove data / metadata entries that aren't the longest, or weren't
+    // arbitrarily selected by us.
+    for (Iterator<LinkArgs> iter = all.iterator(); iter.hasNext(); ) {
+      LinkArgs args = iter.next();
+      long blockId = Block.getBlockId(args.src.getName());
+      LinkArgs bestDuplicate = longestBlockFiles.get(blockId);
+      if (bestDuplicate == null) {
+        continue; // file has no duplicates
+      }
+      if (!bestDuplicate.src.getParent().equals(args.src.getParent())) {
+        LOG.warn("Discarding " + args.src.getAbsolutePath() + ".");
+        iter.remove();
+      }
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   static void linkBlocksHelper(File from, File to, int oldLV, HardLink hl,

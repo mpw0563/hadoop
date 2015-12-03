@@ -231,7 +231,10 @@ implements ResourceUsageEmulatorPlugin {
   
   private synchronized long getCurrentCPUUsage() {
     return monitor.getCumulativeCpuTime();
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @Override
@@ -322,4 +325,8 @@ implements ResourceUsageEmulatorPlugin {
     lastSeenProgress = 0;
     lastSeenCpuUsage = 0;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

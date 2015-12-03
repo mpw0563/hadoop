@@ -39,12 +39,20 @@ public interface BlockCollection {
   public ContentSummary computeContentSummary(BlockStoragePolicySuite bsps);
 
   /**
+<<<<<<< HEAD
    * @return the number of blocks
+=======
+   * @return the number of blocks or block groups
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */ 
   public int numBlocks();
 
   /**
+<<<<<<< HEAD
    * Get the blocks.
+=======
+   * Get the blocks (striped or contiguous).
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   public BlockInfo[] getBlocks();
 
@@ -55,12 +63,21 @@ public interface BlockCollection {
   public long getPreferredBlockSize();
 
   /**
+<<<<<<< HEAD
    * Get block replication for the collection 
    * @return block replication value
    */
   public short getPreferredBlockReplication();
 
   /** 
+=======
+   * Get block replication for the collection.
+   * @return block replication value. Return 0 if the file is erasure coded.
+   */
+  public short getPreferredBlockReplication();
+
+  /**
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @return the storage policy ID.
    */
   public byte getStoragePolicyID();
@@ -71,7 +88,11 @@ public interface BlockCollection {
   public String getName();
 
   /**
+<<<<<<< HEAD
    * Set the block at the given index.
+=======
+   * Set the block (contiguous or striped) at the given index.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    */
   public void setBlock(int index, BlockInfo blk);
 
@@ -79,11 +100,28 @@ public interface BlockCollection {
    * Convert the last block of the collection to an under-construction block
    * and set the locations.
    */
+<<<<<<< HEAD
   public BlockInfoContiguousUnderConstruction setLastBlock(BlockInfo lastBlock,
+=======
+  public void convertLastBlockToUC(BlockInfo lastBlock,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       DatanodeStorageInfo[] targets) throws IOException;
 
   /**
    * @return whether the block collection is under construction.
    */
   public boolean isUnderConstruction();
+<<<<<<< HEAD
+=======
+
+  /**
+   * @return whether the block collection is in striping format
+   */
+  boolean isStriped();
+
+  /**
+   * @return the id for the block collection
+   */
+  long getId();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

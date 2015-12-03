@@ -25,6 +25,10 @@ import static org.apache.hadoop.yarn.server.resourcemanager.monitor.capacity.Pro
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
+<<<<<<< HEAD
+=======
+import static org.mockito.Matchers.isA;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -34,6 +38,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Comparator;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1127,8 +1135,18 @@ public class TestProportionalCapacityPreemptionPolicyForNodePartitions {
         when(parentQueue.getChildQueues()).thenReturn(children);
       } else {
         LeafQueue leafQueue = mock(LeafQueue.class);
+<<<<<<< HEAD
         final TreeSet<FiCaSchedulerApp> apps =
             new TreeSet<>(CapacityScheduler.applicationComparator);
+=======
+        final TreeSet<FiCaSchedulerApp> apps = new TreeSet<>(
+            new Comparator<FiCaSchedulerApp>() {
+              @Override
+              public int compare(FiCaSchedulerApp a1, FiCaSchedulerApp a2) {
+                return a1.getApplicationId().compareTo(a2.getApplicationId());
+              }
+            });
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         when(leafQueue.getApplications()).thenReturn(apps);
         OrderingPolicy<FiCaSchedulerApp> so = mock(OrderingPolicy.class);
         when(so.getPreemptionIterator()).thenAnswer(new Answer() {
@@ -1213,6 +1231,14 @@ public class TestProportionalCapacityPreemptionPolicyForNodePartitions {
       qc.setAbsoluteMaximumCapacity(partitionName, absMax);
       qc.setAbsoluteUsedCapacity(partitionName, absUsed);
       ru.setPending(partitionName, pending);
+<<<<<<< HEAD
+=======
+      if (!isParent(queueExprArray, idx)) {
+        LeafQueue lq = (LeafQueue) queue;
+        when(lq.getTotalPendingResourcesConsideringUserLimit(isA(Resource.class),
+            isA(String.class))).thenReturn(pending);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ru.setUsed(partitionName, parseResourceFromString(values[2].trim()));
       LOG.debug("Setup queue=" + queueName + " partition=" + partitionName
           + " [abs_guaranteed=" + absGuaranteed + ",abs_max=" + absMax

@@ -20,12 +20,12 @@ package org.apache.hadoop.hdfs.server.blockmanagement;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4JLogger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
 import org.apache.hadoop.fs.FileSystem;
@@ -39,14 +39,15 @@ import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 import org.apache.hadoop.hdfs.server.namenode.FSNamesystem;
 import org.apache.hadoop.hdfs.server.namenode.NameNodeAdapter;
+import org.apache.hadoop.test.GenericTestUtils;
 import org.apache.log4j.Level;
 import org.junit.Test;
 
 public class TestBlocksWithNotEnoughRacks {
   public static final Log LOG = LogFactory.getLog(TestBlocksWithNotEnoughRacks.class);
   static {
-    ((Log4JLogger)LogFactory.getLog(FSNamesystem.class)).getLogger().setLevel(Level.ALL);
-    ((Log4JLogger)LOG).getLogger().setLevel(Level.ALL);
+    GenericTestUtils.setLogLevel(FSNamesystem.LOG, Level.ALL);
+    GenericTestUtils.setLogLevel(LOG, Level.ALL);
   }
 
   /*
@@ -202,14 +203,18 @@ public class TestBlocksWithNotEnoughRacks {
       final FileSystem fs = cluster.getFileSystem();
       
       DFSTestUtil.createFile(fs, filePath, fileLen, REPLICATION_FACTOR, 1L);
-      final String fileContent = DFSTestUtil.readFile(fs, filePath);
+      final byte[] fileContent = DFSTestUtil.readFileAsBytes(fs, filePath);
 
       ExtendedBlock b = DFSTestUtil.getFirstBlock(fs, filePath);
       DFSTestUtil.waitForReplication(cluster, b, 2, REPLICATION_FACTOR, 0);
 
       // Corrupt a replica of the block
       int dnToCorrupt = DFSTestUtil.firstDnWithBlock(cluster, b);
+<<<<<<< HEAD
       assertTrue(cluster.corruptReplica(dnToCorrupt, b));
+=======
+      cluster.corruptReplica(dnToCorrupt, b);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
       // Restart the datanode so blocks are re-scanned, and the corrupt
       // block is detected.
@@ -224,9 +229,9 @@ public class TestBlocksWithNotEnoughRacks {
       // Ensure all replicas are valid (the corrupt replica may not
       // have been cleaned up yet).
       for (int i = 0; i < racks.length; i++) {
-        String blockContent = cluster.readBlockOnDataNode(i, b);
+        byte[] blockContent = cluster.readBlockOnDataNodeAsBytes(i, b);
         if (blockContent != null && i != dnToCorrupt) {
-          assertEquals("Corrupt replica", fileContent, blockContent);
+          assertArrayEquals("Corrupt replica", fileContent, blockContent);
         }
       }
     } finally {

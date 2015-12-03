@@ -59,9 +59,26 @@ public class RetryPolicies {
   /**
    * <p>
    * Keep trying forever.
+<<<<<<< HEAD
    * </p>
    */
   public static final RetryPolicy RETRY_FOREVER = new RetryForever();
+=======
+   * </p>
+   */
+  public static final RetryPolicy RETRY_FOREVER = new RetryForever();
+
+  /**
+   * <p>
+   * Keep trying forever with a fixed time between attempts.
+   * </p>
+   */
+  public static final RetryPolicy retryForeverWithFixedSleep(long sleepTime,
+      TimeUnit timeUnit) {
+    return new RetryUpToMaximumCountWithFixedSleep(Integer.MAX_VALUE,
+        sleepTime, timeUnit);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /**
    * <p>
@@ -128,7 +145,17 @@ public class RetryPolicies {
       Map<Class<? extends Exception>, RetryPolicy> exceptionToPolicyMap) {
     return new RemoteExceptionDependentRetry(defaultPolicy, exceptionToPolicyMap);
   }
-  
+
+  /**
+   * A retry policy for exceptions other than RemoteException.
+   */
+  public static final RetryPolicy retryOtherThanRemoteException(
+      RetryPolicy defaultPolicy,
+      Map<Class<? extends Exception>, RetryPolicy> exceptionToPolicyMap) {
+    return new OtherThanRemoteExceptionDependentRetry(defaultPolicy,
+        exceptionToPolicyMap);
+  }
+
   public static final RetryPolicy failoverOnNetworkException(int maxFailovers) {
     return failoverOnNetworkException(TRY_ONCE_THEN_FAIL, maxFailovers);
   }
@@ -143,6 +170,7 @@ public class RetryPolicies {
       long maxDelayBase) {
     return new FailoverOnNetworkExceptionRetry(fallbackPolicy, maxFailovers,
         delayMillis, maxDelayBase);
+<<<<<<< HEAD
   }
   
   public static final RetryPolicy failoverOnNetworkException(
@@ -152,6 +180,17 @@ public class RetryPolicies {
         maxRetries, delayMillis, maxDelayBase);
   }
   
+=======
+  }
+  
+  public static final RetryPolicy failoverOnNetworkException(
+      RetryPolicy fallbackPolicy, int maxFailovers, int maxRetries,
+      long delayMillis, long maxDelayBase) {
+    return new FailoverOnNetworkExceptionRetry(fallbackPolicy, maxFailovers,
+        maxRetries, delayMillis, maxDelayBase);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   static class TryOnceThenFail implements RetryPolicy {
     @Override
     public RetryAction shouldRetry(Exception e, int retries, int failovers,
@@ -360,7 +399,11 @@ public class RetryPolicies {
     /**
      * Parse the given string as a MultipleLinearRandomRetry object.
      * The format of the string is "t_1, n_1, t_2, n_2, ...",
+<<<<<<< HEAD
      * where t_i and n_i are the i-th pair of sleep time and number of retires.
+=======
+     * where t_i and n_i are the i-th pair of sleep time and number of retries.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      * Note that the white spaces in the string are ignored.
      *
      * @return the parsed object, or null if the parsing fails.
@@ -478,7 +521,37 @@ public class RetryPolicies {
       return policy.shouldRetry(e, retries, failovers, isIdempotentOrAtMostOnce);
     }
   }
-  
+
+  static class OtherThanRemoteExceptionDependentRetry implements RetryPolicy {
+
+    private RetryPolicy defaultPolicy;
+    private Map<Class<? extends Exception>, RetryPolicy> exceptionToPolicyMap;
+
+    public OtherThanRemoteExceptionDependentRetry(RetryPolicy defaultPolicy,
+        Map<Class<? extends Exception>,
+        RetryPolicy> exceptionToPolicyMap) {
+      this.defaultPolicy = defaultPolicy;
+      this.exceptionToPolicyMap = exceptionToPolicyMap;
+    }
+
+    @Override
+    public RetryAction shouldRetry(Exception e, int retries, int failovers,
+        boolean isIdempotentOrAtMostOnce) throws Exception {
+      RetryPolicy policy = null;
+      // ignore Remote Exception
+      if (e instanceof RemoteException) {
+        // do nothing
+      } else {
+        policy = exceptionToPolicyMap.get(e.getClass());
+      }
+      if (policy == null) {
+        policy = defaultPolicy;
+      }
+      return policy.shouldRetry(
+          e, retries, failovers, isIdempotentOrAtMostOnce);
+    }
+  }
+
   static class ExponentialBackoffRetry extends RetryLimited {
     
     public ExponentialBackoffRetry(

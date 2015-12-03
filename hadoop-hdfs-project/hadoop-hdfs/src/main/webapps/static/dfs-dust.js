@@ -58,9 +58,21 @@
     },
 
     'date_tostring' : function (v) {
+<<<<<<< HEAD
       return new Date(Number(v)).toLocaleString();
     },
 
+=======
+      return moment(Number(v)).format('ddd MMM DD HH:mm:ss ZZ YYYY');
+    },
+
+    'format_compile_info' : function (v) {
+      var info = v.split(" by ")
+      var date = moment(info[0]).format('ddd MMM DD HH:mm:ss ZZ YYYY');
+      return date.concat(" by ").concat(info[1]);
+     },
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     'helper_to_permission': function (v) {
       var symbols = [ '---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx' ];
       var vInt = parseInt(v, 8);
@@ -86,6 +98,13 @@
 
     'helper_to_acl_bit': function (v) {
       return v ? '+' : "";
+<<<<<<< HEAD
+=======
+    },
+
+    'fmt_number': function (v) {
+      return v.toLocaleString();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
   };
   $.extend(dust.filters, filters);

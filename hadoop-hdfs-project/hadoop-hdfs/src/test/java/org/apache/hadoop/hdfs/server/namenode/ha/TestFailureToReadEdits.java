@@ -35,6 +35,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.DFSUtilClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.HAUtil;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.MiniDFSNNTopology;
@@ -246,7 +250,11 @@ public class TestFailureToReadEdits {
     FileSystem fs0 = null;
     try {
       // Make sure that when the active restarts, it loads all the edits.
+<<<<<<< HEAD
       fs0 = FileSystem.get(NameNode.getUri(nn0.getNameNodeAddress()),
+=======
+      fs0 = FileSystem.get(DFSUtilClient.getNNUri(nn0.getNameNodeAddress()),
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           conf);
       
       assertTrue(fs0.exists(new Path(TEST_DIR1)));

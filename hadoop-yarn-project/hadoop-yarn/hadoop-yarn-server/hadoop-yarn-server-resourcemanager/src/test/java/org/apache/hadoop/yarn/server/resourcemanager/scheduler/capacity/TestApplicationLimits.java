@@ -46,6 +46,10 @@ import org.apache.hadoop.yarn.api.records.ResourceRequest;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.nodelabels.CommonNodeLabelsManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ActiveUsersManager;
@@ -93,8 +97,11 @@ public class TestApplicationLimits {
         thenReturn(Resources.createResource(16*GB, 32));
     when(csContext.getClusterResource()).
         thenReturn(Resources.createResource(10 * 16 * GB, 10 * 32));
+<<<<<<< HEAD
     when(csContext.getApplicationComparator()).
         thenReturn(CapacityScheduler.applicationComparator);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(csContext.getNonPartitionedQueueComparator()).
         thenReturn(CapacityScheduler.nonPartitionedQueueComparator);
     when(csContext.getResourceCalculator()).
@@ -156,6 +163,13 @@ public class TestApplicationLimits {
     doReturn(user).when(application).getUser();
     doReturn(amResource).when(application).getAMResource();
     doReturn(Priority.newInstance(0)).when(application).getPriority();
+<<<<<<< HEAD
+=======
+    doReturn(CommonNodeLabelsManager.NO_LABEL).when(application)
+        .getAppAMNodePartitionName();
+    doReturn(amResource).when(application).getAMResource(
+        CommonNodeLabelsManager.NO_LABEL);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(application.compareInputOrderTo(any(FiCaSchedulerApp.class))).thenCallRealMethod();
     return application;
   }
@@ -255,8 +269,11 @@ public class TestApplicationLimits {
         thenReturn(Resources.createResource(GB, 1));
     when(csContext.getMaximumResourceCapability()).
         thenReturn(Resources.createResource(16*GB, 16));
+<<<<<<< HEAD
     when(csContext.getApplicationComparator()).
         thenReturn(CapacityScheduler.applicationComparator);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(csContext.getNonPartitionedQueueComparator()).
         thenReturn(CapacityScheduler.nonPartitionedQueueComparator);
     when(csContext.getResourceCalculator()).thenReturn(resourceCalculator);
@@ -499,7 +516,11 @@ public class TestApplicationLimits {
     assertEquals(1, queue.getNumPendingApplications());
     assertEquals(2, queue.getNumActiveApplications(user_0));
     assertEquals(1, queue.getNumPendingApplications(user_0));
+<<<<<<< HEAD
     assertTrue(queue.pendingApplications.contains(app_2));
+=======
+    assertTrue(queue.getPendingApplications().contains(app_2));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Submit fourth application, should remain pending
     FiCaSchedulerApp app_3 = getMockApplication(APPLICATION_ID++, user_0,
@@ -509,7 +530,11 @@ public class TestApplicationLimits {
     assertEquals(2, queue.getNumPendingApplications());
     assertEquals(2, queue.getNumActiveApplications(user_0));
     assertEquals(2, queue.getNumPendingApplications(user_0));
+<<<<<<< HEAD
     assertTrue(queue.pendingApplications.contains(app_3));
+=======
+    assertTrue(queue.getPendingApplications().contains(app_3));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Kill 3rd pending application
     queue.finishApplicationAttempt(app_2, A);
@@ -517,7 +542,11 @@ public class TestApplicationLimits {
     assertEquals(1, queue.getNumPendingApplications());
     assertEquals(2, queue.getNumActiveApplications(user_0));
     assertEquals(1, queue.getNumPendingApplications(user_0));
+<<<<<<< HEAD
     assertFalse(queue.pendingApplications.contains(app_2));
+=======
+    assertFalse(queue.getPendingApplications().contains(app_2));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertFalse(queue.getApplications().contains(app_2));
 
     // Finish 1st application, app_3 should become active
@@ -527,7 +556,11 @@ public class TestApplicationLimits {
     assertEquals(2, queue.getNumActiveApplications(user_0));
     assertEquals(0, queue.getNumPendingApplications(user_0));
     assertTrue(queue.getApplications().contains(app_3));
+<<<<<<< HEAD
     assertFalse(queue.pendingApplications.contains(app_3));
+=======
+    assertFalse(queue.getPendingApplications().contains(app_3));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertFalse(queue.getApplications().contains(app_0));
 
     // Finish 2nd application
@@ -562,8 +595,11 @@ public class TestApplicationLimits {
         thenReturn(Resources.createResource(GB));
     when(csContext.getMaximumResourceCapability()).
         thenReturn(Resources.createResource(16*GB));
+<<<<<<< HEAD
     when(csContext.getApplicationComparator()).
         thenReturn(CapacityScheduler.applicationComparator);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     when(csContext.getNonPartitionedQueueComparator()).
         thenReturn(CapacityScheduler.nonPartitionedQueueComparator);
     when(csContext.getResourceCalculator()).thenReturn(resourceCalculator);

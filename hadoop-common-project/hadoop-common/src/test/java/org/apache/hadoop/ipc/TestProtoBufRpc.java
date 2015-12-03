@@ -19,6 +19,11 @@ package org.apache.hadoop.ipc;
 
 import static org.apache.hadoop.test.MetricsAsserts.getMetrics;
 import static org.apache.hadoop.test.MetricsAsserts.assertCounterGt;
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -27,7 +32,13 @@ import java.net.URISyntaxException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeys;
+<<<<<<< HEAD
 import org.apache.hadoop.ipc.protobuf.RpcHeaderProtos.RpcResponseHeaderProto.RpcErrorCodeProto;
+=======
+import org.apache.hadoop.ipc.metrics.RpcMetrics;
+import org.apache.hadoop.ipc.protobuf.RpcHeaderProtos.RpcResponseHeaderProto.RpcErrorCodeProto;
+import org.apache.hadoop.ipc.protobuf.TestProtos;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.ipc.protobuf.TestProtos.EchoRequestProto;
 import org.apache.hadoop.ipc.protobuf.TestProtos.EchoResponseProto;
 import org.apache.hadoop.ipc.protobuf.TestProtos.EmptyRequestProto;
@@ -41,6 +52,10 @@ import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import com.google.protobuf.BlockingService;
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
@@ -56,7 +71,12 @@ public class TestProtoBufRpc {
   private static InetSocketAddress addr;
   private static Configuration conf;
   private static RPC.Server server;
+<<<<<<< HEAD
   
+=======
+  private final static int SLEEP_DURATION = 1000;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @ProtocolInfo(protocolName = "testProto", protocolVersion = 1)
   public interface TestRpcService
       extends TestProtobufRpcProto.BlockingInterface {
@@ -114,12 +134,29 @@ public class TestProtoBufRpc {
       return EchoResponseProto.newBuilder().setMessage(request.getMessage())
           .build();
     }
+<<<<<<< HEAD
+=======
+
+    @Override
+    public TestProtos.SleepResponseProto sleep(RpcController controller,
+      TestProtos.SleepRequestProto request) throws ServiceException {
+      try{
+        Thread.sleep(request.getMilliSeconds());
+      } catch (InterruptedException ex){
+      }
+      return  TestProtos.SleepResponseProto.newBuilder().build();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Before
   public  void setUp() throws IOException { // Setup server for both protocols
     conf = new Configuration();
     conf.setInt(CommonConfigurationKeys.IPC_MAXIMUM_DATA_LENGTH, 1024);
+<<<<<<< HEAD
+=======
+    conf.setBoolean(CommonConfigurationKeys.IPC_SERVER_LOG_SLOW_RPC, true);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // Set RPC engine to protobuf RPC engine
     RPC.setProtocolEngine(conf, TestRpcService.class, ProtobufRpcEngine.class);
 
@@ -257,4 +294,65 @@ public class TestProtoBufRpc {
       // expected
     }
   }
+<<<<<<< HEAD
+=======
+
+  @Test(timeout = 12000)
+  public void testLogSlowRPC() throws IOException, ServiceException {
+    TestRpcService2 client = getClient2();
+    // make 10 K fast calls
+    for (int x = 0; x < 10000; x++) {
+      try {
+        EmptyRequestProto emptyRequest = EmptyRequestProto.newBuilder().build();
+        client.ping2(null, emptyRequest);
+      } catch (Exception ex) {
+        throw ex;
+      }
+    }
+
+    // Ensure RPC metrics are updated
+    RpcMetrics rpcMetrics = server.getRpcMetrics();
+    assertTrue(rpcMetrics.getProcessingSampleCount() > 999L);
+    long before = rpcMetrics.getRpcSlowCalls();
+
+    // make a really slow call. Sleep sleeps for 1000ms
+    TestProtos.SleepRequestProto sleepRequest =
+        TestProtos.SleepRequestProto.newBuilder()
+            .setMilliSeconds(SLEEP_DURATION * 3).build();
+    TestProtos.SleepResponseProto Response = client.sleep(null, sleepRequest);
+
+    long after = rpcMetrics.getRpcSlowCalls();
+    // Ensure slow call is logged.
+    Assert.assertEquals(before + 1L, after);
+  }
+
+  @Test(timeout = 12000)
+  public void testEnsureNoLogIfDisabled() throws IOException, ServiceException {
+    // disable slow RPC  logging
+    server.setLogSlowRPC(false);
+    TestRpcService2 client = getClient2();
+
+    // make 10 K fast calls
+    for (int x = 0; x < 10000; x++) {
+      EmptyRequestProto emptyRequest = EmptyRequestProto.newBuilder().build();
+      client.ping2(null, emptyRequest);
+    }
+
+    // Ensure RPC metrics are updated
+    RpcMetrics rpcMetrics = server.getRpcMetrics();
+    assertTrue(rpcMetrics.getProcessingSampleCount() > 999L);
+    long before = rpcMetrics.getRpcSlowCalls();
+
+    // make a really slow call. Sleep sleeps for 1000ms
+    TestProtos.SleepRequestProto sleepRequest =
+        TestProtos.SleepRequestProto.newBuilder()
+            .setMilliSeconds(SLEEP_DURATION).build();
+    TestProtos.SleepResponseProto Response = client.sleep(null, sleepRequest);
+
+    long after = rpcMetrics.getRpcSlowCalls();
+
+    // make sure we never called into Log slow RPC routine.
+    assertEquals(before, after);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

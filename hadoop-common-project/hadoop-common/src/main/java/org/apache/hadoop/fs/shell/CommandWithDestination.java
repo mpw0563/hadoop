@@ -61,7 +61,23 @@ abstract class CommandWithDestination extends FsCommand {
   private boolean verifyChecksum = true;
   private boolean writeChecksum = true;
   private boolean lazyPersist = false;
+<<<<<<< HEAD
   
+=======
+  private boolean direct = false;
+
+  /**
+   * The name of the raw xattr namespace. It would be nice to use
+   * XAttr.RAW.name() but we can't reference the hadoop-hdfs project.
+   */
+  private static final String RAW = "raw.";
+
+  /**
+   * The name of the reserved raw directory.
+   */
+  private static final String RESERVED_RAW = "/.reserved/raw";
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * The name of the raw xattr namespace. It would be nice to use
    * XAttr.RAW.name() but we can't reference the hadoop-hdfs project.
@@ -94,7 +110,15 @@ abstract class CommandWithDestination extends FsCommand {
   protected void setWriteChecksum(boolean flag) {
     writeChecksum = flag;
   }
+<<<<<<< HEAD
   
+=======
+
+  protected void setDirectWrite(boolean flag) {
+    direct = flag;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * If true, the last modified time, last access time,
    * owner, group and permission information of the source
@@ -233,7 +257,17 @@ abstract class CommandWithDestination extends FsCommand {
         e.setTargetPath(dstPath.toString());
         throw e;
       }
+<<<<<<< HEAD
       if (dstPath.startsWith(srcPath+Path.SEPARATOR)) {
+=======
+      // When a path is normalized, all trailing slashes are removed
+      // except for the root
+      if(!srcPath.endsWith(Path.SEPARATOR)) {
+        srcPath += Path.SEPARATOR;
+      }
+
+      if(dstPath.startsWith(srcPath)) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         PathIOException e = new PathIOException(src.toString(),
             "is a subdirectory of itself");
         e.setTargetPath(target.toString());
@@ -329,6 +363,7 @@ abstract class CommandWithDestination extends FsCommand {
       preserveAttributes(src, target, preserveRawXattrs);
     } finally {
       IOUtils.closeStream(in);
+<<<<<<< HEAD
     }
   }
   
@@ -368,13 +403,62 @@ abstract class CommandWithDestination extends FsCommand {
     } else if (srcIsRR && dstIsRR) {
       preserveRawXattrs = true;
     }
+=======
+    }
+  }
+  
+  /**
+   * Check the source and target paths to ensure that they are either both in
+   * /.reserved/raw or neither in /.reserved/raw. If neither src nor target are
+   * in /.reserved/raw, then return false, indicating not to preserve raw.*
+   * xattrs. If both src/target are in /.reserved/raw, then return true,
+   * indicating raw.* xattrs should be preserved. If only one of src/target is
+   * in /.reserved/raw then throw an exception.
+   *
+   * @param src The source path to check. This should be a fully-qualified
+   *            path, not relative.
+   * @param target The target path to check. This should be a fully-qualified
+   *               path, not relative.
+   * @return true if raw.* xattrs should be preserved.
+   * @throws PathOperationException is only one of src/target are in
+   * /.reserved/raw.
+   */
+  private boolean checkPathsForReservedRaw(Path src, Path target)
+      throws PathOperationException {
+    final boolean srcIsRR = Path.getPathWithoutSchemeAndAuthority(src).
+        toString().startsWith(RESERVED_RAW);
+    final boolean dstIsRR = Path.getPathWithoutSchemeAndAuthority(target).
+        toString().startsWith(RESERVED_RAW);
+    boolean preserveRawXattrs = false;
+    if (srcIsRR && !dstIsRR) {
+      final String s = "' copy from '" + RESERVED_RAW + "' to non '" +
+          RESERVED_RAW + "'. Either both source and target must be in '" +
+          RESERVED_RAW + "' or neither.";
+      throw new PathOperationException("'" + src.toString() + s);
+    } else if (!srcIsRR && dstIsRR) {
+      final String s = "' copy from non '" + RESERVED_RAW +"' to '" +
+          RESERVED_RAW + "'. Either both source and target must be in '" +
+          RESERVED_RAW + "' or neither.";
+      throw new PathOperationException("'" + dst.toString() + s);
+    } else if (srcIsRR && dstIsRR) {
+      preserveRawXattrs = true;
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return preserveRawXattrs;
   }
 
   /**
+<<<<<<< HEAD
    * Copies the stream contents to a temporary file.  If the copy is
    * successful, the temporary file will be renamed to the real path,
    * else the temporary file will be deleted.
+=======
+   * If direct write is disabled ,copies the stream contents to a temporary
+   * file "<target>._COPYING_". If the copy is
+   * successful, the temporary file will be renamed to the real path,
+   * else the temporary file will be deleted.
+   * if direct write is enabled , then creation temporary file is skipped.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param in the input stream for the copy
    * @param target where to store the contents of the stream
    * @throws IOException if copy fails
@@ -386,10 +470,19 @@ abstract class CommandWithDestination extends FsCommand {
     }
     TargetFileSystem targetFs = new TargetFileSystem(target.fs);
     try {
+<<<<<<< HEAD
       PathData tempTarget = target.suffix("._COPYING_");
       targetFs.setWriteChecksum(writeChecksum);
       targetFs.writeStreamToFile(in, tempTarget, lazyPersist);
       targetFs.rename(tempTarget, target);
+=======
+      PathData tempTarget = direct ? target : target.suffix("._COPYING_");
+      targetFs.setWriteChecksum(writeChecksum);
+      targetFs.writeStreamToFile(in, tempTarget, lazyPersist, direct);
+      if (!direct) {
+        targetFs.rename(tempTarget, target);
+      }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       targetFs.close(); // last ditch effort to ensure temp file is removed
     }
@@ -459,10 +552,18 @@ abstract class CommandWithDestination extends FsCommand {
     }
 
     void writeStreamToFile(InputStream in, PathData target,
+<<<<<<< HEAD
                            boolean lazyPersist) throws IOException {
       FSDataOutputStream out = null;
       try {
         out = create(target, lazyPersist);
+=======
+        boolean lazyPersist, boolean direct)
+        throws IOException {
+      FSDataOutputStream out = null;
+      try {
+        out = create(target, lazyPersist, direct);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         IOUtils.copyBytes(in, out, getConf(), true);
       } finally {
         IOUtils.closeStream(out); // just in case copyBytes didn't
@@ -470,7 +571,12 @@ abstract class CommandWithDestination extends FsCommand {
     }
     
     // tag created files as temp files
+<<<<<<< HEAD
     FSDataOutputStream create(PathData item, boolean lazyPersist)
+=======
+    FSDataOutputStream create(PathData item, boolean lazyPersist,
+        boolean direct)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         throws IOException {
       try {
         if (lazyPersist) {
@@ -488,7 +594,13 @@ abstract class CommandWithDestination extends FsCommand {
           return create(item.path, true);
         }
       } finally { // might have been created but stream was interrupted
+<<<<<<< HEAD
         deleteOnExit(item.path);
+=======
+        if (!direct) {
+          deleteOnExit(item.path);
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     }
 

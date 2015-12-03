@@ -166,7 +166,11 @@ public class WebApps {
       return this;
     }
 
+<<<<<<< HEAD
     public WebApp start(WebApp webapp) {
+=======
+    public WebApp build(WebApp webapp) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       if (webapp == null) {
         webapp = new WebApp() {
           @Override
@@ -271,8 +275,12 @@ public class WebApps {
 
         webapp.setConf(conf);
         webapp.setHttpServer(server);
+<<<<<<< HEAD
         server.start();
         LOG.info("Web app /"+ name +" started at "+ server.getConnectorAddress(0).getPort());
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } catch (ClassNotFoundException e) {
         throw new WebAppException("Error starting http server", e);
       } catch (IOException e) {
@@ -300,6 +308,22 @@ public class WebApps {
       return start(null);
     }
 
+<<<<<<< HEAD
+=======
+    public WebApp start(WebApp webapp) {
+      WebApp webApp = build(webapp);
+      HttpServer2 httpServer = webApp.httpServer();
+      try {
+        httpServer.start();
+        LOG.info("Web app " + name + " started at "
+            + httpServer.getConnectorAddress(0).getPort());
+      } catch (IOException e) {
+        throw new WebAppException("Error starting http server", e);
+      }
+      return webApp;
+    }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     private String inferHostClass() {
       String thisClass = this.getClass().getName();
       Throwable t = new Throwable();

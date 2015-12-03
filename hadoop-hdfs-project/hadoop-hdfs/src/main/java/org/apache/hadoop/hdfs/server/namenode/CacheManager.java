@@ -65,7 +65,11 @@ import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CacheDirectiveInfoProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.CachePoolInfoProto;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocolPB.PBHelper;
+=======
+import org.apache.hadoop.hdfs.protocolPB.PBHelperClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.blockmanagement.BlockManager;
 import org.apache.hadoop.hdfs.server.blockmanagement.CacheReplicationMonitor;
 import org.apache.hadoop.hdfs.server.blockmanagement.DatanodeDescriptor;
@@ -934,7 +938,11 @@ public final class CacheManager {
     try {
       final DatanodeDescriptor datanode = 
           blockManager.getDatanodeManager().getDatanode(datanodeID);
+<<<<<<< HEAD
       if (datanode == null || !datanode.isAlive) {
+=======
+      if (datanode == null || !datanode.isAlive()) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         throw new IOException(
             "processCacheReport from dead or unregistered datanode: " +
             datanode);
@@ -1048,7 +1056,11 @@ public final class CacheManager {
       Expiration expiry = info.getExpiration();
       if (expiry != null) {
         assert (!expiry.isRelative());
+<<<<<<< HEAD
         b.setExpiration(PBHelper.convert(expiry));
+=======
+        b.setExpiration(PBHelperClient.convert(expiry));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
 
       directives.add(b.build());

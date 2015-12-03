@@ -34,7 +34,11 @@ import java.util.List;
 @InterfaceAudience.Public
 @InterfaceStability.Unstable
 public abstract class Event {
+<<<<<<< HEAD
   public static enum EventType {
+=======
+  public enum EventType {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     CREATE, CLOSE, APPEND, RENAME, METADATA, UNLINK, TRUNCATE
   }
 
@@ -98,8 +102,13 @@ public abstract class Event {
   @InterfaceAudience.Public
   public static class CreateEvent extends Event {
 
+<<<<<<< HEAD
     public static enum INodeType {
       FILE, DIRECTORY, SYMLINK;
+=======
+    public enum INodeType {
+      FILE, DIRECTORY, SYMLINK
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     private INodeType iNodeType;
@@ -247,6 +256,7 @@ public abstract class Event {
     @InterfaceStability.Unstable
     public String toString() {
       StringBuilder content = new StringBuilder();
+<<<<<<< HEAD
       content.append("CreateEvent [INodeType=" + iNodeType + ", path=" + path
           + ", ctime=" + ctime + ", replication=" + replication
           + ", ownerName=" + ownerName + ", groupName=" + groupName
@@ -258,6 +268,23 @@ public abstract class Event {
 
       content.append("overwrite=" + overwrite + ", defaultBlockSize="
           + defaultBlockSize + "]");
+=======
+      content.append("CreateEvent [INodeType=").append(iNodeType)
+          .append(", path=").append(path)
+          .append(", ctime=").append(ctime)
+          .append(", replication=").append(replication)
+          .append(", ownerName=").append(ownerName)
+          .append(", groupName=").append(groupName)
+          .append(", perms=").append(perms).append(", ");
+
+      if (symlinkTarget != null) {
+        content.append("symlinkTarget=").append(symlinkTarget).append(", ");
+      }
+
+      content.append("overwrite=").append(overwrite)
+          .append(", defaultBlockSize=").append(defaultBlockSize)
+          .append("]");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       return content.toString();
     }
 
@@ -274,8 +301,13 @@ public abstract class Event {
   @InterfaceAudience.Public
   public static class MetadataUpdateEvent extends Event {
 
+<<<<<<< HEAD
     public static enum MetadataType {
       TIMES, REPLICATION, OWNER, PERMS, ACLS, XATTRS;
+=======
+    public enum MetadataType {
+      TIMES, REPLICATION, OWNER, PERMS, ACLS, XATTRS
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }
 
     private String path;
@@ -434,6 +466,7 @@ public abstract class Event {
     @InterfaceStability.Unstable
     public String toString() {
       StringBuilder content = new StringBuilder();
+<<<<<<< HEAD
       content.append("MetadataUpdateEvent [path=" + path + ", metadataType="
           + metadataType);
       switch (metadataType) {
@@ -456,6 +489,31 @@ public abstract class Event {
       case XATTRS:
         content.append(", xAttrs=" + xAttrs + ", xAttrsRemoved="
             + xAttrsRemoved);
+=======
+      content.append("MetadataUpdateEvent [path=").append(path)
+          .append(", metadataType=").append(metadataType);
+      switch (metadataType) {
+      case TIMES:
+        content.append(", mtime=").append(mtime)
+            .append(", atime=").append(atime);
+        break;
+      case REPLICATION:
+        content.append(", replication=").append(replication);
+        break;
+      case OWNER:
+        content.append(", ownerName=").append(ownerName)
+            .append(", groupName=").append(groupName);
+        break;
+      case PERMS:
+        content.append(", perms=").append(perms);
+        break;
+      case ACLS:
+        content.append(", acls=").append(acls);
+        break;
+      case XATTRS:
+        content.append(", xAttrs=").append(xAttrs)
+            .append(", xAttrsRemoved=").append(xAttrsRemoved);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         break;
       default:
         break;

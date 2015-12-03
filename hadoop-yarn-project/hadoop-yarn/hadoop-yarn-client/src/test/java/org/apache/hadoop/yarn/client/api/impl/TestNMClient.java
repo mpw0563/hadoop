@@ -210,10 +210,17 @@ public class TestNMClient {
     testContainerManagement(nmClient, allocateContainers(rmClient, 5));
 
     rmClient.unregisterApplicationMaster(FinalApplicationStatus.SUCCEEDED,
+<<<<<<< HEAD
                                          null, null);
     // don't stop the running containers
     stopNmClient(false);
     assertFalse(nmClient.startedContainers. isEmpty());
+=======
+        null, null);
+    // don't stop the running containers
+    stopNmClient(false);
+    assertFalse(nmClient.startedContainers.isEmpty());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     //now cleanup
     nmClient.cleanupRunningContainers();
     assertEquals(0, nmClient.startedContainers.size());
@@ -298,6 +305,19 @@ public class TestNMClient {
             e.getMessage().contains("is not handled by this NodeManager"));
       }
 
+<<<<<<< HEAD
+=======
+      // increaseContainerResource shouldn't be called before startContainer,
+      // otherwise, NodeManager cannot find the container
+      try {
+        nmClient.increaseContainerResource(container);
+        fail("Exception is expected");
+      } catch (YarnException e) {
+        assertTrue("The thrown exception is not expected",
+            e.getMessage().contains("is not handled by this NodeManager"));
+      }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       // stopContainer shouldn't be called before startContainer,
       // otherwise, an exception will be thrown
       try {
@@ -332,6 +352,11 @@ public class TestNMClient {
         // NodeManager may still need some time to make the container started
         testGetContainerStatus(container, i, ContainerState.RUNNING, "",
             Arrays.asList(new Integer[] {-1000}));
+<<<<<<< HEAD
+=======
+        // Test increase container API and make sure requests can reach NM
+        testIncreaseContainerResource(container);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
         try {
           nmClient.stopContainer(container.getId(), container.getNodeId());
@@ -397,4 +422,22 @@ public class TestNMClient {
     }
   }
 
+<<<<<<< HEAD
+=======
+  private void testIncreaseContainerResource(Container container)
+    throws YarnException, IOException {
+    try {
+      nmClient.increaseContainerResource(container);
+    } catch (YarnException e) {
+      // NM container will only be in LOCALIZED state, so expect the increase
+      // action to fail.
+      if (!e.getMessage().contains(
+          "can only be changed when a container is in RUNNING state")) {
+        throw (AssertionError)
+            (new AssertionError("Exception is not expected: " + e)
+                .initCause(e));
+      }
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

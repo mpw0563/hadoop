@@ -22,9 +22,12 @@ import static org.junit.Assert.assertTrue;
 import java.lang.management.ManagementFactory;
 import java.io.File;
 
+<<<<<<< HEAD
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.io.FileUtils;
@@ -39,6 +42,12 @@ import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.junit.Test;
 
+<<<<<<< HEAD
+=======
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 /**
  * DFS_HOSTS and DFS_HOSTS_EXCLUDE tests
  * 
@@ -120,6 +129,7 @@ public class TestHostsFiles {
 
       // Check the block still has sufficient # replicas across racks
       DFSTestUtil.waitForReplication(cluster, b, 2, REPLICATION_FACTOR, 0);
+<<<<<<< HEAD
       
       MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
       ObjectName mxbeanName =
@@ -127,6 +137,15 @@ public class TestHostsFiles {
       String nodes = (String) mbs.getAttribute(mxbeanName, "LiveNodes");
       assertTrue("Live nodes should contain the decommissioned node",
           nodes.contains("Decommissioned"));
+=======
+
+      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+      ObjectName mxbeanName = new ObjectName(
+              "Hadoop:service=NameNode,name=NameNodeInfo");
+      String nodes = (String) mbs.getAttribute(mxbeanName, "LiveNodes");
+      assertTrue("Live nodes should contain the decommissioned node",
+              nodes.contains("Decommissioned"));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       if (cluster != null) {
         cluster.shutdown();

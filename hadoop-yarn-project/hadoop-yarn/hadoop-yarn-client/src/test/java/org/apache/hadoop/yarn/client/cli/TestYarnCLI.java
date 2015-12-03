@@ -26,12 +26,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+<<<<<<< HEAD
+=======
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+<<<<<<< HEAD
+=======
+import java.io.UnsupportedEncodingException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,6 +48,10 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+<<<<<<< HEAD
+=======
+import java.util.regex.Pattern;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -54,12 +66,20 @@ import org.apache.hadoop.yarn.api.records.ContainerState;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.LogAggregationStatus;
 import org.apache.hadoop.yarn.api.records.NodeId;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.NodeLabel;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.NodeReport;
 import org.apache.hadoop.yarn.api.records.NodeState;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.QueueInfo;
 import org.apache.hadoop.yarn.api.records.QueueState;
 import org.apache.hadoop.yarn.api.records.Resource;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.api.records.SignalContainerCommand;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.YarnApplicationAttemptState;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.YarnClient;
@@ -81,6 +101,11 @@ public class TestYarnCLI {
   private PrintStream sysOut;
   ByteArrayOutputStream sysErrStream;
   private PrintStream sysErr;
+<<<<<<< HEAD
+=======
+  private static final Pattern SPACES_PATTERN =
+      Pattern.compile("\\s+|\\n+|\\t+");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   @Before
   public void setup() {
@@ -98,13 +123,21 @@ public class TestYarnCLI {
       ApplicationId applicationId = ApplicationId.newInstance(1234, 5);
       ApplicationResourceUsageReport usageReport = i == 0 ? null :
           ApplicationResourceUsageReport.newInstance(
+<<<<<<< HEAD
               2, 0, null, null, null, 123456, 4567);
+=======
+              2, 0, null, null, null, 123456, 4567, 0, 0);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       ApplicationReport newApplicationReport = ApplicationReport.newInstance(
           applicationId, ApplicationAttemptId.newInstance(applicationId, 1),
           "user", "queue", "appname", "host", 124, null,
           YarnApplicationState.FINISHED, "diagnostics", "url", 0, 0,
           FinalApplicationStatus.SUCCEEDED, usageReport, "N/A", 0.53789f, "YARN",
+<<<<<<< HEAD
           null, null, false);
+=======
+          null, null, false, Priority.newInstance(0), "high-mem", "high-mem");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       newApplicationReport.setLogAggregationStatus(LogAggregationStatus.SUCCEEDED);
       newApplicationReport.setPriority(Priority.newInstance(0));
       when(client.getApplicationReport(any(ApplicationId.class))).thenReturn(
@@ -134,6 +167,11 @@ public class TestYarnCLI {
       pw.println("\tLog Aggregation Status : SUCCEEDED");
       pw.println("\tDiagnostics : diagnostics");
       pw.println("\tUnmanaged Application : false");
+<<<<<<< HEAD
+=======
+      pw.println("\tApplication Node Label Expression : high-mem");
+      pw.println("\tAM container Node Label Expression : high-mem");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       pw.close();
       String appReportStr = baos.toString("UTF-8");
       Assert.assertEquals(appReportStr, sysOutStream.toString());
@@ -782,7 +820,11 @@ public class TestYarnCLI {
     Assert.assertTrue(result == 0);
     verify(spyCli).printUsage(any(String.class), any(Options.class));
     Assert.assertEquals(createContainerCLIHelpMessage(),
+<<<<<<< HEAD
         sysOutStream.toString());
+=======
+        normalize(sysOutStream.toString()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     sysOutStream.reset();
     ApplicationId applicationId = ApplicationId.newInstance(1234, 5);
@@ -792,7 +834,11 @@ public class TestYarnCLI {
         new String[] {"container", "-list", appAttemptId.toString(), "args" });
     verify(spyCli).printUsage(any(String.class), any(Options.class));
     Assert.assertEquals(createContainerCLIHelpMessage(),
+<<<<<<< HEAD
         sysOutStream.toString());
+=======
+        normalize(sysOutStream.toString()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     sysOutStream.reset();
     ContainerId containerId = ContainerId.newContainerId(appAttemptId, 7);
@@ -800,7 +846,11 @@ public class TestYarnCLI {
         new String[] { "container", "-status", containerId.toString(), "args" });
     verify(spyCli).printUsage(any(String.class), any(Options.class));
     Assert.assertEquals(createContainerCLIHelpMessage(),
+<<<<<<< HEAD
         sysOutStream.toString());
+=======
+        normalize(sysOutStream.toString()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   @Test (timeout = 5000)
@@ -1253,8 +1303,13 @@ public class TestYarnCLI {
     sysOutStream.reset();
     result = cli.run(new String[] { "container", "-status" });
     Assert.assertEquals(result, -1);
+<<<<<<< HEAD
     Assert.assertEquals(String.format("Missing argument for options%n%1s",
         createContainerCLIHelpMessage()), sysOutStream.toString());
+=======
+    Assert.assertEquals(String.format("Missing argument for options %1s",
+        createContainerCLIHelpMessage()), normalize(sysOutStream.toString()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     sysOutStream.reset();
     NodeCLI nodeCLI = new NodeCLI();
@@ -1311,7 +1366,12 @@ public class TestYarnCLI {
     pw.println("\tCapacity : " + "40.0%");
     pw.println("\tCurrent Capacity : " + "50.0%");
     pw.println("\tMaximum Capacity : " + "80.0%");
+<<<<<<< HEAD
     pw.println("\tDefault Node Label expression : ");
+=======
+    pw.println("\tDefault Node Label expression : "
+        + NodeLabel.DEFAULT_NODE_LABEL_PARTITION);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     pw.println("\tAccessible Node Labels : ");
     pw.close();
     String queueInfoStr = baos.toString("UTF-8");
@@ -1409,6 +1469,46 @@ public class TestYarnCLI {
     Assert.assertNotSame("should return non-zero exit code.", 0, exitCode);
   }
 
+<<<<<<< HEAD
+=======
+  @Test(timeout = 60000)
+  public void testUpdateApplicationPriority() throws Exception {
+    ApplicationCLI cli = createAndGetAppCLI();
+    ApplicationId applicationId = ApplicationId.newInstance(1234, 6);
+
+    ApplicationReport appReport =
+        ApplicationReport.newInstance(applicationId,
+            ApplicationAttemptId.newInstance(applicationId, 1), "user",
+            "queue", "appname", "host", 124, null,
+            YarnApplicationState.RUNNING, "diagnostics", "url", 0, 0,
+            FinalApplicationStatus.UNDEFINED, null, "N/A", 0.53789f, "YARN",
+            null);
+    when(client.getApplicationReport(any(ApplicationId.class))).thenReturn(
+        appReport);
+
+    int result =
+        cli.run(new String[] { "application", "-appId",
+            applicationId.toString(),
+        "-updatePriority", "1" });
+    Assert.assertEquals(result, 0);
+    verify(client).updateApplicationPriority(any(ApplicationId.class),
+        any(Priority.class));
+
+  }
+
+  @Test
+  public void testFailApplicationAttempt() throws Exception {
+    ApplicationCLI cli = createAndGetAppCLI();
+    int exitCode =
+        cli.run(new String[] { "applicationattempt", "-fail",
+            "appattempt_1444199730803_0003_000001" });
+    Assert.assertEquals(0, exitCode);
+
+    verify(client).failApplicationAttempt(any(ApplicationAttemptId.class));
+    verifyNoMoreInteractions(client);
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void verifyUsageInfo(YarnCLI cli) throws Exception {
     cli.setSysErrPrintStream(sysErr);
     cli.run(new String[] { "application" });
@@ -1458,6 +1558,10 @@ public class TestYarnCLI {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintWriter pw = new PrintWriter(baos);
     pw.println("usage: application");
+<<<<<<< HEAD
+=======
+    pw.println(" -appId <Application ID>         Specify Application Id to be operated");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     pw.println(" -appStates <States>             Works with -list to filter applications");
     pw.println("                                 based on input comma-separated list of");
     pw.println("                                 application states. The valid application");
@@ -1480,6 +1584,12 @@ public class TestYarnCLI {
     pw.println("                                 specify which queue to move an");
     pw.println("                                 application to.");
     pw.println(" -status <Application ID>        Prints the status of the application.");
+<<<<<<< HEAD
+=======
+    pw.println(" -updatePriority <Priority>      update priority of an application.");
+    pw.println("                                 ApplicationId can be passed using 'appId'");
+    pw.println("                                 option.");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     pw.close();
     String appsHelpStr = baos.toString("UTF-8");
     return appsHelpStr;
@@ -1489,6 +1599,10 @@ public class TestYarnCLI {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PrintWriter pw = new PrintWriter(baos);
     pw.println("usage: applicationattempt");
+<<<<<<< HEAD
+=======
+    pw.println(" -fail <Application Attempt ID>     Fails application attempt.");
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     pw.println(" -help                              Displays help for all commands.");
     pw.println(" -list <Application ID>             List application attempts for");
     pw.println("                                    aplication.");
@@ -1505,10 +1619,24 @@ public class TestYarnCLI {
     pw.println("usage: container");
     pw.println(" -help                            Displays help for all commands.");
     pw.println(" -list <Application Attempt ID>   List containers for application attempt.");
+<<<<<<< HEAD
     pw.println(" -status <Container ID>           Prints the status of the container.");
     pw.close();
     String appsHelpStr = baos.toString("UTF-8");
     return appsHelpStr;
+=======
+    pw.println(" -signal <container ID [signal command]> Signal the container.");
+    pw.println("The available signal commands are ");
+    pw.println(java.util.Arrays.asList(SignalContainerCommand.values()));
+    pw.println("                                 Default command is OUTPUT_THREAD_DUMP.");
+    pw.println(" -status <Container ID>           Prints the status of the container.");
+    pw.close();
+    try {
+      return normalize(baos.toString("UTF-8"));
+    } catch (UnsupportedEncodingException infeasible) {
+      return infeasible.toString();
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private String createNodeCLIHelpMessage() throws IOException {
@@ -1527,4 +1655,34 @@ public class TestYarnCLI {
     String nodesHelpStr = baos.toString("UTF-8");
     return nodesHelpStr;
   }
+<<<<<<< HEAD
+=======
+
+  private static String normalize(String s) {
+    return SPACES_PATTERN.matcher(s).replaceAll(" "); // single space
+  }
+
+  @Test
+  public void testAppAttemptReportWhileContainerIsNotAssigned()
+      throws Exception {
+    ApplicationCLI cli = createAndGetAppCLI();
+    ApplicationId applicationId = ApplicationId.newInstance(1234, 5);
+    ApplicationAttemptId attemptId =
+        ApplicationAttemptId.newInstance(applicationId, 1);
+    ApplicationAttemptReport attemptReport =
+        ApplicationAttemptReport.newInstance(attemptId, "host", 124, "url",
+            "oUrl", "diagnostics", YarnApplicationAttemptState.SCHEDULED, null,
+            1000l, 2000l);
+    when(client.getApplicationAttemptReport(any(ApplicationAttemptId.class)))
+        .thenReturn(attemptReport);
+    int result =
+        cli.run(new String[] { "applicationattempt", "-status",
+            attemptId.toString() });
+    assertEquals(0, result);
+    result =
+        cli.run(new String[] { "applicationattempt", "-list",
+            applicationId.toString() });
+    assertEquals(0, result);
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

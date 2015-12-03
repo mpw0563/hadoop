@@ -552,7 +552,11 @@ public class TestSafeMode {
       if(cluster!= null) cluster.shutdown();
     }
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   void checkGetBlockLocationsWorks(FileSystem fs, Path fileName) throws IOException {
     FileStatus stat = fs.getFileStatus(fileName);
     try {  
@@ -560,7 +564,11 @@ public class TestSafeMode {
     } catch (SafeModeException e) {
       assertTrue("Should have not got safemode exception", false);
     } catch (RemoteException re) {
+<<<<<<< HEAD
       assertTrue("Should have not got safemode exception", false);   
+=======
+      assertTrue("Should have not got remote exception", false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     }    
   }
 }

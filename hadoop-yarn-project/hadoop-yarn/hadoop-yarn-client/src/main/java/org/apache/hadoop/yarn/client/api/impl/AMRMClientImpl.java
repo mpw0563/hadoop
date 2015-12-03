@@ -33,6 +33,10 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+<<<<<<< HEAD
+=======
+import java.util.AbstractMap.SimpleEntry;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,7 +53,13 @@ import org.apache.hadoop.yarn.api.protocolrecords.FinishApplicationMasterRequest
 import org.apache.hadoop.yarn.api.protocolrecords.FinishApplicationMasterResponse;
 import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.RegisterApplicationMasterResponse;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.api.records.ContainerId;
+=======
+import org.apache.hadoop.yarn.api.records.Container;
+import org.apache.hadoop.yarn.api.records.ContainerId;
+import org.apache.hadoop.yarn.api.records.ContainerResourceChangeRequest;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.NMToken;
@@ -72,6 +82,10 @@ import org.apache.hadoop.yarn.util.RackResolver;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.util.resource.Resources;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @Private
 @Unstable
@@ -110,8 +124,13 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
       containerRequests = new LinkedHashSet<T>();
     }
   }
+<<<<<<< HEAD
   
   
+=======
+
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Class compares Resource by memory then cpu in reverse order
    */
@@ -144,10 +163,14 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
     int cpu0 = arg0.getVirtualCores();
     int cpu1 = arg1.getVirtualCores();
     
+<<<<<<< HEAD
     if(mem0 <= mem1 && cpu0 <= cpu1) { 
       return true;
     }
     return false; 
+=======
+    return (mem0 <= mem1 && cpu0 <= cpu1);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   //Key -> Priority
@@ -164,11 +187,30 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
   protected final Set<ResourceRequest> ask = new TreeSet<ResourceRequest>(
       new org.apache.hadoop.yarn.api.records.ResourceRequest.ResourceRequestComparator());
   protected final Set<ContainerId> release = new TreeSet<ContainerId>();
+<<<<<<< HEAD
   // pendingRelease holds history or release requests.request is removed only if
   // RM sends completedContainer.
   // How it different from release? --> release is for per allocate() request.
   protected Set<ContainerId> pendingRelease = new TreeSet<ContainerId>();
   
+=======
+  // pendingRelease holds history of release requests.
+  // request is removed only if RM sends completedContainer.
+  // How it different from release? --> release is for per allocate() request.
+  protected Set<ContainerId> pendingRelease = new TreeSet<ContainerId>();
+  // change map holds container resource change requests between two allocate()
+  // calls, and are cleared after each successful allocate() call.
+  protected final Map<ContainerId, SimpleEntry<Container, Resource>> change =
+      new HashMap<>();
+  // pendingChange map holds history of container resource change requests in
+  // case AM needs to reregister with the ResourceManager.
+  // Change requests are removed from this map if RM confirms the change
+  // through allocate response, or if RM confirms that the container has been
+  // completed.
+  protected final Map<ContainerId, SimpleEntry<Container, Resource>>
+      pendingChange = new HashMap<>();
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public AMRMClientImpl() {
     super(AMRMClientImpl.class.getName());
   }
@@ -241,7 +283,12 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
     AllocateRequest allocateRequest = null;
     List<String> blacklistToAdd = new ArrayList<String>();
     List<String> blacklistToRemove = new ArrayList<String>();
+<<<<<<< HEAD
     
+=======
+    Map<ContainerId, SimpleEntry<Container, Resource>> oldChange =
+        new HashMap<>();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     try {
       synchronized (this) {
         askList = new ArrayList<ResourceRequest>(ask.size());
@@ -252,10 +299,36 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
               r.getResourceName(), r.getCapability(), r.getNumContainers(),
               r.getRelaxLocality(), r.getNodeLabelExpression()));
         }
+<<<<<<< HEAD
+=======
+        List<ContainerResourceChangeRequest> increaseList = new ArrayList<>();
+        List<ContainerResourceChangeRequest> decreaseList = new ArrayList<>();
+        // Save the current change for recovery
+        oldChange.putAll(change);
+        for (Map.Entry<ContainerId, SimpleEntry<Container, Resource>> entry :
+            change.entrySet()) {
+          Container container = entry.getValue().getKey();
+          Resource original = container.getResource();
+          Resource target = entry.getValue().getValue();
+          if (Resources.fitsIn(target, original)) {
+            // This is a decrease request
+            decreaseList.add(ContainerResourceChangeRequest.newInstance(
+                container.getId(), target));
+          } else {
+            // This is an increase request
+            increaseList.add(ContainerResourceChangeRequest.newInstance(
+                container.getId(), target));
+          }
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         releaseList = new ArrayList<ContainerId>(release);
         // optimistically clear this collection assuming no RPC failure
         ask.clear();
         release.clear();
+<<<<<<< HEAD
+=======
+        change.clear();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
         blacklistToAdd.addAll(blacklistAdditions);
         blacklistToRemove.addAll(blacklistRemovals);
@@ -266,8 +339,14 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
         
         allocateRequest =
             AllocateRequest.newInstance(lastResponseId, progressIndicator,
+<<<<<<< HEAD
               askList, releaseList, blacklistRequest);
         // clear blacklistAdditions and blacklistRemovals before 
+=======
+                askList, releaseList, blacklistRequest,
+                    increaseList, decreaseList);
+        // clear blacklistAdditions and blacklistRemovals before
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         // unsynchronized part
         blacklistAdditions.clear();
         blacklistRemovals.clear();
@@ -289,6 +368,10 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
               }
             }
           }
+<<<<<<< HEAD
+=======
+          change.putAll(this.pendingChange);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
         }
         // re register with RM
         registerApplicationMaster();
@@ -312,6 +395,26 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
           removePendingReleaseRequests(allocateResponse
               .getCompletedContainersStatuses());
         }
+<<<<<<< HEAD
+=======
+        if (!pendingChange.isEmpty()) {
+          List<ContainerStatus> completed =
+              allocateResponse.getCompletedContainersStatuses();
+          List<Container> changed = new ArrayList<>();
+          changed.addAll(allocateResponse.getIncreasedContainers());
+          changed.addAll(allocateResponse.getDecreasedContainers());
+          // remove all pending change requests that belong to the completed
+          // containers
+          for (ContainerStatus status : completed) {
+            ContainerId containerId = status.getContainerId();
+            pendingChange.remove(containerId);
+          }
+          // remove all pending change requests that have been satisfied
+          if (!changed.isEmpty()) {
+            removePendingChangeRequests(changed);
+          }
+        }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
     } finally {
       // TODO how to differentiate remote yarn exception vs error in rpc
@@ -333,7 +436,26 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
               ask.add(oldAsk);
             }
           }
+<<<<<<< HEAD
           
+=======
+          // change requests could have been added during the allocate call.
+          // Those are the newest requests which take precedence
+          // over requests cached in the oldChange map.
+          //
+          // Only insert entries from the cached oldChange map
+          // that do not exist in the current change map:
+          for (Map.Entry<ContainerId, SimpleEntry<Container, Resource>> entry :
+              oldChange.entrySet()) {
+            ContainerId oldContainerId = entry.getKey();
+            Container oldContainer = entry.getValue().getKey();
+            Resource oldResource = entry.getValue().getValue();
+            if (change.get(oldContainerId) == null) {
+              change.put(
+                  oldContainerId, new SimpleEntry<>(oldContainer, oldResource));
+            }
+          }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           blacklistAdditions.addAll(blacklistToAdd);
           blacklistRemovals.addAll(blacklistToRemove);
         }
@@ -349,6 +471,27 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
     }
   }
 
+<<<<<<< HEAD
+=======
+  protected void removePendingChangeRequests(
+      List<Container> changedContainers) {
+    for (Container changedContainer : changedContainers) {
+      ContainerId containerId = changedContainer.getId();
+      if (pendingChange.get(containerId) == null) {
+        continue;
+      }
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("RM has confirmed changed resource allocation for "
+            + "container " + containerId + ". Current resource allocation:"
+            + changedContainer.getResource()
+            + ". Remove pending change request:"
+            + pendingChange.get(containerId).getValue());
+      }
+      pendingChange.remove(containerId);
+    }
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Private
   @VisibleForTesting
   protected void populateNMTokens(List<NMToken> nmTokens) {
@@ -480,11 +623,37 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public synchronized void requestContainerResourceChange(
+      Container container, Resource capability) {
+    validateContainerResourceChangeRequest(
+        container.getId(), container.getResource(), capability);
+    if (change.get(container.getId()) == null) {
+      change.put(container.getId(),
+          new SimpleEntry<>(container, capability));
+    } else {
+      change.get(container.getId()).setValue(capability);
+    }
+    if (pendingChange.get(container.getId()) == null) {
+      pendingChange.put(container.getId(),
+          new SimpleEntry<>(container, capability));
+    } else {
+      pendingChange.get(container.getId()).setValue(capability);
+    }
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized void releaseAssignedContainer(ContainerId containerId) {
     Preconditions.checkArgument(containerId != null,
         "ContainerId can not be null.");
     pendingRelease.add(containerId);
     release.add(containerId);
+<<<<<<< HEAD
+=======
+    pendingChange.remove(containerId);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
   
   @Override
@@ -618,7 +787,27 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
           "Cannot specify node label with rack and node");
     }
   }
+<<<<<<< HEAD
   
+=======
+
+  private void validateContainerResourceChangeRequest(
+      ContainerId containerId, Resource original, Resource target) {
+    Preconditions.checkArgument(containerId != null,
+        "ContainerId cannot be null");
+    Preconditions.checkArgument(original != null,
+        "Original resource capability cannot be null");
+    Preconditions.checkArgument(!Resources.equals(Resources.none(), original)
+            && Resources.fitsIn(Resources.none(), original),
+        "Original resource capability must be greater than 0");
+    Preconditions.checkArgument(target != null,
+        "Target resource capability cannot be null");
+    Preconditions.checkArgument(!Resources.equals(Resources.none(), target)
+            && Resources.fitsIn(Resources.none(), target),
+        "Target resource capability must be greater than 0");
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private void addResourceRequestToAsk(ResourceRequest remoteRequest) {
     // This code looks weird but is needed because of the following scenario.
     // A ResourceRequest is removed from the remoteRequestTable. A 0 container 
@@ -748,7 +937,11 @@ public class AMRMClientImpl<T extends ContainerRequest> extends AMRMClient<T> {
     }
 
     if (LOG.isDebugEnabled()) {
+<<<<<<< HEAD
       LOG.info("AFTER decResourceRequest:" + " applicationId="
+=======
+      LOG.debug("AFTER decResourceRequest:" + " applicationId="
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           + " priority=" + priority.getPriority()
           + " resourceName=" + resourceName + " numContainers="
           + resourceRequestInfo.remoteRequest.getNumContainers() 

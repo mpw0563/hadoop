@@ -57,12 +57,20 @@ import org.apache.hadoop.classification.InterfaceAudience;
 @InterfaceAudience.Private
 public class XAttr {
 
+<<<<<<< HEAD
   public static enum NameSpace {
+=======
+  public enum NameSpace {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     USER,
     TRUSTED,
     SECURITY,
     SYSTEM,
+<<<<<<< HEAD
     RAW;
+=======
+    RAW
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   private final NameSpace ns;

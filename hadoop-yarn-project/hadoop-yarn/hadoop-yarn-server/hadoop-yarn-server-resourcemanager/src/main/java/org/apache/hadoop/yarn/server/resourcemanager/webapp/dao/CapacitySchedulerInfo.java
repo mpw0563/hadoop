@@ -24,12 +24,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.nodelabels.RMNodeLabel;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.AbstractCSQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CSQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.LeafQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.QueueCapacities;
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CSQueue;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.LeafQueue;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 @XmlRootElement(name = "capacityScheduler")
 @XmlType(name = "capacityScheduler")
@@ -41,6 +47,10 @@ public class CapacitySchedulerInfo extends SchedulerInfo {
   protected float maxCapacity;
   protected String queueName;
   protected CapacitySchedulerQueueInfoList queues;
+<<<<<<< HEAD
+=======
+  protected QueueCapacitiesInfo capacities;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   protected CapacitySchedulerHealthInfo health;
 
   @XmlTransient
@@ -49,6 +59,7 @@ public class CapacitySchedulerInfo extends SchedulerInfo {
   public CapacitySchedulerInfo() {
   } // JAXB needs this
 
+<<<<<<< HEAD
   public CapacitySchedulerInfo(CSQueue parent, CapacityScheduler cs,
       RMNodeLabel nodeLabel) {
     String label = nodeLabel.getLabelName();
@@ -57,11 +68,23 @@ public class CapacitySchedulerInfo extends SchedulerInfo {
     this.usedCapacity = parentQueueCapacities.getUsedCapacity(label) * 100;
     this.capacity = parentQueueCapacities.getCapacity(label) * 100;
     float max = parentQueueCapacities.getMaximumCapacity(label);
+=======
+  public CapacitySchedulerInfo(CSQueue parent, CapacityScheduler cs) {
+    this.queueName = parent.getQueueName();
+    this.usedCapacity = parent.getUsedCapacity() * 100;
+    this.capacity = parent.getCapacity() * 100;
+    float max = parent.getMaximumCapacity();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (max < EPSILON || max > 1f)
       max = 1f;
     this.maxCapacity = max * 100;
 
+<<<<<<< HEAD
     queues = getQueues(parent, nodeLabel);
+=======
+    capacities = new QueueCapacitiesInfo(parent.getQueueCapacities());
+    queues = getQueues(parent);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     health = new CapacitySchedulerHealthInfo(cs);
   }
 
@@ -73,6 +96,13 @@ public class CapacitySchedulerInfo extends SchedulerInfo {
     return this.usedCapacity;
   }
 
+<<<<<<< HEAD
+=======
+  public QueueCapacitiesInfo getCapacities() {
+    return capacities;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public float getMaxCapacity() {
     return this.maxCapacity;
   }
@@ -85,12 +115,17 @@ public class CapacitySchedulerInfo extends SchedulerInfo {
     return this.queues;
   }
 
+<<<<<<< HEAD
   protected CapacitySchedulerQueueInfoList getQueues(CSQueue parent,
       RMNodeLabel nodeLabel) {
+=======
+  protected CapacitySchedulerQueueInfoList getQueues(CSQueue parent) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     CSQueue parentQueue = parent;
     CapacitySchedulerQueueInfoList queuesInfo =
         new CapacitySchedulerQueueInfoList();
     for (CSQueue queue : parentQueue.getChildQueues()) {
+<<<<<<< HEAD
       if (nodeLabel.getIsExclusive()
           && !((AbstractCSQueue) queue).accessibleToPartition(nodeLabel
               .getLabelName())) {
@@ -106,10 +141,22 @@ public class CapacitySchedulerInfo extends SchedulerInfo {
       } else {
         info = new CapacitySchedulerQueueInfo(queue, nodeLabel.getLabelName());
         info.queues = getQueues(queue, nodeLabel);
+=======
+      CapacitySchedulerQueueInfo info;
+      if (queue instanceof LeafQueue) {
+        info =
+            new CapacitySchedulerLeafQueueInfo((LeafQueue) queue);
+      } else {
+        info = new CapacitySchedulerQueueInfo(queue);
+        info.queues = getQueues(queue);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       }
       queuesInfo.addToQueueInfoList(info);
     }
     return queuesInfo;
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -24,6 +24,10 @@ public enum SystemMetricsEventType {
   APP_CREATED,
   APP_FINISHED,
   APP_ACLS_UPDATED,
+<<<<<<< HEAD
+=======
+  APP_UPDATED,
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   // app attempt events
   APP_ATTEMPT_REGISTERED,

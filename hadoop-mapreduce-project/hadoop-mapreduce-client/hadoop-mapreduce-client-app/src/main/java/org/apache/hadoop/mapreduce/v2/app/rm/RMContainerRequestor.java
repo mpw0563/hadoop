@@ -52,6 +52,10 @@ import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
 
 import com.google.common.annotations.VisibleForTesting;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.util.resource.Resources;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 
 /**
@@ -386,7 +390,7 @@ public abstract class RMContainerRequestor extends RMCommunicator {
   }
 
   protected Resource getAvailableResources() {
-    return availableResources;
+    return availableResources == null ? Resources.none() : availableResources;
   }
   
   protected void addContainerReq(ContainerRequest req) {
@@ -506,7 +510,11 @@ public abstract class RMContainerRequestor extends RMCommunicator {
     addResourceRequestToAsk(remoteRequest);
 
     if (LOG.isDebugEnabled()) {
+<<<<<<< HEAD
       LOG.info("AFTER decResourceRequest:" + " applicationId="
+=======
+      LOG.debug("AFTER decResourceRequest:" + " applicationId="
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           + applicationId.getId() + " priority=" + priority.getPriority()
           + " resourceName=" + resourceName + " numContainers="
           + remoteRequest.getNumContainers() + " #asks=" + ask.size());

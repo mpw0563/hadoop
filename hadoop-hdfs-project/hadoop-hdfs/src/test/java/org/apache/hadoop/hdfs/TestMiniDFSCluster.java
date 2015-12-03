@@ -18,6 +18,10 @@
 
 package org.apache.hadoop.hdfs;
 
+<<<<<<< HEAD
+=======
+import static org.apache.hadoop.hdfs.DFSConfigKeys.DFS_NAMENODE_HTTP_ADDRESS_KEY;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
@@ -28,6 +32,10 @@ import java.util.ArrayList;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.StorageType;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.MiniDFSCluster.NameNodeInfo;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.protocol.HdfsConstants;
 import org.apache.hadoop.hdfs.server.datanode.DataNode;
 import org.apache.hadoop.test.PathUtils;
@@ -182,4 +190,52 @@ public class TestMiniDFSCluster {
       MiniDFSCluster.shutdownCluster(cluster);
     }
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testSetUpFederatedCluster() throws Exception {
+    Configuration conf = new Configuration();
+    MiniDFSCluster  cluster =
+            new MiniDFSCluster.Builder(conf).nnTopology(
+                    MiniDFSNNTopology.simpleHAFederatedTopology(2))
+                .numDataNodes(2)
+                .build();
+    try {
+      cluster.waitActive();
+      cluster.transitionToActive(1);
+      cluster.transitionToActive(3);
+      assertEquals("standby", cluster.getNamesystem(0).getHAState());
+      assertEquals("active", cluster.getNamesystem(1).getHAState());
+      assertEquals("standby", cluster.getNamesystem(2).getHAState());
+      assertEquals("active", cluster.getNamesystem(3).getHAState());
+
+      String ns0nn0 = conf.get(
+          DFSUtil.addKeySuffixes(DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns0", "nn0"));
+      String ns0nn1 = conf.get(
+          DFSUtil.addKeySuffixes(DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns0", "nn1"));
+      String ns1nn0 = conf.get(
+          DFSUtil.addKeySuffixes(DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns1", "nn0"));
+      String ns1nn1 = conf.get(
+          DFSUtil.addKeySuffixes(DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns1", "nn1"));
+
+      for(NameNodeInfo nnInfo : cluster.getNameNodeInfos()) {
+        assertEquals(ns0nn0, nnInfo.conf.get(
+            DFSUtil.addKeySuffixes(
+            DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns0", "nn0")));
+        assertEquals(ns0nn1, nnInfo.conf.get(
+            DFSUtil.addKeySuffixes(
+            DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns0", "nn1")));
+        assertEquals(ns1nn0, nnInfo.conf.get(
+            DFSUtil.addKeySuffixes(
+            DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns1", "nn0")));
+        assertEquals(ns1nn1, nnInfo.conf.get(
+            DFSUtil.addKeySuffixes(
+            DFS_NAMENODE_HTTP_ADDRESS_KEY, "ns1", "nn1")));
+      }
+    } finally {
+      MiniDFSCluster.shutdownCluster(cluster);
+    }
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

@@ -22,12 +22,20 @@
   <parent>
     <groupId>org.apache.hadoop</groupId>
     <artifactId>hadoop-project</artifactId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <relativePath>../../hadoop-project</relativePath>
   </parent>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-hdfs-httpfs</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <packaging>war</packaging>
 
   <name>Apache Hadoop HttpFS</name>
@@ -325,7 +333,11 @@
             <goals>
               <goal>dependencies</goal>
             </goals>
+<<<<<<< HEAD
             <phase>site</phase>
+=======
+            <phase>package</phase>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           </execution>
         </executions>
       </plugin>
@@ -530,7 +542,11 @@
                     <copy file="${basedir}/src/main/tomcat/server.xml"
                           toDir="${httpfs.tomcat.dist.dir}/conf"/>
                     <delete file="${httpfs.tomcat.dist.dir}/conf/ssl-server.xml"/>
+<<<<<<< HEAD
                     <copy file="${basedir}/src/main/tomcat/ssl-server.xml"
+=======
+                    <copy file="${basedir}/src/main/tomcat/ssl-server.xml.conf"
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
                           toDir="${httpfs.tomcat.dist.dir}/conf"/>
                     <delete file="${httpfs.tomcat.dist.dir}/conf/logging.properties"/>
                     <copy file="${basedir}/src/main/tomcat/logging.properties"

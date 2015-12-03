@@ -76,6 +76,10 @@ public interface DatanodeProtocol {
   final static int DNA_BALANCERBANDWIDTHUPDATE = 8; // update balancer bandwidth
   final static int DNA_CACHE = 9;      // cache blocks
   final static int DNA_UNCACHE = 10;   // uncache blocks
+<<<<<<< HEAD
+=======
+  final static int DNA_ERASURE_CODING_RECOVERY = 11; // erasure coding recovery command
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   /** 
    * Register Datanode.

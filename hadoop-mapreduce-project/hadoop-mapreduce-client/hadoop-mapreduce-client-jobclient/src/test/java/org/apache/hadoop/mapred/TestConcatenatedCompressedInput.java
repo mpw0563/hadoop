@@ -18,15 +18,26 @@
 
 package org.apache.hadoop.mapred;
 
+<<<<<<< HEAD
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+=======
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
 
+<<<<<<< HEAD
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.FileSystem;
@@ -42,6 +53,24 @@ import static org.junit.Assert.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+=======
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.compress.BZip2Codec;
+import org.apache.hadoop.io.compress.CompressionCodec;
+import org.apache.hadoop.io.compress.CompressionInputStream;
+import org.apache.hadoop.io.compress.GzipCodec;
+import org.apache.hadoop.io.compress.zlib.ZlibFactory;
+import org.apache.hadoop.util.LineReader;
+import org.apache.hadoop.util.ReflectionUtils;
+import org.junit.After;
+import org.junit.Ignore;
+import org.junit.Test;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 @Ignore
 public class TestConcatenatedCompressedInput {
   private static final Log LOG =
@@ -76,6 +105,13 @@ public class TestConcatenatedCompressedInput {
     }
   }
 
+<<<<<<< HEAD
+=======
+  @After
+  public void after() {
+    ZlibFactory.loadNativeZLib();
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static Path workDir =
     new Path(new Path(System.getProperty("test.build.data", "/tmp")),
              "TestConcatenatedCompressedInput").makeQualified(localFs);
@@ -302,12 +338,20 @@ public class TestConcatenatedCompressedInput {
   @Test
   public void testBuiltInGzipDecompressor() throws IOException {
     JobConf jobConf = new JobConf(defaultConf);
+<<<<<<< HEAD
     jobConf.setBoolean("io.native.lib.available", false);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     CompressionCodec gzip = new GzipCodec();
     ReflectionUtils.setConf(gzip, jobConf);
     localFs.delete(workDir, true);
+<<<<<<< HEAD
 
+=======
+    // Don't use native libs for this test
+    ZlibFactory.setNativeZlibLoaded(false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     assertEquals("[non-native (Java) codec]",
       org.apache.hadoop.io.compress.zlib.BuiltInGzipDecompressor.class,
       gzip.getDecompressorType());
@@ -351,9 +395,13 @@ public class TestConcatenatedCompressedInput {
     assertEquals("total uncompressed lines in concatenated test file",
                  84, lineNum);
 
+<<<<<<< HEAD
     // test BuiltInGzipDecompressor with lots of different input-buffer sizes
     doMultipleGzipBufferSizes(jobConf, false);
 
+=======
+    ZlibFactory.loadNativeZLib();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     // test GzipZlibDecompressor (native), just to be sure
     // (FIXME?  could move this call to testGzip(), but would need filename
     // setup above) (alternatively, maybe just nuke testGzip() and extend this?)
@@ -370,7 +418,10 @@ public class TestConcatenatedCompressedInput {
       (useNative? "GzipZlibDecompressor" : "BuiltInGzipDecompressor") +
       COLOR_NORMAL);
 
+<<<<<<< HEAD
     jConf.setBoolean("io.native.lib.available", useNative);
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     int bufferSize;
 
@@ -575,6 +626,7 @@ public class TestConcatenatedCompressedInput {
  */
 
     // test CBZip2InputStream with lots of different input-buffer sizes
+<<<<<<< HEAD
     doMultipleBzip2BufferSizes(jobConf, false);
 
     // no native version of bzip2 codec (yet?)
@@ -586,12 +638,24 @@ public class TestConcatenatedCompressedInput {
   // machine errors at buffer boundaries
   private static void doMultipleBzip2BufferSizes(JobConf jConf,
                                                 boolean useNative)
+=======
+    doMultipleBzip2BufferSizes(jobConf);
+  }
+
+  // this tests native bzip2 decoder with more than
+  // three dozen input-buffer sizes in order to try to catch any parser/state-
+  // machine errors at buffer boundaries
+  private static void doMultipleBzip2BufferSizes(JobConf jConf)
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   throws IOException {
     System.out.println(COLOR_MAGENTA + "doMultipleBzip2BufferSizes() using " +
       "default bzip2 decompressor" + COLOR_NORMAL);
 
+<<<<<<< HEAD
     jConf.setBoolean("io.native.lib.available", useNative);
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     int bufferSize;
 
     // ideally would add some offsets/shifts in here (e.g., via extra header

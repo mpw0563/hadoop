@@ -40,7 +40,14 @@ import org.apache.hadoop.yarn.api.protocolrecords.impl.pb.StartContainerRequestP
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ContainerId;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
+=======
+import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.api.records.impl.pb.ResourcePBImpl;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
+import org.apache.hadoop.yarn.proto.YarnProtos.ResourceProto;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.proto.YarnProtos.LocalResourceProto;
 import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.MasterKeyProto;
 import org.apache.hadoop.yarn.proto.YarnServerCommonProtos.VersionProto;
@@ -99,6 +106,11 @@ public class NMLeveldbStateStoreService extends NMStateStoreService {
   private static final String CONTAINER_REQUEST_KEY_SUFFIX = "/request";
   private static final String CONTAINER_DIAGS_KEY_SUFFIX = "/diagnostics";
   private static final String CONTAINER_LAUNCHED_KEY_SUFFIX = "/launched";
+<<<<<<< HEAD
+=======
+  private static final String CONTAINER_RESOURCE_CHANGED_KEY_SUFFIX =
+      "/resourceChanged";
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   private static final String CONTAINER_KILLED_KEY_SUFFIX = "/killed";
   private static final String CONTAINER_EXIT_CODE_KEY_SUFFIX = "/exitcode";
 
@@ -230,6 +242,12 @@ public class NMLeveldbStateStoreService extends NMStateStoreService {
       } else if (suffix.equals(CONTAINER_EXIT_CODE_KEY_SUFFIX)) {
         rcs.status = RecoveredContainerStatus.COMPLETED;
         rcs.exitCode = Integer.parseInt(asString(entry.getValue()));
+<<<<<<< HEAD
+=======
+      } else if (suffix.equals(CONTAINER_RESOURCE_CHANGED_KEY_SUFFIX)) {
+        rcs.capability = new ResourcePBImpl(
+            ResourceProto.parseFrom(entry.getValue()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       } else {
         throw new IOException("Unexpected container state key: " + key);
       }
@@ -275,6 +293,23 @@ public class NMLeveldbStateStoreService extends NMStateStoreService {
   }
 
   @Override
+<<<<<<< HEAD
+=======
+  public void storeContainerResourceChanged(ContainerId containerId,
+      Resource capability) throws IOException {
+    String key = CONTAINERS_KEY_PREFIX + containerId.toString()
+        + CONTAINER_RESOURCE_CHANGED_KEY_SUFFIX;
+    try {
+      // New value will overwrite old values for the same key
+      db.put(bytes(key),
+          ((ResourcePBImpl) capability).getProto().toByteArray());
+    } catch (DBException e) {
+      throw new IOException(e);
+    }
+  }
+
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void storeContainerKilled(ContainerId containerId)
       throws IOException {
     String key = CONTAINERS_KEY_PREFIX + containerId.toString()

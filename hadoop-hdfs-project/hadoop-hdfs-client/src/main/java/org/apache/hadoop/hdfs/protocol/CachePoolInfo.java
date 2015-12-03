@@ -145,7 +145,11 @@ public class CachePoolInfo {
   /**
    * Set the maximum relative expiration of directives of this pool in
    * milliseconds.
+<<<<<<< HEAD
    * 
+=======
+   *
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
    * @param ms in milliseconds
    * @return This builder, for call chaining.
    */
@@ -155,6 +159,7 @@ public class CachePoolInfo {
   }
 
   public String toString() {
+<<<<<<< HEAD
     return new StringBuilder().append("{").
       append("poolName:").append(poolName).
       append(", ownerName:").append(ownerName).
@@ -166,6 +171,17 @@ public class CachePoolInfo {
       append("}").toString();
   }
   
+=======
+    return "{" + "poolName:" + poolName
+        + ", ownerName:" + ownerName
+        + ", groupName:" + groupName
+        + ", mode:"
+        + ((mode == null) ? "null" : String.format("0%03o", mode.toShort()))
+        + ", limit:" + limit
+        + ", maxRelativeExpiryMs:" + maxRelativeExpiryMs + "}";
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Override
   public boolean equals(Object o) {
     if (o == null) { return false; }

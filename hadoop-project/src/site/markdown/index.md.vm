@@ -15,6 +15,7 @@
 Apache Hadoop ${project.version}
 ================================
 
+<<<<<<< HEAD
 Apache Hadoop ${project.version} is a minor release in the 2.x.y release
 line, building upon the previous stable release 2.4.1.
 
@@ -57,13 +58,68 @@ Here is a short overview of the major features and improvements.
 
     *   The Fair Scheduler supports dynamic hierarchical user queues, user queues
         are created dynamically at runtime under any specified parent-queue.
+=======
+Apache Hadoop ${project.version} consists of significant
+improvements over the previous stable release (hadoop-1.x).
+
+Here is a short overview of the improvments to both HDFS and MapReduce.
+
+* HDFS Federation
+
+    In order to scale the name service horizontally, federation uses
+    multiple independent Namenodes/Namespaces. The Namenodes are
+    federated, that is, the Namenodes are independent and don't require
+    coordination with each other. The datanodes are used as common storage
+    for blocks by all the Namenodes. Each datanode registers with all the
+    Namenodes in the cluster. Datanodes send periodic heartbeats and block
+    reports and handles commands from the Namenodes.
+
+    More details are available in the
+    [HDFS Federation](./hadoop-project-dist/hadoop-hdfs/Federation.html)
+    document.
+
+* MapReduce NextGen aka YARN aka MRv2
+
+    The new architecture introduced in hadoop-0.23, divides the two major
+    functions of the JobTracker: resource management and job life-cycle
+    management into separate components.
+    
+    The new ResourceManager manages the global assignment of compute
+    resources to applications and the per-application
+    ApplicationMaster manages the application‚ scheduling and
+    coordination.
+
+    An application is either a single job in the sense of classic
+    MapReduce jobs or a DAG of such jobs.
+
+    The ResourceManager and per-machine NodeManager daemon, which
+    manages the user processes on that machine, form the computation
+    fabric.
+
+    The per-application ApplicationMaster is, in effect, a framework
+    specific library and is tasked with negotiating resources from the
+    ResourceManager and working with the NodeManager(s) to execute and
+    monitor the tasks.
+
+    More details are available in the
+    [YARN](./hadoop-yarn/hadoop-yarn-site/YARN.html) document.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 Getting Started
 ===============
 
 The Hadoop documentation includes the information you need to get started using
+<<<<<<< HEAD
 Hadoop. Begin with the
 [Single Node Setup](./hadoop-project-dist/hadoop-common/SingleCluster.html) which
 shows you how to set up a single-node Hadoop installation. Then move on to the
 [Cluster Setup](./hadoop-project-dist/hadoop-common/ClusterSetup.html) to learn how
 to set up a multi-node Hadoop installation.
+=======
+Hadoop. Begin with the 
+[Single Node Setup](./hadoop-project-dist/hadoop-common/SingleCluster.html)
+which shows you how to set up a single-node Hadoop installation.
+Then move on to the
+[Cluster Setup](./hadoop-project-dist/hadoop-common/ClusterSetup.html)
+to learn how to set up a multi-node Hadoop installation.
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f

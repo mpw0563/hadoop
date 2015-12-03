@@ -223,7 +223,7 @@ public final class WritableUtils  {
   }
 
   /**
-   * Make a copy of the writable object using serialiation to a buffer
+   * Make a copy of the writable object using serialization to a buffer
    * @param dst the object to copy from
    * @param src the object to copy into, which is destroyed
    * @throws IOException
@@ -236,13 +236,13 @@ public final class WritableUtils  {
 
   /**
    * Serializes an integer to a binary stream with zero-compressed encoding.
-   * For -120 <= i <= 127, only one byte is used with the actual value.
+   * For -112 <= i <= 127, only one byte is used with the actual value.
    * For other values of i, the first byte value indicates whether the
    * integer is positive or negative, and the number of bytes that follow.
+   * If the first byte value v is between -113 and -116, the following integer
+   * is positive, with number of bytes that follow are -(v+112).
    * If the first byte value v is between -121 and -124, the following integer
-   * is positive, with number of bytes that follow are -(v+120).
-   * If the first byte value v is between -125 and -128, the following integer
-   * is negative, with number of bytes that follow are -(v+124). Bytes are
+   * is negative, with number of bytes that follow are -(v+120). Bytes are
    * stored in the high-non-zero-byte-first order.
    *
    * @param stream Binary output stream
@@ -331,6 +331,7 @@ public final class WritableUtils  {
       throw new IOException("value too long to fit in integer");
     }
     return (int)n;
+<<<<<<< HEAD
   }
 
   /**
@@ -361,6 +362,38 @@ public final class WritableUtils  {
     return (int)n;
   }
 
+=======
+  }
+
+  /**
+   * Reads an integer from the input stream and returns it.
+   *
+   * This function validates that the integer is between [lower, upper],
+   * inclusive.
+   *
+   * @param stream Binary input stream
+   * @throws java.io.IOException
+   * @return deserialized integer from stream
+   */
+  public static int readVIntInRange(DataInput stream, int lower, int upper)
+      throws IOException {
+    long n = readVLong(stream);
+    if (n < lower) {
+      if (lower == 0) {
+        throw new IOException("expected non-negative integer, got " + n);
+      } else {
+        throw new IOException("expected integer greater than or equal to " +
+            lower + ", got " + n);
+      }
+    }
+    if (n > upper) {
+      throw new IOException("expected integer less or equal to " + upper +
+          ", got " + n);
+    }
+    return (int)n;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Given the first byte of a vint/vlong, determine the sign
    * @param value the first byte

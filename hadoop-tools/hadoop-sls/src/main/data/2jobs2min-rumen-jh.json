@@ -4645,7 +4645,10 @@
     "dfs.ha.log-roll.period" : "120",
     "mapreduce.reduce.input.buffer.percent" : "0.0",
     "mapreduce.map.output.compress.codec" : "org.apache.hadoop.io.compress.SnappyCodec",
+<<<<<<< HEAD
     "mapreduce.map.skip.proc.count.autoincr" : "true",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "dfs.client.failover.sleep.base.millis" : "500",
     "dfs.datanode.directoryscan.threads" : "1",
     "mapreduce.jobtracker.address" : "neededForHive:999999",
@@ -4765,7 +4768,10 @@
     "dfs.namenode.backup.address" : "0.0.0.0:50100",
     "hadoop.util.hash.type" : "murmur",
     "dfs.block.access.key.update.interval" : "600",
+<<<<<<< HEAD
     "mapreduce.reduce.skip.proc.count.autoincr" : "true",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "dfs.datanode.dns.interface" : "default",
     "dfs.datanode.use.datanode.hostname" : "false",
     "mapreduce.job.output.key.class" : "org.apache.hadoop.io.Text",
@@ -4875,7 +4881,10 @@
     "mapreduce.reduce.shuffle.read.timeout" : "180000",
     "mapreduce.admin.user.env" : "LD_LIBRARY_PATH=$HADOOP_COMMON_HOME/lib/native",
     "yarn.app.mapreduce.am.command-opts" : " -Xmx1238932873",
+<<<<<<< HEAD
     "mapreduce.local.clientfactory.class.name" : "org.apache.hadoop.mapred.LocalClientFactory",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "dfs.namenode.checkpoint.edits.dir" : "${dfs.namenode.checkpoint.dir}",
     "fs.permissions.umask-mode" : "022",
     "dfs.client.domain.socket.data.traffic" : "false",
@@ -4924,7 +4933,10 @@
     "hadoop.kerberos.kinit.command" : "kinit",
     "dfs.datanode.du.reserved" : "0",
     "dfs.namenode.fs-limits.max-blocks-per-file" : "1048576",
+<<<<<<< HEAD
     "dfs.webhdfs.enabled" : "false",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "file.bytes-per-checksum" : "512",
     "mapreduce.task.profile.reduces" : "0-2",
     "mapreduce.jobtracker.handler.count" : "10",
@@ -9754,7 +9766,10 @@
     "dfs.ha.log-roll.period" : "120",
     "mapreduce.reduce.input.buffer.percent" : "0.0",
     "mapreduce.map.output.compress.codec" : "org.apache.hadoop.io.compress.SnappyCodec",
+<<<<<<< HEAD
     "mapreduce.map.skip.proc.count.autoincr" : "true",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "dfs.client.failover.sleep.base.millis" : "500",
     "dfs.datanode.directoryscan.threads" : "1",
     "mapreduce.jobtracker.address" : "neededForHive:999999",
@@ -9874,7 +9889,10 @@
     "dfs.namenode.backup.address" : "0.0.0.0:50100",
     "hadoop.util.hash.type" : "murmur",
     "dfs.block.access.key.update.interval" : "600",
+<<<<<<< HEAD
     "mapreduce.reduce.skip.proc.count.autoincr" : "true",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "dfs.datanode.dns.interface" : "default",
     "dfs.datanode.use.datanode.hostname" : "false",
     "mapreduce.job.output.key.class" : "org.apache.hadoop.io.Text",
@@ -9984,7 +10002,10 @@
     "mapreduce.reduce.shuffle.read.timeout" : "180000",
     "mapreduce.admin.user.env" : "LD_LIBRARY_PATH=$HADOOP_COMMON_HOME/lib/native",
     "yarn.app.mapreduce.am.command-opts" : " -Xmx1238932873",
+<<<<<<< HEAD
     "mapreduce.local.clientfactory.class.name" : "org.apache.hadoop.mapred.LocalClientFactory",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "dfs.namenode.checkpoint.edits.dir" : "${dfs.namenode.checkpoint.dir}",
     "fs.permissions.umask-mode" : "022",
     "dfs.client.domain.socket.data.traffic" : "false",
@@ -10033,7 +10054,10 @@
     "hadoop.kerberos.kinit.command" : "kinit",
     "dfs.datanode.du.reserved" : "0",
     "dfs.namenode.fs-limits.max-blocks-per-file" : "1048576",
+<<<<<<< HEAD
     "dfs.webhdfs.enabled" : "false",
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     "file.bytes-per-checksum" : "512",
     "mapreduce.task.profile.reduces" : "0-2",
     "mapreduce.jobtracker.handler.count" : "10",

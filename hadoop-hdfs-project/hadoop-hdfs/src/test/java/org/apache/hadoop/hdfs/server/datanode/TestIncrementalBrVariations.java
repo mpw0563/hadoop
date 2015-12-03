@@ -227,6 +227,7 @@ public class TestIncrementalBrVariations {
     return new Block(10000000L, 100L, 1048576L);
   }
 
+<<<<<<< HEAD
   private static StorageReceivedDeletedBlocks[] makeReportForReceivedBlock(
       Block block, DatanodeStorage storage) {
     ReceivedDeletedBlockInfo[] receivedBlocks = new ReceivedDeletedBlockInfo[1];
@@ -236,6 +237,8 @@ public class TestIncrementalBrVariations {
     return reports;
   }
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Verify that the NameNode can learn about new storages from incremental
    * block reports.
@@ -251,8 +254,14 @@ public class TestIncrementalBrVariations {
     // Generate a report for a fake block on a fake storage.
     final String newStorageUuid = UUID.randomUUID().toString();
     final DatanodeStorage newStorage = new DatanodeStorage(newStorageUuid);
+<<<<<<< HEAD
     StorageReceivedDeletedBlocks[] reports = makeReportForReceivedBlock(
         getDummyBlock(), newStorage);
+=======
+    StorageReceivedDeletedBlocks[] reports = DFSTestUtil.
+        makeReportForReceivedBlock(getDummyBlock(), BlockStatus.RECEIVED_BLOCK,
+            newStorage);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
     // Send the report to the NN.
     cluster.getNameNodeRpc().blockReceivedAndDeleted(dn0Reg, poolId, reports);

@@ -61,8 +61,22 @@ enum RpcKindProto {
  * what span caused the new span we will create when this message is received.
  */
 message RPCTraceInfoProto {
+<<<<<<< HEAD
   optional int64 traceId = 1;
   optional int64 parentId = 2;
+=======
+    optional int64 traceId = 1; // parentIdHigh
+    optional int64 parentId = 2; // parentIdLow
+
+}
+
+/**
+ * Used to pass through the call context entry after an RPC is made.
+ */
+message RPCCallerContextProto {
+  required string context = 1;
+  optional bytes signature = 2;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 message RpcRequestHeaderProto { // the header for the RpcRequest
@@ -80,6 +94,10 @@ message RpcRequestHeaderProto { // the header for the RpcRequest
   // retry count, 1 means this is the first retry
   optional sint32 retryCount = 5 [default = -1];
   optional RPCTraceInfoProto traceInfo = 6; // tracing info
+<<<<<<< HEAD
+=======
+  optional RPCCallerContextProto callerContext = 7; // call context
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }
 
 

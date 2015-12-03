@@ -74,6 +74,7 @@
      </Match>
 
      <!--
+<<<<<<< HEAD
       ResponseProccessor is thread that is designed to catch RuntimeException.
      -->
      <Match>
@@ -83,6 +84,8 @@
      </Match>
 
      <!--
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       lastAppliedTxid is carefully unsynchronized in the BackupNode in a couple spots.
       See the comments in BackupImage for justification.
      -->
@@ -133,6 +136,7 @@
        <Bug pattern="DM_EXIT" />
      </Match>
 
+<<<<<<< HEAD
      <!-- Don't complain about recoverBlock equality check -->
      <Match>
        <Class name="org.apache.hadoop.hdfs.server.datanode.DataNode" />
@@ -140,6 +144,8 @@
        <Bug pattern="EC_UNRELATED_TYPES" />
      </Match>
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
      <!-- More complex cleanup logic confuses findbugs -->
      <Match>
        <Class name="org.apache.hadoop.hdfs.qjournal.server.Journal" />
@@ -176,6 +182,7 @@
        <Method name="setDirInternal" />
        <Bug pattern="DM_STRING_CTOR" />
      </Match>
+<<<<<<< HEAD
     <Match>
       <Class name="org.apache.hadoop.hdfs.shortcircuit.DfsClientShmManager$EndpointShmManager" />
       <Method name="allocSlot" />
@@ -186,6 +193,8 @@
       <Method name="allocSlot" />
       <Bug pattern="UL_UNRELEASED_LOCK" />
     </Match>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     <!-- Manually verified to be okay, we want to throw away the top bit here -->
     <Match>
       <Class name="org.apache.hadoop.hdfs.server.namenode.CachedBlock" />
@@ -206,6 +215,7 @@
       <Method name="assertAllResultsEqual" />
       <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE" />
     </Match>
+<<<<<<< HEAD
 
     <!--
      We use a separate lock to guard cachingStrategy in order to separate
@@ -216,4 +226,6 @@
         <Field name="cachingStrategy" />
         <Bug pattern="IS2_INCONSISTENT_SYNC" />
     </Match>
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
  </FindBugsFilter>

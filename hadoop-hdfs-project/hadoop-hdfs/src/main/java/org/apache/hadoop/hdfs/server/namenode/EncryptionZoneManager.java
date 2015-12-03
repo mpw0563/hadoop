@@ -36,7 +36,11 @@ import org.apache.hadoop.hdfs.XAttrHelper;
 import org.apache.hadoop.hdfs.protocol.EncryptionZone;
 import org.apache.hadoop.hdfs.protocol.SnapshotAccessControlException;
 import org.apache.hadoop.hdfs.protocol.proto.HdfsProtos;
+<<<<<<< HEAD
 import org.apache.hadoop.hdfs.protocolPB.PBHelper;
+=======
+import org.apache.hadoop.hdfs.protocolPB.PBHelperClient;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -305,7 +309,11 @@ public class EncryptionZoneManager {
     }
 
     final HdfsProtos.ZoneEncryptionInfoProto proto =
+<<<<<<< HEAD
         PBHelper.convert(suite, version, keyName);
+=======
+        PBHelperClient.convert(suite, version, keyName);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     final XAttr ezXAttr = XAttrHelper
         .buildXAttr(CRYPTO_XATTR_ENCRYPTION_ZONE, proto.toByteArray());
 

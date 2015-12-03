@@ -60,10 +60,16 @@ public class CapacitySchedulerQueueInfo {
   protected long allocatedContainers;
   protected long reservedContainers;
   protected long pendingContainers;
+<<<<<<< HEAD
+=======
+  protected QueueCapacitiesInfo capacities;
+  protected ResourceUsageInfo resources;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   CapacitySchedulerQueueInfo() {
   };
 
+<<<<<<< HEAD
   CapacitySchedulerQueueInfo(CSQueue q, String nodeLabel) {
     QueueCapacities qCapacities = q.getQueueCapacities();
     ResourceUsage queueResourceUsage = q.getQueueResourceUsage();
@@ -73,23 +79,44 @@ public class CapacitySchedulerQueueInfo {
     usedCapacity = qCapacities.getUsedCapacity(nodeLabel) * 100;
 
     maxCapacity = qCapacities.getMaximumCapacity(nodeLabel);
+=======
+  CapacitySchedulerQueueInfo(CSQueue q) {
+
+    queuePath = q.getQueuePath();
+    capacity = q.getCapacity() * 100;
+    usedCapacity = q.getUsedCapacity() * 100;
+
+    maxCapacity = q.getMaximumCapacity();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (maxCapacity < EPSILON || maxCapacity > 1f)
       maxCapacity = 1f;
     maxCapacity *= 100;
 
     absoluteCapacity =
+<<<<<<< HEAD
         cap(qCapacities.getAbsoluteCapacity(nodeLabel), 0f, 1f) * 100;
     absoluteMaxCapacity =
         cap(qCapacities.getAbsoluteMaximumCapacity(nodeLabel), 0f, 1f) * 100;
     absoluteUsedCapacity =
         cap(qCapacities.getAbsoluteUsedCapacity(nodeLabel), 0f, 1f) * 100;
+=======
+        cap(q.getAbsoluteCapacity(), 0f, 1f) * 100;
+    absoluteMaxCapacity =
+        cap(q.getAbsoluteMaximumCapacity(), 0f, 1f) * 100;
+    absoluteUsedCapacity =
+        cap(q.getAbsoluteUsedCapacity(), 0f, 1f) * 100;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     numApplications = q.getNumApplications();
     allocatedContainers = q.getMetrics().getAllocatedContainers();
     pendingContainers = q.getMetrics().getPendingContainers();
     reservedContainers = q.getMetrics().getReservedContainers();
     queueName = q.getQueueName();
     state = q.getState();
+<<<<<<< HEAD
     resourcesUsed = new ResourceInfo(queueResourceUsage.getUsed(nodeLabel));
+=======
+    resourcesUsed = new ResourceInfo(q.getUsedResources());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     if (q instanceof PlanQueue && !((PlanQueue) q).showReservationsAsQueues()) {
       hideReservationQueues = true;
     }
@@ -100,6 +127,18 @@ public class CapacitySchedulerQueueInfo {
       nodeLabels.addAll(labelSet);
       Collections.sort(nodeLabels);
     }
+<<<<<<< HEAD
+=======
+    QueueCapacities qCapacities = q.getQueueCapacities();
+    capacities = new QueueCapacitiesInfo(qCapacities);
+
+    ResourceUsage queueResourceUsage = q.getQueueResourceUsage();
+    populateQueueResourceUsage(queueResourceUsage);
+  }
+
+  protected void populateQueueResourceUsage(ResourceUsage queueResourceUsage) {
+    resources = new ResourceUsageInfo(queueResourceUsage, false);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 
   public float getCapacity() {
@@ -179,4 +218,15 @@ public class CapacitySchedulerQueueInfo {
   public ArrayList<String> getNodeLabels() {
     return this.nodeLabels;
   }
+<<<<<<< HEAD
+=======
+
+  public QueueCapacitiesInfo getCapacities() {
+    return capacities;
+  }
+
+  public ResourceUsageInfo getResources() {
+    return resources;
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 }

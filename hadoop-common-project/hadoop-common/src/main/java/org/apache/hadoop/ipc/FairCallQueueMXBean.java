@@ -19,7 +19,11 @@
 package org.apache.hadoop.ipc;
 
 public interface FairCallQueueMXBean {
+<<<<<<< HEAD
   // Get the size of each subqueue, the index corrosponding to the priority
+=======
+  // Get the size of each subqueue, the index corresponding to the priority
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   // level.
   int[] getQueueSizes();
   long[] getOverflowedCalls();

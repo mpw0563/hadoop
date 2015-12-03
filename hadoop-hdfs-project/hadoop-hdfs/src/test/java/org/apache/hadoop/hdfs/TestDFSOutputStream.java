@@ -27,6 +27,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.fs.FsTracer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DataStreamer.LastExceptionInStreamer;
 import org.apache.hadoop.hdfs.client.impl.DfsClientConf;
@@ -34,6 +38,10 @@ import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.protocol.HdfsFileStatus;
 import org.apache.hadoop.hdfs.protocol.datatransfer.BlockConstructionStage;
+<<<<<<< HEAD
+=======
+import org.apache.htrace.core.SpanId;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -119,6 +127,10 @@ public class TestDFSOutputStream {
     DfsClientConf dfsClientConf = mock(DfsClientConf.class);
     DFSClient client = mock(DFSClient.class);
     when(client.getConf()).thenReturn(dfsClientConf);
+<<<<<<< HEAD
+=======
+    when(client.getTracer()).thenReturn(FsTracer.get(new Configuration()));
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     client.clientRunning = true;
     DataStreamer stream = new DataStreamer(
         mock(HdfsFileStatus.class),
@@ -139,7 +151,11 @@ public class TestDFSOutputStream {
         Whitebox.getInternalState(stream, "congestedNodes");
     congestedNodes.add(mock(DatanodeInfo.class));
     DFSPacket packet = mock(DFSPacket.class);
+<<<<<<< HEAD
     when(packet.getTraceParents()).thenReturn(new long[] {});
+=======
+    when(packet.getTraceParents()).thenReturn(new SpanId[] {});
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     dataQueue.add(packet);
     stream.run();
     Assert.assertTrue(congestedNodes.isEmpty());

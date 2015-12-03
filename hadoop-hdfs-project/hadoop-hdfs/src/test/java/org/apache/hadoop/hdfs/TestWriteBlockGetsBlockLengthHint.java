@@ -23,6 +23,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.StorageType;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.hdfs.server.common.HdfsServerConstants;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.hdfs.server.datanode.*;
 import org.apache.hadoop.hdfs.server.datanode.fsdataset.FsDatasetSpi;
 import org.apache.hadoop.test.GenericTestUtils;
@@ -70,7 +74,11 @@ public class TestWriteBlockGetsBlockLengthHint {
   }
 
   static class FsDatasetChecker extends SimulatedFSDataset {
+<<<<<<< HEAD
     static class Factory extends FsDatasetSpi.Factory<SimulatedFSDataset> {
+=======
+    static class Factory extends FsDatasetSpi.Factory {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       @Override
       public SimulatedFSDataset newInstance(DataNode datanode,
           DataStorage storage, Configuration conf) throws IOException {

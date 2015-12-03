@@ -47,7 +47,10 @@ import org.apache.hadoop.yarn.server.nodemanager.metrics.NodeManagerMetrics;
 import org.apache.hadoop.yarn.server.nodemanager.recovery.NMNullStateStoreService;
 import org.apache.hadoop.yarn.server.nodemanager.security.NMContainerTokenSecretManager;
 import org.apache.hadoop.yarn.server.nodemanager.security.NMTokenSecretManagerInNM;
+<<<<<<< HEAD
 import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.junit.Test;
 
 
@@ -128,7 +131,11 @@ public class TestEventFlow {
 
     DummyContainerManager containerManager =
         new DummyContainerManager(context, exec, del, nodeStatusUpdater,
+<<<<<<< HEAD
           metrics, new ApplicationACLsManager(conf), dirsHandler);
+=======
+          metrics, dirsHandler);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     nodeStatusUpdater.init(conf);
     ((NMContext)context).setContainerManager(containerManager);
     nodeStatusUpdater.start();

@@ -85,6 +85,11 @@ Customizing the Fair Scheduler typically involves altering two files. First, sch
 | `yarn.scheduler.fair.locality.threshold.rack` | For applications that request containers on particular racks, the number of scheduling opportunities since the last container assignment to wait before accepting a placement on another rack. Expressed as a float between 0 and 1, which, as a fraction of the cluster size, is the number of scheduling opportunities to pass up. The default value of -1.0 means don't pass up any scheduling opportunities. |
 | `yarn.scheduler.fair.allow-undeclared-pools` | If this is true, new queues can be created at application submission time, whether because they are specified as the application's queue by the submitter or because they are placed there by the user-as-default-queue property. If this is false, any time an app would be placed in a queue that is not specified in the allocations file, it is placed in the "default" queue instead. Defaults to true. If a queue placement policy is given in the allocations file, this property is ignored. |
 | `yarn.scheduler.fair.update-interval-ms` | The interval at which to lock the scheduler and recalculate fair shares, recalculate demand, and check whether anything is due for preemption. Defaults to 500 ms. |
+<<<<<<< HEAD
+=======
+| `yarn.scheduler.increment-allocation-mb` | The fairscheduler grants memory in increments of this value. If you submit a task with resource request that is not a multiple of increment-allocation-mb, the request will be rounded up to the nearest increment. Defaults to 1024 MB. |
+| `yarn.scheduler.increment-allocation-vcores` | The fairscheduler grants vcores in increments of this value. If you submit a task with resource request that is not a multiple of increment-allocation-vcores, the request will be rounded up to the nearest increment. Defaults to 1. |
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 ###Allocation file format
 
@@ -126,6 +131,11 @@ The allocation file must be in XML format. The format contains five types of ele
 
 * **A queueMaxAppsDefault element**: which sets the default running app limit for queues; overriden by maxRunningApps element in each queue.
 
+<<<<<<< HEAD
+=======
+* **A queueMaxResourcesDefault element**: which sets the default max resource limit for queue; overriden by maxResources element in each queue.
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 * **A queueMaxAMShareDefault element**: which sets the default AM resource limit for queue; overriden by maxAMShare element in each queue.
 
 * **A defaultQueueSchedulingPolicy element**: which sets the default scheduling policy for queues; overriden by the schedulingPolicy element in each queue if specified. Defaults to "fair".
@@ -165,6 +175,10 @@ The allocation file must be in XML format. The format contains five types of ele
   </queue>
 
   <queueMaxAMShareDefault>0.5</queueMaxAMShareDefault>
+<<<<<<< HEAD
+=======
+  <queueMaxResourcesDefault>40000 mb,0vcores</queueMaxResourcesDefault>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   <!-- Queue 'secondary_group_queue' is a parent queue and may have
        user queues under it -->

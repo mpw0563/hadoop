@@ -41,6 +41,7 @@ import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DFSTestUtil;
 import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
 import org.apache.hadoop.hdfs.tools.JMXGet;
@@ -62,6 +63,7 @@ public class TestJMXGet {
   static final int blockSize = 4096;
   static final int fileSize = 8192;
 
+<<<<<<< HEAD
   private void writeFile(FileSystem fileSys, Path name, int repl)
   throws IOException {
     FSDataOutputStream stm = fileSys.create(name, true,
@@ -75,6 +77,8 @@ public class TestJMXGet {
   }
 
 
+=======
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   @Before
   public void setUp() throws Exception {
     config = new HdfsConfiguration();
@@ -105,7 +109,8 @@ public class TestJMXGet {
     cluster = new MiniDFSCluster.Builder(config).numDataNodes(numDatanodes).build();
     cluster.waitActive();
 
-    writeFile(cluster.getFileSystem(), new Path("/test1"), 2);
+    DFSTestUtil.createFile(cluster.getFileSystem(), new Path("/test1"),
+        fileSize, fileSize, blockSize, (short) 2, seed);
 
     JMXGet jmx = new JMXGet();
     String serviceName = "NameNode";
@@ -114,10 +119,12 @@ public class TestJMXGet {
     assertTrue("error printAllValues", checkPrintAllValues(jmx));
 
     //get some data from different source
+    DFSTestUtil.waitForMetric(jmx, "NumLiveDataNodes", numDatanodes);
     assertEquals(numDatanodes, Integer.parseInt(
         jmx.getValue("NumLiveDataNodes")));
     assertGauge("CorruptBlocks", Long.parseLong(jmx.getValue("CorruptBlocks")),
                 getMetrics("FSNamesystem"));
+    DFSTestUtil.waitForMetric(jmx, "NumOpenConnections", numDatanodes);
     assertEquals(numDatanodes, Integer.parseInt(
         jmx.getValue("NumOpenConnections")));
 
@@ -134,6 +141,7 @@ public class TestJMXGet {
     String pattern = "List of all the available keys:";
     PipedOutputStream pipeOut = new PipedOutputStream();
     PipedInputStream pipeIn = new PipedInputStream(pipeOut);
+<<<<<<< HEAD
     System.setErr(new PrintStream(pipeOut));
     jmx.printAllValues();
     if ((size = pipeIn.available()) != 0) {
@@ -142,6 +150,21 @@ public class TestJMXGet {
     }
     pipeOut.close();
     pipeIn.close();
+=======
+    PrintStream oldErr = System.err;
+    System.setErr(new PrintStream(pipeOut));
+    try {
+      jmx.printAllValues();
+      if ((size = pipeIn.available()) != 0) {
+        bytes = new byte[size];
+        pipeIn.read(bytes, 0, bytes.length);
+      }
+      pipeOut.close();
+      pipeIn.close();
+    } finally {
+      System.setErr(oldErr);
+    }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return bytes != null ? new String(bytes).contains(pattern) : false;
   }
   
@@ -155,12 +178,14 @@ public class TestJMXGet {
     cluster = new MiniDFSCluster.Builder(config).numDataNodes(numDatanodes).build();
     cluster.waitActive();
 
-    writeFile(cluster.getFileSystem(), new Path("/test"), 2);
+    DFSTestUtil.createFile(cluster.getFileSystem(), new Path("/test"),
+        fileSize, fileSize, blockSize, (short) 2, seed);
 
     JMXGet jmx = new JMXGet();
     String serviceName = "DataNode";
     jmx.setService(serviceName);
     jmx.init();
+    DFSTestUtil.waitForMetric(jmx, "BytesWritten", fileSize);
     assertEquals(fileSize, Integer.parseInt(jmx.getValue("BytesWritten")));
 
     cluster.shutdown();

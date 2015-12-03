@@ -51,7 +51,14 @@ import org.apache.hadoop.metrics.Updater;
  * on which data is to be sent to the metrics system.  Subclasses must
  * override the abstract <code>emitRecord</code> method in order to transmit
  * the data. <p/>
+<<<<<<< HEAD
  */
+=======
+ *
+ * @deprecated Use org.apache.hadoop.metrics2 package instead.
+ */
+@Deprecated
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 @InterfaceAudience.Public
 @InterfaceStability.Evolving
 public abstract class AbstractMetricsContext implements MetricsContext {
@@ -116,6 +123,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
   /**
    * Initializes the context.
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public void init(String contextName, ContextFactory factory) 
   {
     this.contextName = contextName;
@@ -152,6 +163,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
   /**
    * Returns the context name.
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public String getContextName() {
     return contextName;
   }
@@ -166,6 +181,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
   /**
    * Starts or restarts monitoring, the emitting of metrics records.
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized void startMonitoring()
     throws IOException {
     if (!isMonitoring) {
@@ -178,6 +197,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
    * Stops monitoring.  This does not free buffered data. 
    * @see #close()
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized void stopMonitoring() {
     if (isMonitoring) {
       stopTimer();
@@ -188,6 +211,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
   /**
    * Returns true if monitoring is currently in progress.
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public boolean isMonitoring() {
     return isMonitoring;
   }
@@ -196,6 +223,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
    * Stops monitoring and frees buffered data, returning this
    * object to its initial state.  
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized void close() {
     stopMonitoring();
     clearUpdaters();
@@ -209,6 +240,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
    * @param recordName the name of the record
    * @throws MetricsException if recordName conflicts with configuration data
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public final synchronized MetricsRecord createRecord(String recordName) {
     if (bufferedData.get(recordName) == null) {
       bufferedData.put(recordName, new RecordMap());
@@ -232,6 +267,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
    * @param updater object to be run periodically; it should update
    * some metrics records 
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized void registerUpdater(final Updater updater) {
     if (!updaters.contains(updater)) {
       updaters.add(updater);
@@ -243,6 +282,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
    *
    * @param updater object to be removed from the callback list
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized void unregisterUpdater(Updater updater) {
     updaters.remove(updater);
   }
@@ -259,11 +302,19 @@ public abstract class AbstractMetricsContext implements MetricsContext {
       timer = new Timer("Timer thread for monitoring " + getContextName(), 
                         true);
       TimerTask task = new TimerTask() {
+<<<<<<< HEAD
           public void run() {
             try {
               timerEvent();
             }
             catch (IOException ioe) {
+=======
+          @Override
+          public void run() {
+            try {
+              timerEvent();
+            } catch (IOException ioe) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
               ioe.printStackTrace();
             }
           }
@@ -297,8 +348,12 @@ public abstract class AbstractMetricsContext implements MetricsContext {
       for (Updater updater : myUpdaters) {
         try {
           updater.doUpdates(this);
+<<<<<<< HEAD
         }
         catch (Throwable throwable) {
+=======
+        } catch (Throwable throwable) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
           throwable.printStackTrace();
         }
       }
@@ -328,6 +383,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
    * Useful for monitoring systems that are polling-based.
    * @return A non-null collection of all monitoring records.
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public synchronized Map<String, Collection<OutputRecord>> getAllRecords() {
     Map<String, Collection<OutputRecord>> out = new TreeMap<String, Collection<OutputRecord>>();
     for (Map.Entry<String,RecordMap> recordEntry : bufferedData.entrySet()) {
@@ -449,6 +508,10 @@ public abstract class AbstractMetricsContext implements MetricsContext {
   /**
    * Returns the timer period.
    */
+<<<<<<< HEAD
+=======
+  @Override
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   public int getPeriod() {
     return period;
   }

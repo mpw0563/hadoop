@@ -19,6 +19,7 @@
 package org.apache.hadoop.yarn.server.resourcemanager;
 
 
+<<<<<<< HEAD
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.io.DataOutputBuffer;
@@ -29,6 +30,12 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+=======
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doAnswer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -40,8 +47,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+<<<<<<< HEAD
 import org.junit.Assert;
 import org.apache.hadoop.conf.Configuration;
+=======
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.DataOutputBuffer;
+import org.apache.hadoop.security.Credentials;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.service.Service;
 import org.apache.hadoop.yarn.MockApps;
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
@@ -57,11 +72,20 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
 import org.apache.hadoop.yarn.server.resourcemanager.ahs.RMApplicationHistoryWriter;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.metrics.SystemMetricsPublisher;
+import org.apache.hadoop.yarn.server.resourcemanager.placement.PlacementManager;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.recovery.RMStateStore;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.MockRMApp;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMApp;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppEventType;
+<<<<<<< HEAD
+=======
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppState;
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.AMLivelinessMonitor;
@@ -73,8 +97,16 @@ import org.apache.hadoop.yarn.server.security.ApplicationACLsManager;
 import org.apache.hadoop.yarn.util.resource.ResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
 import org.junit.After;
+<<<<<<< HEAD
 import org.junit.Before;
 import org.junit.Test;
+=======
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -120,7 +152,11 @@ public class TestAppManager{
     RMApplicationHistoryWriter writer = mock(RMApplicationHistoryWriter.class);
     RMContext context = new RMContextImpl(rmDispatcher,
         containerAllocationExpirer, amLivelinessMonitor, amFinishingMonitor,
+<<<<<<< HEAD
         null, null, null, null, null, writer) {
+=======
+        null, null, null, null, null) {
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
       @Override
       public ConcurrentMap<ApplicationId, RMApp> getRMApps() {
         return map;
@@ -128,7 +164,12 @@ public class TestAppManager{
     };
     ((RMContextImpl)context).setStateStore(mock(RMStateStore.class));
     metricsPublisher = mock(SystemMetricsPublisher.class);
+<<<<<<< HEAD
     ((RMContextImpl)context).setSystemMetricsPublisher(metricsPublisher);
+=======
+    context.setSystemMetricsPublisher(metricsPublisher);
+    context.setRMApplicationHistoryWriter(writer);
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     return context;
   }
 
@@ -657,6 +698,42 @@ public class TestAppManager{
     Assert.assertTrue(msg.contains("preemptedResources=<memory:1234\\, vCores:56>"));
     Assert.assertTrue(msg.contains("applicationType=MAPREDUCE"));
  }
+<<<<<<< HEAD
+=======
+  
+  @Test
+  public void testRMAppSubmitWithQueueChanged() throws Exception {
+    // Setup a PlacementManager returns a new queue
+    PlacementManager placementMgr = mock(PlacementManager.class);
+    doAnswer(new Answer<Void>() {
+
+      @Override
+      public Void answer(InvocationOnMock invocation) throws Throwable {
+        ApplicationSubmissionContext ctx =
+            (ApplicationSubmissionContext) invocation.getArguments()[0];
+        ctx.setQueue("newQueue");
+        return null;
+      }
+      
+    }).when(placementMgr).placeApplication(any(ApplicationSubmissionContext.class),
+            any(String.class));
+    rmContext.setQueuePlacementManager(placementMgr);
+    
+    asContext.setQueue("oldQueue");
+    appMonitor.submitApplication(asContext, "test");
+    RMApp app = rmContext.getRMApps().get(appId);
+    Assert.assertNotNull("app is null", app);
+    Assert.assertEquals("newQueue", asContext.getQueue());
+
+    // wait for event to be processed
+    int timeoutSecs = 0;
+    while ((getAppEventType() == RMAppEventType.KILL) && timeoutSecs++ < 20) {
+      Thread.sleep(1000);
+    }
+    Assert.assertEquals("app event type sent is wrong", RMAppEventType.START,
+        getAppEventType());
+  }
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 
   private static ResourceScheduler mockResourceScheduler() {
     ResourceScheduler scheduler = mock(ResourceScheduler.class);

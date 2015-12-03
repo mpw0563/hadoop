@@ -55,10 +55,16 @@ public class DatanodeLocalInfo {
 
   /** A formatted string for printing the status of the DataNode. */
   public String getDatanodeLocalReport() {
+<<<<<<< HEAD
     StringBuilder buffer = new StringBuilder();
     buffer.append("Uptime: " + getUptime());
     buffer.append(", Software version: " + getSoftwareVersion());
     buffer.append(", Config version: " + getConfigVersion());
     return buffer.toString();
+=======
+    return ("Uptime: " + getUptime())
+        + ", Software version: " + getSoftwareVersion()
+        + ", Config version: " + getConfigVersion();
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   }
 }

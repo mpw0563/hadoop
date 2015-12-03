@@ -29,9 +29,19 @@ import org.apache.hadoop.hdfs.protocol.SnapshottableDirectoryStatus;
 import org.apache.hadoop.hdfs.server.namenode.snapshot.DirectorySnapshottableFeature;
 import org.apache.hadoop.hdfs.server.namenode.snapshot.Snapshot;
 import org.apache.hadoop.hdfs.server.namenode.snapshot.SnapshotManager;
+<<<<<<< HEAD
 import org.apache.hadoop.util.ChunkedArrayList;
 
 import java.io.IOException;
+=======
+import org.apache.hadoop.hdfs.util.ReadOnlyList;
+import org.apache.hadoop.util.ChunkedArrayList;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ListIterator;
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
 import java.util.List;
 
 class FSDirSnapshotOp {
@@ -159,6 +169,42 @@ class FSDirSnapshotOp {
     return diffs;
   }
 
+<<<<<<< HEAD
+=======
+  /** Get a collection of full snapshot paths given file and snapshot dir.
+   * @param lsf a list of snapshottable features
+   * @param file full path of the file
+   * @return collection of full paths of snapshot of the file
+   */
+  static Collection<String> getSnapshotFiles(FSDirectory fsd,
+      List<DirectorySnapshottableFeature> lsf,
+      String file) throws IOException {
+    ArrayList<String> snaps = new ArrayList<>();
+    for (DirectorySnapshottableFeature sf : lsf) {
+      // for each snapshottable dir e.g. /dir1, /dir2
+      final ReadOnlyList<Snapshot> lsnap = sf.getSnapshotList();
+      for (Snapshot s : lsnap) {
+        // for each snapshot name under snapshottable dir
+        // e.g. /dir1/.snapshot/s1, /dir1/.snapshot/s2
+        final String dirName = s.getRoot().getRootFullPathName();
+        if (!file.startsWith(dirName)) {
+          // file not in current snapshot root dir, no need to check other snaps
+          break;
+        }
+        String snapname = s.getRoot().getFullPathName();
+        if (dirName.equals(Path.SEPARATOR)) { // handle rootDir
+          snapname += Path.SEPARATOR;
+        }
+        snapname += file.substring(file.indexOf(dirName) + dirName.length());
+        if (fsd.getFSNamesystem().getFileInfo(snapname, true) != null) {
+          snaps.add(snapname);
+        }
+      }
+    }
+    return snaps;
+  }
+
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   /**
    * Delete a snapshot of a snapshottable directory
    * @param snapshotRoot The snapshottable directory
@@ -184,6 +230,11 @@ class FSDirSnapshotOp {
       snapshotManager.deleteSnapshot(iip, snapshotName, context);
       fsd.updateCount(iip, context.quotaDelta(), false);
       fsd.removeFromInodeMap(removedINodes);
+<<<<<<< HEAD
+=======
+      fsd.updateReplicationFactor(context.collectedBlocks()
+                                      .toUpdateReplicationInfo());
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     } finally {
       fsd.writeUnlock();
     }

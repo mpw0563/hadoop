@@ -19,12 +19,20 @@
   <parent>
     <artifactId>hadoop-mapreduce-client</artifactId>
     <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
     <version>2.8.0-SNAPSHOT</version>
+=======
+    <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.hadoop</groupId>
   <artifactId>hadoop-mapreduce-client-hs</artifactId>
+<<<<<<< HEAD
   <version>2.8.0-SNAPSHOT</version>
+=======
+  <version>3.0.0-SNAPSHOT</version>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
   <name>Apache Hadoop MapReduce HistoryServer</name>
 
   <properties>
@@ -35,7 +43,11 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
+<<<<<<< HEAD
       <artifactId>hadoop-hdfs</artifactId>
+=======
+      <artifactId>hadoop-hdfs-client</artifactId>
+>>>>>>> bbe9e8b2d20998edf304b98f2a14f114e975481f
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
